@@ -1,6 +1,6 @@
 {
-  "name": "Witcurve",
-  "short_name": "Witcurve",
+  "name": "witcurve",
+  "short_name": "witcurve",
   "icons": [
       {
           "src": "./content/images/hipster192.png",

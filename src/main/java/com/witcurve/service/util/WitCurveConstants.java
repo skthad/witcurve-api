@@ -1,0 +1,6 @@
+package com.witcurve.service.util;
+
+public class WitCurveConstants {
+
+    public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
+}

@@ -1,0 +1,988 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Hanuman (generated)" id="1532791027350-1">
+        <createSequence sequenceName="academic_session_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-2">
+        <createSequence sequenceName="assignment_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-3">
+        <createSequence sequenceName="class_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-4">
+        <createSequence sequenceName="course_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-5">
+        <createSequence sequenceName="course_teacher_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-6">
+        <createSequence sequenceName="daily_update_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-7">
+        <createSequence sequenceName="event_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-8">
+        <createSequence sequenceName="exam_details_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-9">
+        <createSequence sequenceName="exam_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-10">
+        <createSequence sequenceName="guardian_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-11">
+        <createSequence sequenceName="holiday_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-12">
+        <createSequence sequenceName="leave_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-13">
+        <createSequence sequenceName="master_subject_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-14">
+        <createSequence sequenceName="note_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-15">
+        <createSequence sequenceName="school_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-16">
+        <createSequence sequenceName="school_info_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-17">
+        <createSequence sequenceName="sibling_info_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-18">
+        <createSequence sequenceName="slot_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-19">
+        <createSequence sequenceName="staff_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-20">
+        <createSequence sequenceName="student_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-21">
+        <createSequence sequenceName="term_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-22">
+        <createSequence sequenceName="test_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-23">
+        <createSequence sequenceName="time_table_unit_id_seq"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-24">
+        <createTable tableName="academic_session">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-25">
+        <createTable tableName="assignment">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posted_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="submission_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_table_unit_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-26">
+        <createTable tableName="class">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="grade" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="section" type="VARCHAR(50)"/>
+            <column name="class_teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="term_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-27">
+        <createTable tableName="course">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="course_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="eligible_for_substitute" type="BOOLEAN"/>
+            <column name="master_subject_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-28">
+        <createTable tableName="course_teacher">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-29">
+        <createTable tableName="daily_update">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posted_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_table_unit_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-30">
+        <createTable tableName="event">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="event_date" type="date"/>
+            <column name="from_date" type="date"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_date" type="date"/>
+            <column name="academic_session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-31">
+        <createTable tableName="exam">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="end_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="academic_session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-32">
+        <createTable tableName="exam_details">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="end_time" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="syllabus" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-33">
+        <createTable tableName="guardian">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="annual_income" type="BIGINT"/>
+            <column name="email_id" type="VARCHAR(50)"/>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="mobile_no" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="occupation" type="VARCHAR(50)"/>
+            <column name="office_address1" type="VARCHAR(255)"/>
+            <column name="office_address2" type="VARCHAR(255)"/>
+            <column name="office_city" type="VARCHAR(50)"/>
+            <column name="office_pincode" type="VARCHAR(50)"/>
+            <column name="office_state" type="VARCHAR(50)"/>
+            <column name="qualification" type="VARCHAR(50)"/>
+            <column name="ration_card_no" type="VARCHAR(50)"/>
+            <column name="residence_address1" type="VARCHAR(255)"/>
+            <column name="residence_address2" type="VARCHAR(255)"/>
+            <column name="residence_city" type="VARCHAR(50)"/>
+            <column name="residence_pincode" type="VARCHAR(50)"/>
+            <column name="residence_state" type="VARCHAR(50)"/>
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-34">
+        <createTable tableName="holiday">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="from_date" type="date"/>
+            <column name="holiday_date" type="date"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_date" type="date"/>
+            <column name="academic_session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-35">
+        <createTable tableName="leave">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="approved" type="BOOLEAN"/>
+            <column name="leave_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="leave_group_id" type="VARCHAR(255)"/>
+            <column name="marked_absent" type="BOOLEAN"/>
+            <column name="posted_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_by" type="BIGINT"/>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-36">
+        <createTable tableName="master_subject">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-37">
+        <createTable tableName="note">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posted_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-38">
+        <createTable tableName="school">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="address1" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address2" type="VARCHAR(255)"/>
+            <column name="affiliation_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="country" type="VARCHAR(50)"/>
+            <column name="district" type="VARCHAR(50)"/>
+            <column name="fax" type="VARCHAR(50)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pincode" type="VARCHAR(50)"/>
+            <column name="primary_email" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="primary_phone" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_email" type="VARCHAR(50)"/>
+            <column name="secondary_phone" type="VARCHAR(50)"/>
+            <column name="state" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-39">
+        <createTable tableName="school_info">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="board" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="medium" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-40">
+        <createTable tableName="sibling_info">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relationship" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_during_admission" type="VARCHAR(50)"/>
+            <column name="studying_since" type="date"/>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-41">
+        <createTable tableName="slot">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="end_time" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-42">
+        <createTable tableName="staff">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="address1" type="VARCHAR(255)"/>
+            <column name="address2" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="country" type="VARCHAR(50)"/>
+            <column name="date_of_birth" type="date"/>
+            <column name="district" type="VARCHAR(50)"/>
+            <column name="first_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="joining_date" type="date"/>
+            <column name="last_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(50)"/>
+            <column name="pincode" type="VARCHAR(50)"/>
+            <column name="primary_phone" type="VARCHAR(50)"/>
+            <column name="secondary_phone" type="VARCHAR(50)"/>
+            <column name="state" type="VARCHAR(50)"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-43">
+        <createTable tableName="student">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="address1" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address2" type="VARCHAR(255)"/>
+            <column name="adhaar_no" type="VARCHAR(50)"/>
+            <column name="admission_date" type="date"/>
+            <column name="birth_place" type="VARCHAR(50)"/>
+            <column name="blood_group" type="VARCHAR(5)"/>
+            <column name="caste" type="VARCHAR(50)"/>
+            <column name="category" type="VARCHAR(50)"/>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="country" type="VARCHAR(50)"/>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district" type="VARCHAR(50)"/>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="VARCHAR(255)"/>
+            <column name="identification_mark1" type="VARCHAR(255)"/>
+            <column name="identification_mark2" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="mother_tongue" type="VARCHAR(50)"/>
+            <column name="nationality" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pincode" type="VARCHAR(50)"/>
+            <column name="previous_school_address" type="VARCHAR(255)"/>
+            <column name="previous_school_class" type="VARCHAR(50)"/>
+            <column name="previous_school_name" type="VARCHAR(255)"/>
+            <column name="registered_mobile_number" type="VARCHAR(50)"/>
+            <column name="religion" type="VARCHAR(50)"/>
+            <column name="state" type="VARCHAR(50)"/>
+            <column name="sub_caste" type="VARCHAR(50)"/>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-44">
+        <createTable tableName="student_class">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_classPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="class_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-45">
+        <createTable tableName="term">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-46">
+        <createTable tableName="test">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="posted_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="syllabus" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_table_unit_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-47">
+        <createTable tableName="time_table_unit">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="day_of_week" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slot_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-48">
+        <addPrimaryKey columnNames="id" constraintName="academic_sessionPK" tableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-49">
+        <addPrimaryKey columnNames="id" constraintName="assignmentPK" tableName="assignment"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-50">
+        <addPrimaryKey columnNames="id" constraintName="classPK" tableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-51">
+        <addPrimaryKey columnNames="id" constraintName="coursePK" tableName="course"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-52">
+        <addPrimaryKey columnNames="id" constraintName="course_teacherPK" tableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-53">
+        <addPrimaryKey columnNames="id" constraintName="daily_updatePK" tableName="daily_update"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-54">
+        <addPrimaryKey columnNames="id" constraintName="eventPK" tableName="event"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-55">
+        <addPrimaryKey columnNames="id" constraintName="examPK" tableName="exam"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-56">
+        <addPrimaryKey columnNames="id" constraintName="exam_detailsPK" tableName="exam_details"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-57">
+        <addPrimaryKey columnNames="id" constraintName="guardianPK" tableName="guardian"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-58">
+        <addPrimaryKey columnNames="id" constraintName="holidayPK" tableName="holiday"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-59">
+        <addPrimaryKey columnNames="id" constraintName="leavePK" tableName="leave"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-60">
+        <addPrimaryKey columnNames="id" constraintName="master_subjectPK" tableName="master_subject"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-61">
+        <addPrimaryKey columnNames="id" constraintName="notePK" tableName="note"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-62">
+        <addPrimaryKey columnNames="id" constraintName="schoolPK" tableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-63">
+        <addPrimaryKey columnNames="id" constraintName="school_infoPK" tableName="school_info"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-64">
+        <addPrimaryKey columnNames="id" constraintName="sibling_infoPK" tableName="sibling_info"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-65">
+        <addPrimaryKey columnNames="id" constraintName="slotPK" tableName="slot"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-66">
+        <addPrimaryKey columnNames="id" constraintName="staffPK" tableName="staff"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-67">
+        <addPrimaryKey columnNames="id" constraintName="studentPK" tableName="student"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-68">
+        <addPrimaryKey columnNames="id" constraintName="termPK" tableName="term"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-69">
+        <addPrimaryKey columnNames="id" constraintName="testPK" tableName="test"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-70">
+        <addPrimaryKey columnNames="id" constraintName="time_table_unitPK" tableName="time_table_unit"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-71">
+        <addUniqueConstraint columnNames="name" constraintName="UC_MASTER_SUBJECTNAME_COL" tableName="master_subject"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-72">
+        <addUniqueConstraint columnNames="affiliation_id" constraintName="UC_SCHOOLAFFILIATION_ID_COL" tableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-73">
+        <addUniqueConstraint columnNames="start_date, session_id" constraintName="academic_session_start_date_UK" tableName="term"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-74">
+        <addUniqueConstraint columnNames="course_name, school_id" constraintName="course_name_school_id_UK" tableName="course"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-75">
+        <addUniqueConstraint columnNames="course_id, teacher_id, class_id" constraintName="course_teacher_class_UK" tableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-76">
+        <addUniqueConstraint columnNames="course_teacher_id, slot_id, day_of_week" constraintName="course_teacher_slot_day_UK" tableName="time_table_unit"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-77">
+        <addUniqueConstraint columnNames="name, academic_session_id" constraintName="event_name_academic_session_UK" tableName="event"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-78">
+        <addUniqueConstraint columnNames="exam_date, course_id, class_id, exam_id" constraintName="exam_date_course_standard_exam_UK" tableName="exam_details"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-79">
+        <addUniqueConstraint columnNames="name, academic_session_id" constraintName="exam_name_academic_session_UK" tableName="exam"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-80">
+        <addUniqueConstraint columnNames="grade, section, term_id, class_teacher_id" constraintName="grade_section_teacher_term_UK" tableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-81">
+        <addUniqueConstraint columnNames="name, academic_session_id" constraintName="holiday_name_academic_session_UK" tableName="holiday"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-82">
+        <addUniqueConstraint columnNames="posted_date, time_table_unit_id" constraintName="posted_date_time_table_unit_UK" tableName="daily_update"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-83">
+        <addUniqueConstraint columnNames="school_id, start_date" constraintName="start_date_school_id_UK" tableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-84">
+        <addUniqueConstraint columnNames="student_id, class_id" constraintName="student_standard_UK" tableName="student_class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-85">
+        <addUniqueConstraint columnNames="test_date, time_table_unit_id" constraintName="test_date_time_table_unit_UK" tableName="test"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-86">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="student" constraintName="FK1vm0oqhk9viil6eocn49rj1l9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-87">
+        <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="exam_details" constraintName="FK268arefjvq3txdtkqy6mijqub" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-88">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_class" constraintName="FK2f81ovfviq7rv4jhpdr46dk3e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-89">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="note" constraintName="FK4a9feulc16jloje55qls0v46t" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-90">
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="exam_details" constraintName="FK51pusglp1foub7ptoidc3tbmg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-91">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="academic_session" constraintName="FK6fxpdft1sg9jqq5om3jxkvgnh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-92">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="guardian" constraintName="FK6se6uphr11hxnhh62rrrymto6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-93">
+        <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="exam" constraintName="FK796ohp1rjtd0wk2xu5kli8pok" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-94">
+        <addForeignKeyConstraint baseColumnNames="time_table_unit_id" baseTableName="daily_update" constraintName="FK7uw565c8cf2pi771v3e1g3f8c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="time_table_unit"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-95">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="class" constraintName="FK96x0psi3ip7rge1n5ubwbhe3y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-96">
+        <addForeignKeyConstraint baseColumnNames="class_teacher_id" baseTableName="class" constraintName="FK9rgsr1gydk2t2ifbmfl20r7vf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-97">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="sibling_info" constraintName="FKa8rdoywjipg3yg66mb22w6krk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-98">
+        <addForeignKeyConstraint baseColumnNames="time_table_unit_id" baseTableName="test" constraintName="FKcvln4ry8tkekoc1sn4dswwwxu" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="time_table_unit"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-99">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="exam_details" constraintName="FKd4fx4sbjv0ic73bm7ug7u5rth" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-100">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course_teacher" constraintName="FKddm8d9rfgge8fdpk76tesgi1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-101">
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student" constraintName="FKdwhkib64u47wc4yo4hk0cub90" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-102">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="note" constraintName="FKe1nsdee55sw0ptvuoy867cln8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-103">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="term" constraintName="FKfa37vnb6yypg7osr3wcqf3odg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-104">
+        <addForeignKeyConstraint baseColumnNames="term_id" baseTableName="class" constraintName="FKfc9fmjl1pr35tihlklw54vw2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="term"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-105">
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student_class" constraintName="FKfyryxclt2okb0bxjfhct0pv5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-106">
+        <addForeignKeyConstraint baseColumnNames="slot_id" baseTableName="time_table_unit" constraintName="FKiowourlgyq0n2103101oahbif" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-107">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="leave" constraintName="FKivtntjrfnv04e0j9w83spci08" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-108">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="school_info" constraintName="FKj04lleyrvp6l6k1fg3ew0f0bd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-109">
+        <addForeignKeyConstraint baseColumnNames="approved_by" baseTableName="leave" constraintName="FKjngbewbty2u3muuakcnjhn8ik" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-110">
+        <addForeignKeyConstraint baseColumnNames="master_subject_id" baseTableName="course" constraintName="FKjwkwr16lu0s8nfaxy5t8iqhki" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="master_subject"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-111">
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="slot" constraintName="FKm4gkakdlyr390uw1jubf06bxl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-112">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="time_table_unit" constraintName="FKnqg6vyn601bhv4kf08b2wnfot" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-113">
+        <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="event" constraintName="FKnysic7kbh1pv8bhm9ygn3su1e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-114">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="staff" constraintName="FKo1sjk2xvwinvmn2gmof38cwjm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-115">
+        <addForeignKeyConstraint baseColumnNames="time_table_unit_id" baseTableName="assignment" constraintName="FKord80lq3tina39j2eojo1xoj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="time_table_unit"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-116">
+        <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="holiday" constraintName="FKqnuaucrc1502kxy7jlcf1clv8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-117">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="course" constraintName="FKqv2rlwmnu9rsh1siurb2f6923" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-118">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_teacher" constraintName="FKrna6ik293g84mo3rslnkk7m1a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-119">
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="course_teacher" constraintName="FKs0jkp3qcjb13si9emoirftm97" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+    </changeSet>
+    <changeSet author="Hanuman (generated)" id="1532791027350-120">
+        <dropNotNullConstraint columnDataType="varchar(100)" columnName="display_name" tableName="wc_authority"/>
+    </changeSet>
+</databaseChangeLog>

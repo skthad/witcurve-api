@@ -1,3 +1,5 @@
-name
-ROLE_ADMIN
-ROLE_USER
+name;display_name
+ROLE_ADMIN;Admin
+ROLE_TEACHING;Teaching Staff
+ROLE_NON_TEACHING;Non-Teaching Staff
+ROLE_GUARDIAN;Parent/Guardian
