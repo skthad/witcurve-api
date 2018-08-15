@@ -8,15 +8,21 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface StaffMapper {
+public interface StaffMapper extends EntityMapper<StaffDTO, Staff> {
 
     @Mapping(target = "schoolId", source = "school.id")
-    StaffDTO staffToStaffDTO(Staff staff);
+    StaffDTO toDto(Staff staff);
 
     @Mapping(target = "school.id", source = "schoolId")
-    Staff staffDTOToStaff(StaffDTO staffDTO);
+    Staff toEntity(StaffDTO staffDTO);
 
-    List<StaffDTO> staffsToStaffDTOs(List<Staff> staffs);
-
-    List<Staff> staffDTOsTOStaff(List<StaffDTO> staffDTOS);
+    default Staff fromId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        Staff staff = new Staff();
+        staff.setId(id);
+        return  staff;
+    }
 }
+

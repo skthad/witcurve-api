@@ -26,9 +26,9 @@ public class SlotServiceImpl implements SlotService {
     @Override
     public SlotDTO saveOrUpdate(SlotDTO slotDTO) {
         log.debug("Request to save or update slot : {}", slotDTO);
-        Slot slot = slotMapper.slotDTOToSlot(slotDTO);
+        Slot slot = slotMapper.toEntity(slotDTO);
         slot = slotRepository.save(slot);
-        return slotMapper.slotToSlotDTO(slot);
+        return slotMapper.toDto(slot);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class SlotServiceImpl implements SlotService {
         if (slot == null) {
             throw new WitcurveException("No Slot with given id");
         }
-        return slotMapper.slotToSlotDTO(slot);
+        return slotMapper.toDto(slot);
     }
 
     @Override

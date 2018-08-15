@@ -26,9 +26,9 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ClassDTO saveOrUpdateClass(ClassDTO classDTO) {
         log.debug("Request to save or update Class: {}", classDTO);
-        Class aClass = classMapper.classDTOToClass(classDTO);
+        Class aClass = classMapper.toEntity(classDTO);
         aClass = classRepository.save(aClass);
-        return classMapper.classToClassDTO(aClass);
+        return classMapper.toDto(aClass);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class ClassServiceImpl implements ClassService {
         if (standard == null) {
             throw new WitcurveException("No class exits with given id");
         }
-        return classMapper.classToClassDTO(standard);
+        return classMapper.toDto(standard);
     }
 }

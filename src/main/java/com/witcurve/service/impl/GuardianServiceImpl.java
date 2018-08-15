@@ -26,9 +26,9 @@ public class GuardianServiceImpl  implements GuardianService {
     @Override
     public GuardianDTO saveOrUpdate(GuardianDTO guardianDTO) {
         log.debug("Request to save or update guardian : {}", guardianDTO);
-        Guardian guardian = guardianMapper.guardianDTOToGuardian(guardianDTO);
+        Guardian guardian = guardianMapper.toEntity(guardianDTO);
         guardian = guardianRepository.save(guardian);
-        return guardianMapper.guardianToGuardianDTO(guardian);
+        return guardianMapper.toDto(guardian);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class GuardianServiceImpl  implements GuardianService {
         if (guardian ==  null) {
             throw new WitcurveException("No guardian exists with given id");
         }
-        return guardianMapper.guardianToGuardianDTO(guardian);
+        return guardianMapper.toDto(guardian);
     }
 
     @Override

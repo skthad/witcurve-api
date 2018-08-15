@@ -1,14 +1,15 @@
 package com.witcurve.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.EventType;
+import com.witcurve.domain.enumeration.Grade;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
-
 public class EventDTO extends AbstractAuditingDTO {
+
 
     private Long id;
 
@@ -17,17 +18,29 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private String description;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate fromDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate toDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate eventDate;
+    @NotNull
+    private EventType type;
 
     @NotNull
+    private LocalDate date;
+
+    private Long studentId;
+
+    private Long standardId;
+
+    private Long courseId;
+
+    private Grade grade;
+
     private Long academicSessionId;
+
+    private Long examId;
+
+    @Column(name = "binding_id")
+    private String bindingId;
+
+    @Column
+    private Boolean sendSms;
 
     public Long getId() {
         return id;
@@ -53,28 +66,52 @@ public class EventDTO extends AbstractAuditingDTO {
         this.description = description;
     }
 
-    public LocalDate getFromDate() {
-        return fromDate;
+    public EventType getType() {
+        return type;
     }
 
-    public void setFromDate(LocalDate fromDate) {
-        this.fromDate = fromDate;
+    public void setType(EventType type) {
+        this.type = type;
     }
 
-    public LocalDate getToDate() {
-        return toDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setToDate(LocalDate toDate) {
-        this.toDate = toDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
+    public Long getStudentId() {
+        return studentId;
     }
 
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public Long getStandardId() {
+        return standardId;
+    }
+
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public Long getAcademicSessionId() {
@@ -85,18 +122,41 @@ public class EventDTO extends AbstractAuditingDTO {
         this.academicSessionId = academicSessionId;
     }
 
+    public Long getExamId() {
+        return examId;
+    }
+
+    public void setExamId(Long examId) {
+        this.examId = examId;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
+    }
+
+    public Boolean getSendSms() {
+        return sendSms;
+    }
+
+    public void setSendSms(Boolean sendSms) {
+        this.sendSms = sendSms;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EventDTO)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         EventDTO eventDTO = (EventDTO) o;
-        return Objects.equals(getId(), eventDTO.getId());
+        return Objects.equals(id, eventDTO.id);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override
@@ -105,10 +165,16 @@ public class EventDTO extends AbstractAuditingDTO {
             "id=" + id +
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
-            ", fromDate=" + fromDate +
-            ", toDate=" + toDate +
-            ", eventDate=" + eventDate +
+            ", type=" + type +
+            ", date=" + date +
+            ", studentId=" + studentId +
+            ", standardId=" + standardId +
+            ", courseId=" + courseId +
+            ", grade=" + grade +
             ", academicSessionId=" + academicSessionId +
+            ", examId=" + examId +
+            ", bindingId='" + bindingId + '\'' +
+            ", sendSms=" + sendSms +
             '}';
     }
 }

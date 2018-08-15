@@ -26,10 +26,10 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
     @Override
     public AcademicSessionDTO saveOrUpdate(AcademicSessionDTO academicSessionDTO) {
         log.debug("Request to save or Update academic session {}", academicSessionDTO);
-        AcademicSession academicSession = academicSessionMapper.academicSessionDTOToAcademicSession(academicSessionDTO);
+        AcademicSession academicSession = academicSessionMapper.toEntity(academicSessionDTO);
         academicSession = academicSessionRepository.save(academicSession);
 
-        return academicSessionMapper.academicSessionToAcademicSessionDTO(academicSession);
+        return academicSessionMapper.toDto(academicSession);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
             throw new WitcurveException("No Academic Session with given id");
         }
 
-        return academicSessionMapper.academicSessionToAcademicSessionDTO(academicSession);
+        return academicSessionMapper.toDto(academicSession);
     }
 }

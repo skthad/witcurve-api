@@ -26,9 +26,9 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffDTO saveOrUpdate(StaffDTO staffDTO) {
         log.debug("Request to save or update staff : {}", staffDTO);
-        Staff staff = staffMapper.staffDTOToStaff(staffDTO);
+        Staff staff = staffMapper.toEntity(staffDTO);
        staff = staffRepository.save(staff);
-       return staffMapper.staffToStaffDTO(staff);
+       return staffMapper.toDto(staff);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw  new WitcurveException("No staff exists with given id");
         }
-        return staffMapper.staffToStaffDTO(staff);
+        return staffMapper.toDto(staff);
     }
 
     @Override

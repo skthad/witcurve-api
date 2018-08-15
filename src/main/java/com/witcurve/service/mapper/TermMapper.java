@@ -8,15 +8,22 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {AcademicSessionMapper.class})
-public interface TermMapper {
+public interface TermMapper extends EntityMapper<TermDTO, Term> {
 
     @Mapping(target = "academicSessionId", source = "session.id")
-    TermDTO termToTermDTO(Term term);
+    TermDTO toDto(Term term);
 
     @Mapping(source = "academicSessionId", target = "session.id")
-    Term termDTOToTerm(TermDTO termDTO);
+    Term toEntity(TermDTO termDTO);
 
-    List<TermDTO> termsToTermDTOs(List<Term> terms);
+    default Term fromId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        Term term = new Term();
+        term.setId(id);
+        return term;
+    }
 
-    List<Term> termDTOsToTerm(List<TermDTO> termDTOS);
 }
+

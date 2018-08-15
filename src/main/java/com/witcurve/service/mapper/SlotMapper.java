@@ -7,16 +7,21 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface SlotMapper {
+@Mapper(componentModel = "spring", uses = {ClassMapper.class})
+public interface SlotMapper extends EntityMapper<SlotDTO, Slot>{
 
     @Mapping(source = "standard.id", target = "standardId")
-    SlotDTO slotToSlotDTO(Slot slot);
+    SlotDTO toDto(Slot slot);
 
     @Mapping(target = "standard.id", source = "standardId")
-    Slot slotDTOToSlot(SlotDTO slotDTO);
+    Slot toEntity(SlotDTO slotDTO);
 
-    List<Slot> slotDTOsToSlots(List<SlotDTO> slotDTOS);
-
-    List<SlotDTO> slotsToSlotDTOs(List<Slot> slots);
+    default Slot fromId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        Slot slot = new Slot();
+        slot.setId(id);
+        return slot;
+    }
 }

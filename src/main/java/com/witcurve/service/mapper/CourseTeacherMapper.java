@@ -7,20 +7,21 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ClassMapper.class, CourseMapper.class, StaffMapper.class})
 public interface CourseTeacherMapper {
 
-    @Mapping(source = "standard.id", target = "classId")
-    @Mapping(source = "teacher.id", target = "teacherDTO.id")
-    @Mapping(source = "course.id", target = "courseDTO.id")
-    CourseTeacherDTO courseTeacherToCourseTeacherDTO(CourseTeacher courseTeacher);
+    @Mapping(source = "standard.id", target = "standardId")
+    CourseTeacherDTO toDto(CourseTeacher courseTeacher);
 
-    @Mapping(target = "standard.id", source = "classId")
-    @Mapping(target = "teacher.id", source = "teacherDTO.id")
-    @Mapping(target = "course.id",  source = "courseDTO.id")
-    CourseTeacher courseTeacherDTOToCourseTeacher(CourseTeacherDTO courseTeacherDTO);
+    @Mapping(target = "standard.id", source = "standardId")
+    CourseTeacher toEntity(CourseTeacherDTO courseTeacherDTO);
 
-    List<CourseTeacher> courseTeacherDTOsToCourseTeachers(List<CourseTeacherDTO> courseTeacherDTOS);
-
-    List<CourseTeacherDTO> coursesTeacherToCourseTeacherDTOs(List<CourseTeacher> courseTeachers);
+    default CourseTeacher fromId(Long courseTeacherId) {
+        if(courseTeacherId == null) {
+            return null;
+        }
+        CourseTeacher courseTeacher = new CourseTeacher();
+        courseTeacher.setId(courseTeacherId);
+        return courseTeacher;
+    }
 }

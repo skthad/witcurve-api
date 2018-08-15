@@ -29,12 +29,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO saveOrUpdate(EventDTO eventDTO) throws WitcurveException {
         log.debug("Request to save or update eventDTO : {}", eventDTO);
-        if (eventDTO.getEventDate() == null && (eventDTO.getFromDate() == null || eventDTO.getToDate() == null)) {
-            throw new WitcurveException("Event should have event date or from date and to date");
-        }
-        Event event = eventMapper.eventDTOToEvent(eventDTO);
+        Event event = eventMapper.toEntity(eventDTO);
         event = eventRepository.save(event);
-        return eventMapper.eventToEventDTO(event);
+        return eventMapper.toDto(event);
     }
 
     @Override
@@ -45,7 +42,7 @@ public class EventServiceImpl implements EventService {
         if (event ==  null) {
             throw new WitcurveException("No Event with given id");
         }
-        return eventMapper.eventToEventDTO(event);
+        return eventMapper.toDto(event);
     }
 
     @Override
@@ -62,7 +59,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllEventsOnGivenDate(LocalDate eventDate, Long schoolId) {
         log.debug("Request to get tests with eventDate : {} and schoolId : {}", eventDate, schoolId);
-        List<Event> eventsOnGivenDate = eventRepository.findEventsByEventDateAndSchoolId(eventDate, schoolId);
-        return eventMapper.eventsToEventDTOs(eventsOnGivenDate);
+//        List<Event> eventsOnGivenDate = eventRepository.findEventsByEventDateAndSchoolId(eventDate, schoolId);
+//        return eventMapper.eventsToEventDTOs(eventsOnGivenDate);
+        return null;
     }
 }

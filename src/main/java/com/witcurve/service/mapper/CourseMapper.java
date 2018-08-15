@@ -1,24 +1,41 @@
 package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.MasterSubject;
+import com.witcurve.domain.School;
 import com.witcurve.service.dto.CourseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface CourseMapper {
+@Mapper(componentModel = "spring", uses = {SchoolMapper.class})
+public interface CourseMapper extends EntityMapper<CourseDTO, Course> {
 
     @Mapping(source = "masterSubject.id", target = "masterSubjectId")
     @Mapping(target = "schoolId", source = "school.id")
-    CourseDTO courseToCourseDTO(Course course);
+    CourseDTO toDto(Course course);
 
-    @Mapping(target = "masterSubject.id", source = "masterSubjectId")
-    @Mapping(source = "schoolId", target = "school.id")
-    Course courseDTOToCourse(CourseDTO courseDTO);
+    @Mapping(target = "masterSubject", source = "masterSubjectId")
+    @Mapping(source = "schoolId", target = "school")
+    Course toEntity(CourseDTO courseDTO);
 
-    List<CourseDTO> coursesToCourseDTOs(List<Course> courses);
+    default Course fromId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        Course course = new Course();
+        course.setId(id);
+        return course;
+    }
 
-    List<Course> courseDTOsToCourses(List<Course> courses);
+    default MasterSubject masterSubjectFromId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        MasterSubject masterSubject = new MasterSubject();
+        masterSubject.setId(id);
+        return masterSubject;
+    }
+
 }

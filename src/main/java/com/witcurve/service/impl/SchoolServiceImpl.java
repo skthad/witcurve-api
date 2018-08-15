@@ -25,9 +25,9 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public SchoolDTO saveOrUpdate(SchoolDTO schoolDTO) {
         log.debug("Request to save or update school");
-        School school = schoolMapper.schoolDTOToSchool(schoolDTO);
+        School school = schoolMapper.toEntity(schoolDTO);
         school = schoolRepository.save(school);
-        return schoolMapper.schoolToSchoolDTO(school);
+        return schoolMapper.toDto(school);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SchoolServiceImpl implements SchoolService {
         if (school == null) {
             throw new WitcurveException(String.format("No School with given id: , {}", schoolId));
         }
-        return schoolMapper.schoolToSchoolDTO(school);
+        return schoolMapper.toDto(school);
     }
 
 }

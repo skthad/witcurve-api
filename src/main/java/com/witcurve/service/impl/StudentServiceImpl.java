@@ -25,9 +25,9 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO saveOrUpdate(StudentDTO studentDTO) {
         log.debug("Request to save or update student : {}", studentDTO);
-        Student student = studentMapper.studentDTOToStudent(studentDTO);
+        Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
-        return studentMapper.studentToStudentDTO(student);
+        return studentMapper.toDto(student);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class StudentServiceImpl implements StudentService {
         if (student ==  null) {
             throw new WitcurveException("No student with given id");
         }
-        return studentMapper.studentToStudentDTO(student);
+        return studentMapper.toDto(student);
     }
 
     @Override

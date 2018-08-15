@@ -26,9 +26,9 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) {
         log.debug("Request to save or update exam: {}", examDTO);
-        Exam exam = examMapper.examDTOToExam(examDTO);
+        Exam exam = examMapper.toEntity(examDTO);
         exam = examRepository.save(exam);
-        return examMapper.examToExamDTO(exam);
+        return examMapper.toDto(exam);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ExamServiceImpl implements ExamService {
         if (exam ==  null) {
             throw  new WitcurveException("No Exam with given Id");
         }
-        return examMapper.examToExamDTO(exam);
+        return examMapper.toDto(exam);
     }
 
     @Override

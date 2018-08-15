@@ -10,7 +10,7 @@ public class CourseTeacherDTO {
 
     private StaffDTO teacherDTO;
 
-    private Long classId;
+    private Long standardId;
 
     public Long getId() {
         return id;
@@ -36,12 +36,12 @@ public class CourseTeacherDTO {
         this.teacherDTO = teacherDTO;
     }
 
-    public Long getClassId() {
-        return classId;
+    public Long getStandardId() {
+        return standardId;
     }
 
-    public void setClassId(Long classId) {
-        this.classId = classId;
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CourseTeacherDTO {
             "id=" + id +
             ", courseDTO=" + courseDTO +
             ", teacherDTO=" + teacherDTO +
-            ", classId=" + classId +
+            ", standardId=" + standardId +
             '}';
     }
 }

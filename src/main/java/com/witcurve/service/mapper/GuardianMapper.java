@@ -1,22 +1,29 @@
 package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Guardian;
+import com.witcurve.domain.Student;
 import com.witcurve.service.dto.GuardianDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public interface GuardianMapper {
+@Mapper(componentModel = "spring", uses = {StudentMapper.class})
+public interface GuardianMapper extends EntityMapper<GuardianDTO, Guardian>{
 
     @Mapping(source = "studentId", target = "student.id")
-    Guardian guardianDTOToGuardian(GuardianDTO guardianDTO);
+    Guardian toEntity(GuardianDTO guardianDTO);
 
     @Mapping(target = "studentId", source = "student.id")
-    GuardianDTO guardianToGuardianDTO(Guardian guardian);
+    GuardianDTO toDto(Guardian guardian);
 
-    List<Guardian> guardianDTOsToGuardians(List<GuardianDTO> guardianDTOS);
+    default Guardian fromId(Long id) {
+        if (id == null) {
+            return  null;
+        }
+        Guardian guardian = new Guardian();
+        guardian.setId(id);
+        return guardian;
+    }
 
-    List<GuardianDTO> guardiansToGuardians(List<Guardian> guardians);
 }
