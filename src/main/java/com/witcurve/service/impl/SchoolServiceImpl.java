@@ -42,4 +42,14 @@ public class SchoolServiceImpl implements SchoolService {
         return schoolMapper.toDto(school);
     }
 
+    @Override
+    public void deleteSchool(Long schoolId) throws WitcurveException {
+        log.debug("Request to delete school with id {}", schoolId);
+        School school = schoolRepository.findById(schoolId).get();
+        if (school == null){
+            throw new WitcurveException("No school with given Id");
+        }
+        schoolRepository.delete(school);
+    }
+
 }

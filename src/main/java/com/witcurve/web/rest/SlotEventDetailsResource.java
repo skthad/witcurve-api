@@ -84,4 +84,19 @@ public class SlotEventDetailsResource {
             .body(result);
     }
 
+    /**
+     * delete the slotEventDetails
+     * @param slotEventDetailsId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/slot-event-details/{slotEventDetailsId}")
+    @Timed
+    public ResponseEntity<Void> deleteSlotEventDetails(@PathVariable Long slotEventDetailsId) throws WitcurveException {
+        log.debug("REST request to delete SlotEventDetails: {}", slotEventDetailsId);
+        slotEventDetailsService.deleteSlotEventDetails(slotEventDetailsId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A slotEventDetails is deleted with identifier " + slotEventDetailsId,
+            slotEventDetailsId.toString())).build();
+    }
+
 }

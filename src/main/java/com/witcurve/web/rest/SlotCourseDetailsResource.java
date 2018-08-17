@@ -83,6 +83,21 @@ public class SlotCourseDetailsResource {
             .body(result);
     }
 
+    /**
+     * delete the slotCourseDetails
+     * @param slotCourseDetailsId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/slot-course-details/{slotCourseDetailsId}")
+    @Timed
+    public ResponseEntity<Void> deleteSlotCourseDetails(@PathVariable Long slotCourseDetailsId) throws WitcurveException {
+        log.debug("REST request to delete SlotCourseDetails: {}", slotCourseDetailsId);
+        slotCourseDetailsService.deleteSlotCourseDetails(slotCourseDetailsId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A slotCourseDetails is deleted with identifier " + slotCourseDetailsId,
+            slotCourseDetailsId.toString())).build();
+    }
+
 
 
 }

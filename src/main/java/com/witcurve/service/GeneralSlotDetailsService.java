@@ -9,5 +9,5 @@ public interface GeneralSlotDetailsService {
 
     GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
 
-    void deleteGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
+    void deleteGeneralSlotDetails(Long generalSlotDetailsId) throws WitcurveException;
 }

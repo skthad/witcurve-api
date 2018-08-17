@@ -6,6 +6,7 @@ import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -37,6 +38,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
     private LocalDate date;
+
+    @Column(name = "event_start_time")
+    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    private String eventStartTime;
+
+    @Column(name = "event_end_time")
+    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    private String eventEndTime;
 
     @ManyToOne
     private Student student;
@@ -102,6 +111,22 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getEventStartTime() {
+        return eventStartTime;
+    }
+
+    public void setEventStartTime(String eventStartTime) {
+        this.eventStartTime = eventStartTime;
+    }
+
+    public String getEventEndTime() {
+        return eventEndTime;
+    }
+
+    public void setEventEndTime(String eventEndTime) {
+        this.eventEndTime = eventEndTime;
     }
 
     public Student getStudent() {
@@ -190,11 +215,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", description='" + description + '\'' +
             ", type=" + type +
             ", date=" + date +
+            ", eventStartTime='" + eventStartTime + '\'' +
+            ", eventEndTime='" + eventEndTime + '\'' +
             ", student=" + student +
             ", standard=" + standard +
             ", course=" + course +
             ", grade=" + grade +
             ", academicSession=" + academicSession +
+            ", exam=" + exam +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             '}';

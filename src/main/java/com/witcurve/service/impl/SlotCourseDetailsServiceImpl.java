@@ -44,7 +44,7 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     }
 
     @Override
-    public void deleteSlotCourseDetailsById(Long slotCourseDetailsId) throws WitcurveException {
+    public void deleteSlotCourseDetails(Long slotCourseDetailsId) throws WitcurveException {
         log.debug("Request to delete slotCourseDetails by id : {}", slotCourseDetailsId);
         SlotCourseDetails slotCourseDetails = slotCourseDetailsRepository.findById(slotCourseDetailsId).get();
         if(slotCourseDetails == null) {

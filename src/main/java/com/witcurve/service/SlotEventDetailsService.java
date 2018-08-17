@@ -9,5 +9,5 @@ public interface SlotEventDetailsService {
 
     SlotEventDetailsDTO getSlotEventDetailsById(Long slotEventDetailsId) throws WitcurveException;
 
-    void deleteSlotEventDetailsById(Long slotEventDetailsId) throws WitcurveException;
+    void deleteSlotEventDetails(Long slotEventDetailsId) throws WitcurveException;
 }

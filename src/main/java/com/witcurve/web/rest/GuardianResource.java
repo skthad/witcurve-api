@@ -79,4 +79,19 @@ public class GuardianResource {
             .headers(HeaderUtil.createEntityUpdateAlert("guardian", guardianDTO.getId().toString()))
             .body(result);
     }
+
+    /**
+     * delete the guardian
+     * @param guardianId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/guardian/{guardianId}")
+    @Timed
+    public ResponseEntity<Void> deleteGuardian(@PathVariable Long guardianId) throws WitcurveException {
+        log.debug("REST request to delete Guardian: {}", guardianId);
+        guardianService.deleteGuardian(guardianId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A guardian is deleted with identifier " + guardianId,
+            guardianId.toString())).build();
+    }
 }

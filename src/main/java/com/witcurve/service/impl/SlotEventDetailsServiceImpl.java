@@ -40,7 +40,7 @@ public class SlotEventDetailsServiceImpl implements SlotEventDetailsService {
         return slotEventDetailsMapper.toDto(slotEventDetails);
     }
 
-    public void deleteSlotEventDetailsById(Long slotEventDetailsId) throws WitcurveException {
+    public void deleteSlotEventDetails(Long slotEventDetailsId) throws WitcurveException {
         log.debug("Request to get slotEventDetails by id : {}", slotEventDetailsId);
         SlotEventDetails slotEventDetails = slotEventDetailsRepository.findById(slotEventDetailsId).get();
         if(slotEventDetails == null) {

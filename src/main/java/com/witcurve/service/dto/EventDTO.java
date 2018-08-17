@@ -5,6 +5,7 @@ import com.witcurve.domain.enumeration.Grade;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -23,6 +24,12 @@ public class EventDTO extends AbstractAuditingDTO {
 
     @NotNull
     private LocalDate date;
+
+    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    private String eventStartTime;
+
+    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    private String eventEndTime;
 
     private Long studentId;
 
@@ -80,6 +87,22 @@ public class EventDTO extends AbstractAuditingDTO {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getEventStartTime() {
+        return eventStartTime;
+    }
+
+    public void setEventStartTime(String eventStartTime) {
+        this.eventStartTime = eventStartTime;
+    }
+
+    public String getEventEndTime() {
+        return eventEndTime;
+    }
+
+    public void setEventEndTime(String eventEndTime) {
+        this.eventEndTime = eventEndTime;
     }
 
     public Long getStudentId() {
@@ -167,6 +190,8 @@ public class EventDTO extends AbstractAuditingDTO {
             ", description='" + description + '\'' +
             ", type=" + type +
             ", date=" + date +
+            ", eventStartTime='" + eventStartTime + '\'' +
+            ", eventEndTime='" + eventEndTime + '\'' +
             ", studentId=" + studentId +
             ", standardId=" + standardId +
             ", courseId=" + courseId +

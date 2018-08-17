@@ -45,7 +45,7 @@ public class GuardianServiceImpl  implements GuardianService {
     }
 
     @Override
-    public void deleteGuardianById(Long guardianId) throws WitcurveException {
+    public void deleteGuardian(Long guardianId) throws WitcurveException {
         log.debug("Request to delete guardian with id : {}", guardianId);
         Guardian guardian = guardianRepository.findById(guardianId).get();
 

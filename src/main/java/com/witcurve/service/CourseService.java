@@ -8,5 +8,7 @@ public interface CourseService {
     CourseDTO saveOrUpdate(CourseDTO courseDTO);
 
     CourseDTO getCourseById(Long courseId) throws WitcurveException;
+
+    void deleteCourse(Long courseId) throws WitcurveException;
 }
 

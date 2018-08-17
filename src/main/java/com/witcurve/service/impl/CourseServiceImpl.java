@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.Course;
 import com.witcurve.repository.CourseRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
@@ -41,5 +42,15 @@ public class CourseServiceImpl implements CourseService {
             throw new WitcurveException("No Course with given id");
         }
         return courseMapper.toDto(course);
+    }
+
+    @Override
+    public void deleteCourse(Long courseId) throws WitcurveException {
+        log.debug("Request to delete course with id {}", courseId);
+        Course course = courseRepository.findById(courseId).get();
+        if (course == null){
+            throw new WitcurveException("No course with given Id");
+        }
+        courseRepository.delete(course);
     }
 }

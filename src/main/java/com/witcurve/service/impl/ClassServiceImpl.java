@@ -42,4 +42,14 @@ public class ClassServiceImpl implements ClassService {
         }
         return classMapper.toDto(standard);
     }
+
+    @Override
+    public void deleteClass(Long classId) throws WitcurveException {
+        log.debug("Request to delete class with id {}", classId);
+        Class standard = classRepository.findById(classId).get();
+        if (standard == null){
+            throw new WitcurveException("No class with given Id");
+        }
+        classRepository.delete(standard);
+    }
 }

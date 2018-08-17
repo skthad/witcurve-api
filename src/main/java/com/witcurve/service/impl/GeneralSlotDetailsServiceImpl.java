@@ -45,7 +45,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public void deleteGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException {
+    public void deleteGeneralSlotDetails(Long generalSlotDetailsId) throws WitcurveException {
         log.debug("Request to delete generalSlotDetails by id : {}", generalSlotDetailsId);
         GeneralSlotDetails generalSlotDetails = generalSlotDetailsRepository.findById(generalSlotDetailsId).get();
         if(generalSlotDetails == null) {

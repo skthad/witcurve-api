@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MasterSubjectServiceImpl implements MasterSubjectService {
 
-    private final Logger log  = LoggerFactory.getLogger(MasterSubjectServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(MasterSubjectServiceImpl.class);
 
     @Autowired
     MasterSubjectRepository masterSubjectRepository;
@@ -35,4 +35,15 @@ public class MasterSubjectServiceImpl implements MasterSubjectService {
         }
         return masterSubject;
     }
+
+    @Override
+    public void deleteMasterSubject(Long masterSubjectId) throws WitcurveException {
+        log.debug("Request to delete masterSubject with id {}", masterSubjectId);
+        MasterSubject masterSubject = masterSubjectRepository.findById(masterSubjectId).get();
+        if (masterSubject == null) {
+            throw new WitcurveException("No masterSubject with given Id");
+        }
+        masterSubjectRepository.delete(masterSubject);
+    }
+
 }

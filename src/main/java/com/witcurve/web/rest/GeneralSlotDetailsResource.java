@@ -83,5 +83,20 @@ public class GeneralSlotDetailsResource {
             .body(result);
     }
 
+    /**
+     * delete the generalSlotDetails
+     * @param generalSlotDetailsId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/academic-session/{generalSlotDetailsId}")
+    @Timed
+    public ResponseEntity<Void> deleteGeneralSlotDetails(@PathVariable Long generalSlotDetailsId) throws WitcurveException {
+        log.debug("REST request to delete GeneralSlotDetails: {}", generalSlotDetailsId);
+        generalSlotDetailsService.deleteGeneralSlotDetails(generalSlotDetailsId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A generalSlotDetails is deleted with identifier " + generalSlotDetailsId,
+            generalSlotDetailsId.toString())).build();
+    }
+
 
 }

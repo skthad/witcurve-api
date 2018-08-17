@@ -81,4 +81,19 @@ public class CourseTeacherResource {
             .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
             .body(result);
     }
+
+    /**
+     * delete the courseTeacher
+     * @param courseTeacherId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/course-teacher/{courseTeacherId}")
+    @Timed
+    public ResponseEntity<Void> deleteCourseTeacher(@PathVariable Long courseTeacherId) throws WitcurveException {
+        log.debug("REST request to delete CourseTeacher: {}", courseTeacherId);
+        courseTeacherService.deleteCourseTeacher(courseTeacherId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A courseTeacher is deleted with identifier " + courseTeacherId,
+            courseTeacherId.toString())).build();
+    }
 }

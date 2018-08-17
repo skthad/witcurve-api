@@ -45,4 +45,14 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
 
         return academicSessionMapper.toDto(academicSession);
     }
+
+    @Override
+    public void deleteAcademicSession(Long academicSessionId) throws WitcurveException {
+        log.debug("Request to delete academicSession with id {}", academicSessionId);
+        AcademicSession academicSession = academicSessionRepository.findById(academicSessionId).get();
+        if (academicSession == null){
+            throw new WitcurveException("No academicSession with given Id");
+        }
+        academicSessionRepository.delete(academicSession);
+    }
 }
