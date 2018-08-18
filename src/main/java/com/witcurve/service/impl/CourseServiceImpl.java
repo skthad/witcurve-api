@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.Course;
 import com.witcurve.repository.CourseRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
@@ -10,8 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CourseServiceImpl implements CourseService {
 
     private final Logger log  = LoggerFactory.getLogger(CourseServiceImpl.class);
@@ -25,9 +28,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
         log.debug("Request to save or update Course: {}", courseDTO);
-        Course course = courseMapper.courseDTOToCourse(courseDTO);
+        Course course = courseMapper.toEntity(courseDTO);
         course = courseRepository.save(course);
-        return courseMapper.courseToCourseDTO(course);
+        return courseMapper.toDto(course);
     }
 
     @Override
@@ -38,6 +41,16 @@ public class CourseServiceImpl implements CourseService {
         if (course ==  null) {
             throw new WitcurveException("No Course with given id");
         }
-        return courseMapper.courseToCourseDTO(course);
+        return courseMapper.toDto(course);
+    }
+
+    @Override
+    public void deleteCourse(Long courseId) throws WitcurveException {
+        log.debug("Request to delete course with id {}", courseId);
+        Course course = courseRepository.findById(courseId).get();
+        if (course == null){
+            throw new WitcurveException("No course with given Id");
+        }
+        courseRepository.delete(course);
     }
 }

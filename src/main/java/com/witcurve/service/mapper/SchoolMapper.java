@@ -7,15 +7,20 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface SchoolMapper {
+public interface SchoolMapper extends EntityMapper<SchoolDTO, School> {
 
-    SchoolDTO schoolToSchoolDTO(School school);
+    SchoolDTO toDto(School school);
 
-    School schoolDTOToSchool(SchoolDTO schoolDTO);
+    School toEntity(SchoolDTO schoolDTO);
 
-    List<SchoolDTO> schoolsToSchoolsDTO(List<School> schools);
-
-    List<School> schoolDTOsToSchool(List<SchoolDTO> schoolDTOS);
+    default School fromId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        School school = new School();
+        school.setId(id);
+        return school;
+    }
 
 
 }

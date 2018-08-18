@@ -9,5 +9,5 @@ public interface GuardianService {
 
     GuardianDTO getGuardianById(Long guardianId) throws WitcurveException;
 
-    void deleteGuardianById(Long guardianId) throws WitcurveException;
+    void deleteGuardian(Long guardianId) throws WitcurveException;
 }

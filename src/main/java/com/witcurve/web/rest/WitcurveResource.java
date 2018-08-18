@@ -33,8 +33,6 @@ public class WitcurveResource {
 
     private SchoolRepository schoolRepository;
 
-    private SlotRepository slotRepository;
-
     private StaffRepository staffRepository;
 
     private StudentRepository studentRepository;
@@ -47,7 +45,7 @@ public class WitcurveResource {
     public WitcurveResource(AcademicSessionRepository academicSessionRepository, ClassRepository classRepository,
                             MasterSubjectRepository masterSubjectRepository, CourseRepository courseRepository,
                             CourseTeacherRepository courseTeacherRepository, GuardianRepository guardianRepository,
-                            SchoolRepository schoolRepository, SlotRepository slotRepository,
+                            SchoolRepository schoolRepository,
                             StaffRepository staffRepository, StudentRepository studentRepository,
                             TermRepository termRepository,
                             UserRepository userRepository) {
@@ -58,7 +56,6 @@ public class WitcurveResource {
         this.courseTeacherRepository = courseTeacherRepository;
         this.guardianRepository = guardianRepository;
         this.schoolRepository = schoolRepository;
-        this.slotRepository = slotRepository;
         this.staffRepository = staffRepository;
         this.studentRepository = studentRepository;
         this.termRepository = termRepository;

@@ -1,18 +1,18 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.EventType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name="event", uniqueConstraints = {
-    @UniqueConstraint(name = "event_name_academic_session_UK",
-        columnNames = {"name", "academic_session_id"})
-})
+@Table(name="event")
 public class Event extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,22 +29,49 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "from_date")
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate fromDate;
-
-    @Column(name = "to_date")
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate toDate;
-
-    @Column(name = "event_date")
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate eventDate;
+    @NotNull
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EventType type;
 
     @NotNull
+    @Column(name = "date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate date;
+
+    @Column(name = "event_start_time")
+    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    private String eventStartTime;
+
+    @Column(name = "event_end_time")
+    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    private String eventEndTime;
+
     @ManyToOne
-    @JoinColumn(name ="academic_session_id", nullable = false)
+    private Student student;
+
+    @ManyToOne
+    @JoinColumn(name = "class_id")
+    private Class standard;
+
+    @ManyToOne
+    private Course course;
+
+    @Column(name = "grade", length = 50)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
+
+    @ManyToOne
     private AcademicSession academicSession;
+
+    @ManyToOne
+    private Exam exam;
+
+    @Column(name = "binding_id")
+    private String bindingId;
+
+    @Column(name = "send_sms")
+    private Boolean sendSms;
 
     public Long getId() {
         return id;
@@ -70,28 +97,68 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.description = description;
     }
 
-    public LocalDate getFromDate() {
-        return fromDate;
+    public EventType getType() {
+        return type;
     }
 
-    public void setFromDate(LocalDate fromDate) {
-        this.fromDate = fromDate;
+    public void setType(EventType type) {
+        this.type = type;
     }
 
-    public LocalDate getToDate() {
-        return toDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setToDate(LocalDate toDate) {
-        this.toDate = toDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
+    public String getEventStartTime() {
+        return eventStartTime;
     }
 
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
+    public void setEventStartTime(String eventStartTime) {
+        this.eventStartTime = eventStartTime;
+    }
+
+    public String getEventEndTime() {
+        return eventEndTime;
+    }
+
+    public void setEventEndTime(String eventEndTime) {
+        this.eventEndTime = eventEndTime;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public Class getStandard() {
+        return standard;
+    }
+
+    public void setStandard(Class standard) {
+        this.standard = standard;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public AcademicSession getAcademicSession() {
@@ -102,17 +169,28 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.academicSession = academicSession;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", fromDate=" + fromDate +
-            ", toDate=" + toDate +
-            ", eventDate=" + eventDate +
-            ", academicSession=" + academicSession +
-            '}';
+    public Exam getExam() {
+        return exam;
+    }
+
+    public void setExam(Exam exam) {
+        this.exam = exam;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
+    }
+
+    public Boolean getSendSms() {
+        return sendSms;
+    }
+
+    public void setSendSms(Boolean sendSms) {
+        this.sendSms = sendSms;
     }
 
     @Override
@@ -127,5 +205,26 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     public int hashCode() {
 
         return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", type=" + type +
+            ", date=" + date +
+            ", eventStartTime='" + eventStartTime + '\'' +
+            ", eventEndTime='" + eventEndTime + '\'' +
+            ", student=" + student +
+            ", standard=" + standard +
+            ", course=" + course +
+            ", grade=" + grade +
+            ", academicSession=" + academicSession +
+            ", exam=" + exam +
+            ", bindingId='" + bindingId + '\'' +
+            ", sendSms=" + sendSms +
+            '}';
     }
 }

@@ -9,4 +9,6 @@ public interface SchoolService {
 
     SchoolDTO getSchoolById(Long schoolId) throws WitcurveException;
 
+    void deleteSchool(Long schoolId) throws WitcurveException;
+
 }

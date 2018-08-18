@@ -9,5 +9,7 @@ public interface ClassService {
 
     ClassDTO getClassById(Long id) throws WitcurveException;
 
+    void deleteClass(Long classId) throws WitcurveException;
+
 
 }

@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
 
     private final Logger log  = LoggerFactory.getLogger(StudentServiceImpl.class);
@@ -25,9 +27,9 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO saveOrUpdate(StudentDTO studentDTO) {
         log.debug("Request to save or update student : {}", studentDTO);
-        Student student = studentMapper.studentDTOToStudent(studentDTO);
+        Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
-        return studentMapper.studentToStudentDTO(student);
+        return studentMapper.toDto(student);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
         if (student ==  null) {
             throw new WitcurveException("No student with given id");
         }
-        return studentMapper.studentToStudentDTO(student);
+        return studentMapper.toDto(student);
     }
 
     @Override

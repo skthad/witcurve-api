@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TermServiceImpl implements TermService {
 
     private final Logger log  = LoggerFactory.getLogger(TermServiceImpl.class);
@@ -26,9 +28,9 @@ public class TermServiceImpl implements TermService {
     @Override
     public TermDTO saveOrUpdate(TermDTO termDTO) {
         log.debug("Request to save or update term : {}", termDTO);
-        Term term = termMapper.termDTOToTerm(termDTO);
+        Term term = termMapper.toEntity(termDTO);
         term =  termRepository.save(term);
-        return termMapper.termToTermDTO(term);
+        return termMapper.toDto(term);
 }
 
     @Override
@@ -39,7 +41,7 @@ public class TermServiceImpl implements TermService {
         if (term ==  null) {
            throw new WitcurveException("No term with given Id");
         }
-        return termMapper.termToTermDTO(term);
+        return termMapper.toDto(term);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class MasterSubjectResource {
      */
     @PostMapping("/master-subject")
     @Timed
-    public ResponseEntity<MasterSubject> createExamDetails(@RequestBody @Valid MasterSubject masterSubject) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<MasterSubject> createMasterSubject(@RequestBody @Valid MasterSubject masterSubject) throws WitcurveException, URISyntaxException {
         log.debug("Request Save MasterSubject");
         if (masterSubject.getId() != null) {
             throw new WitcurveException("New MasterSubject can't already have an id");
@@ -54,8 +54,8 @@ public class MasterSubjectResource {
 
     @GetMapping("/master-subject/{masterSubjectId}")
     @Timed
-    public ResponseEntity<MasterSubject> getExamDetailsById(@PathVariable("masterSubjectId") Long masterSubjectId) throws WitcurveException {
-        log.debug("Request to get ExamDetails with id {}", masterSubjectId);
+    public ResponseEntity<MasterSubject> getMasterSubjectById(@PathVariable("masterSubjectId") Long masterSubjectId) throws WitcurveException {
+        log.debug("Request to get MasterSubject with id {}", masterSubjectId);
         MasterSubject result = masterSubjectService.getMasterSubjectId(masterSubjectId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -69,7 +69,7 @@ public class MasterSubjectResource {
 
     @PutMapping("/master-subject")
     @Timed
-    public ResponseEntity<MasterSubject> updateExamDetails(@RequestBody @Valid MasterSubject masterSubject) throws WitcurveException {
+    public ResponseEntity<MasterSubject> updateMasterSubject(@RequestBody @Valid MasterSubject masterSubject) throws WitcurveException {
         log.debug("Request to update MasterSubject");
         if (masterSubject.getId() == null) {
             throw new WitcurveException("Id is required for update request");
@@ -78,6 +78,21 @@ public class MasterSubjectResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("masterSubject", masterSubject.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * delete the masterSubject
+     * @param masterSubjectId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/master-subject/{masterSubjectId}")
+    @Timed
+    public ResponseEntity<Void> deleteMasterSubject(@PathVariable Long masterSubjectId) throws WitcurveException {
+        log.debug("REST request to delete MasterSubject: {}", masterSubjectId);
+        masterSubjectService.deleteMasterSubject(masterSubjectId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A masterSubject is deleted with identifier " + masterSubjectId,
+            masterSubjectId.toString())).build();
     }
 
 }

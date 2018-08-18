@@ -79,4 +79,19 @@ public class AcademicSessionResource {
             .headers(HeaderUtil.createEntityUpdateAlert("academicSession", academicSessionDTO.getId().toString()))
             .body(result);
     }
+
+    /**
+     * delete the academicSession
+     * @param academicSessionId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/academic-session/{academicSessionId}")
+    @Timed
+    public ResponseEntity<Void> deleteAcademicSession(@PathVariable Long academicSessionId) throws WitcurveException {
+        log.debug("REST request to delete AcademicSession: {}", academicSessionId);
+        academicSessionService.deleteAcademicSession(academicSessionId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A academicSession is deleted with identifier " + academicSessionId,
+            academicSessionId.toString())).build();
+    }
 }

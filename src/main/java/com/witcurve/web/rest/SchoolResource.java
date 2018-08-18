@@ -80,4 +80,19 @@ public class SchoolResource {
             .body(result);
     }
 
+    /**
+     * delete the school
+     * @param schoolId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/school/{schoolId}")
+    @Timed
+    public ResponseEntity<Void> deleteSchool(@PathVariable Long schoolId) throws WitcurveException {
+        log.debug("REST request to delete school: {}", schoolId);
+        schoolService.deleteSchool(schoolId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A school is deleted with identifier " + schoolId,
+            schoolId.toString())).build();
+    }
+
 }

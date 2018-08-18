@@ -57,12 +57,33 @@ public class ClassResource {
             .body(result);
     }
 
+    /**
+     * get academic session by id
+     * @param classId
+     * @return
+     * @throws WitcurveException
+     */
     @GetMapping("/class/{classId}")
     @Timed
     public ResponseEntity<ClassDTO> getClassById(@PathVariable("classId") Long classId) throws WitcurveException {
         log.debug("Request to get class by id");
         ClassDTO result = classService.getClassById(classId);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * delete the class
+     * @param classId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/class/{classId}")
+    @Timed
+    public ResponseEntity<Void> deleteClass(@PathVariable Long classId) throws WitcurveException {
+        log.debug("REST request to delete Class: {}", classId);
+        classService.deleteClass(classId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A class is deleted with identifier " + classId,
+            classId.toString())).build();
     }
 
 

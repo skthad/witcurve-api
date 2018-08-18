@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class StaffServiceImpl implements StaffService {
 
     private final Logger log  = LoggerFactory.getLogger(StaffServiceImpl.class);
@@ -26,9 +28,9 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffDTO saveOrUpdate(StaffDTO staffDTO) {
         log.debug("Request to save or update staff : {}", staffDTO);
-        Staff staff = staffMapper.staffDTOToStaff(staffDTO);
+        Staff staff = staffMapper.toEntity(staffDTO);
        staff = staffRepository.save(staff);
-       return staffMapper.staffToStaffDTO(staff);
+       return staffMapper.toDto(staff);
     }
 
     @Override
@@ -38,7 +40,7 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw  new WitcurveException("No staff exists with given id");
         }
-        return staffMapper.staffToStaffDTO(staff);
+        return staffMapper.toDto(staff);
     }
 
     @Override

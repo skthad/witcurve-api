@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ExamServiceImpl implements ExamService {
 
     private final Logger log  = LoggerFactory.getLogger(ExamServiceImpl.class);
@@ -26,9 +28,9 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) {
         log.debug("Request to save or update exam: {}", examDTO);
-        Exam exam = examMapper.examDTOToExam(examDTO);
+        Exam exam = examMapper.toEntity(examDTO);
         exam = examRepository.save(exam);
-        return examMapper.examToExamDTO(exam);
+        return examMapper.toDto(exam);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class ExamServiceImpl implements ExamService {
         if (exam ==  null) {
             throw  new WitcurveException("No Exam with given Id");
         }
-        return examMapper.examToExamDTO(exam);
+        return examMapper.toDto(exam);
     }
 
     @Override

@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ClassServiceImpl implements ClassService {
 
     private final Logger log  = LoggerFactory.getLogger(ClassServiceImpl.class);
@@ -26,9 +28,9 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public ClassDTO saveOrUpdateClass(ClassDTO classDTO) {
         log.debug("Request to save or update Class: {}", classDTO);
-        Class aClass = classMapper.classDTOToClass(classDTO);
+        Class aClass = classMapper.toEntity(classDTO);
         aClass = classRepository.save(aClass);
-        return classMapper.classToClassDTO(aClass);
+        return classMapper.toDto(aClass);
     }
 
     @Override
@@ -38,6 +40,16 @@ public class ClassServiceImpl implements ClassService {
         if (standard == null) {
             throw new WitcurveException("No class exits with given id");
         }
-        return classMapper.classToClassDTO(standard);
+        return classMapper.toDto(standard);
+    }
+
+    @Override
+    public void deleteClass(Long classId) throws WitcurveException {
+        log.debug("Request to delete class with id {}", classId);
+        Class standard = classRepository.findById(classId).get();
+        if (standard == null){
+            throw new WitcurveException("No class with given Id");
+        }
+        classRepository.delete(standard);
     }
 }

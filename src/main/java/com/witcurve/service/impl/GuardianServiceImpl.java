@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class GuardianServiceImpl  implements GuardianService {
 
     private final Logger log  = LoggerFactory.getLogger(GuardianServiceImpl.class);
@@ -26,9 +28,9 @@ public class GuardianServiceImpl  implements GuardianService {
     @Override
     public GuardianDTO saveOrUpdate(GuardianDTO guardianDTO) {
         log.debug("Request to save or update guardian : {}", guardianDTO);
-        Guardian guardian = guardianMapper.guardianDTOToGuardian(guardianDTO);
+        Guardian guardian = guardianMapper.toEntity(guardianDTO);
         guardian = guardianRepository.save(guardian);
-        return guardianMapper.guardianToGuardianDTO(guardian);
+        return guardianMapper.toDto(guardian);
     }
 
     @Override
@@ -39,11 +41,11 @@ public class GuardianServiceImpl  implements GuardianService {
         if (guardian ==  null) {
             throw new WitcurveException("No guardian exists with given id");
         }
-        return guardianMapper.guardianToGuardianDTO(guardian);
+        return guardianMapper.toDto(guardian);
     }
 
     @Override
-    public void deleteGuardianById(Long guardianId) throws WitcurveException {
+    public void deleteGuardian(Long guardianId) throws WitcurveException {
         log.debug("Request to delete guardian with id : {}", guardianId);
         Guardian guardian = guardianRepository.findById(guardianId).get();
 

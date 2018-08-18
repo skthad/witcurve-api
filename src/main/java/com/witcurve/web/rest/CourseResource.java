@@ -80,5 +80,20 @@ public class CourseResource {
             .body(result);
     }
 
+    /**
+     * delete the course
+     * @param courseId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/course/{courseId}")
+    @Timed
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) throws WitcurveException {
+        log.debug("REST request to delete Course: {}", courseId);
+        courseService.deleteCourse(courseId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A course is deleted with identifier " + courseId,
+            courseId.toString())).build();
+    }
+
 
 }

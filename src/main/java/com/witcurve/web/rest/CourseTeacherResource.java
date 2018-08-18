@@ -36,7 +36,7 @@ public class CourseTeacherResource {
      */
     @PostMapping("/course-teacher")
     @Timed
-    public ResponseEntity<CourseTeacherDTO> createCourseUpdate(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<CourseTeacherDTO> createCourseTeacher(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save courseTeacher");
         if (courseTeacherDTO.getId() != null) {
             throw new WitcurveException("New courseTeacher can't already have an id");
@@ -56,7 +56,7 @@ public class CourseTeacherResource {
 
     @GetMapping("/course-teacher/{courseTeacherId}")
     @Timed
-    public ResponseEntity<CourseTeacherDTO> getCourseUpdateById(@PathVariable("courseTeacherId") Long courseTeacherId) throws WitcurveException {
+    public ResponseEntity<CourseTeacherDTO> getCourseTeacherById(@PathVariable("courseTeacherId") Long courseTeacherId) throws WitcurveException {
         log.debug("Request to get CourseTeacher with id {}", courseTeacherId);
         CourseTeacherDTO result = courseTeacherService.getCourseTeacherById(courseTeacherId);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -71,7 +71,7 @@ public class CourseTeacherResource {
 
     @PutMapping("/course-teacher")
     @Timed
-    public ResponseEntity<CourseTeacherDTO> updateCourseUpdate(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
+    public ResponseEntity<CourseTeacherDTO> updateCourseTeacher(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
         log.debug("Request to update courseTeacher");
         if (courseTeacherDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
@@ -80,5 +80,20 @@ public class CourseTeacherResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * delete the courseTeacher
+     * @param courseTeacherId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/course-teacher/{courseTeacherId}")
+    @Timed
+    public ResponseEntity<Void> deleteCourseTeacher(@PathVariable Long courseTeacherId) throws WitcurveException {
+        log.debug("REST request to delete CourseTeacher: {}", courseTeacherId);
+        courseTeacherService.deleteCourseTeacher(courseTeacherId);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A courseTeacher is deleted with identifier " + courseTeacherId,
+            courseTeacherId.toString())).build();
     }
 }

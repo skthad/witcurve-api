@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     private final Logger log  = LoggerFactory.getLogger(CourseTeacherServiceImpl.class);
@@ -27,10 +29,10 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) {
         log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
 
-        CourseTeacher courseTeacher = courseTeacherMapper.courseTeacherDTOToCourseTeacher(courseTeacherDTO);
+        CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
         courseTeacher = courseTeacherRepository.save(courseTeacher);
 
-        return courseTeacherMapper.courseTeacherToCourseTeacherDTO(courseTeacher);
+        return courseTeacherMapper.toDto(courseTeacher);
     }
 
 
@@ -41,7 +43,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         if (courseTeacher == null) {
             throw new WitcurveException("No course tecaher with given id");
         }
-        return courseTeacherMapper.courseTeacherToCourseTeacherDTO(courseTeacher);
+        return courseTeacherMapper.toDto(courseTeacher);
     }
 
     @Override

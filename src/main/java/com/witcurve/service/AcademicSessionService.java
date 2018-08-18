@@ -8,4 +8,6 @@ public interface AcademicSessionService {
     AcademicSessionDTO saveOrUpdate(AcademicSessionDTO academicSessionDTO);
 
     AcademicSessionDTO getAcademicSessionById(Long academicSessionId) throws WitcurveException;
+
+    void deleteAcademicSession(Long academicSessionId) throws WitcurveException;
 }
