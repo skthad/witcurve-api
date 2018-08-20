@@ -22,6 +22,8 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     @NotNull
     private Long standardId;
 
+    private Long examId;
+
     public Long getId() {
         return id;
     }
@@ -66,6 +68,14 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.standardId = standardId;
     }
 
+    public Long getExamId() {
+        return examId;
+    }
+
+    public void setExamId(Long examId) {
+        this.examId = examId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,6 +97,7 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
             ", duration=" + duration +
             ", recess=" + recess +
             ", standardId=" + standardId +
+            ", examId=" + examId +
             '}';
     }
 }

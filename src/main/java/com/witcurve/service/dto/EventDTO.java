@@ -41,8 +41,6 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Long academicSessionId;
 
-    private Long examId;
-
     @Column(name = "binding_id")
     private String bindingId;
 
@@ -145,14 +143,6 @@ public class EventDTO extends AbstractAuditingDTO {
         this.academicSessionId = academicSessionId;
     }
 
-    public Long getExamId() {
-        return examId;
-    }
-
-    public void setExamId(Long examId) {
-        this.examId = examId;
-    }
-
     public String getBindingId() {
         return bindingId;
     }
@@ -197,7 +187,6 @@ public class EventDTO extends AbstractAuditingDTO {
             ", courseId=" + courseId +
             ", grade=" + grade +
             ", academicSessionId=" + academicSessionId +
-            ", examId=" + examId +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             '}';
