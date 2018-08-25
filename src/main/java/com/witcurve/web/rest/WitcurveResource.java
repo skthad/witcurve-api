@@ -364,7 +364,6 @@ public class WitcurveResource {
         gsd10 = generalSlotDetailsRepository.save(gsd10);
 
 
-
     }
 
 }

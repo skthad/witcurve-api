@@ -1,57 +1,57 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="srujankumar (generated)" id="1534809872959-1">
+    <changeSet author="srujankumar (generated)" id="1535191720603-1">
         <createSequence sequenceName="academic_session_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-2">
+    <changeSet author="srujankumar (generated)" id="1535191720603-2">
         <createSequence sequenceName="class_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-3">
+    <changeSet author="srujankumar (generated)" id="1535191720603-3">
         <createSequence sequenceName="course_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-4">
+    <changeSet author="srujankumar (generated)" id="1535191720603-4">
         <createSequence sequenceName="course_teacher_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-5">
+    <changeSet author="srujankumar (generated)" id="1535191720603-5">
         <createSequence sequenceName="event_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-6">
+    <changeSet author="srujankumar (generated)" id="1535191720603-6">
         <createSequence sequenceName="exam_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-7">
+    <changeSet author="srujankumar (generated)" id="1535191720603-7">
         <createSequence sequenceName="general_slot_details_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-8">
+    <changeSet author="srujankumar (generated)" id="1535191720603-8">
         <createSequence sequenceName="guardian_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-9">
+    <changeSet author="srujankumar (generated)" id="1535191720603-9">
         <createSequence sequenceName="master_subject_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-10">
+    <changeSet author="srujankumar (generated)" id="1535191720603-10">
         <createSequence sequenceName="school_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-11">
+    <changeSet author="srujankumar (generated)" id="1535191720603-11">
         <createSequence sequenceName="school_info_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-12">
+    <changeSet author="srujankumar (generated)" id="1535191720603-12">
         <createSequence sequenceName="sibling_info_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-13">
+    <changeSet author="srujankumar (generated)" id="1535191720603-13">
         <createSequence sequenceName="slot_course_details_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-14">
+    <changeSet author="srujankumar (generated)" id="1535191720603-14">
         <createSequence sequenceName="slot_event_details_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-15">
+    <changeSet author="srujankumar (generated)" id="1535191720603-15">
         <createSequence sequenceName="staff_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-16">
+    <changeSet author="srujankumar (generated)" id="1535191720603-16">
         <createSequence sequenceName="student_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-17">
+    <changeSet author="srujankumar (generated)" id="1535191720603-17">
         <createSequence sequenceName="term_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-18">
+    <changeSet author="srujankumar (generated)" id="1535191720603-18">
         <createTable tableName="academic_session">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -72,7 +72,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-19">
+    <changeSet author="srujankumar (generated)" id="1535191720603-19">
         <createTable tableName="class">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -100,7 +100,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-20">
+    <changeSet author="srujankumar (generated)" id="1535191720603-20">
         <createTable tableName="course">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -126,7 +126,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-21">
+    <changeSet author="srujankumar (generated)" id="1535191720603-21">
         <createTable tableName="course_teacher">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -150,7 +150,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-22">
+    <changeSet author="srujankumar (generated)" id="1535191720603-22">
         <createTable tableName="event">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -184,7 +184,7 @@
             <column name="student_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-23">
+    <changeSet author="srujankumar (generated)" id="1535191720603-23">
         <createTable tableName="exam">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -214,7 +214,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-24">
+    <changeSet author="srujankumar (generated)" id="1535191720603-24">
         <createTable tableName="general_slot_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -242,7 +242,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-25">
+    <changeSet author="srujankumar (generated)" id="1535191720603-25">
         <createTable tableName="guardian">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -288,7 +288,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-26">
+    <changeSet author="srujankumar (generated)" id="1535191720603-26">
         <createTable tableName="master_subject">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -306,7 +306,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-27">
+    <changeSet author="srujankumar (generated)" id="1535191720603-27">
         <createTable tableName="school">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -345,7 +345,7 @@
             <column name="state" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-28">
+    <changeSet author="srujankumar (generated)" id="1535191720603-28">
         <createTable tableName="school_info">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -369,7 +369,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-29">
+    <changeSet author="srujankumar (generated)" id="1535191720603-29">
         <createTable tableName="sibling_info">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -395,7 +395,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-30">
+    <changeSet author="srujankumar (generated)" id="1535191720603-30">
         <createTable tableName="slot_course_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -419,7 +419,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-31">
+    <changeSet author="srujankumar (generated)" id="1535191720603-31">
         <createTable tableName="slot_event_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -436,12 +436,10 @@
             <column name="event_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="scd_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
+            <column name="scd_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-32">
+    <changeSet author="srujankumar (generated)" id="1535191720603-32">
         <createTable tableName="staff">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -480,7 +478,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-33">
+    <changeSet author="srujankumar (generated)" id="1535191720603-33">
         <createTable tableName="student">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -539,7 +537,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-34">
+    <changeSet author="srujankumar (generated)" id="1535191720603-34">
         <createTable tableName="student_class">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="student_classPK"/>
@@ -560,7 +558,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-35">
+    <changeSet author="srujankumar (generated)" id="1535191720603-35">
         <createTable tableName="term">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -581,175 +579,175 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-36">
+    <changeSet author="srujankumar (generated)" id="1535191720603-36">
         <addPrimaryKey columnNames="id" constraintName="academic_sessionPK" tableName="academic_session"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-37">
+    <changeSet author="srujankumar (generated)" id="1535191720603-37">
         <addPrimaryKey columnNames="id" constraintName="classPK" tableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-38">
+    <changeSet author="srujankumar (generated)" id="1535191720603-38">
         <addPrimaryKey columnNames="id" constraintName="coursePK" tableName="course"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-39">
+    <changeSet author="srujankumar (generated)" id="1535191720603-39">
         <addPrimaryKey columnNames="id" constraintName="course_teacherPK" tableName="course_teacher"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-40">
+    <changeSet author="srujankumar (generated)" id="1535191720603-40">
         <addPrimaryKey columnNames="id" constraintName="eventPK" tableName="event"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-41">
+    <changeSet author="srujankumar (generated)" id="1535191720603-41">
         <addPrimaryKey columnNames="id" constraintName="examPK" tableName="exam"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-42">
+    <changeSet author="srujankumar (generated)" id="1535191720603-42">
         <addPrimaryKey columnNames="id" constraintName="general_slot_detailsPK" tableName="general_slot_details"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-43">
+    <changeSet author="srujankumar (generated)" id="1535191720603-43">
         <addPrimaryKey columnNames="id" constraintName="guardianPK" tableName="guardian"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-44">
+    <changeSet author="srujankumar (generated)" id="1535191720603-44">
         <addPrimaryKey columnNames="id" constraintName="master_subjectPK" tableName="master_subject"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-45">
+    <changeSet author="srujankumar (generated)" id="1535191720603-45">
         <addPrimaryKey columnNames="id" constraintName="schoolPK" tableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-46">
+    <changeSet author="srujankumar (generated)" id="1535191720603-46">
         <addPrimaryKey columnNames="id" constraintName="school_infoPK" tableName="school_info"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-47">
+    <changeSet author="srujankumar (generated)" id="1535191720603-47">
         <addPrimaryKey columnNames="id" constraintName="sibling_infoPK" tableName="sibling_info"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-48">
+    <changeSet author="srujankumar (generated)" id="1535191720603-48">
         <addPrimaryKey columnNames="id" constraintName="slot_course_detailsPK" tableName="slot_course_details"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-49">
+    <changeSet author="srujankumar (generated)" id="1535191720603-49">
         <addPrimaryKey columnNames="id" constraintName="slot_event_detailsPK" tableName="slot_event_details"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-50">
+    <changeSet author="srujankumar (generated)" id="1535191720603-50">
         <addPrimaryKey columnNames="id" constraintName="staffPK" tableName="staff"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-51">
+    <changeSet author="srujankumar (generated)" id="1535191720603-51">
         <addPrimaryKey columnNames="id" constraintName="studentPK" tableName="student"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-52">
+    <changeSet author="srujankumar (generated)" id="1535191720603-52">
         <addPrimaryKey columnNames="id" constraintName="termPK" tableName="term"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-53">
+    <changeSet author="srujankumar (generated)" id="1535191720603-53">
         <addUniqueConstraint columnNames="name" constraintName="UC_MASTER_SUBJECTNAME_COL" tableName="master_subject"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-54">
+    <changeSet author="srujankumar (generated)" id="1535191720603-54">
         <addUniqueConstraint columnNames="affiliation_id" constraintName="UC_SCHOOLAFFILIATION_ID_COL" tableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-55">
+    <changeSet author="srujankumar (generated)" id="1535191720603-55">
         <addUniqueConstraint columnNames="start_date, session_id" constraintName="academic_session_start_date_UK" tableName="term"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-56">
+    <changeSet author="srujankumar (generated)" id="1535191720603-56">
         <addUniqueConstraint columnNames="course_name, school_id" constraintName="course_name_school_id_UK" tableName="course"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-57">
+    <changeSet author="srujankumar (generated)" id="1535191720603-57">
         <addUniqueConstraint columnNames="course_id, teacher_id, class_id" constraintName="course_teacher_class_UK" tableName="course_teacher"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-58">
+    <changeSet author="srujankumar (generated)" id="1535191720603-58">
         <addUniqueConstraint columnNames="name, academic_session_id" constraintName="exam_name_academic_session_UK" tableName="exam"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-59">
+    <changeSet author="srujankumar (generated)" id="1535191720603-59">
         <addUniqueConstraint columnNames="grade, section, term_id, class_teacher_id" constraintName="grade_section_teacher_term_UK" tableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-60">
+    <changeSet author="srujankumar (generated)" id="1535191720603-60">
         <addUniqueConstraint columnNames="school_id, start_date" constraintName="start_date_school_id_UK" tableName="academic_session"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-61">
+    <changeSet author="srujankumar (generated)" id="1535191720603-61">
         <addUniqueConstraint columnNames="student_id, class_id" constraintName="student_standard_UK" tableName="student_class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-62">
+    <changeSet author="srujankumar (generated)" id="1535191720603-62">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="student" constraintName="FK1vm0oqhk9viil6eocn49rj1l9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-63">
+    <changeSet author="srujankumar (generated)" id="1535191720603-63">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_class" constraintName="FK2f81ovfviq7rv4jhpdr46dk3e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-64">
+    <changeSet author="srujankumar (generated)" id="1535191720603-64">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="event" constraintName="FK60ua7upltt4d7k4uqrg6b0vhq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-65">
+    <changeSet author="srujankumar (generated)" id="1535191720603-65">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="slot_event_details" constraintName="FK6dkep4dunwg3acn9k835k6hx2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-66">
+    <changeSet author="srujankumar (generated)" id="1535191720603-66">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="academic_session" constraintName="FK6fxpdft1sg9jqq5om3jxkvgnh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-67">
+    <changeSet author="srujankumar (generated)" id="1535191720603-67">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="guardian" constraintName="FK6se6uphr11hxnhh62rrrymto6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-68">
+    <changeSet author="srujankumar (generated)" id="1535191720603-68">
         <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="exam" constraintName="FK796ohp1rjtd0wk2xu5kli8pok" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-69">
+    <changeSet author="srujankumar (generated)" id="1535191720603-69">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="class" constraintName="FK96x0psi3ip7rge1n5ubwbhe3y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-70">
+    <changeSet author="srujankumar (generated)" id="1535191720603-70">
         <addForeignKeyConstraint baseColumnNames="class_teacher_id" baseTableName="class" constraintName="FK9rgsr1gydk2t2ifbmfl20r7vf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-71">
+    <changeSet author="srujankumar (generated)" id="1535191720603-71">
         <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="slot_course_details" constraintName="FK9y0yt7d4g5x592m3mv7ert0pc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-72">
+    <changeSet author="srujankumar (generated)" id="1535191720603-72">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="sibling_info" constraintName="FKa8rdoywjipg3yg66mb22w6krk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-73">
+    <changeSet author="srujankumar (generated)" id="1535191720603-73">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course_teacher" constraintName="FKddm8d9rfgge8fdpk76tesgi1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-74">
+    <changeSet author="srujankumar (generated)" id="1535191720603-74">
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="slot_course_details" constraintName="FKddym62qc2shj7oicw0eqfisub" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-75">
+    <changeSet author="srujankumar (generated)" id="1535191720603-75">
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student" constraintName="FKdwhkib64u47wc4yo4hk0cub90" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-76">
+    <changeSet author="srujankumar (generated)" id="1535191720603-76">
         <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="term" constraintName="FKfa37vnb6yypg7osr3wcqf3odg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-77">
+    <changeSet author="srujankumar (generated)" id="1535191720603-77">
         <addForeignKeyConstraint baseColumnNames="term_id" baseTableName="class" constraintName="FKfc9fmjl1pr35tihlklw54vw2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="term"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-78">
+    <changeSet author="srujankumar (generated)" id="1535191720603-78">
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="event" constraintName="FKftnwq8qoxcybj9xrn8313vwli" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-79">
+    <changeSet author="srujankumar (generated)" id="1535191720603-79">
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student_class" constraintName="FKfyryxclt2okb0bxjfhct0pv5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-80">
+    <changeSet author="srujankumar (generated)" id="1535191720603-80">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="school_info" constraintName="FKj04lleyrvp6l6k1fg3ew0f0bd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-81">
+    <changeSet author="srujankumar (generated)" id="1535191720603-81">
         <addForeignKeyConstraint baseColumnNames="master_subject_id" baseTableName="course" constraintName="FKjwkwr16lu0s8nfaxy5t8iqhki" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="master_subject"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-82">
+    <changeSet author="srujankumar (generated)" id="1535191720603-82">
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="event" constraintName="FKkqtw8xsbsbfi12psyh4txu0s4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-83">
+    <changeSet author="srujankumar (generated)" id="1535191720603-83">
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="general_slot_details" constraintName="FKlgkm2hwig9xig9wua6n1hplmg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-84">
+    <changeSet author="srujankumar (generated)" id="1535191720603-84">
         <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="event" constraintName="FKnysic7kbh1pv8bhm9ygn3su1e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-85">
+    <changeSet author="srujankumar (generated)" id="1535191720603-85">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="staff" constraintName="FKo1sjk2xvwinvmn2gmof38cwjm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-86">
+    <changeSet author="srujankumar (generated)" id="1535191720603-86">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="course" constraintName="FKqv2rlwmnu9rsh1siurb2f6923" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-87">
+    <changeSet author="srujankumar (generated)" id="1535191720603-87">
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_teacher" constraintName="FKrna6ik293g84mo3rslnkk7m1a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-88">
+    <changeSet author="srujankumar (generated)" id="1535191720603-88">
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="course_teacher" constraintName="FKs0jkp3qcjb13si9emoirftm97" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-89">
+    <changeSet author="srujankumar (generated)" id="1535191720603-89">
         <addForeignKeyConstraint baseColumnNames="scd_id" baseTableName="slot_event_details" constraintName="FKseicwi229v5xj8ojj9mlln45s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot_course_details"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-90">
+    <changeSet author="srujankumar (generated)" id="1535191720603-90">
         <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="general_slot_details" constraintName="FKt2cmdy4f0qmk0jrythjpr2b9g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-91">
+    <changeSet author="srujankumar (generated)" id="1535191720603-91">
         <dropSequence sequenceName="user_id_seq"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1534809872959-92">
+    <changeSet author="srujankumar (generated)" id="1535191720603-92">
         <dropNotNullConstraint columnDataType="varchar(100)" columnName="display_name" tableName="wc_authority"/>
     </changeSet>
 </databaseChangeLog>

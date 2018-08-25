@@ -21,9 +21,8 @@ public class SlotEventDetails extends AbstractAuditingEntity implements Serializ
     @JoinColumn(nullable = false)
     private Event event;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "scd_id", nullable = false)
+    @JoinColumn(name = "scd_id")
     private SlotCourseDetails scd;
 
     @Column(name = "binding_id")
