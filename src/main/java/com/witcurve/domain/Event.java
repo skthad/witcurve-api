@@ -64,9 +64,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     private AcademicSession academicSession;
 
-    @ManyToOne
-    private Exam exam;
-
     @Column(name = "binding_id")
     private String bindingId;
 
@@ -169,14 +166,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.academicSession = academicSession;
     }
 
-    public Exam getExam() {
-        return exam;
-    }
-
-    public void setExam(Exam exam) {
-        this.exam = exam;
-    }
-
     public String getBindingId() {
         return bindingId;
     }
@@ -222,7 +211,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", course=" + course +
             ", grade=" + grade +
             ", academicSession=" + academicSession +
-            ", exam=" + exam +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             '}';

@@ -28,12 +28,16 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     @NotNull
     @Column(name = "is_recess", nullable = false)
-    private Boolean recess;
+    private Boolean recess = false;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "class_id", nullable = false)
     private Class standard;
+
+    @ManyToOne
+    @JoinColumn
+    private Exam exam;
 
 
     public Long getId() {
@@ -42,6 +46,14 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
     }
 
     public Integer getDuration() {
@@ -68,6 +80,14 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
         this.standard = standard;
     }
 
+    public Exam getExam() {
+        return exam;
+    }
+
+    public void setExam(Exam exam) {
+        this.exam = exam;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,9 +106,11 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     public String toString() {
         return "GeneralSlotDetails{" +
             "id=" + id +
+            ", start='" + start + '\'' +
             ", duration=" + duration +
             ", recess=" + recess +
-            ", standardId=" + standard.getId() +
+            ", standard=" + standard +
+            ", exam=" + exam +
             '}';
     }
 }

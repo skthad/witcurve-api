@@ -9,10 +9,9 @@ public class SlotEventDetailsDTO extends AbstractAuditingDTO implements Serializ
     private Long id;
 
     @NotNull
-    private Long eventId;
+    private Long eventDTO;
 
-    @NotNull
-    private Long scdId;
+    private Long scdDTO;
 
     private String bindingId;
 
@@ -24,22 +23,20 @@ public class SlotEventDetailsDTO extends AbstractAuditingDTO implements Serializ
         this.id = id;
     }
 
-    @NotNull
-    public Long getEventId() {
-        return eventId;
+    public Long getEventDTO() {
+        return eventDTO;
     }
 
-    public void setEventId(@NotNull Long eventId) {
-        this.eventId = eventId;
+    public void setEventDTO(Long eventDTO) {
+        this.eventDTO = eventDTO;
     }
 
-    @NotNull
-    public Long getScdId() {
-        return scdId;
+    public Long getScdDTO() {
+        return scdDTO;
     }
 
-    public void setScdId(@NotNull Long scdId) {
-        this.scdId = scdId;
+    public void setScdDTO(Long scdDTO) {
+        this.scdDTO = scdDTO;
     }
 
     public String getBindingId() {
@@ -67,8 +64,8 @@ public class SlotEventDetailsDTO extends AbstractAuditingDTO implements Serializ
     public String toString() {
         return "SlotEventDetailsDTO{" +
             "id=" + id +
-            ", eventId=" + eventId +
-            ", scdId=" + scdId +
+            ", eventDTO=" + eventDTO +
+            ", scdDTO=" + scdDTO +
             ", bindingId='" + bindingId + '\'' +
             '}';
     }
