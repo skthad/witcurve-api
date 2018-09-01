@@ -1,9 +1,13 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.School;
+import com.witcurve.domain.SchoolInfo;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.SchoolRepository;
 import com.witcurve.service.SchoolService;
 import com.witcurve.service.dto.SchoolDTO;
+import com.witcurve.service.dto.SchoolInfoDTO;
+import com.witcurve.service.mapper.SchoolInfoMapper;
 import com.witcurve.service.mapper.SchoolMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -23,6 +27,12 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Autowired
     SchoolMapper schoolMapper;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    SchoolInfoMapper schoolInfoMapper;
 
     @Override
     public SchoolDTO saveOrUpdate(SchoolDTO schoolDTO) {
@@ -50,6 +60,20 @@ public class SchoolServiceImpl implements SchoolService {
             throw new WitcurveException("No school with given Id");
         }
         schoolRepository.delete(school);
+    }
+
+    @Override
+    public SchoolInfoDTO updateSchoolInfo(Long schoolId, String board, String medium) throws WitcurveException {
+        School school = schoolRepository.findById(schoolId).get();
+        if (school == null) {
+            throw new WitcurveException(String.format("No School with given id: , {}", schoolId));
+        }
+        SchoolInfo schoolInfo = new SchoolInfo();
+        schoolInfo.setBoard(board);
+        schoolInfo.setMedium(medium);
+        schoolInfo.setSchool(school);
+        schoolInfo = schoolInfoRepository.save(schoolInfo);
+        return schoolInfoMapper.schoolInfoToSchoolInfoDTO(schoolInfo);
     }
 
 }
