@@ -3,6 +3,7 @@ package com.witcurve.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.service.SchoolService;
 import com.witcurve.service.dto.SchoolDTO;
+import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -77,6 +78,23 @@ public class SchoolResource {
         SchoolDTO result = schoolService.saveOrUpdate(schoolDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("school", schoolDTO.getId().toString()))
+            .body(result);
+    }/**
+     * update the info for given school
+     * @param schoolId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PatchMapping("/school/{schoolId}/info")
+    @Timed
+    public ResponseEntity<SchoolInfoDTO> updateSchool(@PathVariable(name = "schoolId") Long schoolId,
+                                                      @RequestParam(name = "board") String board,
+                                                      @RequestParam(name = "medium") String medium) throws WitcurveException {
+        log.debug("Request to update school info");
+        SchoolInfoDTO result = schoolService.updateSchoolInfo(schoolId, board, medium);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert("schoolInfo", schoolId.toString()))
             .body(result);
     }
 
