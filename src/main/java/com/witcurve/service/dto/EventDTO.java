@@ -35,11 +35,13 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Long standardId;
 
-    private Long courseId;
+    private Long staffId;
 
     private Grade grade;
 
     private Long academicSessionId;
+
+    private Long scdId;
 
     @Column(name = "binding_id")
     private String bindingId;
@@ -119,12 +121,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.standardId = standardId;
     }
 
-    public Long getCourseId() {
-        return courseId;
+    public Long getStaffId() {
+        return staffId;
     }
 
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
     }
 
     public Grade getGrade() {
@@ -141,6 +143,14 @@ public class EventDTO extends AbstractAuditingDTO {
 
     public void setAcademicSessionId(Long academicSessionId) {
         this.academicSessionId = academicSessionId;
+    }
+
+    public Long getScdId() {
+        return scdId;
+    }
+
+    public void setScdId(Long scdId) {
+        this.scdId = scdId;
     }
 
     public String getBindingId() {
@@ -184,9 +194,10 @@ public class EventDTO extends AbstractAuditingDTO {
             ", eventEndTime='" + eventEndTime + '\'' +
             ", studentId=" + studentId +
             ", standardId=" + standardId +
-            ", courseId=" + courseId +
+            ", staffId=" + staffId +
             ", grade=" + grade +
             ", academicSessionId=" + academicSessionId +
+            ", scdId=" + scdId +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             '}';

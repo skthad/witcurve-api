@@ -55,7 +55,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Class standard;
 
     @ManyToOne
-    private Course course;
+    private Staff staff;
 
     @Column(name = "grade", length = 50)
     @Enumerated(EnumType.STRING)
@@ -63,6 +63,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     private AcademicSession academicSession;
+
+    @ManyToOne
+    @JoinColumn(name = "scd_id")
+    private SlotCourseDetails scd;
 
     @Column(name = "binding_id")
     private String bindingId;
@@ -142,12 +146,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.standard = standard;
     }
 
-    public Course getCourse() {
-        return course;
+    public Staff getStaff() {
+        return staff;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
     public Grade getGrade() {
@@ -164,6 +168,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setAcademicSession(AcademicSession academicSession) {
         this.academicSession = academicSession;
+    }
+
+    public SlotCourseDetails getScd() {
+        return scd;
+    }
+
+    public void setScd(SlotCourseDetails scd) {
+        this.scd = scd;
     }
 
     public String getBindingId() {
@@ -196,23 +208,5 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         return Objects.hash(getId());
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", type=" + type +
-            ", date=" + date +
-            ", eventStartTime='" + eventStartTime + '\'' +
-            ", eventEndTime='" + eventEndTime + '\'' +
-            ", student=" + student +
-            ", standard=" + standard +
-            ", course=" + course +
-            ", grade=" + grade +
-            ", academicSession=" + academicSession +
-            ", bindingId='" + bindingId + '\'' +
-            ", sendSms=" + sendSms +
-            '}';
-    }
+
 }
