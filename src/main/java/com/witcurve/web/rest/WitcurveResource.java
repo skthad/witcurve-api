@@ -68,9 +68,6 @@ public class WitcurveResource {
     private SlotCourseDetailsRepository slotCourseDetailsRepository;
 
     @Autowired
-    private SlotEventDetailsRepository slotEventDetailsRepository;
-
-    @Autowired
     private EventRepository eventRepository;
 
     @RequestMapping(value = "/load-data", method = RequestMethod.POST)
@@ -711,19 +708,15 @@ public class WitcurveResource {
         slotCourseDetails58 = slotCourseDetailsRepository.save(slotCourseDetails58);
 
         //Events
-          //Daily Updates for Monday
+        //Daily Updates for Monday
         Event event11 = new Event();
         event11.setName("Daily Update");
         event11.setDescription("This is a daily update for today's class");
         event11.setType(EventType.DAILY_UPDATE);
         event11.setDate(LocalDate.of(2018, 9, 10));
         event11.setStandard(class1);
+        event11.setScd(slotCourseDetails11);
         event11 = eventRepository.save(event11);
-
-        SlotEventDetails slotEventDetails11 = new SlotEventDetails();
-        slotEventDetails11.setEvent(event11);
-        slotEventDetails11.setScd(slotCourseDetails11);
-        slotEventDetailsRepository.save(slotEventDetails11);
 
         Event event12 = new Event();
         event12.setName("Daily Update");
@@ -731,12 +724,8 @@ public class WitcurveResource {
         event12.setType(EventType.DAILY_UPDATE);
         event12.setDate(LocalDate.of(2018, 9, 10));
         event12.setStandard(class1);
+        event12.setScd(slotCourseDetails12);
         event12 = eventRepository.save(event12);
-
-        SlotEventDetails slotEventDetails12 = new SlotEventDetails();
-        slotEventDetails12.setEvent(event12);
-        slotEventDetails12.setScd(slotCourseDetails12);
-        slotEventDetailsRepository.save(slotEventDetails12);
 
         Event event13 = new Event();
         event13.setName("Daily Update");
@@ -744,12 +733,8 @@ public class WitcurveResource {
         event13.setType(EventType.DAILY_UPDATE);
         event13.setDate(LocalDate.of(2018, 9, 10));
         event13.setStandard(class1);
+        event13.setScd(slotCourseDetails13);
         event13 = eventRepository.save(event13);
-
-        SlotEventDetails slotEventDetails13 = new SlotEventDetails();
-        slotEventDetails13.setEvent(event13);
-        slotEventDetails13.setScd(slotCourseDetails13);
-        slotEventDetailsRepository.save(slotEventDetails13);
 
         Event event14 = new Event();
         event14.setName("Daily Update");
@@ -757,12 +742,8 @@ public class WitcurveResource {
         event14.setType(EventType.DAILY_UPDATE);
         event14.setDate(LocalDate.of(2018, 9, 10));
         event14.setStandard(class1);
+        event14.setScd(slotCourseDetails14);
         event14 = eventRepository.save(event14);
-
-        SlotEventDetails slotEventDetails14 = new SlotEventDetails();
-        slotEventDetails14.setEvent(event14);
-        slotEventDetails14.setScd(slotCourseDetails14);
-        slotEventDetailsRepository.save(slotEventDetails14);
 
         Event event15 = new Event();
         event15.setName("Daily Update");
@@ -770,12 +751,8 @@ public class WitcurveResource {
         event15.setType(EventType.DAILY_UPDATE);
         event15.setDate(LocalDate.of(2018, 9, 10));
         event15.setStandard(class1);
+        event15.setScd(slotCourseDetails15);
         event15 = eventRepository.save(event15);
-
-        SlotEventDetails slotEventDetails15 = new SlotEventDetails();
-        slotEventDetails15.setEvent(event15);
-        slotEventDetails15.setScd(slotCourseDetails15);
-        slotEventDetailsRepository.save(slotEventDetails15);
 
         Event event16 = new Event();
         event16.setName("Daily Update");
@@ -783,12 +760,8 @@ public class WitcurveResource {
         event16.setType(EventType.DAILY_UPDATE);
         event16.setDate(LocalDate.of(2018, 9, 10));
         event16.setStandard(class1);
+        event16.setScd(slotCourseDetails16);
         event16 = eventRepository.save(event16);
-
-        SlotEventDetails slotEventDetails16 = new SlotEventDetails();
-        slotEventDetails16.setEvent(event16);
-        slotEventDetails16.setScd(slotCourseDetails16);
-        slotEventDetailsRepository.save(slotEventDetails16);
 
         Event event17 = new Event();
         event17.setName("Daily Update");
@@ -796,12 +769,8 @@ public class WitcurveResource {
         event17.setType(EventType.DAILY_UPDATE);
         event17.setDate(LocalDate.of(2018, 9, 10));
         event17.setStandard(class1);
+        event17.setScd(slotCourseDetails17);
         event17 = eventRepository.save(event17);
-
-        SlotEventDetails slotEventDetails17 = new SlotEventDetails();
-        slotEventDetails17.setEvent(event17);
-        slotEventDetails17.setScd(slotCourseDetails17);
-        slotEventDetailsRepository.save(slotEventDetails17);
 
         Event event18 = new Event();
         event18.setName("Daily Update");
@@ -809,12 +778,8 @@ public class WitcurveResource {
         event18.setType(EventType.DAILY_UPDATE);
         event18.setDate(LocalDate.of(2018, 9, 10));
         event18.setStandard(class1);
+        event18.setScd(slotCourseDetails18);
         event18 = eventRepository.save(event18);
-
-        SlotEventDetails slotEventDetails18 = new SlotEventDetails();
-        slotEventDetails18.setEvent(event18);
-        slotEventDetails18.setScd(slotCourseDetails18);
-        slotEventDetailsRepository.save(slotEventDetails18);
 
         //Daily Update for Tuesday
         Event event21 = new Event();
@@ -823,12 +788,8 @@ public class WitcurveResource {
         event21.setType(EventType.DAILY_UPDATE);
         event21.setDate(LocalDate.of(2018, 9, 11));
         event21.setStandard(class1);
+        event21.setScd(slotCourseDetails21);
         event21 = eventRepository.save(event21);
-
-        SlotEventDetails slotEventDetails21 = new SlotEventDetails();
-        slotEventDetails21.setEvent(event21);
-        slotEventDetails21.setScd(slotCourseDetails21);
-        slotEventDetailsRepository.save(slotEventDetails21);
 
         Event event22 = new Event();
         event22.setName("Daily Update");
@@ -836,12 +797,8 @@ public class WitcurveResource {
         event22.setType(EventType.DAILY_UPDATE);
         event22.setDate(LocalDate.of(2018, 9, 11));
         event22.setStandard(class1);
+        event22.setScd(slotCourseDetails22);
         event22 = eventRepository.save(event22);
-
-        SlotEventDetails slotEventDetails22 = new SlotEventDetails();
-        slotEventDetails22.setEvent(event22);
-        slotEventDetails22.setScd(slotCourseDetails22);
-        slotEventDetailsRepository.save(slotEventDetails22);
 
         Event event23 = new Event();
         event23.setName("Daily Update");
@@ -849,12 +806,8 @@ public class WitcurveResource {
         event23.setType(EventType.DAILY_UPDATE);
         event23.setDate(LocalDate.of(2018, 9, 11));
         event23.setStandard(class1);
+        event23.setScd(slotCourseDetails23);
         event23 = eventRepository.save(event23);
-
-        SlotEventDetails slotEventDetails23 = new SlotEventDetails();
-        slotEventDetails23.setEvent(event23);
-        slotEventDetails23.setScd(slotCourseDetails23);
-        slotEventDetailsRepository.save(slotEventDetails23);
 
         Event event24 = new Event();
         event24.setName("Daily Update");
@@ -862,12 +815,8 @@ public class WitcurveResource {
         event24.setType(EventType.DAILY_UPDATE);
         event24.setDate(LocalDate.of(2018, 9, 11));
         event24.setStandard(class1);
+        event24.setScd(slotCourseDetails24);
         event24 = eventRepository.save(event24);
-
-        SlotEventDetails slotEventDetails24 = new SlotEventDetails();
-        slotEventDetails24.setEvent(event24);
-        slotEventDetails24.setScd(slotCourseDetails24);
-        slotEventDetailsRepository.save(slotEventDetails24);
 
         Event event25 = new Event();
         event25.setName("Daily Update");
@@ -875,12 +824,8 @@ public class WitcurveResource {
         event25.setType(EventType.DAILY_UPDATE);
         event25.setDate(LocalDate.of(2018, 9, 11));
         event25.setStandard(class1);
+        event25.setScd(slotCourseDetails25);
         event25 = eventRepository.save(event25);
-
-        SlotEventDetails slotEventDetails25 = new SlotEventDetails();
-        slotEventDetails25.setEvent(event25);
-        slotEventDetails25.setScd(slotCourseDetails25);
-        slotEventDetailsRepository.save(slotEventDetails25);
 
         Event event26 = new Event();
         event26.setName("Daily Update");
@@ -888,12 +833,8 @@ public class WitcurveResource {
         event26.setType(EventType.DAILY_UPDATE);
         event26.setDate(LocalDate.of(2018, 9, 11));
         event26.setStandard(class1);
+        event26.setScd(slotCourseDetails26);
         event26 = eventRepository.save(event26);
-
-        SlotEventDetails slotEventDetails26 = new SlotEventDetails();
-        slotEventDetails26.setEvent(event26);
-        slotEventDetails26.setScd(slotCourseDetails26);
-        slotEventDetailsRepository.save(slotEventDetails26);
 
         Event event27 = new Event();
         event27.setName("Daily Update");
@@ -901,12 +842,8 @@ public class WitcurveResource {
         event27.setType(EventType.DAILY_UPDATE);
         event27.setDate(LocalDate.of(2018, 9, 11));
         event27.setStandard(class1);
+        event27.setScd(slotCourseDetails27);
         event27 = eventRepository.save(event27);
-
-        SlotEventDetails slotEventDetails27 = new SlotEventDetails();
-        slotEventDetails27.setEvent(event27);
-        slotEventDetails27.setScd(slotCourseDetails27);
-        slotEventDetailsRepository.save(slotEventDetails27);
 
         Event event28 = new Event();
         event28.setName("Daily Update");
@@ -914,12 +851,8 @@ public class WitcurveResource {
         event28.setType(EventType.DAILY_UPDATE);
         event28.setDate(LocalDate.of(2018, 9, 11));
         event28.setStandard(class1);
+        event28.setScd(slotCourseDetails28);
         event28 = eventRepository.save(event28);
-
-        SlotEventDetails slotEventDetails28 = new SlotEventDetails();
-        slotEventDetails28.setEvent(event28);
-        slotEventDetails28.setScd(slotCourseDetails28);
-        slotEventDetailsRepository.save(slotEventDetails28);
 
         //Daily Update for Wednesday
         Event event31 = new Event();
@@ -928,12 +861,8 @@ public class WitcurveResource {
         event31.setType(EventType.DAILY_UPDATE);
         event31.setDate(LocalDate.of(2018, 9, 12));
         event31.setStandard(class1);
+        event31.setScd(slotCourseDetails31);
         event31 = eventRepository.save(event31);
-
-        SlotEventDetails slotEventDetails31 = new SlotEventDetails();
-        slotEventDetails31.setEvent(event31);
-        slotEventDetails31.setScd(slotCourseDetails31);
-        slotEventDetailsRepository.save(slotEventDetails31);
 
         Event event32 = new Event();
         event32.setName("Daily Update");
@@ -941,12 +870,8 @@ public class WitcurveResource {
         event32.setType(EventType.DAILY_UPDATE);
         event32.setDate(LocalDate.of(2018, 9, 12));
         event32.setStandard(class1);
+        event32.setScd(slotCourseDetails32);
         event32 = eventRepository.save(event32);
-
-        SlotEventDetails slotEventDetails32 = new SlotEventDetails();
-        slotEventDetails32.setEvent(event32);
-        slotEventDetails32.setScd(slotCourseDetails32);
-        slotEventDetailsRepository.save(slotEventDetails32);
 
         Event event33 = new Event();
         event33.setName("Daily Update");
@@ -954,12 +879,8 @@ public class WitcurveResource {
         event33.setType(EventType.DAILY_UPDATE);
         event33.setDate(LocalDate.of(2018, 9, 12));
         event33.setStandard(class1);
+        event33.setScd(slotCourseDetails33);
         event33 = eventRepository.save(event33);
-
-        SlotEventDetails slotEventDetails33 = new SlotEventDetails();
-        slotEventDetails33.setEvent(event33);
-        slotEventDetails33.setScd(slotCourseDetails33);
-        slotEventDetailsRepository.save(slotEventDetails33);
 
         Event event34 = new Event();
         event34.setName("Daily Update");
@@ -967,12 +888,8 @@ public class WitcurveResource {
         event34.setType(EventType.DAILY_UPDATE);
         event34.setDate(LocalDate.of(2018, 9, 12));
         event34.setStandard(class1);
+        event34.setScd(slotCourseDetails34);
         event34 = eventRepository.save(event34);
-
-        SlotEventDetails slotEventDetails34 = new SlotEventDetails();
-        slotEventDetails34.setEvent(event34);
-        slotEventDetails34.setScd(slotCourseDetails34);
-        slotEventDetailsRepository.save(slotEventDetails34);
 
         Event event35 = new Event();
         event35.setName("Daily Update");
@@ -980,12 +897,8 @@ public class WitcurveResource {
         event35.setType(EventType.DAILY_UPDATE);
         event35.setDate(LocalDate.of(2018, 9, 12));
         event35.setStandard(class1);
+        event35.setScd(slotCourseDetails35);
         event35 = eventRepository.save(event35);
-
-        SlotEventDetails slotEventDetails35 = new SlotEventDetails();
-        slotEventDetails35.setEvent(event35);
-        slotEventDetails35.setScd(slotCourseDetails35);
-        slotEventDetailsRepository.save(slotEventDetails35);
 
         Event event36 = new Event();
         event36.setName("Daily Update");
@@ -993,12 +906,8 @@ public class WitcurveResource {
         event36.setType(EventType.DAILY_UPDATE);
         event36.setDate(LocalDate.of(2018, 9, 12));
         event36.setStandard(class1);
+        event36.setScd(slotCourseDetails36);
         event36 = eventRepository.save(event36);
-
-        SlotEventDetails slotEventDetails36 = new SlotEventDetails();
-        slotEventDetails36.setEvent(event36);
-        slotEventDetails36.setScd(slotCourseDetails36);
-        slotEventDetailsRepository.save(slotEventDetails36);
 
         Event event37 = new Event();
         event37.setName("Daily Update");
@@ -1006,12 +915,8 @@ public class WitcurveResource {
         event37.setType(EventType.DAILY_UPDATE);
         event37.setDate(LocalDate.of(2018, 9, 12));
         event37.setStandard(class1);
+        event37.setScd(slotCourseDetails37);
         event37 = eventRepository.save(event37);
-
-        SlotEventDetails slotEventDetails37 = new SlotEventDetails();
-        slotEventDetails37.setEvent(event37);
-        slotEventDetails37.setScd(slotCourseDetails37);
-        slotEventDetailsRepository.save(slotEventDetails37);
 
         Event event38 = new Event();
         event38.setName("Daily Update");
@@ -1019,12 +924,8 @@ public class WitcurveResource {
         event38.setType(EventType.DAILY_UPDATE);
         event38.setDate(LocalDate.of(2018, 9, 12));
         event38.setStandard(class1);
+        event38.setScd(slotCourseDetails38);
         event38 = eventRepository.save(event38);
-
-        SlotEventDetails slotEventDetails38 = new SlotEventDetails();
-        slotEventDetails38.setEvent(event38);
-        slotEventDetails38.setScd(slotCourseDetails38);
-        slotEventDetailsRepository.save(slotEventDetails38);
 
         //Daily Update for Thursday
         Event event41 = new Event();
@@ -1033,12 +934,8 @@ public class WitcurveResource {
         event41.setType(EventType.DAILY_UPDATE);
         event41.setDate(LocalDate.of(2018, 9, 13));
         event41.setStandard(class1);
+        event41.setScd(slotCourseDetails41);
         event41 = eventRepository.save(event41);
-
-        SlotEventDetails slotEventDetails41 = new SlotEventDetails();
-        slotEventDetails41.setEvent(event41);
-        slotEventDetails41.setScd(slotCourseDetails41);
-        slotEventDetailsRepository.save(slotEventDetails41);
 
         Event event42 = new Event();
         event42.setName("Daily Update");
@@ -1046,12 +943,8 @@ public class WitcurveResource {
         event42.setType(EventType.DAILY_UPDATE);
         event42.setDate(LocalDate.of(2018, 9, 13));
         event42.setStandard(class1);
+        event42.setScd(slotCourseDetails42);
         event42= eventRepository.save(event42);
-
-        SlotEventDetails slotEventDetails42 = new SlotEventDetails();
-        slotEventDetails42.setEvent(event42);
-        slotEventDetails42.setScd(slotCourseDetails42);
-        slotEventDetailsRepository.save(slotEventDetails42);
 
         Event event43 = new Event();
         event43.setName("Daily Update");
@@ -1059,12 +952,8 @@ public class WitcurveResource {
         event43.setType(EventType.DAILY_UPDATE);
         event43.setDate(LocalDate.of(2018, 9, 13));
         event43.setStandard(class1);
+        event43.setScd(slotCourseDetails43);
         event43 = eventRepository.save(event43);
-
-        SlotEventDetails slotEventDetails43 = new SlotEventDetails();
-        slotEventDetails43.setEvent(event43);
-        slotEventDetails43.setScd(slotCourseDetails43);
-        slotEventDetailsRepository.save(slotEventDetails43);
 
         Event event44 = new Event();
         event44.setName("Daily Update");
@@ -1072,12 +961,8 @@ public class WitcurveResource {
         event44.setType(EventType.DAILY_UPDATE);
         event44.setDate(LocalDate.of(2018, 9, 13));
         event44.setStandard(class1);
+        event44.setScd(slotCourseDetails44);
         event44= eventRepository.save(event44);
-
-        SlotEventDetails slotEventDetails44 = new SlotEventDetails();
-        slotEventDetails44.setEvent(event44);
-        slotEventDetails44.setScd(slotCourseDetails44);
-        slotEventDetailsRepository.save(slotEventDetails44);
 
         Event event45 = new Event();
         event45.setName("Daily Update");
@@ -1085,12 +970,8 @@ public class WitcurveResource {
         event45.setType(EventType.DAILY_UPDATE);
         event45.setDate(LocalDate.of(2018, 9, 13));
         event45.setStandard(class1);
+        event45.setScd(slotCourseDetails45);
         event45= eventRepository.save(event45);
-
-        SlotEventDetails slotEventDetails45 = new SlotEventDetails();
-        slotEventDetails45.setEvent(event45);
-        slotEventDetails45.setScd(slotCourseDetails45);
-        slotEventDetailsRepository.save(slotEventDetails45);
 
         Event event46 = new Event();
         event46.setName("Daily Update");
@@ -1098,12 +979,8 @@ public class WitcurveResource {
         event46.setType(EventType.DAILY_UPDATE);
         event46.setDate(LocalDate.of(2018, 9, 13));
         event46.setStandard(class1);
+        event46.setScd(slotCourseDetails46);
         event46= eventRepository.save(event46);
-
-        SlotEventDetails slotEventDetails46 = new SlotEventDetails();
-        slotEventDetails46.setEvent(event46);
-        slotEventDetails46.setScd(slotCourseDetails46);
-        slotEventDetailsRepository.save(slotEventDetails46);
 
         Event event47 = new Event();
         event47.setName("Daily Update");
@@ -1111,12 +988,8 @@ public class WitcurveResource {
         event47.setType(EventType.DAILY_UPDATE);
         event47.setDate(LocalDate.of(2018, 9, 13));
         event47.setStandard(class1);
+        event47.setScd(slotCourseDetails47);
         event47= eventRepository.save(event47);
-
-        SlotEventDetails slotEventDetails47 = new SlotEventDetails();
-        slotEventDetails47.setEvent(event47);
-        slotEventDetails47.setScd(slotCourseDetails47);
-        slotEventDetailsRepository.save(slotEventDetails47);
 
         Event event48 = new Event();
         event48.setName("Daily Update");
@@ -1124,12 +997,8 @@ public class WitcurveResource {
         event48.setType(EventType.DAILY_UPDATE);
         event48.setDate(LocalDate.of(2018, 9, 13));
         event48.setStandard(class1);
+        event48.setScd(slotCourseDetails48);
         event48 = eventRepository.save(event48);
-
-        SlotEventDetails slotEventDetails48 = new SlotEventDetails();
-        slotEventDetails48.setEvent(event48);
-        slotEventDetails48.setScd(slotCourseDetails48);
-        slotEventDetailsRepository.save(slotEventDetails48);
 
         //Daily Update for Friday
         Event event51 = new Event();
@@ -1138,12 +1007,8 @@ public class WitcurveResource {
         event51.setType(EventType.DAILY_UPDATE);
         event51.setDate(LocalDate.of(2018, 9, 14));
         event51.setStandard(class1);
+        event51.setScd(slotCourseDetails51);
         event51 = eventRepository.save(event51);
-
-        SlotEventDetails slotEventDetails51 = new SlotEventDetails();
-        slotEventDetails51.setEvent(event51);
-        slotEventDetails51.setScd(slotCourseDetails51);
-        slotEventDetailsRepository.save(slotEventDetails51);
 
         Event event52 = new Event();
         event52.setName("Daily Update");
@@ -1151,12 +1016,8 @@ public class WitcurveResource {
         event52.setType(EventType.DAILY_UPDATE);
         event52.setDate(LocalDate.of(2018, 9, 14));
         event52.setStandard(class1);
+        event52.setScd(slotCourseDetails52);
         event52 = eventRepository.save(event52);
-
-        SlotEventDetails slotEventDetails52 = new SlotEventDetails();
-        slotEventDetails52.setEvent(event52);
-        slotEventDetails52.setScd(slotCourseDetails52);
-        slotEventDetailsRepository.save(slotEventDetails52);
 
         Event event53 = new Event();
         event53.setName("Daily Update");
@@ -1164,12 +1025,8 @@ public class WitcurveResource {
         event53.setType(EventType.DAILY_UPDATE);
         event53.setDate(LocalDate.of(2018, 9, 14));
         event53.setStandard(class1);
+        event53.setScd(slotCourseDetails53);
         event53 = eventRepository.save(event53);
-
-        SlotEventDetails slotEventDetails53 = new SlotEventDetails();
-        slotEventDetails53.setEvent(event53);
-        slotEventDetails53.setScd(slotCourseDetails53);
-        slotEventDetailsRepository.save(slotEventDetails53);
 
         Event event54 = new Event();
         event54.setName("Daily Update");
@@ -1177,12 +1034,8 @@ public class WitcurveResource {
         event54.setType(EventType.DAILY_UPDATE);
         event54.setDate(LocalDate.of(2018, 9, 14));
         event54.setStandard(class1);
+        event54.setScd(slotCourseDetails54);
         event54 = eventRepository.save(event54);
-
-        SlotEventDetails slotEventDetails54 = new SlotEventDetails();
-        slotEventDetails54.setEvent(event54);
-        slotEventDetails54.setScd(slotCourseDetails54);
-        slotEventDetailsRepository.save(slotEventDetails54);
 
         Event event55 = new Event();
         event55.setName("Daily Update");
@@ -1190,12 +1043,8 @@ public class WitcurveResource {
         event55.setType(EventType.DAILY_UPDATE);
         event55.setDate(LocalDate.of(2018, 9, 14));
         event55.setStandard(class1);
+        event55.setScd(slotCourseDetails55);
         event55 = eventRepository.save(event55);
-
-        SlotEventDetails slotEventDetails55 = new SlotEventDetails();
-        slotEventDetails55.setEvent(event55);
-        slotEventDetails55.setScd(slotCourseDetails55);
-        slotEventDetailsRepository.save(slotEventDetails55);
 
         Event event56 = new Event();
         event56.setName("Daily Update");
@@ -1203,12 +1052,8 @@ public class WitcurveResource {
         event56.setType(EventType.DAILY_UPDATE);
         event56.setDate(LocalDate.of(2018, 9, 14));
         event56.setStandard(class1);
+        event56.setScd(slotCourseDetails56);
         event56 = eventRepository.save(event56);
-
-        SlotEventDetails slotEventDetails56 = new SlotEventDetails();
-        slotEventDetails56.setEvent(event56);
-        slotEventDetails56.setScd(slotCourseDetails56);
-        slotEventDetailsRepository.save(slotEventDetails56);
 
         Event event57 = new Event();
         event57.setName("Daily Update");
@@ -1216,12 +1061,8 @@ public class WitcurveResource {
         event57.setType(EventType.DAILY_UPDATE);
         event57.setDate(LocalDate.of(2018, 9, 14));
         event57.setStandard(class1);
+        event57.setScd(slotCourseDetails57);
         event57 = eventRepository.save(event57);
-
-        SlotEventDetails slotEventDetails57 = new SlotEventDetails();
-        slotEventDetails57.setEvent(event57);
-        slotEventDetails57.setScd(slotCourseDetails57);
-        slotEventDetailsRepository.save(slotEventDetails57);
 
         Event event58 = new Event();
         event58.setName("Daily Update");
@@ -1229,12 +1070,8 @@ public class WitcurveResource {
         event58.setType(EventType.DAILY_UPDATE);
         event58.setDate(LocalDate.of(2018, 9, 14));
         event58.setStandard(class1);
+        event58.setScd(slotCourseDetails58);
         event58 = eventRepository.save(event58);
-
-        SlotEventDetails slotEventDetails58 = new SlotEventDetails();
-        slotEventDetails58.setEvent(event58);
-        slotEventDetails58.setScd(slotCourseDetails58);
-        slotEventDetailsRepository.save(slotEventDetails58);
 
 
         //Test Events created on 10, 13 and dated for 12, 14
@@ -1245,12 +1082,8 @@ public class WitcurveResource {
         testEvent11.setDate(LocalDate.of(2018, 9, 12));
         testEvent11.setStandard(class1);
         testEvent11.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent11.setScd(slotCourseDetails11);
         testEvent11 = eventRepository.save(testEvent11);
-
-        SlotEventDetails slotTestEventDetails11 = new SlotEventDetails();
-        slotTestEventDetails11.setEvent(testEvent11);
-        slotTestEventDetails11.setScd(slotCourseDetails11);
-        slotEventDetailsRepository.save(slotTestEventDetails11);
 
         Event testEvent12 = new Event();
         testEvent12.setName("Test Created");
@@ -1259,12 +1092,8 @@ public class WitcurveResource {
         testEvent12.setDate(LocalDate.of(2018, 9, 12));
         testEvent12.setStandard(class1);
         testEvent12.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent12.setScd(slotCourseDetails12);
         testEvent12 = eventRepository.save(testEvent12);
-
-        SlotEventDetails slotTestEventDetails12 = new SlotEventDetails();
-        slotTestEventDetails12.setEvent(testEvent12);
-        slotTestEventDetails12.setScd(slotCourseDetails12);
-        slotEventDetailsRepository.save(slotTestEventDetails12);
 
         Event testEvent13 = new Event();
         testEvent13.setName("Test Created");
@@ -1273,12 +1102,8 @@ public class WitcurveResource {
         testEvent13.setDate(LocalDate.of(2018, 9, 12));
         testEvent13.setStandard(class1);
         testEvent13.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent13.setScd(slotCourseDetails13);
         testEvent13 = eventRepository.save(testEvent13);
-
-        SlotEventDetails slotTestEventDetails13 = new SlotEventDetails();
-        slotTestEventDetails13.setEvent(testEvent13);
-        slotTestEventDetails13.setScd(slotCourseDetails13);
-        slotEventDetailsRepository.save(slotTestEventDetails13);
 
         Event testEvent14 = new Event();
         testEvent14.setName("Test Created");
@@ -1287,12 +1112,8 @@ public class WitcurveResource {
         testEvent14.setDate(LocalDate.of(2018, 9, 12));
         testEvent14.setStandard(class1);
         testEvent14.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent14.setScd(slotCourseDetails14);
         testEvent14 = eventRepository.save(testEvent14);
-
-        SlotEventDetails slotTestEventDetails14 = new SlotEventDetails();
-        slotTestEventDetails14.setEvent(testEvent14);
-        slotTestEventDetails14.setScd(slotCourseDetails14);
-        slotEventDetailsRepository.save(slotTestEventDetails14);
 
         Event testEvent15 = new Event();
         testEvent15.setName("Test Created");
@@ -1301,12 +1122,8 @@ public class WitcurveResource {
         testEvent15.setDate(LocalDate.of(2018, 9, 12));
         testEvent15.setStandard(class1);
         testEvent15.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent15.setScd(slotCourseDetails15);
         testEvent15 = eventRepository.save(testEvent15);
-
-        SlotEventDetails slotTestEventDetails15 = new SlotEventDetails();
-        slotTestEventDetails15.setEvent(testEvent15);
-        slotTestEventDetails15.setScd(slotCourseDetails15);
-        slotEventDetailsRepository.save(slotTestEventDetails15);
 
         Event testEvent16 = new Event();
         testEvent16.setName("Test Created");
@@ -1315,12 +1132,8 @@ public class WitcurveResource {
         testEvent16.setDate(LocalDate.of(2018, 9, 12));
         testEvent16.setStandard(class1);
         testEvent16.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent16.setScd(slotCourseDetails16);
         testEvent16 = eventRepository.save(testEvent16);
-
-        SlotEventDetails slotTestEventDetails16 = new SlotEventDetails();
-        slotTestEventDetails16.setEvent(testEvent16);
-        slotTestEventDetails16.setScd(slotCourseDetails16);
-        slotEventDetailsRepository.save(slotTestEventDetails16);
 
         Event testEvent17 = new Event();
         testEvent17.setName("Test Created");
@@ -1329,12 +1142,8 @@ public class WitcurveResource {
         testEvent17.setDate(LocalDate.of(2018, 9, 12));
         testEvent17.setStandard(class1);
         testEvent17.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent17.setScd(slotCourseDetails17);
         testEvent17 = eventRepository.save(testEvent17);
-
-        SlotEventDetails slotTestEventDetails17 = new SlotEventDetails();
-        slotTestEventDetails17.setEvent(testEvent17);
-        slotTestEventDetails17.setScd(slotCourseDetails17);
-        slotEventDetailsRepository.save(slotTestEventDetails17);
 
         Event testEvent18 = new Event();
         testEvent18.setName("Test Created");
@@ -1343,13 +1152,8 @@ public class WitcurveResource {
         testEvent18.setDate(LocalDate.of(2018, 9, 12));
         testEvent18.setStandard(class1);
         testEvent18.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent18.setScd(slotCourseDetails18);
         testEvent18 = eventRepository.save(testEvent18);
-
-        SlotEventDetails slotTestEventDetails18 = new SlotEventDetails();
-        slotTestEventDetails18.setEvent(testEvent18);
-        slotTestEventDetails18.setScd(slotCourseDetails18);
-        slotEventDetailsRepository.save(slotTestEventDetails18);
-
 
         Event testEvent41 = new Event();
         testEvent41.setName("Test Created");
@@ -1358,12 +1162,8 @@ public class WitcurveResource {
         testEvent41.setDate(LocalDate.of(2018, 9, 14));
         testEvent41.setStandard(class1);
         testEvent41.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent41.setScd(slotCourseDetails41);
         testEvent41 = eventRepository.save(testEvent41);
-
-        SlotEventDetails slotTestEventDetails41 = new SlotEventDetails();
-        slotTestEventDetails41.setEvent(testEvent41);
-        slotTestEventDetails41.setScd(slotCourseDetails41);
-        slotEventDetailsRepository.save(slotTestEventDetails41);
 
         Event testEvent42 = new Event();
         testEvent42.setName("Test Created");
@@ -1372,12 +1172,8 @@ public class WitcurveResource {
         testEvent42.setDate(LocalDate.of(2018, 9, 14));
         testEvent42.setStandard(class1);
         testEvent42.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent42.setScd(slotCourseDetails42);
         testEvent42 = eventRepository.save(testEvent42);
-
-        SlotEventDetails slotTestEventDetails42 = new SlotEventDetails();
-        slotTestEventDetails42.setEvent(testEvent42);
-        slotTestEventDetails42.setScd(slotCourseDetails42);
-        slotEventDetailsRepository.save(slotTestEventDetails42);
 
         Event testEvent43 = new Event();
         testEvent43.setName("Test Created");
@@ -1386,13 +1182,8 @@ public class WitcurveResource {
         testEvent43.setDate(LocalDate.of(2018, 9, 14));
         testEvent43.setStandard(class1);
         testEvent43.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent43.setScd(slotCourseDetails43);
         testEvent43 = eventRepository.save(testEvent43);
-
-        SlotEventDetails slotTestEventDetails43 = new SlotEventDetails();
-        slotTestEventDetails43.setEvent(testEvent43);
-        slotTestEventDetails43.setScd(slotCourseDetails43);
-        slotEventDetailsRepository.save(slotTestEventDetails43);
-
 
         Event testEvent44 = new Event();
         testEvent44.setName("Test Created");
@@ -1401,12 +1192,8 @@ public class WitcurveResource {
         testEvent44.setDate(LocalDate.of(2018, 9, 14));
         testEvent44.setStandard(class1);
         testEvent44.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent44.setScd(slotCourseDetails44);
         testEvent44 = eventRepository.save(testEvent44);
-
-        SlotEventDetails slotTestEventDetails44 = new SlotEventDetails();
-        slotTestEventDetails44.setEvent(testEvent44);
-        slotTestEventDetails44.setScd(slotCourseDetails44);
-        slotEventDetailsRepository.save(slotTestEventDetails44);
 
         Event testEvent45 = new Event();
         testEvent45.setName("Test Created");
@@ -1415,12 +1202,8 @@ public class WitcurveResource {
         testEvent45.setDate(LocalDate.of(2018, 9, 14));
         testEvent45.setStandard(class1);
         testEvent45.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent45.setScd(slotCourseDetails45);
         testEvent45 = eventRepository.save(testEvent45);
-
-        SlotEventDetails slotTestEventDetails45 = new SlotEventDetails();
-        slotTestEventDetails45.setEvent(testEvent45);
-        slotTestEventDetails45.setScd(slotCourseDetails45);
-        slotEventDetailsRepository.save(slotTestEventDetails45);
 
         Event testEvent46 = new Event();
         testEvent46.setName("Test Created");
@@ -1429,13 +1212,8 @@ public class WitcurveResource {
         testEvent46.setDate(LocalDate.of(2018, 9, 14));
         testEvent46.setStandard(class1);
         testEvent46.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent46.setScd(slotCourseDetails46);
         testEvent46 = eventRepository.save(testEvent46);
-
-        SlotEventDetails slotTestEventDetails46 = new SlotEventDetails();
-        slotTestEventDetails46.setEvent(testEvent46);
-        slotTestEventDetails46.setScd(slotCourseDetails46);
-        slotEventDetailsRepository.save(slotTestEventDetails46);
-
 
         Event testEvent47 = new Event();
         testEvent47.setName("Test Created");
@@ -1444,13 +1222,8 @@ public class WitcurveResource {
         testEvent47.setDate(LocalDate.of(2018, 9, 14));
         testEvent47.setStandard(class1);
         testEvent47.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent47.setScd(slotCourseDetails47);
         testEvent47 = eventRepository.save(testEvent47);
-
-        SlotEventDetails slotTestEventDetails47 = new SlotEventDetails();
-        slotTestEventDetails47.setEvent(testEvent47);
-        slotTestEventDetails47.setScd(slotCourseDetails47);
-        slotEventDetailsRepository.save(slotTestEventDetails47);
-
 
         Event testEvent48 = new Event();
         testEvent48.setName("Test Created");
@@ -1459,14 +1232,8 @@ public class WitcurveResource {
         testEvent48.setDate(LocalDate.of(2018, 9, 14));
         testEvent48.setStandard(class1);
         testEvent48.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        testEvent48.setScd(slotCourseDetails48);
         testEvent48 = eventRepository.save(testEvent48);
-
-        SlotEventDetails slotTestEventDetails48 = new SlotEventDetails();
-        slotTestEventDetails48.setEvent(testEvent48);
-        slotTestEventDetails48.setScd(slotCourseDetails48);
-        slotEventDetailsRepository.save(slotTestEventDetails48);
-
-
 
         //Assignment Events created on 10, 13 and dated for 12, 14
         Event assignmentEvent11 = new Event();
@@ -1476,12 +1243,8 @@ public class WitcurveResource {
         assignmentEvent11.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent11.setStandard(class1);
         assignmentEvent11.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent11.setScd(slotCourseDetails11);
         assignmentEvent11 = eventRepository.save(assignmentEvent11);
-
-        SlotEventDetails slotAssignmentEventDetails11 = new SlotEventDetails();
-        slotAssignmentEventDetails11.setEvent(assignmentEvent11);
-        slotAssignmentEventDetails11.setScd(slotCourseDetails11);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails11);
 
         Event assignmentEvent12 = new Event();
         assignmentEvent12.setName("Assignment Created");
@@ -1490,12 +1253,8 @@ public class WitcurveResource {
         assignmentEvent12.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent12.setStandard(class1);
         assignmentEvent12.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent12.setScd(slotCourseDetails12);
         assignmentEvent12 = eventRepository.save(assignmentEvent12);
-
-        SlotEventDetails slotAssignmentEventDetails12 = new SlotEventDetails();
-        slotAssignmentEventDetails12.setEvent(assignmentEvent12);
-        slotAssignmentEventDetails12.setScd(slotCourseDetails12);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails12);
 
         Event assignmentEvent13 = new Event();
         assignmentEvent13.setName("Assignment Created");
@@ -1504,12 +1263,8 @@ public class WitcurveResource {
         assignmentEvent13.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent13.setStandard(class1);
         assignmentEvent13.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent13.setScd(slotCourseDetails13);
         assignmentEvent13 = eventRepository.save(assignmentEvent13);
-
-        SlotEventDetails slotAssignmentEventDetails13 = new SlotEventDetails();
-        slotAssignmentEventDetails13.setEvent(assignmentEvent13);
-        slotAssignmentEventDetails13.setScd(slotCourseDetails13);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails13);
 
         Event assignmentEvent14 = new Event();
         assignmentEvent14.setName("Assignment Created");
@@ -1518,12 +1273,8 @@ public class WitcurveResource {
         assignmentEvent14.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent14.setStandard(class1);
         assignmentEvent14.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent14.setScd(slotCourseDetails14);
         assignmentEvent14 = eventRepository.save(assignmentEvent14);
-
-        SlotEventDetails slotAssignmentEventDetails14 = new SlotEventDetails();
-        slotAssignmentEventDetails14.setEvent(assignmentEvent14);
-        slotAssignmentEventDetails14.setScd(slotCourseDetails14);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails14);
 
         Event assignmentEvent15 = new Event();
         assignmentEvent15.setName("Assignment Created");
@@ -1532,12 +1283,8 @@ public class WitcurveResource {
         assignmentEvent15.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent15.setStandard(class1);
         assignmentEvent15.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent15.setScd(slotCourseDetails15);
         assignmentEvent15 = eventRepository.save(assignmentEvent15);
-
-        SlotEventDetails slotAssignmentEventDetails15 = new SlotEventDetails();
-        slotAssignmentEventDetails15.setEvent(assignmentEvent15);
-        slotAssignmentEventDetails15.setScd(slotCourseDetails15);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails15);
 
         Event assignmentEvent16 = new Event();
         assignmentEvent16.setName("Assignment Created");
@@ -1546,12 +1293,8 @@ public class WitcurveResource {
         assignmentEvent16.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent16.setStandard(class1);
         assignmentEvent16.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent16.setScd(slotCourseDetails16);
         assignmentEvent16 = eventRepository.save(assignmentEvent16);
-
-        SlotEventDetails slotAssignmentEventDetails16 = new SlotEventDetails();
-        slotAssignmentEventDetails16.setEvent(assignmentEvent16);
-        slotAssignmentEventDetails16.setScd(slotCourseDetails16);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails16);
 
         Event assignmentEvent17 = new Event();
         assignmentEvent17.setName("Assignment Created");
@@ -1560,12 +1303,8 @@ public class WitcurveResource {
         assignmentEvent17.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent17.setStandard(class1);
         assignmentEvent17.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent17.setScd(slotCourseDetails17);
         assignmentEvent17 = eventRepository.save(assignmentEvent17);
-
-        SlotEventDetails slotAssignmentEventDetails17 = new SlotEventDetails();
-        slotAssignmentEventDetails17.setEvent(assignmentEvent17);
-        slotAssignmentEventDetails17.setScd(slotCourseDetails17);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails17);
 
         Event assignmentEvent18 = new Event();
         assignmentEvent18.setName("Assignment Created");
@@ -1574,12 +1313,8 @@ public class WitcurveResource {
         assignmentEvent18.setDate(LocalDate.of(2018, 9, 12));
         assignmentEvent18.setStandard(class1);
         assignmentEvent18.setCreatedDate(LocalDate.of(2018, 9, 10).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent18.setScd(slotCourseDetails18);
         assignmentEvent18 = eventRepository.save(assignmentEvent18);
-
-        SlotEventDetails slotAssignmentEventDetails18 = new SlotEventDetails();
-        slotAssignmentEventDetails18.setEvent(assignmentEvent18);
-        slotAssignmentEventDetails18.setScd(slotCourseDetails18);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails18);
 
 
         Event assignmentEvent41 = new Event();
@@ -1589,12 +1324,8 @@ public class WitcurveResource {
         assignmentEvent41.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent41.setStandard(class1);
         assignmentEvent41.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent41.setScd(slotCourseDetails41);
         assignmentEvent41 = eventRepository.save(assignmentEvent41);
-
-        SlotEventDetails slotAssignmentEventDetails41 = new SlotEventDetails();
-        slotAssignmentEventDetails41.setEvent(assignmentEvent41);
-        slotAssignmentEventDetails41.setScd(slotCourseDetails41);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails41);
 
         Event assignmentEvent42 = new Event();
         assignmentEvent42.setName("Assignment Created");
@@ -1603,12 +1334,8 @@ public class WitcurveResource {
         assignmentEvent42.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent42.setStandard(class1);
         assignmentEvent42.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent42.setScd(slotCourseDetails42);
         assignmentEvent42 = eventRepository.save(assignmentEvent42);
-
-        SlotEventDetails slotAssignmentEventDetails42 = new SlotEventDetails();
-        slotAssignmentEventDetails42.setEvent(assignmentEvent42);
-        slotAssignmentEventDetails42.setScd(slotCourseDetails42);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails42);
 
         Event assignmentEvent43 = new Event();
         assignmentEvent43.setName("Assignment Created");
@@ -1617,12 +1344,8 @@ public class WitcurveResource {
         assignmentEvent43.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent43.setStandard(class1);
         assignmentEvent43.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent43.setScd(slotCourseDetails43);
         assignmentEvent43 = eventRepository.save(assignmentEvent43);
-
-        SlotEventDetails slotAssignmentEventDetails43 = new SlotEventDetails();
-        slotAssignmentEventDetails43.setEvent(assignmentEvent43);
-        slotAssignmentEventDetails43.setScd(slotCourseDetails43);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails43);
 
 
         Event assignmentEvent44 = new Event();
@@ -1632,12 +1355,8 @@ public class WitcurveResource {
         assignmentEvent44.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent44.setStandard(class1);
         assignmentEvent44.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent44.setScd(slotCourseDetails44);
         assignmentEvent44 = eventRepository.save(assignmentEvent44);
-
-        SlotEventDetails slotAssignmentEventDetails44 = new SlotEventDetails();
-        slotAssignmentEventDetails44.setEvent(assignmentEvent44);
-        slotAssignmentEventDetails44.setScd(slotCourseDetails44);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails44);
 
         Event assignmentEvent45 = new Event();
         assignmentEvent45.setName("Assignment Created");
@@ -1646,12 +1365,8 @@ public class WitcurveResource {
         assignmentEvent45.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent45.setStandard(class1);
         assignmentEvent45.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent45.setScd(slotCourseDetails45);
         assignmentEvent45 = eventRepository.save(assignmentEvent45);
-
-        SlotEventDetails slotAssignmentEventDetails45 = new SlotEventDetails();
-        slotAssignmentEventDetails45.setEvent(assignmentEvent45);
-        slotAssignmentEventDetails45.setScd(slotCourseDetails45);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails45);
 
         Event assignmentEvent46 = new Event();
         assignmentEvent46.setName("Assignment Created");
@@ -1660,13 +1375,8 @@ public class WitcurveResource {
         assignmentEvent46.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent46.setStandard(class1);
         assignmentEvent46.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent46.setScd(slotCourseDetails46);
         assignmentEvent46 = eventRepository.save(assignmentEvent46);
-
-        SlotEventDetails slotAssignmentEventDetails46 = new SlotEventDetails();
-        slotAssignmentEventDetails46.setEvent(assignmentEvent46);
-        slotAssignmentEventDetails46.setScd(slotCourseDetails46);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails46);
-
 
         Event assignmentEvent47 = new Event();
         assignmentEvent47.setName("Assignment Created");
@@ -1675,13 +1385,8 @@ public class WitcurveResource {
         assignmentEvent47.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent47.setStandard(class1);
         assignmentEvent47.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent47.setScd(slotCourseDetails47);
         assignmentEvent47 = eventRepository.save(assignmentEvent47);
-
-        SlotEventDetails slotAssignmentEventDetails47 = new SlotEventDetails();
-        slotAssignmentEventDetails47.setEvent(assignmentEvent47);
-        slotAssignmentEventDetails47.setScd(slotCourseDetails47);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails47);
-
 
         Event assignmentEvent48 = new Event();
         assignmentEvent48.setName("Assignment Created");
@@ -1690,16 +1395,8 @@ public class WitcurveResource {
         assignmentEvent48.setDate(LocalDate.of(2018, 9, 14));
         assignmentEvent48.setStandard(class1);
         assignmentEvent48.setCreatedDate(LocalDate.of(2018, 9, 13).atStartOfDay().toInstant(ZoneOffset.UTC));
+        assignmentEvent48.setScd(slotCourseDetails48);
         assignmentEvent48 = eventRepository.save(assignmentEvent48);
-
-        SlotEventDetails slotAssignmentEventDetails48 = new SlotEventDetails();
-        slotAssignmentEventDetails48.setEvent(assignmentEvent48);
-        slotAssignmentEventDetails48.setScd(slotCourseDetails48);
-        slotEventDetailsRepository.save(slotAssignmentEventDetails48);
-
-
-
-
 
     }
 
