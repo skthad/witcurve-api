@@ -1,21 +1,24 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.GeneralSlotDetails;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.util.Objects;
 
 public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
     @NotNull
-    private Long gsdId;
+    private GeneralSlotDetailsDTO gsd;
 
     @NotNull
     private DayOfWeek dayOfWeek;
 
     @NotNull
-    private Long courseId;
+    private CourseDTO course;
 
     public Long getId() {
         return id;
@@ -25,15 +28,13 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
         this.id = id;
     }
 
-    @NotNull
-    public Long getGsdId() {
-        return gsdId;
+    public GeneralSlotDetailsDTO getGsd() {
+        return gsd;
     }
 
-    public void setGsdId(@NotNull Long gsdId) {
-        this.gsdId = gsdId;
+    public void setGsd(GeneralSlotDetailsDTO gsd) {
+        this.gsd = gsd;
     }
-
     @NotNull
     public DayOfWeek getDayOfWeek() {
         return dayOfWeek;
@@ -44,13 +45,36 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     }
 
     @NotNull
-    public Long getCourseId() {
-        return courseId;
+
+    public CourseDTO getCourse() {
+        return course;
     }
 
-    public void setCourseId(@NotNull Long courseId) {
-        this.courseId = courseId;
+    public void setCourse(CourseDTO course) {
+        this.course = course;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SlotCourseDetailsDTO that = (SlotCourseDetailsDTO) o;
+        return Objects.equals(id, that.id);
+    }
 
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "SlotCourseDetailsDTO{" +
+            "id=" + id +
+            ", gsd=" + gsd +
+            ", dayOfWeek=" + dayOfWeek +
+            ", course=" + course +
+            '}';
+    }
 }

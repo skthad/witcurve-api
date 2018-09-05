@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.witcurve.service.util.WitcurveUtil.getLocalDate;
@@ -102,15 +104,38 @@ public class EventResource {
     /**
      *
      * @param eventDate
-     * @param schoolId
+     * @param month
+     * @param studentId
      * @return
      */
-    @GetMapping("/event/school/{schoolId}")
+    @GetMapping("/event/student/{studentId}")
     @Timed
-    public ResponseEntity<List<EventDTO>> getAllEventsOnGivenDate(@RequestParam("eventDate") String eventDate, @PathVariable Long schoolId) {
-        log.debug("Request to get events on given date");
-        LocalDate date = getLocalDate(eventDate);
-        List<EventDTO> events = eventService.findAllEventsOnGivenDate(date, schoolId);
-        return new ResponseEntity<>(events,  HttpStatus.OK);
+    public ResponseEntity<List<EventDTO>> getAllEventsForStudent(
+        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @RequestParam(value = "month", required = false) Integer month,
+        @RequestParam(value = "year", required = false) Integer year,
+        @RequestParam(value = "type") ViewType type,
+        @PathVariable Long studentId) {
+        log.debug("Request to get events on given date : {} for student with id : {}", eventDate, studentId);
+
+        //add null checks later and change log statement
+        List<EventDTO> result = new ArrayList<>();
+        if(type.equals(ViewType.DAY)) {
+            if(eventDate == null) {
+                //throw error
+            }
+            LocalDate date = getLocalDate(eventDate);
+            result = eventService.findAllEventsOnGivenDateForStudent(date, studentId);
+        }
+        if(type.equals(ViewType.MONTH)) {
+            if(month == null || year ==null) {
+               // throw error
+            }
+            result = eventService.findAllEventsOnGivenMonthForStudent(month, year, studentId);
+        }
+
+        return new ResponseEntity<>(result,  HttpStatus.OK);
     }
+
+
 }

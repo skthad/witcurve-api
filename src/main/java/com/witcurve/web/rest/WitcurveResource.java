@@ -41,6 +41,9 @@ public class WitcurveResource {
     private CourseTeacherRepository courseTeacherRepository;
 
     @Autowired
+    private StudentClassRepository studentClassRepository;
+
+    @Autowired
     private GuardianRepository guardianRepository;
 
     @Autowired
@@ -369,6 +372,11 @@ public class WitcurveResource {
         g1.setStudent(student1);
 
         guardianRepository.save(g1);
+
+        StudentClass studentClass = new StudentClass();
+        studentClass.setStandard(class1);
+        studentClass.setStudent(student1);
+        studentClass = studentClassRepository.save(studentClass);
 
         //exam data
         Exam exam1 = new Exam();
@@ -699,7 +707,6 @@ public class WitcurveResource {
         slotCourseDetails57.setGsd(gsd7);
         slotCourseDetails57.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails57 = slotCourseDetailsRepository.save(slotCourseDetails57);
-
 
         SlotCourseDetails slotCourseDetails58 = new SlotCourseDetails();
         slotCourseDetails58.setCourse(course8);
@@ -1546,7 +1553,7 @@ public class WitcurveResource {
         //Exam Events for Holidays
         Event holidayEvent1 = new Event();
         holidayEvent1.setName("Holiday 1");
-        holidayEvent1.setDescription("This is a holiday, get your asses out of school");
+        holidayEvent1.setDescription("This is a holiday, get your asses out of the school");
         holidayEvent1.setType(EventType.HOLIDAY);
         holidayEvent1.setDate(LocalDate.of(2018, 9, 24));
         holidayEvent1.setAcademicSession(academicSession1);
@@ -1554,7 +1561,7 @@ public class WitcurveResource {
 
         Event holidayEvent2 = new Event();
         holidayEvent2.setName("Holiday 2");
-        holidayEvent2.setDescription("This is a holiday, get your asses out of school");
+        holidayEvent2.setDescription("This is a holiday, get your asses out of the school");
         holidayEvent2.setType(EventType.HOLIDAY);
         holidayEvent2.setDate(LocalDate.of(2018, 9, 26));
         holidayEvent2.setAcademicSession(academicSession1);
@@ -1562,11 +1569,39 @@ public class WitcurveResource {
 
         Event holidayEvent3 = new Event();
         holidayEvent3.setName("Holiday 3");
-        holidayEvent3.setDescription("This is a holiday, get your asses out of school");
+        holidayEvent3.setDescription("This is a holiday, get your asses out of the school");
         holidayEvent3.setType(EventType.HOLIDAY);
         holidayEvent3.setDate(LocalDate.of(2018, 9, 28));
         holidayEvent3.setAcademicSession(academicSession1);
         holidayEvent3 = eventRepository.save(holidayEvent3);
+
+        //Exam Events for Holidays
+        Event leaveEvent1 = new Event();
+        leaveEvent1.setName("Leave 1");
+        leaveEvent1.setDescription("This is a leave, get your indiscipline asses out of the school");
+        leaveEvent1.setType(EventType.HOLIDAY);
+        leaveEvent1.setDate(LocalDate.of(2018, 9, 25));
+        leaveEvent1.setStudent(student1);
+        leaveEvent1.setAcademicSession(academicSession1);
+        leaveEvent1 = eventRepository.save(leaveEvent1);
+
+        Event leaveEvent2 = new Event();
+        leaveEvent2.setName("Leave 2");
+        leaveEvent2.setDescription("This is a leave, get your indiscipline asses out of the school");
+        leaveEvent2.setType(EventType.HOLIDAY);
+        leaveEvent2.setDate(LocalDate.of(2018, 9, 27));
+        leaveEvent2.setStudent(student1);
+        leaveEvent2.setAcademicSession(academicSession1);
+        leaveEvent2 = eventRepository.save(leaveEvent2);
+
+        Event leaveEvent3 = new Event();
+        leaveEvent3.setName("Leave 3");
+        leaveEvent3.setDescription("This is a leave, get your indiscipline asses out of the school");
+        leaveEvent3.setType(EventType.HOLIDAY);
+        leaveEvent3.setDate(LocalDate.of(2018, 9, 29));
+        leaveEvent3.setStudent(student1);
+        leaveEvent3.setAcademicSession(academicSession1);
+        leaveEvent3 = eventRepository.save(leaveEvent3);
 
 
     }

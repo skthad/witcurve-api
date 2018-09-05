@@ -13,13 +13,11 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(source = "standardId", target = "standard")
     @Mapping(source = "staffId", target = "staff")
     @Mapping(source = "studentId", target = "student")
-    @Mapping(source = "scdId", target = "scd")
     Event toEntity(EventDTO eventDTO);
 
     @Mapping(target = "academicSessionId", source = "academicSession.id")
     @Mapping(target = "standardId", source = "standard.id")
     @Mapping(target = "staffId", source = "staff.id")
     @Mapping(target = "studentId", source = "student.id")
-    @Mapping(target = "scdId", source = "scd.id")
     EventDTO toDto(Event event);
 }
