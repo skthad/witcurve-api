@@ -1,7 +1,11 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Event;
+import com.witcurve.domain.StudentClass;
+import com.witcurve.domain.enumeration.EventType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.EventRepository;
+import com.witcurve.repository.StudentClassRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +31,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     EventMapper eventMapper;
+
+    @Autowired
+    StudentClassRepository studentClassRepository;
 
 
     @Override
@@ -59,10 +67,30 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllEventsOnGivenDate(LocalDate eventDate, Long schoolId) {
-        log.debug("Request to get tests with eventDate : {} and schoolId : {}", eventDate, schoolId);
-//        List<Event> eventsOnGivenDate = eventRepository.findEventsByEventDateAndSchoolId(eventDate, schoolId);
-//        return eventMapper.eventsToEventDTOs(eventsOnGivenDate);
-        return null;
+    public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) {
+        log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
+        // need to get Events of type DailyUpdate, Test, Assignment, Holiday, Leave, SchoolEvent
+        // null checks
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
+
+        List<Event> events = eventRepository.findEventsByDate(eventDate, studentId, classId, grade, sessionId);
+
+        return eventMapper.toDto(events);
+    }
+
+    @Override
+    public List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) {
+        log.debug("Request to get tests with month : {} of year : {} or student with id : {}", month, year, studentId);
+        // need to get Events of type Holiday, Leave, Exam, SchoolEvent
+        // null checks
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
+        LocalDate monthStart = LocalDate.of(year,month,1);
+        LocalDate monthEnd = monthStart.plusMonths(1).withDayOfMonth(month).minusDays(1);
+        List<Event> events = eventRepository.findEventsDuringMonth(monthStart, monthEnd, sessionId);
+        return eventMapper.toDto(events);
     }
 }

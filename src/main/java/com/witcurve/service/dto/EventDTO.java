@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 
@@ -41,7 +42,7 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Long academicSessionId;
 
-    private Long scdId;
+    private SlotCourseDetailsDTO scd;
 
     @Column(name = "binding_id")
     private String bindingId;
@@ -145,12 +146,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.academicSessionId = academicSessionId;
     }
 
-    public Long getScdId() {
-        return scdId;
+    public SlotCourseDetailsDTO getScd() {
+        return scd;
     }
 
-    public void setScdId(Long scdId) {
-        this.scdId = scdId;
+    public void setScd(SlotCourseDetailsDTO scd) {
+        this.scd = scd;
     }
 
     public String getBindingId() {
@@ -197,7 +198,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", staffId=" + staffId +
             ", grade=" + grade +
             ", academicSessionId=" + academicSessionId +
-            ", scdId=" + scdId +
+            ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             '}';
