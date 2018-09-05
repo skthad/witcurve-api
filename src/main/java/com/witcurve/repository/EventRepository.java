@@ -23,7 +23,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         " order by e.scd.gsd.start asc")
     List<Event> findEventsByDate(LocalDate date, Long studentId, Long classId, Grade grade, Long sessionId);
 
-    @Query("Select e from Event e where e.date between ?1 and ?2 and (e.type = 'LEAVE' or e.type = 'EXAM' or e.type = 'HOLIDAY' or e.type = 'SCHOOL_EVENT') and e.academicSession.id=?3")
+    @Query("Select e from Event e where e.date between ?1 and ?2 and (e.type = 'LEAVE' or e.type = 'EXAM' or e.type = 'HOLIDAY' or e.type = 'SCHOOL_EVENT') and e.academicSession.id=?3 order by e.date asc")
     List<Event> findEventsDuringMonth(LocalDate monthStart, LocalDate monthEnd, Long sessionId);
 }
 
