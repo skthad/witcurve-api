@@ -17,4 +17,6 @@ public interface EventService {
     List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId);
 
     List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId);
+
+    List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId);
 }

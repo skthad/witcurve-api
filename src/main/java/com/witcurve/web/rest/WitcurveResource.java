@@ -720,7 +720,8 @@ public class WitcurveResource {
         event11.setName("Daily Update");
         event11.setDescription("This is a daily update for today's class");
         event11.setType(EventType.DAILY_UPDATE);
-        event11.setDate(LocalDate.of(2018, 9, 17));
+        event11.setPostedDate(LocalDate.of(2018, 9, 17));
+        event11.setEventDate(LocalDate.of(2018, 9, 17));
         event11.setStandard(class1);
         event11.setScd(slotCourseDetails11);
         event11 = eventRepository.save(event11);
@@ -729,7 +730,8 @@ public class WitcurveResource {
         event12.setName("Daily Update");
         event12.setDescription("This is a daily update for today's class");
         event12.setType(EventType.DAILY_UPDATE);
-        event12.setDate(LocalDate.of(2018, 9, 17));
+        event12.setEventDate(LocalDate.of(2018, 9, 17));
+        event12.setPostedDate(LocalDate.of(2018, 9, 17));
         event12.setStandard(class1);
         event12.setScd(slotCourseDetails12);
         event12 = eventRepository.save(event12);
@@ -738,7 +740,8 @@ public class WitcurveResource {
         event13.setName("Daily Update");
         event13.setDescription("This is a daily update for today's class");
         event13.setType(EventType.DAILY_UPDATE);
-        event13.setDate(LocalDate.of(2018, 9, 17));
+        event13.setEventDate(LocalDate.of(2018, 9, 17));
+        event13.setPostedDate(LocalDate.of(2018, 9, 17));
         event13.setStandard(class1);
         event13.setScd(slotCourseDetails13);
         event13 = eventRepository.save(event13);
@@ -747,7 +750,8 @@ public class WitcurveResource {
         event14.setName("Daily Update");
         event14.setDescription("This is a daily update for today's class");
         event14.setType(EventType.DAILY_UPDATE);
-        event14.setDate(LocalDate.of(2018, 9, 17));
+        event14.setEventDate(LocalDate.of(2018, 9, 17));
+        event14.setPostedDate(LocalDate.of(2018, 9, 17));
         event14.setStandard(class1);
         event14.setScd(slotCourseDetails14);
         event14 = eventRepository.save(event14);
@@ -756,7 +760,8 @@ public class WitcurveResource {
         event15.setName("Daily Update");
         event15.setDescription("This is a daily update for today's class");
         event15.setType(EventType.DAILY_UPDATE);
-        event15.setDate(LocalDate.of(2018, 9, 17));
+        event15.setEventDate(LocalDate.of(2018, 9, 17));
+        event15.setPostedDate(LocalDate.of(2018, 9, 17));
         event15.setStandard(class1);
         event15.setScd(slotCourseDetails15);
         event15 = eventRepository.save(event15);
@@ -765,7 +770,8 @@ public class WitcurveResource {
         event16.setName("Daily Update");
         event16.setDescription("This is a daily update for today's class");
         event16.setType(EventType.DAILY_UPDATE);
-        event16.setDate(LocalDate.of(2018, 9, 17));
+        event16.setEventDate(LocalDate.of(2018, 9, 17));
+        event16.setPostedDate(LocalDate.of(2018, 9, 17));
         event16.setStandard(class1);
         event16.setScd(slotCourseDetails16);
         event16 = eventRepository.save(event16);
@@ -774,7 +780,8 @@ public class WitcurveResource {
         event17.setName("Daily Update");
         event17.setDescription("This is a daily update for today's class");
         event17.setType(EventType.DAILY_UPDATE);
-        event17.setDate(LocalDate.of(2018, 9, 17));
+        event17.setEventDate(LocalDate.of(2018, 9, 17));
+        event17.setPostedDate(LocalDate.of(2018, 9, 17));
         event17.setStandard(class1);
         event17.setScd(slotCourseDetails17);
         event17 = eventRepository.save(event17);
@@ -783,7 +790,8 @@ public class WitcurveResource {
         event18.setName("Daily Update");
         event18.setDescription("This is a daily update for today's class");
         event18.setType(EventType.DAILY_UPDATE);
-        event18.setDate(LocalDate.of(2018, 9, 17));
+        event18.setEventDate(LocalDate.of(2018, 9, 17));
+        event18.setPostedDate(LocalDate.of(2018, 9, 17));
         event18.setStandard(class1);
         event18.setScd(slotCourseDetails18);
         event18 = eventRepository.save(event18);
@@ -793,7 +801,8 @@ public class WitcurveResource {
         event21.setName("Daily Update");
         event21.setDescription("This is a daily update for today's class");
         event21.setType(EventType.DAILY_UPDATE);
-        event21.setDate(LocalDate.of(2018, 9, 18));
+        event21.setEventDate(LocalDate.of(2018, 9, 18));
+        event21.setPostedDate(LocalDate.of(2018, 9, 18));
         event21.setStandard(class1);
         event21.setScd(slotCourseDetails21);
         event21 = eventRepository.save(event21);
@@ -802,7 +811,8 @@ public class WitcurveResource {
         event22.setName("Daily Update");
         event22.setDescription("This is a daily update for today's class");
         event22.setType(EventType.DAILY_UPDATE);
-        event22.setDate(LocalDate.of(2018, 9, 18));
+        event22.setEventDate(LocalDate.of(2018, 9, 18));
+        event22.setPostedDate(LocalDate.of(2018, 9, 18));
         event22.setStandard(class1);
         event22.setScd(slotCourseDetails22);
         event22 = eventRepository.save(event22);
@@ -811,7 +821,8 @@ public class WitcurveResource {
         event23.setName("Daily Update");
         event23.setDescription("This is a daily update for today's class");
         event23.setType(EventType.DAILY_UPDATE);
-        event23.setDate(LocalDate.of(2018, 9, 18));
+        event23.setEventDate(LocalDate.of(2018, 9, 18));
+        event23.setPostedDate(LocalDate.of(2018, 9, 18));
         event23.setStandard(class1);
         event23.setScd(slotCourseDetails23);
         event23 = eventRepository.save(event23);
@@ -820,7 +831,8 @@ public class WitcurveResource {
         event24.setName("Daily Update");
         event24.setDescription("This is a daily update for today's class");
         event24.setType(EventType.DAILY_UPDATE);
-        event24.setDate(LocalDate.of(2018, 9, 18));
+        event24.setEventDate(LocalDate.of(2018, 9, 18));
+        event24.setPostedDate(LocalDate.of(2018, 9, 18));
         event24.setStandard(class1);
         event24.setScd(slotCourseDetails24);
         event24 = eventRepository.save(event24);
@@ -829,7 +841,8 @@ public class WitcurveResource {
         event25.setName("Daily Update");
         event25.setDescription("This is a daily update for today's class");
         event25.setType(EventType.DAILY_UPDATE);
-        event25.setDate(LocalDate.of(2018, 9, 18));
+        event25.setEventDate(LocalDate.of(2018, 9, 18));
+        event25.setPostedDate(LocalDate.of(2018, 9, 18));
         event25.setStandard(class1);
         event25.setScd(slotCourseDetails25);
         event25 = eventRepository.save(event25);
@@ -838,7 +851,8 @@ public class WitcurveResource {
         event26.setName("Daily Update");
         event26.setDescription("This is a daily update for today's class");
         event26.setType(EventType.DAILY_UPDATE);
-        event26.setDate(LocalDate.of(2018, 9, 18));
+        event26.setEventDate(LocalDate.of(2018, 9, 18));
+        event26.setPostedDate(LocalDate.of(2018, 9, 18));
         event26.setStandard(class1);
         event26.setScd(slotCourseDetails26);
         event26 = eventRepository.save(event26);
@@ -847,7 +861,8 @@ public class WitcurveResource {
         event27.setName("Daily Update");
         event27.setDescription("This is a daily update for today's class");
         event27.setType(EventType.DAILY_UPDATE);
-        event27.setDate(LocalDate.of(2018, 9, 18));
+        event27.setEventDate(LocalDate.of(2018, 9, 18));
+        event27.setPostedDate(LocalDate.of(2018, 9, 18));
         event27.setStandard(class1);
         event27.setScd(slotCourseDetails27);
         event27 = eventRepository.save(event27);
@@ -856,7 +871,8 @@ public class WitcurveResource {
         event28.setName("Daily Update");
         event28.setDescription("This is a daily update for today's class");
         event28.setType(EventType.DAILY_UPDATE);
-        event28.setDate(LocalDate.of(2018, 9, 18));
+        event28.setEventDate(LocalDate.of(2018, 9, 18));
+        event28.setPostedDate(LocalDate.of(2018, 9, 18));
         event28.setStandard(class1);
         event28.setScd(slotCourseDetails28);
         event28 = eventRepository.save(event28);
@@ -866,7 +882,8 @@ public class WitcurveResource {
         event31.setName("Daily Update");
         event31.setDescription("This is a daily update for today's class");
         event31.setType(EventType.DAILY_UPDATE);
-        event31.setDate(LocalDate.of(2018, 9, 19));
+        event31.setEventDate(LocalDate.of(2018, 9, 19));
+        event31.setPostedDate(LocalDate.of(2018, 9, 19));
         event31.setStandard(class1);
         event31.setScd(slotCourseDetails31);
         event31 = eventRepository.save(event31);
@@ -875,7 +892,8 @@ public class WitcurveResource {
         event32.setName("Daily Update");
         event32.setDescription("This is a daily update for today's class");
         event32.setType(EventType.DAILY_UPDATE);
-        event32.setDate(LocalDate.of(2018, 9, 19));
+        event32.setEventDate(LocalDate.of(2018, 9, 19));
+        event32.setPostedDate(LocalDate.of(2018, 9, 19));
         event32.setStandard(class1);
         event32.setScd(slotCourseDetails32);
         event32 = eventRepository.save(event32);
@@ -884,7 +902,8 @@ public class WitcurveResource {
         event33.setName("Daily Update");
         event33.setDescription("This is a daily update for today's class");
         event33.setType(EventType.DAILY_UPDATE);
-        event33.setDate(LocalDate.of(2018, 9, 19));
+        event33.setEventDate(LocalDate.of(2018, 9, 19));
+        event33.setPostedDate(LocalDate.of(2018, 9, 19));
         event33.setStandard(class1);
         event33.setScd(slotCourseDetails33);
         event33 = eventRepository.save(event33);
@@ -893,7 +912,8 @@ public class WitcurveResource {
         event34.setName("Daily Update");
         event34.setDescription("This is a daily update for today's class");
         event34.setType(EventType.DAILY_UPDATE);
-        event34.setDate(LocalDate.of(2018, 9, 19));
+        event34.setEventDate(LocalDate.of(2018, 9, 19));
+        event34.setPostedDate(LocalDate.of(2018, 9, 19));
         event34.setStandard(class1);
         event34.setScd(slotCourseDetails34);
         event34 = eventRepository.save(event34);
@@ -902,7 +922,8 @@ public class WitcurveResource {
         event35.setName("Daily Update");
         event35.setDescription("This is a daily update for today's class");
         event35.setType(EventType.DAILY_UPDATE);
-        event35.setDate(LocalDate.of(2018, 9, 19));
+        event35.setEventDate(LocalDate.of(2018, 9, 19));
+        event35.setPostedDate(LocalDate.of(2018, 9, 19));
         event35.setStandard(class1);
         event35.setScd(slotCourseDetails35);
         event35 = eventRepository.save(event35);
@@ -911,7 +932,8 @@ public class WitcurveResource {
         event36.setName("Daily Update");
         event36.setDescription("This is a daily update for today's class");
         event36.setType(EventType.DAILY_UPDATE);
-        event36.setDate(LocalDate.of(2018, 9, 19));
+        event36.setEventDate(LocalDate.of(2018, 9, 19));
+        event36.setPostedDate(LocalDate.of(2018, 9, 19));
         event36.setStandard(class1);
         event36.setScd(slotCourseDetails36);
         event36 = eventRepository.save(event36);
@@ -920,7 +942,8 @@ public class WitcurveResource {
         event37.setName("Daily Update");
         event37.setDescription("This is a daily update for today's class");
         event37.setType(EventType.DAILY_UPDATE);
-        event37.setDate(LocalDate.of(2018, 9, 19));
+        event37.setEventDate(LocalDate.of(2018, 9, 19));
+        event37.setPostedDate(LocalDate.of(2018, 9, 19));
         event37.setStandard(class1);
         event37.setScd(slotCourseDetails37);
         event37 = eventRepository.save(event37);
@@ -929,7 +952,8 @@ public class WitcurveResource {
         event38.setName("Daily Update");
         event38.setDescription("This is a daily update for today's class");
         event38.setType(EventType.DAILY_UPDATE);
-        event38.setDate(LocalDate.of(2018, 9, 19));
+        event38.setEventDate(LocalDate.of(2018, 9, 19));
+        event38.setPostedDate(LocalDate.of(2018, 9, 19));
         event38.setStandard(class1);
         event38.setScd(slotCourseDetails38);
         event38 = eventRepository.save(event38);
@@ -939,7 +963,8 @@ public class WitcurveResource {
         event41.setName("Daily Update");
         event41.setDescription("This is a daily update for today's class");
         event41.setType(EventType.DAILY_UPDATE);
-        event41.setDate(LocalDate.of(2018, 9, 20));
+        event41.setEventDate(LocalDate.of(2018, 9, 20));
+        event41.setPostedDate(LocalDate.of(2018, 9, 20));
         event41.setStandard(class1);
         event41.setScd(slotCourseDetails41);
         event41 = eventRepository.save(event41);
@@ -948,7 +973,8 @@ public class WitcurveResource {
         event42.setName("Daily Update");
         event42.setDescription("This is a daily update for today's class");
         event42.setType(EventType.DAILY_UPDATE);
-        event42.setDate(LocalDate.of(2018, 9, 20));
+        event42.setEventDate(LocalDate.of(2018, 9, 20));
+        event42.setPostedDate(LocalDate.of(2018, 9, 20));
         event42.setStandard(class1);
         event42.setScd(slotCourseDetails42);
         event42= eventRepository.save(event42);
@@ -957,7 +983,8 @@ public class WitcurveResource {
         event43.setName("Daily Update");
         event43.setDescription("This is a daily update for today's class");
         event43.setType(EventType.DAILY_UPDATE);
-        event43.setDate(LocalDate.of(2018, 9, 20));
+        event43.setEventDate(LocalDate.of(2018, 9, 20));
+        event43.setPostedDate(LocalDate.of(2018, 9, 20));
         event43.setStandard(class1);
         event43.setScd(slotCourseDetails43);
         event43 = eventRepository.save(event43);
@@ -966,7 +993,8 @@ public class WitcurveResource {
         event44.setName("Daily Update");
         event44.setDescription("This is a daily update for today's class");
         event44.setType(EventType.DAILY_UPDATE);
-        event44.setDate(LocalDate.of(2018, 9, 20));
+        event44.setEventDate(LocalDate.of(2018, 9, 20));
+        event44.setPostedDate(LocalDate.of(2018, 9, 20));
         event44.setStandard(class1);
         event44.setScd(slotCourseDetails44);
         event44= eventRepository.save(event44);
@@ -975,7 +1003,8 @@ public class WitcurveResource {
         event45.setName("Daily Update");
         event45.setDescription("This is a daily update for today's class");
         event45.setType(EventType.DAILY_UPDATE);
-        event45.setDate(LocalDate.of(2018, 9, 20));
+        event45.setEventDate(LocalDate.of(2018, 9, 20));
+        event45.setPostedDate(LocalDate.of(2018, 9, 20));
         event45.setStandard(class1);
         event45.setScd(slotCourseDetails45);
         event45= eventRepository.save(event45);
@@ -984,7 +1013,8 @@ public class WitcurveResource {
         event46.setName("Daily Update");
         event46.setDescription("This is a daily update for today's class");
         event46.setType(EventType.DAILY_UPDATE);
-        event46.setDate(LocalDate.of(2018, 9, 20));
+        event46.setEventDate(LocalDate.of(2018, 9, 20));
+        event46.setPostedDate(LocalDate.of(2018, 9, 20));
         event46.setStandard(class1);
         event46.setScd(slotCourseDetails46);
         event46= eventRepository.save(event46);
@@ -993,7 +1023,8 @@ public class WitcurveResource {
         event47.setName("Daily Update");
         event47.setDescription("This is a daily update for today's class");
         event47.setType(EventType.DAILY_UPDATE);
-        event47.setDate(LocalDate.of(2018, 9, 20));
+        event47.setEventDate(LocalDate.of(2018, 9, 20));
+        event47.setPostedDate(LocalDate.of(2018, 9, 20));
         event47.setStandard(class1);
         event47.setScd(slotCourseDetails47);
         event47= eventRepository.save(event47);
@@ -1002,7 +1033,8 @@ public class WitcurveResource {
         event48.setName("Daily Update");
         event48.setDescription("This is a daily update for today's class");
         event48.setType(EventType.DAILY_UPDATE);
-        event48.setDate(LocalDate.of(2018, 9, 20));
+        event48.setEventDate(LocalDate.of(2018, 9, 20));
+        event48.setPostedDate(LocalDate.of(2018, 9, 20));
         event48.setStandard(class1);
         event48.setScd(slotCourseDetails48);
         event48 = eventRepository.save(event48);
@@ -1012,7 +1044,8 @@ public class WitcurveResource {
         event51.setName("Daily Update");
         event51.setDescription("This is a daily update for today's class");
         event51.setType(EventType.DAILY_UPDATE);
-        event51.setDate(LocalDate.of(2018, 9, 21));
+        event51.setEventDate(LocalDate.of(2018, 9, 21));
+        event51.setPostedDate(LocalDate.of(2018, 9, 21));
         event51.setStandard(class1);
         event51.setScd(slotCourseDetails51);
         event51 = eventRepository.save(event51);
@@ -1021,7 +1054,8 @@ public class WitcurveResource {
         event52.setName("Daily Update");
         event52.setDescription("This is a daily update for today's class");
         event52.setType(EventType.DAILY_UPDATE);
-        event52.setDate(LocalDate.of(2018, 9, 21));
+        event52.setEventDate(LocalDate.of(2018, 9, 21));
+        event52.setPostedDate(LocalDate.of(2018, 9, 21));
         event52.setStandard(class1);
         event52.setScd(slotCourseDetails52);
         event52 = eventRepository.save(event52);
@@ -1030,7 +1064,8 @@ public class WitcurveResource {
         event53.setName("Daily Update");
         event53.setDescription("This is a daily update for today's class");
         event53.setType(EventType.DAILY_UPDATE);
-        event53.setDate(LocalDate.of(2018, 9, 21));
+        event53.setEventDate(LocalDate.of(2018, 9, 21));
+        event53.setPostedDate(LocalDate.of(2018, 9, 21));
         event53.setStandard(class1);
         event53.setScd(slotCourseDetails53);
         event53 = eventRepository.save(event53);
@@ -1039,7 +1074,8 @@ public class WitcurveResource {
         event54.setName("Daily Update");
         event54.setDescription("This is a daily update for today's class");
         event54.setType(EventType.DAILY_UPDATE);
-        event54.setDate(LocalDate.of(2018, 9, 21));
+        event54.setEventDate(LocalDate.of(2018, 9, 21));
+        event54.setPostedDate(LocalDate.of(2018, 9, 21));
         event54.setStandard(class1);
         event54.setScd(slotCourseDetails54);
         event54 = eventRepository.save(event54);
@@ -1048,7 +1084,8 @@ public class WitcurveResource {
         event55.setName("Daily Update");
         event55.setDescription("This is a daily update for today's class");
         event55.setType(EventType.DAILY_UPDATE);
-        event55.setDate(LocalDate.of(2018, 9, 21));
+        event55.setEventDate(LocalDate.of(2018, 9, 21));
+        event55.setPostedDate(LocalDate.of(2018, 9, 21));
         event55.setStandard(class1);
         event55.setScd(slotCourseDetails55);
         event55 = eventRepository.save(event55);
@@ -1057,7 +1094,8 @@ public class WitcurveResource {
         event56.setName("Daily Update");
         event56.setDescription("This is a daily update for today's class");
         event56.setType(EventType.DAILY_UPDATE);
-        event56.setDate(LocalDate.of(2018, 9, 21));
+        event56.setEventDate(LocalDate.of(2018, 9, 21));
+        event56.setPostedDate(LocalDate.of(2018, 9, 21));
         event56.setStandard(class1);
         event56.setScd(slotCourseDetails56);
         event56 = eventRepository.save(event56);
@@ -1066,7 +1104,8 @@ public class WitcurveResource {
         event57.setName("Daily Update");
         event57.setDescription("This is a daily update for today's class");
         event57.setType(EventType.DAILY_UPDATE);
-        event57.setDate(LocalDate.of(2018, 9, 21));
+        event57.setEventDate(LocalDate.of(2018, 9, 21));
+        event57.setPostedDate(LocalDate.of(2018, 9, 21));
         event57.setStandard(class1);
         event57.setScd(slotCourseDetails57);
         event57 = eventRepository.save(event57);
@@ -1075,7 +1114,8 @@ public class WitcurveResource {
         event58.setName("Daily Update");
         event58.setDescription("This is a daily update for today's class");
         event58.setType(EventType.DAILY_UPDATE);
-        event58.setDate(LocalDate.of(2018, 9, 21));
+        event58.setEventDate(LocalDate.of(2018, 9, 21));
+        event58.setPostedDate(LocalDate.of(2018, 9, 21));
         event58.setStandard(class1);
         event58.setScd(slotCourseDetails58);
         event58 = eventRepository.save(event58);
@@ -1086,7 +1126,8 @@ public class WitcurveResource {
         testEvent11.setName("Test Created");
         testEvent11.setDescription("Description about test");
         testEvent11.setType(EventType.TEST);
-        testEvent11.setDate(LocalDate.of(2018, 9, 19));
+        testEvent11.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent11.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent11.setStandard(class1);
         testEvent11.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent11.setScd(slotCourseDetails11);
@@ -1096,7 +1137,8 @@ public class WitcurveResource {
         testEvent12.setName("Test Created");
         testEvent12.setDescription("Description about test");
         testEvent12.setType(EventType.TEST);
-        testEvent12.setDate(LocalDate.of(2018, 9, 19));
+        testEvent12.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent12.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent12.setStandard(class1);
         testEvent12.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent12.setScd(slotCourseDetails12);
@@ -1106,7 +1148,8 @@ public class WitcurveResource {
         testEvent13.setName("Test Created");
         testEvent13.setDescription("Description about test");
         testEvent13.setType(EventType.TEST);
-        testEvent13.setDate(LocalDate.of(2018, 9, 19));
+        testEvent13.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent13.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent13.setStandard(class1);
         testEvent13.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent13.setScd(slotCourseDetails13);
@@ -1116,7 +1159,8 @@ public class WitcurveResource {
         testEvent14.setName("Test Created");
         testEvent14.setDescription("Description about test");
         testEvent14.setType(EventType.TEST);
-        testEvent14.setDate(LocalDate.of(2018, 9, 19));
+        testEvent14.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent14.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent14.setStandard(class1);
         testEvent14.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent14.setScd(slotCourseDetails14);
@@ -1126,7 +1170,8 @@ public class WitcurveResource {
         testEvent15.setName("Test Created");
         testEvent15.setDescription("Description about test");
         testEvent15.setType(EventType.TEST);
-        testEvent15.setDate(LocalDate.of(2018, 9, 19));
+        testEvent15.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent15.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent15.setStandard(class1);
         testEvent15.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent15.setScd(slotCourseDetails15);
@@ -1136,7 +1181,8 @@ public class WitcurveResource {
         testEvent16.setName("Test Created");
         testEvent16.setDescription("Description about test");
         testEvent16.setType(EventType.TEST);
-        testEvent16.setDate(LocalDate.of(2018, 9, 19));
+        testEvent16.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent16.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent16.setStandard(class1);
         testEvent16.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent16.setScd(slotCourseDetails16);
@@ -1146,7 +1192,8 @@ public class WitcurveResource {
         testEvent17.setName("Test Created");
         testEvent17.setDescription("Description about test");
         testEvent17.setType(EventType.TEST);
-        testEvent17.setDate(LocalDate.of(2018, 9, 19));
+        testEvent17.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent17.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent17.setStandard(class1);
         testEvent17.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent17.setScd(slotCourseDetails17);
@@ -1156,7 +1203,8 @@ public class WitcurveResource {
         testEvent18.setName("Test Created");
         testEvent18.setDescription("Description about test");
         testEvent18.setType(EventType.TEST);
-        testEvent18.setDate(LocalDate.of(2018, 9, 19));
+        testEvent18.setEventDate(LocalDate.of(2018, 9, 19));
+        testEvent18.setPostedDate(LocalDate.of(2018, 9, 17));
         testEvent18.setStandard(class1);
         testEvent18.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent18.setScd(slotCourseDetails18);
@@ -1166,7 +1214,8 @@ public class WitcurveResource {
         testEvent41.setName("Test Created");
         testEvent41.setDescription("Description about test");
         testEvent41.setType(EventType.TEST);
-        testEvent41.setDate(LocalDate.of(2018, 9, 21));
+        testEvent41.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent41.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent41.setStandard(class1);
         testEvent41.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent41.setScd(slotCourseDetails41);
@@ -1176,7 +1225,8 @@ public class WitcurveResource {
         testEvent42.setName("Test Created");
         testEvent42.setDescription("Description about test");
         testEvent42.setType(EventType.TEST);
-        testEvent42.setDate(LocalDate.of(2018, 9, 21));
+        testEvent42.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent42.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent42.setStandard(class1);
         testEvent42.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent42.setScd(slotCourseDetails42);
@@ -1186,7 +1236,8 @@ public class WitcurveResource {
         testEvent43.setName("Test Created");
         testEvent43.setDescription("Description about test");
         testEvent43.setType(EventType.TEST);
-        testEvent43.setDate(LocalDate.of(2018, 9, 21));
+        testEvent43.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent43.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent43.setStandard(class1);
         testEvent43.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent43.setScd(slotCourseDetails43);
@@ -1196,7 +1247,8 @@ public class WitcurveResource {
         testEvent44.setName("Test Created");
         testEvent44.setDescription("Description about test");
         testEvent44.setType(EventType.TEST);
-        testEvent44.setDate(LocalDate.of(2018, 9, 21));
+        testEvent44.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent44.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent44.setStandard(class1);
         testEvent44.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent44.setScd(slotCourseDetails44);
@@ -1206,7 +1258,8 @@ public class WitcurveResource {
         testEvent45.setName("Test Created");
         testEvent45.setDescription("Description about test");
         testEvent45.setType(EventType.TEST);
-        testEvent45.setDate(LocalDate.of(2018, 9, 21));
+        testEvent45.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent45.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent45.setStandard(class1);
         testEvent45.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent45.setScd(slotCourseDetails45);
@@ -1216,7 +1269,8 @@ public class WitcurveResource {
         testEvent46.setName("Test Created");
         testEvent46.setDescription("Description about test");
         testEvent46.setType(EventType.TEST);
-        testEvent46.setDate(LocalDate.of(2018, 9, 21));
+        testEvent46.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent46.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent46.setStandard(class1);
         testEvent46.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent46.setScd(slotCourseDetails46);
@@ -1226,7 +1280,8 @@ public class WitcurveResource {
         testEvent47.setName("Test Created");
         testEvent47.setDescription("Description about test");
         testEvent47.setType(EventType.TEST);
-        testEvent47.setDate(LocalDate.of(2018, 9, 21));
+        testEvent47.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent47.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent47.setStandard(class1);
         testEvent47.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent47.setScd(slotCourseDetails47);
@@ -1236,7 +1291,8 @@ public class WitcurveResource {
         testEvent48.setName("Test Created");
         testEvent48.setDescription("Description about test");
         testEvent48.setType(EventType.TEST);
-        testEvent48.setDate(LocalDate.of(2018, 9, 21));
+        testEvent48.setEventDate(LocalDate.of(2018, 9, 21));
+        testEvent48.setPostedDate(LocalDate.of(2018, 9, 20));
         testEvent48.setStandard(class1);
         testEvent48.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         testEvent48.setScd(slotCourseDetails48);
@@ -1247,7 +1303,8 @@ public class WitcurveResource {
         assignmentEvent11.setName("Assignment Created");
         assignmentEvent11.setDescription("Description about assignment");
         assignmentEvent11.setType(EventType.ASSIGNMENT);
-        assignmentEvent11.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent11.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent11.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent11.setStandard(class1);
         assignmentEvent11.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent11.setScd(slotCourseDetails11);
@@ -1257,7 +1314,8 @@ public class WitcurveResource {
         assignmentEvent12.setName("Assignment Created");
         assignmentEvent12.setDescription("Description about assignment");
         assignmentEvent12.setType(EventType.ASSIGNMENT);
-        assignmentEvent12.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent12.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent12.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent12.setStandard(class1);
         assignmentEvent12.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent12.setScd(slotCourseDetails12);
@@ -1267,7 +1325,8 @@ public class WitcurveResource {
         assignmentEvent13.setName("Assignment Created");
         assignmentEvent13.setDescription("Description about assignment");
         assignmentEvent13.setType(EventType.ASSIGNMENT);
-        assignmentEvent13.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent13.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent13.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent13.setStandard(class1);
         assignmentEvent13.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent13.setScd(slotCourseDetails13);
@@ -1277,7 +1336,8 @@ public class WitcurveResource {
         assignmentEvent14.setName("Assignment Created");
         assignmentEvent14.setDescription("Description about assignment");
         assignmentEvent14.setType(EventType.ASSIGNMENT);
-        assignmentEvent14.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent14.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent14.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent14.setStandard(class1);
         assignmentEvent14.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent14.setScd(slotCourseDetails14);
@@ -1287,7 +1347,8 @@ public class WitcurveResource {
         assignmentEvent15.setName("Assignment Created");
         assignmentEvent15.setDescription("Description about assignment");
         assignmentEvent15.setType(EventType.ASSIGNMENT);
-        assignmentEvent15.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent15.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent15.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent15.setStandard(class1);
         assignmentEvent15.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent15.setScd(slotCourseDetails15);
@@ -1297,7 +1358,8 @@ public class WitcurveResource {
         assignmentEvent16.setName("Assignment Created");
         assignmentEvent16.setDescription("Description about assignment");
         assignmentEvent16.setType(EventType.ASSIGNMENT);
-        assignmentEvent16.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent16.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent16.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent16.setStandard(class1);
         assignmentEvent16.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent16.setScd(slotCourseDetails16);
@@ -1307,7 +1369,8 @@ public class WitcurveResource {
         assignmentEvent17.setName("Assignment Created");
         assignmentEvent17.setDescription("Description about assignment");
         assignmentEvent17.setType(EventType.ASSIGNMENT);
-        assignmentEvent17.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent17.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent17.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent17.setStandard(class1);
         assignmentEvent17.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent17.setScd(slotCourseDetails17);
@@ -1317,7 +1380,8 @@ public class WitcurveResource {
         assignmentEvent18.setName("Assignment Created");
         assignmentEvent18.setDescription("Description about assignment");
         assignmentEvent18.setType(EventType.ASSIGNMENT);
-        assignmentEvent18.setDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent18.setEventDate(LocalDate.of(2018, 9, 19));
+        assignmentEvent18.setPostedDate(LocalDate.of(2018, 9, 17));
         assignmentEvent18.setStandard(class1);
         assignmentEvent18.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent18.setScd(slotCourseDetails18);
@@ -1328,7 +1392,8 @@ public class WitcurveResource {
         assignmentEvent41.setName("Assignment Created");
         assignmentEvent41.setDescription("Description about assignment");
         assignmentEvent41.setType(EventType.ASSIGNMENT);
-        assignmentEvent41.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent41.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent41.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent41.setStandard(class1);
         assignmentEvent41.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent41.setScd(slotCourseDetails41);
@@ -1338,7 +1403,8 @@ public class WitcurveResource {
         assignmentEvent42.setName("Assignment Created");
         assignmentEvent42.setDescription("Description about assignment");
         assignmentEvent42.setType(EventType.ASSIGNMENT);
-        assignmentEvent42.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent42.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent42.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent42.setStandard(class1);
         assignmentEvent42.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent42.setScd(slotCourseDetails42);
@@ -1348,7 +1414,8 @@ public class WitcurveResource {
         assignmentEvent43.setName("Assignment Created");
         assignmentEvent43.setDescription("Description about assignment");
         assignmentEvent43.setType(EventType.ASSIGNMENT);
-        assignmentEvent43.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent43.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent43.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent43.setStandard(class1);
         assignmentEvent43.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent43.setScd(slotCourseDetails43);
@@ -1359,7 +1426,8 @@ public class WitcurveResource {
         assignmentEvent44.setName("Assignment Created");
         assignmentEvent44.setDescription("Description about assignment");
         assignmentEvent44.setType(EventType.ASSIGNMENT);
-        assignmentEvent44.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent44.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent44.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent44.setStandard(class1);
         assignmentEvent44.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent44.setScd(slotCourseDetails44);
@@ -1369,7 +1437,8 @@ public class WitcurveResource {
         assignmentEvent45.setName("Assignment Created");
         assignmentEvent45.setDescription("Description about assignment");
         assignmentEvent45.setType(EventType.ASSIGNMENT);
-        assignmentEvent45.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent45.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent45.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent45.setStandard(class1);
         assignmentEvent45.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent45.setScd(slotCourseDetails45);
@@ -1379,7 +1448,8 @@ public class WitcurveResource {
         assignmentEvent46.setName("Assignment Created");
         assignmentEvent46.setDescription("Description about assignment");
         assignmentEvent46.setType(EventType.ASSIGNMENT);
-        assignmentEvent46.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent46.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent46.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent46.setStandard(class1);
         assignmentEvent46.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent46.setScd(slotCourseDetails46);
@@ -1389,7 +1459,8 @@ public class WitcurveResource {
         assignmentEvent47.setName("Assignment Created");
         assignmentEvent47.setDescription("Description about assignment");
         assignmentEvent47.setType(EventType.ASSIGNMENT);
-        assignmentEvent47.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent47.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent47.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent47.setStandard(class1);
         assignmentEvent47.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent47.setScd(slotCourseDetails47);
@@ -1399,7 +1470,8 @@ public class WitcurveResource {
         assignmentEvent48.setName("Assignment Created");
         assignmentEvent48.setDescription("Description about assignment");
         assignmentEvent48.setType(EventType.ASSIGNMENT);
-        assignmentEvent48.setDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent48.setEventDate(LocalDate.of(2018, 9, 21));
+        assignmentEvent48.setPostedDate(LocalDate.of(2018, 9, 20));
         assignmentEvent48.setStandard(class1);
         assignmentEvent48.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
         assignmentEvent48.setScd(slotCourseDetails48);
@@ -1482,7 +1554,7 @@ public class WitcurveResource {
         examEvent1.setName("Exam Title");
         examEvent1.setDescription("Exam Syllabus");
         examEvent1.setType(EventType.EXAM);
-        examEvent1.setDate(LocalDate.of(2018, 9, 3));
+        examEvent1.setEventDate(LocalDate.of(2018, 9, 3));
         examEvent1.setStandard(class1);
         examEvent1.setScd(examScd1);
         examEvent1 = eventRepository.save(examEvent1);
@@ -1491,7 +1563,7 @@ public class WitcurveResource {
         examEvent2.setName("Exam Title");
         examEvent2.setDescription("Exam Syllabus");
         examEvent2.setType(EventType.EXAM);
-        examEvent2.setDate(LocalDate.of(2018, 9, 4));
+        examEvent2.setEventDate(LocalDate.of(2018, 9, 4));
         examEvent2.setStandard(class1);
         examEvent2.setScd(examScd2);
         examEvent2 = eventRepository.save(examEvent2);
@@ -1500,7 +1572,7 @@ public class WitcurveResource {
         examEvent3.setName("Exam Title");
         examEvent3.setDescription("Exam Syllabus");
         examEvent3.setType(EventType.EXAM);
-        examEvent3.setDate(LocalDate.of(2018, 9, 5));
+        examEvent3.setEventDate(LocalDate.of(2018, 9, 5));
         examEvent3.setStandard(class1);
         examEvent3.setScd(examScd3);
         examEvent3 = eventRepository.save(examEvent3);
@@ -1509,7 +1581,7 @@ public class WitcurveResource {
         examEvent4.setName("Exam Title");
         examEvent4.setDescription("Exam Syllabus");
         examEvent4.setType(EventType.EXAM);
-        examEvent4.setDate(LocalDate.of(2018, 9, 6));
+        examEvent4.setEventDate(LocalDate.of(2018, 9, 6));
         examEvent4.setStandard(class1);
         examEvent4.setScd(examScd4);
         examEvent4 = eventRepository.save(examEvent4);
@@ -1518,7 +1590,7 @@ public class WitcurveResource {
         examEvent5.setName("Exam Title");
         examEvent5.setDescription("Exam Syllabus");
         examEvent5.setType(EventType.EXAM);
-        examEvent5.setDate(LocalDate.of(2018, 9, 7));
+        examEvent5.setEventDate(LocalDate.of(2018, 9, 7));
         examEvent5.setStandard(class1);
         examEvent5.setScd(examScd5);
         examEvent5 = eventRepository.save(examEvent5);
@@ -1527,7 +1599,7 @@ public class WitcurveResource {
         examEvent6.setName("Exam Title");
         examEvent6.setDescription("Exam Syllabus");
         examEvent6.setType(EventType.EXAM);
-        examEvent6.setDate(LocalDate.of(2018, 9, 10));
+        examEvent6.setEventDate(LocalDate.of(2018, 9, 10));
         examEvent6.setStandard(class1);
         examEvent6.setScd(examScd6);
         examEvent6 = eventRepository.save(examEvent6);
@@ -1536,7 +1608,7 @@ public class WitcurveResource {
         examEvent7.setName("Exam Title");
         examEvent7.setDescription("Exam Syllabus");
         examEvent7.setType(EventType.EXAM);
-        examEvent7.setDate(LocalDate.of(2018, 9, 11));
+        examEvent7.setEventDate(LocalDate.of(2018, 9, 11));
         examEvent7.setStandard(class1);
         examEvent7.setScd(examScd7);
         examEvent7 = eventRepository.save(examEvent7);
@@ -1545,7 +1617,7 @@ public class WitcurveResource {
         examEvent8.setName("Exam Title");
         examEvent8.setDescription("Exam Syllabus");
         examEvent8.setType(EventType.EXAM);
-        examEvent8.setDate(LocalDate.of(2018, 9, 12));
+        examEvent8.setEventDate(LocalDate.of(2018, 9, 12));
         examEvent8.setStandard(class1);
         examEvent8.setScd(examScd8);
         examEvent8 = eventRepository.save(examEvent8);
@@ -1555,7 +1627,7 @@ public class WitcurveResource {
         holidayEvent1.setName("Holiday 1");
         holidayEvent1.setDescription("This is a holiday, get your asses out of the school");
         holidayEvent1.setType(EventType.HOLIDAY);
-        holidayEvent1.setDate(LocalDate.of(2018, 9, 24));
+        holidayEvent1.setEventDate(LocalDate.of(2018, 9, 24));
         holidayEvent1.setAcademicSession(academicSession1);
         holidayEvent1 = eventRepository.save(holidayEvent1);
 
@@ -1563,7 +1635,7 @@ public class WitcurveResource {
         holidayEvent2.setName("Holiday 2");
         holidayEvent2.setDescription("This is a holiday, get your asses out of the school");
         holidayEvent2.setType(EventType.HOLIDAY);
-        holidayEvent2.setDate(LocalDate.of(2018, 9, 26));
+        holidayEvent2.setEventDate(LocalDate.of(2018, 9, 26));
         holidayEvent2.setAcademicSession(academicSession1);
         holidayEvent2 = eventRepository.save(holidayEvent2);
 
@@ -1571,7 +1643,7 @@ public class WitcurveResource {
         holidayEvent3.setName("Holiday 3");
         holidayEvent3.setDescription("This is a holiday, get your asses out of the school");
         holidayEvent3.setType(EventType.HOLIDAY);
-        holidayEvent3.setDate(LocalDate.of(2018, 9, 28));
+        holidayEvent3.setEventDate(LocalDate.of(2018, 9, 28));
         holidayEvent3.setAcademicSession(academicSession1);
         holidayEvent3 = eventRepository.save(holidayEvent3);
 
@@ -1580,7 +1652,7 @@ public class WitcurveResource {
         leaveEvent1.setName("Leave 1");
         leaveEvent1.setDescription("This is a leave, get your indiscipline asses out of the school");
         leaveEvent1.setType(EventType.HOLIDAY);
-        leaveEvent1.setDate(LocalDate.of(2018, 9, 25));
+        leaveEvent1.setEventDate(LocalDate.of(2018, 9, 25));
         leaveEvent1.setStudent(student1);
         leaveEvent1.setAcademicSession(academicSession1);
         leaveEvent1 = eventRepository.save(leaveEvent1);
@@ -1589,7 +1661,7 @@ public class WitcurveResource {
         leaveEvent2.setName("Leave 2");
         leaveEvent2.setDescription("This is a leave, get your indiscipline asses out of the school");
         leaveEvent2.setType(EventType.HOLIDAY);
-        leaveEvent2.setDate(LocalDate.of(2018, 9, 27));
+        leaveEvent2.setEventDate(LocalDate.of(2018, 9, 27));
         leaveEvent2.setStudent(student1);
         leaveEvent2.setAcademicSession(academicSession1);
         leaveEvent2 = eventRepository.save(leaveEvent2);
@@ -1598,7 +1670,7 @@ public class WitcurveResource {
         leaveEvent3.setName("Leave 3");
         leaveEvent3.setDescription("This is a leave, get your indiscipline asses out of the school");
         leaveEvent3.setType(EventType.HOLIDAY);
-        leaveEvent3.setDate(LocalDate.of(2018, 9, 29));
+        leaveEvent3.setEventDate(LocalDate.of(2018, 9, 29));
         leaveEvent3.setStudent(student1);
         leaveEvent3.setAcademicSession(academicSession1);
         leaveEvent3 = eventRepository.save(leaveEvent3);

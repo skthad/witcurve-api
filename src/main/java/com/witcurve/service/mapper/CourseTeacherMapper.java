@@ -13,7 +13,7 @@ public interface CourseTeacherMapper {
     @Mapping(source = "standard.id", target = "standardId")
     CourseTeacherDTO toDto(CourseTeacher courseTeacher);
 
-    @Mapping(target = "standard.id", source = "standardId")
+    @Mapping(target = "standard", source = "standardId")
     CourseTeacher toEntity(CourseTeacherDTO courseTeacherDTO);
 
     default CourseTeacher fromId(Long courseTeacherId) {
