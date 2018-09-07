@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +85,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) {
-        log.debug("Request to get tests with month : {} of year : {} or student with id : {}", month, year, studentId);
+        log.debug("Request to get tests with month no. : {} of year : {} or student with id : {}", month, year, studentId);
         // need to get Events of type Holiday, Leave, Exam, SchoolEvent
         // null checks
         StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
@@ -92,5 +94,31 @@ public class EventServiceImpl implements EventService {
         LocalDate monthEnd = monthStart.plusMonths(1).withDayOfMonth(month).minusDays(1);
         List<Event> events = eventRepository.findEventsDuringMonth(monthStart, monthEnd, sessionId);
         return eventMapper.toDto(events);
+    }
+
+    @Override
+    public List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) {
+        log.debug("Request to get tests with week having weekDate : {} of year : {} or student with id : {}", weekDate, year, studentId);
+
+        // Go backward to get Monday
+        LocalDate monday = weekDate;
+        while (monday.getDayOfWeek() != DayOfWeek.MONDAY)
+        {
+            monday = monday.minusDays(1);
+        }
+
+        // Go forward to get Sunday
+        LocalDate sunday = weekDate;
+        while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY)
+        {
+            sunday = sunday.plusDays(1);
+        }
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
+        List<Event> events = eventRepository.findEventsDuringWeek(monday, sunday, studentId, classId, grade, sessionId);
+        return eventMapper.toDto(events);
+
     }
 }

@@ -35,9 +35,13 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private EventType type;
 
     @NotNull
-    @Column(name = "date", nullable = false)
+    @Column(name = "event_date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate date;
+    private LocalDate eventDate;
+
+    @Column(name = "posted_date")
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate postedDate;
 
     @Column(name = "event_start_time")
     @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
@@ -72,7 +76,11 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private String bindingId;
 
     @Column(name = "send_sms")
-    private Boolean sendSms;
+    private Boolean sendSms = false;
+
+    @NotNull
+    @Column(name = "is_read", nullable = false)
+    private Boolean read = false;
 
     public Long getId() {
         return id;
@@ -106,12 +114,20 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.type = type;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getEventDate() {
+        return eventDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public LocalDate getPostedDate() {
+        return postedDate;
+    }
+
+    public void setPostedDate(LocalDate postedDate) {
+        this.postedDate = postedDate;
     }
 
     public String getEventStartTime() {
@@ -194,6 +210,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.sendSms = sendSms;
     }
 
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -208,5 +232,26 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         return Objects.hash(getId());
     }
 
-
+    @Override
+    public String toString() {
+        return "Event{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", type=" + type +
+            ", eventDate=" + eventDate +
+            ", postedDate=" + postedDate +
+            ", eventStartTime='" + eventStartTime + '\'' +
+            ", eventEndTime='" + eventEndTime + '\'' +
+            ", student=" + student +
+            ", standard=" + standard +
+            ", staff=" + staff +
+            ", grade=" + grade +
+            ", academicSession=" + academicSession +
+            ", scd=" + scd +
+            ", bindingId='" + bindingId + '\'' +
+            ", sendSms=" + sendSms +
+            ", read=" + read +
+            '}';
+    }
 }

@@ -1,6 +1,5 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 
@@ -11,7 +10,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class EventDTO extends AbstractAuditingDTO {
-
 
     private Long id;
 
@@ -24,7 +22,9 @@ public class EventDTO extends AbstractAuditingDTO {
     private EventType type;
 
     @NotNull
-    private LocalDate date;
+    private LocalDate eventDate;
+
+    private LocalDate postedDate;
 
     @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
     private String eventStartTime;
@@ -48,7 +48,10 @@ public class EventDTO extends AbstractAuditingDTO {
     private String bindingId;
 
     @Column
-    private Boolean sendSms;
+    private Boolean sendSms = false;
+
+    @NotNull
+    private Boolean read = false;
 
     public Long getId() {
         return id;
@@ -82,12 +85,20 @@ public class EventDTO extends AbstractAuditingDTO {
         this.type = type;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getEventDate() {
+        return eventDate;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setEventDate(LocalDate eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public LocalDate getPostedDate() {
+        return postedDate;
+    }
+
+    public void setPostedDate(LocalDate postedDate) {
+        this.postedDate = postedDate;
     }
 
     public String getEventStartTime() {
@@ -170,6 +181,14 @@ public class EventDTO extends AbstractAuditingDTO {
         this.sendSms = sendSms;
     }
 
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -190,7 +209,8 @@ public class EventDTO extends AbstractAuditingDTO {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", type=" + type +
-            ", date=" + date +
+            ", eventDate=" + eventDate +
+            ", postedDate=" + postedDate +
             ", eventStartTime='" + eventStartTime + '\'' +
             ", eventEndTime='" + eventEndTime + '\'' +
             ", studentId=" + studentId +
@@ -201,6 +221,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
+            ", read=" + read +
             '}';
     }
 }
