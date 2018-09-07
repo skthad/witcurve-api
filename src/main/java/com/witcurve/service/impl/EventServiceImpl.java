@@ -114,7 +114,11 @@ public class EventServiceImpl implements EventService {
             sunday = sunday.plusDays(1);
         }
         StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
         Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
+        List<Event> events = eventRepository.findEventsDuringWeek(monday, sunday, studentId, classId, grade, sessionId);
+        return eventMapper.toDto(events);
 
     }
 }

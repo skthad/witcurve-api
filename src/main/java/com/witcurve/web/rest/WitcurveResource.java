@@ -1651,7 +1651,7 @@ public class WitcurveResource {
         Event leaveEvent1 = new Event();
         leaveEvent1.setName("Leave 1");
         leaveEvent1.setDescription("This is a leave, get your indiscipline asses out of the school");
-        leaveEvent1.setType(EventType.HOLIDAY);
+        leaveEvent1.setType(EventType.LEAVE);
         leaveEvent1.setEventDate(LocalDate.of(2018, 9, 25));
         leaveEvent1.setStudent(student1);
         leaveEvent1.setAcademicSession(academicSession1);
@@ -1660,7 +1660,7 @@ public class WitcurveResource {
         Event leaveEvent2 = new Event();
         leaveEvent2.setName("Leave 2");
         leaveEvent2.setDescription("This is a leave, get your indiscipline asses out of the school");
-        leaveEvent2.setType(EventType.HOLIDAY);
+        leaveEvent2.setType(EventType.LEAVE);
         leaveEvent2.setEventDate(LocalDate.of(2018, 9, 27));
         leaveEvent2.setStudent(student1);
         leaveEvent2.setAcademicSession(academicSession1);
@@ -1669,7 +1669,7 @@ public class WitcurveResource {
         Event leaveEvent3 = new Event();
         leaveEvent3.setName("Leave 3");
         leaveEvent3.setDescription("This is a leave, get your indiscipline asses out of the school");
-        leaveEvent3.setType(EventType.HOLIDAY);
+        leaveEvent3.setType(EventType.LEAVE);
         leaveEvent3.setEventDate(LocalDate.of(2018, 9, 29));
         leaveEvent3.setStudent(student1);
         leaveEvent3.setAcademicSession(academicSession1);

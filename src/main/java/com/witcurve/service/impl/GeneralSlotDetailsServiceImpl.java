@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @Transactional
@@ -53,6 +55,13 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
         }
         generalSlotDetailsRepository.deleteById(generalSlotDetailsId);
 
+    }
+
+    @Override
+    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByClassId(Long classId) throws WitcurveException {
+        log.debug("Request to get generalSlotDetails by class id : {}", classId);
+        List<GeneralSlotDetails> generalSlotDetailsList = generalSlotDetailsRepository.findByStandardIdAndExamIdNull(classId);
+        return generalSlotDetailsMapper.toDto(generalSlotDetailsList);
     }
 
 

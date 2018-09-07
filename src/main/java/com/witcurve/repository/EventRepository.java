@@ -34,7 +34,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT' or e.type='LEAVE'))" +
         ")" +
         " order by e.scd.gsd.start asc")
-    List<Event> findEventsDuringWeek(LocalDate monthStart, LocalDate monthEnd,
+    List<Event> findEventsDuringWeek(LocalDate weekStart, LocalDate weekEnd,
                                      Long studentId, Long classId, Grade grade,
                                      Long sessionId);
 }

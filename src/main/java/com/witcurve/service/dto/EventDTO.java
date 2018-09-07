@@ -48,7 +48,10 @@ public class EventDTO extends AbstractAuditingDTO {
     private String bindingId;
 
     @Column
-    private Boolean sendSms;
+    private Boolean sendSms = false;
+
+    @NotNull
+    private Boolean read = false;
 
     public Long getId() {
         return id;
@@ -178,6 +181,14 @@ public class EventDTO extends AbstractAuditingDTO {
         this.sendSms = sendSms;
     }
 
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -210,6 +221,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
+            ", read=" + read +
             '}';
     }
 }

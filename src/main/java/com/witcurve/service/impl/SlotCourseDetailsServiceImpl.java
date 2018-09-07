@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
@@ -51,6 +53,13 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
             throw new WitcurveException("No SlotCourseDetails exists for given id");
         }
         slotCourseDetailsRepository.delete(slotCourseDetails);
+    }
+
+    @Override
+    public List<SlotCourseDetailsDTO> getSlotCourseDetailsByClassId(Long classId) {
+        log.debug("Requqest to get list of slotCourseDetails for given class id : {}", classId);
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardId(classId);
+        return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 
 }
