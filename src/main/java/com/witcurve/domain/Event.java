@@ -40,11 +40,11 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private LocalDate date;
 
     @Column(name = "event_start_time")
-    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventStartTime;
 
     @Column(name = "event_end_time")
-    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventEndTime;
 
     @ManyToOne
