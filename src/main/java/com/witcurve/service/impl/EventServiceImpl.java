@@ -102,24 +102,24 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) {
         log.debug("Request to get tests with week having weekDate : {} of year : {} or student with id : {}", weekDate, year, studentId);
 
-        // Go backward to get Monday
-        LocalDate monday = weekDate;
-        while (monday.getDayOfWeek() != DayOfWeek.MONDAY)
-        {
-            monday = monday.minusDays(1);
-        }
-
-        // Go forward to get Sunday
+        // Go backward to get Sunday
         LocalDate sunday = weekDate;
         while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY)
         {
-            sunday = sunday.plusDays(1);
+            sunday = sunday.minusDays(1);
+        }
+
+        // Go forward to get Saturday
+        LocalDate saturday = weekDate;
+        while (saturday.getDayOfWeek() != DayOfWeek.SATURDAY)
+        {
+            saturday = saturday.plusDays(1);
         }
         StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
         Long classId = studentClass.getStandard().getId();
         Grade grade = studentClass.getStandard().getGrade();
         Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsDuringWeek(monday, sunday, studentId, classId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsDuringWeek(sunday, saturday, studentId, classId, grade, sessionId);
         return eventMapper.toDto(events);
 
     }
