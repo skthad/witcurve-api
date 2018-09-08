@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
@@ -40,7 +39,7 @@ public class EventResource {
      */
     @PostMapping("/event")
     @Timed
-    public ResponseEntity<EventDTO> createEvent(@RequestBody @Valid EventDTO eventDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Event");
         if (eventDTO.getId() != null) {
             throw new WitcurveException("New Event can't already have an id");
@@ -75,7 +74,7 @@ public class EventResource {
 
     @PutMapping("/event")
     @Timed
-    public ResponseEntity<EventDTO> updateEvent(@RequestBody @Valid EventDTO eventDTO) throws WitcurveException {
+    public ResponseEntity<EventDTO> updateEvent(@RequestBody EventDTO eventDTO) throws WitcurveException {
         log.debug("Request to update event");
         if (eventDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
