@@ -19,7 +19,7 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     @NotNull
     @Column(name = "start", nullable = false)
-    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String start;
 
     @NotNull
