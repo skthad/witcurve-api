@@ -1,9 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.domain.StudentClass;
-import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.StudentClassRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.GeneralSlotDetailsService;
@@ -18,9 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.witcurve.service.util.WitcurveUtil.getLocalDate;
 
