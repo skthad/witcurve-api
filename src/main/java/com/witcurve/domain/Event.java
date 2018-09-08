@@ -35,13 +35,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private EventType type;
 
     @NotNull
-    @Column(name = "event_date", nullable = false)
+    @Column(name = "date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate eventDate;
-
-    @Column(name = "posted_date")
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate postedDate;
+    private LocalDate date;
 
     @Column(name = "event_start_time")
     @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
@@ -114,20 +110,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.type = type;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public LocalDate getPostedDate() {
-        return postedDate;
-    }
-
-    public void setPostedDate(LocalDate postedDate) {
-        this.postedDate = postedDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public String getEventStartTime() {
@@ -239,8 +227,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", type=" + type +
-            ", eventDate=" + eventDate +
-            ", postedDate=" + postedDate +
+            ", date=" + date +
             ", eventStartTime='" + eventStartTime + '\'' +
             ", eventEndTime='" + eventEndTime + '\'' +
             ", student=" + student +

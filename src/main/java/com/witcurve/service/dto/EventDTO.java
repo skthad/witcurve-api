@@ -22,9 +22,7 @@ public class EventDTO extends AbstractAuditingDTO {
     private EventType type;
 
     @NotNull
-    private LocalDate eventDate;
-
-    private LocalDate postedDate;
+    private LocalDate date;
 
     @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
     private String eventStartTime;
@@ -85,20 +83,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.type = type;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setEventDate(LocalDate eventDate) {
-        this.eventDate = eventDate;
-    }
-
-    public LocalDate getPostedDate() {
-        return postedDate;
-    }
-
-    public void setPostedDate(LocalDate postedDate) {
-        this.postedDate = postedDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public String getEventStartTime() {
@@ -209,8 +199,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", name='" + name + '\'' +
             ", description='" + description + '\'' +
             ", type=" + type +
-            ", eventDate=" + eventDate +
-            ", postedDate=" + postedDate +
+            ", date=" + date +
             ", eventStartTime='" + eventStartTime + '\'' +
             ", eventEndTime='" + eventEndTime + '\'' +
             ", studentId=" + studentId +
