@@ -6,9 +6,9 @@ public class CourseTeacherDTO {
 
     private Long id;
 
-    private CourseDTO courseDTO;
+    private CourseDTO course;
 
-    private StaffDTO teacherDTO;
+    private StaffDTO teacher;
 
     private Long standardId;
 
@@ -20,20 +20,20 @@ public class CourseTeacherDTO {
         this.id = id;
     }
 
-    public CourseDTO getCourseDTO() {
-        return courseDTO;
+    public CourseDTO getCourse() {
+        return course;
     }
 
-    public void setCourseDTO(CourseDTO courseDTO) {
-        this.courseDTO = courseDTO;
+    public void setCourse(CourseDTO course) {
+        this.course = course;
     }
 
-    public StaffDTO getTeacherDTO() {
-        return teacherDTO;
+    public StaffDTO getTeacher() {
+        return teacher;
     }
 
-    public void setTeacherDTO(StaffDTO teacherDTO) {
-        this.teacherDTO = teacherDTO;
+    public void setTeacher(StaffDTO teacher) {
+        this.teacher = teacher;
     }
 
     public Long getStandardId() {
@@ -62,8 +62,8 @@ public class CourseTeacherDTO {
     public String toString() {
         return "CourseTeacherDTO{" +
             "id=" + id +
-            ", courseDTO=" + courseDTO +
-            ", teacherDTO=" + teacherDTO +
+            ", course=" + course +
+            ", teacher=" + teacher +
             ", standardId=" + standardId +
             '}';
     }

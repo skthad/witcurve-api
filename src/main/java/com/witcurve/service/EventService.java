@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EventService {
 
-    EventDTO saveOrUpdate(EventDTO eventDTO) throws WitcurveException;
+    List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException;
 
     EventDTO getEventById(Long eventId) throws WitcurveException;
 

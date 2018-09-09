@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class CourseTeacherServiceImpl implements CourseTeacherService {
@@ -54,5 +56,12 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             throw new WitcurveException("No course tecaher with given id");
         }
         courseTeacherRepository.delete(courseTeacher);
+    }
+
+    @Override
+    public List<CourseTeacherDTO> getCourseTeacherByTeacherId(Long teacherId) throws WitcurveException {
+        log.debug("Request to get all course teachers by teacher id : {}", teacherId);
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(teacherId);
+        return courseTeacherMapper.toDto(courseTeachers);
     }
 }

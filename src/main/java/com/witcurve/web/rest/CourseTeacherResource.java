@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -95,5 +96,20 @@ public class CourseTeacherResource {
         courseTeacherService.deleteCourseTeacher(courseTeacherId);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("A courseTeacher is deleted with identifier " + courseTeacherId,
             courseTeacherId.toString())).build();
+    }
+
+    /**
+     * get courseTeacher by teacherId
+     * @param teacherId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course-teacher/teacher/{teacherId}")
+    @Timed
+    public ResponseEntity<List<CourseTeacherDTO>> getCourseTeacherByTeacherId(@PathVariable("teacherId") Long teacherId) throws WitcurveException {
+        log.debug("Request to get CourseTeacher with teacher id {}", teacherId);
+        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeacherByTeacherId(teacherId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

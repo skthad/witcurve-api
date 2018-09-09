@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -89,13 +90,29 @@ public class GeneralSlotDetailsResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/academic-session/{generalSlotDetailsId}")
+    @DeleteMapping("/general-slot-details/{generalSlotDetailsId}")
     @Timed
     public ResponseEntity<Void> deleteGeneralSlotDetails(@PathVariable Long generalSlotDetailsId) throws WitcurveException {
         log.debug("REST request to delete GeneralSlotDetails: {}", generalSlotDetailsId);
         generalSlotDetailsService.deleteGeneralSlotDetails(generalSlotDetailsId);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("A generalSlotDetails is deleted with identifier " + generalSlotDetailsId,
             generalSlotDetailsId.toString())).build();
+    }
+
+    /**
+     * get generalSlotDetails by class id
+     *
+     * @param classId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/general-slot-details/class/{classId}")
+    @Timed
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> getGeneralSlotDetailsByClassId(@PathVariable("classId") Long classId) throws WitcurveException {
+        log.debug("Request to get GeneralSlotDetails with class id {}", classId);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getGeneralSlotDetailsByClassId(classId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 

@@ -39,11 +39,11 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public EventDTO saveOrUpdate(EventDTO eventDTO) throws WitcurveException {
-        log.debug("Request to save or update eventDTO : {}", eventDTO);
-        Event event = eventMapper.toEntity(eventDTO);
-        event = eventRepository.save(event);
-        return eventMapper.toDto(event);
+    public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
+        log.debug("Request to save or update eventDTOs : {}", eventDTOs);
+        List<Event> events = eventMapper.toEntity(eventDTOs);
+        events = eventRepository.saveAll(events);
+        return eventMapper.toDto(events);
     }
 
     @Override

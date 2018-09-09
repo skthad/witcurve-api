@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {ClassMapper.class, CourseMapper.class, StaffMapper.class})
-public interface CourseTeacherMapper {
+public interface CourseTeacherMapper extends EntityMapper<CourseTeacherDTO, CourseTeacher> {
 
     @Mapping(source = "standard.id", target = "standardId")
     CourseTeacherDTO toDto(CourseTeacher courseTeacher);

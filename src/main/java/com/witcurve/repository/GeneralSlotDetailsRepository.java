@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotDetails, Long> {
 
-    List<GeneralSlotDetails> findByStandardIdAndExamIdNull(Long standardId);
+    List<GeneralSlotDetails> findByStandardIdAndExamIdNullOrderByStart(Long standardId);
 }
