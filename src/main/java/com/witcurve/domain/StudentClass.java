@@ -29,6 +29,8 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
     @JoinColumn(nullable = false, name = "class_id")
     private Class standard;
 
+    // add roll no.
+
     public Long getId() {
         return id;
     }
