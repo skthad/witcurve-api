@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -31,23 +32,23 @@ public class EventResource {
     EventService eventService;
 
     /**
-     * creates a event
-     * @param eventDTO
+     * creates events
+     * @param eventDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/event")
     @Timed
-    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request Save Event");
-        if (eventDTO.getId() != null) {
-            throw new WitcurveException("New Event can't already have an id");
+    public ResponseEntity<List<EventDTO>> createEvent(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException, URISyntaxException {
+        log.debug("Request Save Events : {}",eventDTOs);
+        for(EventDTO eventDTO: eventDTOs) {
+            if (eventDTO.getId() != null) {
+                throw new WitcurveException("New Event can't already have an id");
+            }
         }
-        EventDTO result = eventService.saveOrUpdate(eventDTO);
-        return ResponseEntity.created(new URI("/api/event/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("event", result.getId().toString()))
-            .body(result);
+        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+        return ResponseEntity.ok(result);
     }
 
     /**
@@ -66,23 +67,23 @@ public class EventResource {
     }
 
     /**
-     * update the given event
-     * @param eventDTO
+     * update given events
+     * @param eventDTOs
      * @return
      * @throws WitcurveException
      */
 
     @PutMapping("/event")
     @Timed
-    public ResponseEntity<EventDTO> updateEvent(@RequestBody EventDTO eventDTO) throws WitcurveException {
-        log.debug("Request to update event");
-        if (eventDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
+    public ResponseEntity<List<EventDTO>> updateEvent(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+        log.debug("Request to update events : {}",eventDTOs);
+        for(EventDTO eventDTO : eventDTOs) {
+            if (eventDTO.getId() == null) {
+                throw new WitcurveException("Id is required for update request");
+            }
         }
-        EventDTO result = eventService.saveOrUpdate(eventDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("event", eventDTO.getId().toString()))
-            .body(result);
+        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+        return ResponseEntity.ok(result);
     }
 
     /**

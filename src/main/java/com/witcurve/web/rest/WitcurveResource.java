@@ -73,13 +73,19 @@ public class WitcurveResource {
     @Autowired
     private EventRepository eventRepository;
 
-    @RequestMapping(value = "/load-data", method = RequestMethod.POST)
-    public ResponseEntity loadDate() {
-        loadSchoolData();
+    @RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
+    public ResponseEntity loadDataForParent() {
+        loadSchoolDataForParent();
         return ResponseEntity.ok().build();
     }
 
-    private void loadSchoolData() {
+    @RequestMapping(value = "/load-data/teacher", method = RequestMethod.POST)
+    public ResponseEntity loadDataForTeacher() {
+        loadSchoolDataForTeacher();
+        return ResponseEntity.ok().build();
+    }
+
+    private void loadSchoolDataForParent() {
 
         //school data
         School school1 = new School();
@@ -1603,6 +1609,643 @@ public class WitcurveResource {
         leaveEvent3.setAcademicSession(academicSession1);
         leaveEvent3 = eventRepository.save(leaveEvent3);
 
+
+    }
+
+    private void loadSchoolDataForTeacher() {
+
+        //school data
+        School school1 = new School();
+        school1.setName("Witcurve");
+        school1.setAddress1("Kondapur");
+        school1.setAffiliationId("affl_0001");
+        school1.setCity("Hyderabad");
+        school1.setState("Telangana");
+        school1.setCountry("India");
+        school1.setDistrict("Ranga Reddy District");
+        school1.setPincode("500084");
+        school1.setPrimaryPhone("9999999999");
+        school1.setPrimaryEmail("contact@witcurve.com");
+        school1.setFax("9999999999");
+
+
+        school1= schoolRepository.save(school1);
+
+        // academic session
+
+        AcademicSession academicSession1 = new AcademicSession();
+        academicSession1.setSchool(schoolRepository.findAll().get(0));
+        academicSession1.setStartDate(LocalDate.of(2018, 4, 20));
+
+        academicSession1 = academicSessionRepository.save(academicSession1);
+
+        //terms
+
+        Term term1 = new Term();
+        term1.setSession(academicSession1);
+        term1.setStartDate(LocalDate.of(2018, 4, 20));
+
+        Term term2 = new Term();
+        term2.setSession(academicSession1);
+        term2.setStartDate(LocalDate.of(2018, 8, 1));
+
+        termRepository.save(term1);
+        term2 = termRepository.save(term2);
+
+        //staff data
+
+        Staff staff1 = new Staff();
+        staff1.setAddress1("Kondpaur");
+        staff1.setFirstName("Anuranjan");
+        staff1.setLastName("Kumar");
+        staff1.setSchool(school1);
+        staff1.setType("Teaching");
+
+        staff1 = staffRepository.save(staff1);
+
+        Staff staff2 = new Staff();
+        staff2.setAddress1("Hitech City");
+        staff2.setFirstName("Dhiraj");
+        staff2.setLastName("Kumar");
+        staff2.setSchool(school1);
+        staff2.setType("Teaching");
+
+        staff2 = staffRepository.save(staff2);
+
+        Staff staff3 = new Staff();
+        staff3.setAddress1("Hitech City");
+        staff3.setFirstName("Srujan Kumar");
+        staff3.setLastName("Tad");
+        staff3.setSchool(school1);
+        staff3.setType("Teaching");
+
+        staff3 = staffRepository.save(staff3);
+
+        Staff staff4 = new Staff();
+        staff4.setAddress1("Hitech City");
+        staff4.setFirstName("Kishore Kumar");
+        staff4.setLastName("SVR");
+        staff4.setSchool(school1);
+        staff4.setType("Teaching");
+
+        staff4 = staffRepository.save(staff4);
+
+        Staff staff5 = new Staff();
+        staff5.setAddress1("Hitech City");
+        staff5.setFirstName("Manohar");
+        staff5.setLastName("No Idea");
+        staff5.setSchool(school1);
+        staff5.setType("Teaching");
+
+        staff5 = staffRepository.save(staff5);
+
+        Staff staff6 = new Staff();
+        staff6.setAddress1("Hitech City");
+        staff6.setFirstName("Satya");
+        staff6.setLastName("No Idea");
+        staff6.setSchool(school1);
+        staff6.setType("Teaching");
+
+        staff6 = staffRepository.save(staff6);
+
+
+        Staff staff7 = new Staff();
+        staff7.setAddress1("Hitech City");
+        staff7.setFirstName("Sai Chand");
+        staff7.setLastName("Gandivasala");
+        staff7.setSchool(school1);
+        staff7.setType("Teaching");
+
+        staff7 = staffRepository.save(staff7);
+
+        Staff staff8 = new Staff();
+        staff8.setAddress1("Hitech City");
+        staff8.setFirstName("Kalyan");
+        staff8.setLastName("Naik");
+        staff8.setSchool(school1);
+        staff8.setType("Teaching");
+
+        staff8 = staffRepository.save(staff8);
+
+        // class data
+
+        Class class1 = new Class();
+        class1.setGrade(Grade.III);
+        class1.setSchool(school1);
+        class1.setTerm(term2);
+        class1.setSection("A");
+        class1.setClassTeacher(staff1);
+        class1 = classRepository.save(class1);
+
+        // courses
+
+        MasterSubject masterSubject1 = new MasterSubject();
+        masterSubject1.setName("Telugu");
+        masterSubject1 = masterSubjectRepository.save(masterSubject1);
+
+        Course course1 = new Course();
+        course1.setCourseName("Telugu");
+        course1.setMasterSubject(masterSubject1);
+        course1.setDescription("Telugu");
+        course1.setSchool(school1);
+        course1 = courseRepository.save(course1);
+
+        MasterSubject masterSubject2 = new MasterSubject();
+        masterSubject2.setName("Hindi");
+        masterSubject2 = masterSubjectRepository.save(masterSubject1);
+
+        Course course2 = new Course();
+        course2.setCourseName("Hindi");
+        course2.setMasterSubject(masterSubject2);
+        course2.setDescription("Hindi");
+        course2.setSchool(school1);
+        course2 = courseRepository.save(course2);
+
+        MasterSubject masterSubject3 = new MasterSubject();
+        masterSubject3.setName("English");
+        masterSubject3 = masterSubjectRepository.save(masterSubject3);
+
+        Course course3 = new Course();
+        course3.setCourseName("English");
+        course3.setMasterSubject(masterSubject3);
+        course3.setDescription("English");
+        course3.setSchool(school1);
+        course3 = courseRepository.save(course3);
+
+        MasterSubject masterSubject4 = new MasterSubject();
+        masterSubject4.setName("Maths");
+        masterSubject4 = masterSubjectRepository.save(masterSubject4);
+
+        Course course4 = new Course();
+        course4.setCourseName("Maths");
+        course4.setMasterSubject(masterSubject4);
+        course4.setDescription("Maths");
+        course4.setSchool(school1);
+        course4 = courseRepository.save(course4);
+
+        MasterSubject masterSubject5 = new MasterSubject();
+        masterSubject5.setName("Science");
+        masterSubject5 = masterSubjectRepository.save(masterSubject5);
+
+        Course course5 = new Course();
+        course5.setCourseName("Science");
+        course5.setMasterSubject(masterSubject5);
+        course5.setDescription("Science");
+        course5.setSchool(school1);
+        course5 = courseRepository.save(course5);
+
+        MasterSubject masterSubject6 = new MasterSubject();
+        masterSubject6.setName("Social Studies");
+        masterSubject6 = masterSubjectRepository.save(masterSubject6);
+
+        Course course6 = new Course();
+        course6.setCourseName("Social Studies");
+        course6.setMasterSubject(masterSubject6);
+        course6.setDescription("Social Students");
+        course6.setSchool(school1);
+        course6 = courseRepository.save(course6);
+
+        MasterSubject masterSubject7 = new MasterSubject();
+        masterSubject7.setName("Drawing");
+        masterSubject7 = masterSubjectRepository.save(masterSubject7);
+
+        Course course7 = new Course();
+        course7.setCourseName("Drawing");
+        course7.setMasterSubject(masterSubject7);
+        course7.setDescription("Drawing");
+        course7.setSchool(school1);
+        course7 = courseRepository.save(course7);
+
+
+        MasterSubject masterSubject8 = new MasterSubject();
+        masterSubject8.setName("Physical Training");
+        masterSubject8 = masterSubjectRepository.save(masterSubject8);
+
+        Course course8 = new Course();
+        course8.setCourseName("P.T.");
+        course8.setMasterSubject(masterSubject8);
+        course8.setDescription("Physical Training");
+        course8.setSchool(school1);
+        course8 = courseRepository.save(course8);
+
+        //course teacher data
+
+        CourseTeacher courseTeacher1 = new CourseTeacher();
+        courseTeacher1.setCourse(course1);
+        courseTeacher1.setTeacher(staff1);
+        courseTeacher1.setStandard(class1);
+        courseTeacher1 = courseTeacherRepository.save(courseTeacher1);
+
+        CourseTeacher courseTeacher2 = new CourseTeacher();
+        courseTeacher2.setCourse(course2);
+        courseTeacher2.setTeacher(staff2);
+        courseTeacher2.setStandard(class1);
+        courseTeacher2 = courseTeacherRepository.save(courseTeacher2);
+
+        CourseTeacher courseTeacher3 = new CourseTeacher();
+        courseTeacher3.setCourse(course3);
+        courseTeacher3.setTeacher(staff3);
+        courseTeacher3.setStandard(class1);
+        courseTeacher3 = courseTeacherRepository.save(courseTeacher3);
+
+        CourseTeacher courseTeacher4 = new CourseTeacher();
+        courseTeacher4.setCourse(course4);
+        courseTeacher4.setTeacher(staff4);
+        courseTeacher4.setStandard(class1);
+        courseTeacher4 = courseTeacherRepository.save(courseTeacher4);
+
+        CourseTeacher courseTeacher5 = new CourseTeacher();
+        courseTeacher5.setCourse(course5);
+        courseTeacher5.setTeacher(staff5);
+        courseTeacher5.setStandard(class1);
+        courseTeacher5 = courseTeacherRepository.save(courseTeacher5);
+
+        CourseTeacher courseTeacher6 = new CourseTeacher();
+        courseTeacher6.setCourse(course6);
+        courseTeacher6.setTeacher(staff6);
+        courseTeacher6.setStandard(class1);
+        courseTeacher6 = courseTeacherRepository.save(courseTeacher6);
+
+        CourseTeacher courseTeacher7 = new CourseTeacher();
+        courseTeacher7.setCourse(course7);
+        courseTeacher7.setTeacher(staff7);
+        courseTeacher7.setStandard(class1);
+        courseTeacher7 = courseTeacherRepository.save(courseTeacher7);
+
+        CourseTeacher courseTeacher8 = new CourseTeacher();
+        courseTeacher8.setCourse(course8);
+        courseTeacher8.setTeacher(staff8);
+        courseTeacher8.setStandard(class1);
+        courseTeacher8 = courseTeacherRepository.save(courseTeacher8);
+
+        // student data
+        Student student1 = new Student();
+        student1.setFirstName("Sai");
+        student1.setMiddleName("Chand");
+        student1.setLastName("Gandivasal");
+        student1.setDateOfBirth(LocalDate.of(1994, 6, 25));
+        student1.setNationality("Indian");
+        student1.setCity("Hyderabad");
+        student1.setAddress1("Nampally");
+        student1.setGender(Gender.MALE);
+        student1.setPincode("500001");
+        student1.setState("Telangana");
+        student1.setStandard(class1);
+        student1.setSchool(school1);
+        studentRepository.save(student1);
+
+        Guardian g1 = new Guardian();
+        g1.setFirstName("Prasad");
+        g1.setLastName("Rao");
+        g1.setType("Father");
+        g1.setAnnualIncome(90000L);
+        g1.setEmailId("prasad@prasad.com");
+        g1.setMiddleName("Krishna");
+        g1.setMobileNo("8888888888");
+        g1.setStudent(student1);
+
+        guardianRepository.save(g1);
+
+        StudentClass studentClass = new StudentClass();
+        studentClass.setStandard(class1);
+        studentClass.setStudent(student1);
+        studentClass = studentClassRepository.save(studentClass);
+
+        //exam data
+        Exam exam1 = new Exam();
+        exam1.setAcademicSession(academicSession1);
+        exam1.setExamType("Quarterly Examination");
+        exam1.setName("Quarterly Examination 2018-2019");
+        exam1.setStartDate(LocalDate.of(2018, 8 , 6));
+        exam1.setEndDate(LocalDate.of(2018,8,11));
+        exam1 = examRepository.save(exam1);
+
+        //gsd data
+        GeneralSlotDetails gsd1 = new GeneralSlotDetails();
+        gsd1.setStandard(class1);
+        gsd1.setStart("0900");
+        gsd1.setDuration(40);
+        gsd1 = generalSlotDetailsRepository.save(gsd1);
+
+        GeneralSlotDetails gsd2 = new GeneralSlotDetails();
+        gsd2.setStandard(class1);
+        gsd2.setStart("0940");
+        gsd2.setDuration(40);
+        gsd2 = generalSlotDetailsRepository.save(gsd2);
+
+        GeneralSlotDetails gsd3 = new GeneralSlotDetails();
+        gsd3.setStandard(class1);
+        gsd3.setStart("1040");
+        gsd3.setDuration(40);
+        gsd3 = generalSlotDetailsRepository.save(gsd3);
+
+        GeneralSlotDetails gsd4 = new GeneralSlotDetails();
+        gsd4.setStandard(class1);
+        gsd4.setStart("1120");
+        gsd4.setDuration(40);
+        gsd4 = generalSlotDetailsRepository.save(gsd4);
+
+        GeneralSlotDetails gsd5 = new GeneralSlotDetails();
+        gsd5.setStandard(class1);
+        gsd5.setStart("1300");
+        gsd5.setDuration(40);
+        gsd5 = generalSlotDetailsRepository.save(gsd5);
+
+        GeneralSlotDetails gsd6 = new GeneralSlotDetails();
+        gsd6.setStandard(class1);
+        gsd6.setStart("1340");
+        gsd6.setDuration(40);
+        gsd6 = generalSlotDetailsRepository.save(gsd6);
+
+        GeneralSlotDetails gsd7 = new GeneralSlotDetails();
+        gsd7.setStandard(class1);
+        gsd7.setStart("1420");
+        gsd7.setDuration(40);
+        gsd7 = generalSlotDetailsRepository.save(gsd7);
+
+        GeneralSlotDetails gsd8 = new GeneralSlotDetails();
+        gsd8.setStandard(class1);
+        gsd8.setStart("1500");
+        gsd8.setDuration(40);
+        gsd8 = generalSlotDetailsRepository.save(gsd8);
+
+        GeneralSlotDetails gsd9 = new GeneralSlotDetails();
+        gsd9.setStandard(class1);
+        gsd9.setStart("1020");
+        gsd9.setDuration(20);
+        gsd9.setRecess(true);
+        gsd9 = generalSlotDetailsRepository.save(gsd9);
+
+
+        GeneralSlotDetails gsd10 = new GeneralSlotDetails();
+        gsd10.setStandard(class1);
+        gsd10.setStart("1200");
+        gsd10.setDuration(60);
+        gsd10.setRecess(true);
+        gsd10 = generalSlotDetailsRepository.save(gsd10);
+
+
+        //SCD records
+
+        /*MONDAY*/
+        SlotCourseDetails slotCourseDetails11 = new SlotCourseDetails();
+        slotCourseDetails11.setCourse(course1);
+        slotCourseDetails11.setGsd(gsd1);
+        slotCourseDetails11.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails11 = slotCourseDetailsRepository.save(slotCourseDetails11);
+
+
+        SlotCourseDetails slotCourseDetails12 = new SlotCourseDetails();
+        slotCourseDetails12.setCourse(course2);
+        slotCourseDetails12.setGsd(gsd2);
+        slotCourseDetails12.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails12 = slotCourseDetailsRepository.save(slotCourseDetails12);
+
+        SlotCourseDetails slotCourseDetails13 = new SlotCourseDetails();
+        slotCourseDetails13.setCourse(course3);
+        slotCourseDetails13.setGsd(gsd3);
+        slotCourseDetails13.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails13 = slotCourseDetailsRepository.save(slotCourseDetails13);
+
+        SlotCourseDetails slotCourseDetails14 = new SlotCourseDetails();
+        slotCourseDetails14.setCourse(course4);
+        slotCourseDetails14.setGsd(gsd4);
+        slotCourseDetails14.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails14 = slotCourseDetailsRepository.save(slotCourseDetails14);
+
+        SlotCourseDetails slotCourseDetails15 = new SlotCourseDetails();
+        slotCourseDetails15.setCourse(course5);
+        slotCourseDetails15.setGsd(gsd5);
+        slotCourseDetails15.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails15 = slotCourseDetailsRepository.save(slotCourseDetails15);
+
+
+        SlotCourseDetails slotCourseDetails16 = new SlotCourseDetails();
+        slotCourseDetails16.setCourse(course6);
+        slotCourseDetails16.setGsd(gsd6);
+        slotCourseDetails16.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails16 = slotCourseDetailsRepository.save(slotCourseDetails16);
+
+        SlotCourseDetails slotCourseDetails17 = new SlotCourseDetails();
+        slotCourseDetails17.setCourse(course7);
+        slotCourseDetails17.setGsd(gsd7);
+        slotCourseDetails17.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails17 = slotCourseDetailsRepository.save(slotCourseDetails17);
+
+
+        SlotCourseDetails slotCourseDetails18 = new SlotCourseDetails();
+        slotCourseDetails18.setCourse(course8);
+        slotCourseDetails18.setGsd(gsd8);
+        slotCourseDetails18.setDayOfWeek(DayOfWeek.MONDAY);
+        slotCourseDetails18 = slotCourseDetailsRepository.save(slotCourseDetails18);
+
+        /*TUESDAY*/
+        SlotCourseDetails slotCourseDetails21 = new SlotCourseDetails();
+        slotCourseDetails21.setCourse(course1);
+        slotCourseDetails21.setGsd(gsd1);
+        slotCourseDetails21.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails21 = slotCourseDetailsRepository.save(slotCourseDetails21);
+
+
+        SlotCourseDetails slotCourseDetails22 = new SlotCourseDetails();
+        slotCourseDetails22.setCourse(course2);
+        slotCourseDetails22.setGsd(gsd2);
+        slotCourseDetails22.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails22 = slotCourseDetailsRepository.save(slotCourseDetails22);
+
+        SlotCourseDetails slotCourseDetails23 = new SlotCourseDetails();
+        slotCourseDetails23.setCourse(course3);
+        slotCourseDetails23.setGsd(gsd3);
+        slotCourseDetails23.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails23 = slotCourseDetailsRepository.save(slotCourseDetails23);
+
+        SlotCourseDetails slotCourseDetails24 = new SlotCourseDetails();
+        slotCourseDetails24.setCourse(course4);
+        slotCourseDetails24.setGsd(gsd4);
+        slotCourseDetails24.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails24 = slotCourseDetailsRepository.save(slotCourseDetails24);
+
+        SlotCourseDetails slotCourseDetails25 = new SlotCourseDetails();
+        slotCourseDetails25.setCourse(course5);
+        slotCourseDetails25.setGsd(gsd5);
+        slotCourseDetails25.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails25 = slotCourseDetailsRepository.save(slotCourseDetails25);
+
+
+        SlotCourseDetails slotCourseDetails26 = new SlotCourseDetails();
+        slotCourseDetails26.setCourse(course6);
+        slotCourseDetails26.setGsd(gsd6);
+        slotCourseDetails26.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails26 = slotCourseDetailsRepository.save(slotCourseDetails26);
+
+        SlotCourseDetails slotCourseDetails27 = new SlotCourseDetails();
+        slotCourseDetails27.setCourse(course7);
+        slotCourseDetails27.setGsd(gsd7);
+        slotCourseDetails27.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails27 = slotCourseDetailsRepository.save(slotCourseDetails27);
+
+
+        SlotCourseDetails slotCourseDetails28 = new SlotCourseDetails();
+        slotCourseDetails28.setCourse(course8);
+        slotCourseDetails28.setGsd(gsd8);
+        slotCourseDetails28.setDayOfWeek(DayOfWeek.TUESDAY);
+        slotCourseDetails28 = slotCourseDetailsRepository.save(slotCourseDetails28);
+
+
+        /*WEDNESDAY*/
+        SlotCourseDetails slotCourseDetails31 = new SlotCourseDetails();
+        slotCourseDetails31.setCourse(course1);
+        slotCourseDetails31.setGsd(gsd1);
+        slotCourseDetails31.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails31 = slotCourseDetailsRepository.save(slotCourseDetails31);
+
+
+        SlotCourseDetails slotCourseDetails32 = new SlotCourseDetails();
+        slotCourseDetails32.setCourse(course2);
+        slotCourseDetails32.setGsd(gsd2);
+        slotCourseDetails32.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails32 = slotCourseDetailsRepository.save(slotCourseDetails32);
+
+        SlotCourseDetails slotCourseDetails33 = new SlotCourseDetails();
+        slotCourseDetails33.setCourse(course3);
+        slotCourseDetails33.setGsd(gsd3);
+        slotCourseDetails33.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails33 = slotCourseDetailsRepository.save(slotCourseDetails33);
+
+        SlotCourseDetails slotCourseDetails34 = new SlotCourseDetails();
+        slotCourseDetails34.setCourse(course4);
+        slotCourseDetails34.setGsd(gsd4);
+        slotCourseDetails34.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails34 = slotCourseDetailsRepository.save(slotCourseDetails34);
+
+        SlotCourseDetails slotCourseDetails35 = new SlotCourseDetails();
+        slotCourseDetails35.setCourse(course5);
+        slotCourseDetails35.setGsd(gsd5);
+        slotCourseDetails35.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails35 = slotCourseDetailsRepository.save(slotCourseDetails35);
+
+
+        SlotCourseDetails slotCourseDetails36 = new SlotCourseDetails();
+        slotCourseDetails36.setCourse(course6);
+        slotCourseDetails36.setGsd(gsd6);
+        slotCourseDetails36.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails36 = slotCourseDetailsRepository.save(slotCourseDetails36);
+
+        SlotCourseDetails slotCourseDetails37 = new SlotCourseDetails();
+        slotCourseDetails37.setCourse(course7);
+        slotCourseDetails37.setGsd(gsd7);
+        slotCourseDetails37.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails37 = slotCourseDetailsRepository.save(slotCourseDetails37);
+
+
+        SlotCourseDetails slotCourseDetails38 = new SlotCourseDetails();
+        slotCourseDetails38.setCourse(course8);
+        slotCourseDetails38.setGsd(gsd8);
+        slotCourseDetails38.setDayOfWeek(DayOfWeek.WEDNESDAY);
+        slotCourseDetails38 = slotCourseDetailsRepository.save(slotCourseDetails38);
+
+        /*THURSDAY*/
+        SlotCourseDetails slotCourseDetails41 = new SlotCourseDetails();
+        slotCourseDetails41.setCourse(course1);
+        slotCourseDetails41.setGsd(gsd1);
+        slotCourseDetails41.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails41 = slotCourseDetailsRepository.save(slotCourseDetails41);
+
+
+        SlotCourseDetails slotCourseDetails42 = new SlotCourseDetails();
+        slotCourseDetails42.setCourse(course2);
+        slotCourseDetails42.setGsd(gsd2);
+        slotCourseDetails42.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails42 = slotCourseDetailsRepository.save(slotCourseDetails42);
+
+        SlotCourseDetails slotCourseDetails43 = new SlotCourseDetails();
+        slotCourseDetails43.setCourse(course3);
+        slotCourseDetails43.setGsd(gsd3);
+        slotCourseDetails43.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails43 = slotCourseDetailsRepository.save(slotCourseDetails43);
+
+        SlotCourseDetails slotCourseDetails44 = new SlotCourseDetails();
+        slotCourseDetails44.setCourse(course4);
+        slotCourseDetails44.setGsd(gsd4);
+        slotCourseDetails44.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails44 = slotCourseDetailsRepository.save(slotCourseDetails44);
+
+        SlotCourseDetails slotCourseDetails45 = new SlotCourseDetails();
+        slotCourseDetails45.setCourse(course5);
+        slotCourseDetails45.setGsd(gsd5);
+        slotCourseDetails45.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails45 = slotCourseDetailsRepository.save(slotCourseDetails45);
+
+
+        SlotCourseDetails slotCourseDetails46 = new SlotCourseDetails();
+        slotCourseDetails46.setCourse(course6);
+        slotCourseDetails46.setGsd(gsd6);
+        slotCourseDetails46.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails46 = slotCourseDetailsRepository.save(slotCourseDetails46);
+
+        SlotCourseDetails slotCourseDetails47 = new SlotCourseDetails();
+        slotCourseDetails47.setCourse(course7);
+        slotCourseDetails47.setGsd(gsd7);
+        slotCourseDetails47.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails47 = slotCourseDetailsRepository.save(slotCourseDetails47);
+
+
+        SlotCourseDetails slotCourseDetails48 = new SlotCourseDetails();
+        slotCourseDetails48.setCourse(course8);
+        slotCourseDetails48.setGsd(gsd8);
+        slotCourseDetails48.setDayOfWeek(DayOfWeek.THURSDAY);
+        slotCourseDetails48 = slotCourseDetailsRepository.save(slotCourseDetails48);
+
+        /*FRIDAY*/
+        SlotCourseDetails slotCourseDetails51 = new SlotCourseDetails();
+        slotCourseDetails51.setCourse(course1);
+        slotCourseDetails51.setGsd(gsd1);
+        slotCourseDetails51.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails51 = slotCourseDetailsRepository.save(slotCourseDetails51);
+
+
+        SlotCourseDetails slotCourseDetails52 = new SlotCourseDetails();
+        slotCourseDetails52.setCourse(course2);
+        slotCourseDetails52.setGsd(gsd2);
+        slotCourseDetails52.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails52 = slotCourseDetailsRepository.save(slotCourseDetails52);
+
+        SlotCourseDetails slotCourseDetails53 = new SlotCourseDetails();
+        slotCourseDetails53.setCourse(course3);
+        slotCourseDetails53.setGsd(gsd3);
+        slotCourseDetails53.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails53 = slotCourseDetailsRepository.save(slotCourseDetails53);
+
+        SlotCourseDetails slotCourseDetails54 = new SlotCourseDetails();
+        slotCourseDetails54.setCourse(course4);
+        slotCourseDetails54.setGsd(gsd4);
+        slotCourseDetails54.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails54 = slotCourseDetailsRepository.save(slotCourseDetails54);
+
+        SlotCourseDetails slotCourseDetails55 = new SlotCourseDetails();
+        slotCourseDetails55.setCourse(course5);
+        slotCourseDetails55.setGsd(gsd5);
+        slotCourseDetails55.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails55 = slotCourseDetailsRepository.save(slotCourseDetails55);
+
+
+        SlotCourseDetails slotCourseDetails56 = new SlotCourseDetails();
+        slotCourseDetails56.setCourse(course6);
+        slotCourseDetails56.setGsd(gsd6);
+        slotCourseDetails56.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails56 = slotCourseDetailsRepository.save(slotCourseDetails56);
+
+        SlotCourseDetails slotCourseDetails57 = new SlotCourseDetails();
+        slotCourseDetails57.setCourse(course7);
+        slotCourseDetails57.setGsd(gsd7);
+        slotCourseDetails57.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails57 = slotCourseDetailsRepository.save(slotCourseDetails57);
+
+        SlotCourseDetails slotCourseDetails58 = new SlotCourseDetails();
+        slotCourseDetails58.setCourse(course8);
+        slotCourseDetails58.setGsd(gsd8);
+        slotCourseDetails58.setDayOfWeek(DayOfWeek.FRIDAY);
+        slotCourseDetails58 = slotCourseDetailsRepository.save(slotCourseDetails58);
 
     }
 

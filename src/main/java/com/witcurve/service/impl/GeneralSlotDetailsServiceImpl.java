@@ -60,7 +60,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Override
     public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByClassId(Long classId) throws WitcurveException {
         log.debug("Request to get generalSlotDetails by class id : {}", classId);
-        List<GeneralSlotDetails> generalSlotDetailsList = generalSlotDetailsRepository.findByStandardIdAndExamIdNull(classId);
+        List<GeneralSlotDetails> generalSlotDetailsList = generalSlotDetailsRepository.findByStandardIdAndExamIdNullOrderByStart(classId);
         return generalSlotDetailsMapper.toDto(generalSlotDetailsList);
     }
 
