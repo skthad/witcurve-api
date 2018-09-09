@@ -24,10 +24,10 @@ public class EventDTO extends AbstractAuditingDTO {
     @NotNull
     private LocalDate date;
 
-    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventStartTime;
 
-    @Pattern(regexp = "([01]?[0-9]|2[0-3])[0-5][0-9]")
+    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventEndTime;
 
     private Long studentId;
