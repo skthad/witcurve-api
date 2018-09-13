@@ -24,13 +24,12 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
 
     @NotNull
     @Column(name = "day_of_week", nullable = false)
-    @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Course course;
+    private CourseTeacher courseTeacher;
 
     public Long getId() {
         return id;
@@ -56,12 +55,12 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
         this.dayOfWeek = dayOfWeek;
     }
 
-    public Course getCourse() {
-        return course;
+    public CourseTeacher getCourseTeacher() {
+        return courseTeacher;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourseTeacher(CourseTeacher courseTeacher) {
+        this.courseTeacher = courseTeacher;
     }
 
     @Override
@@ -82,9 +81,9 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     public String toString() {
         return "SlotCourseDetails{" +
             "id=" + id +
-            ", gsdId=" + gsd.getId() +
+            ", gsd=" + gsd +
             ", dayOfWeek=" + dayOfWeek +
-            ", courseId=" + course.getId() +
+            ", courseTeacher=" + courseTeacher +
             '}';
     }
 }

@@ -18,7 +18,7 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     private DayOfWeek dayOfWeek;
 
     @NotNull
-    private CourseDTO course;
+    private CourseTeacherDTO courseTeacher;
 
     public Long getId() {
         return id;
@@ -45,14 +45,14 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     }
 
     @NotNull
-
-    public CourseDTO getCourse() {
-        return course;
+    public CourseTeacherDTO getCourseTeacher() {
+        return courseTeacher;
     }
 
-    public void setCourse(CourseDTO course) {
-        this.course = course;
+    public void setCourseTeacher(CourseTeacherDTO courseTeacher) {
+        this.courseTeacher = courseTeacher;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -74,7 +74,7 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
             "id=" + id +
             ", gsd=" + gsd +
             ", dayOfWeek=" + dayOfWeek +
-            ", course=" + course +
+            ", courseTeacher=" + courseTeacher +
             '}';
     }
 }

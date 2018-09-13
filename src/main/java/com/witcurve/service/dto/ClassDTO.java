@@ -15,13 +15,10 @@ public class ClassDTO extends AbstractAuditingDTO {
     private String section;
 
     @NotNull
-    private StaffDTO classTeacher;
+    private Long classTeacherId;
 
     @NotNull
-    private Long termId;
-
-    @NotNull
-    private Long schoolId;
+    private TermDTO term;
 
     public Long getId() {
         return id;
@@ -47,28 +44,20 @@ public class ClassDTO extends AbstractAuditingDTO {
         this.section = section;
     }
 
-    public StaffDTO getClassTeacher() {
-        return classTeacher;
+    public Long getClassTeacherId() {
+        return classTeacherId;
     }
 
-    public void setClassTeacher(StaffDTO classTeacher) {
-        this.classTeacher = classTeacher;
+    public void setClassTeacherId(Long classTeacherId) {
+        this.classTeacherId = classTeacherId;
     }
 
-    public Long getTermId() {
-        return termId;
+    public TermDTO getTerm() {
+        return term;
     }
 
-    public void setTermId(Long termId) {
-        this.termId = termId;
-    }
-
-    public Long getSchoolId() {
-        return schoolId;
-    }
-
-    public void setSchoolId(Long schoolId) {
-        this.schoolId = schoolId;
+    public void setTerm(TermDTO term) {
+        this.term = term;
     }
 
     @Override
@@ -89,11 +78,10 @@ public class ClassDTO extends AbstractAuditingDTO {
     public String toString() {
         return "ClassDTO{" +
             "id=" + id +
-            ", grade='" + grade + '\'' +
+            ", grade=" + grade +
             ", section='" + section + '\'' +
-            ", classTeacher=" + classTeacher +
-            ", termId=" + termId +
-            ", schoolId=" + schoolId +
+            ", classTeacherId=" + classTeacherId +
+            ", term=" + term +
             '}';
     }
 }

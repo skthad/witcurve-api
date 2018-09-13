@@ -7,15 +7,13 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring" , uses = {StaffMapper.class, TermMapper.class, SchoolMapper.class})
+@Mapper(componentModel = "spring" , uses = {StaffMapper.class, TermMapper.class})
 public interface ClassMapper extends EntityMapper<ClassDTO, Class> {
 
-    @Mapping(target = "termId", source = "term.id")
-    @Mapping(target = "schoolId", source = "school.id")
+    @Mapping(target = "classTeacherId", source = "classTeacher.id")
     ClassDTO toDto(Class aclass);
 
-    @Mapping(target = "term.id", source = "termId")
-    @Mapping(target = "school.id", source = "schoolId")
+    @Mapping(target = "classTeacher", source = "classTeacherId")
     Class toEntity(ClassDTO classDTO);
 
     default Class fromId(Long id) {

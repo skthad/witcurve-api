@@ -17,7 +17,7 @@ public class TermDTO extends AbstractAuditingDTO {
     private LocalDate startDate;
 
     @NotNull
-    private Long academicSessionId;
+    private AcademicSessionDTO session;
 
     public Long getId() {
         return id;
@@ -35,12 +35,12 @@ public class TermDTO extends AbstractAuditingDTO {
         this.startDate = startDate;
     }
 
-    public Long getAcademicSessionId() {
-        return academicSessionId;
+    public AcademicSessionDTO getSession() {
+        return session;
     }
 
-    public void setAcademicSessionId(Long academicSessionId) {
-        this.academicSessionId = academicSessionId;
+    public void setSession(AcademicSessionDTO session) {
+        this.session = session;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TermDTO extends AbstractAuditingDTO {
         return "TermDTO{" +
             "id=" + id +
             ", startDate=" + startDate +
-            ", academicSessionId=" + academicSessionId +
+            ", session=" + session +
             '}';
     }
 }

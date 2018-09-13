@@ -1,5 +1,7 @@
 package com.witcurve.domain;
 
+import org.mapstruct.Mapping;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -29,6 +31,12 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
     @JoinColumn(nullable = false, name = "class_id")
     private Class standard;
 
+    @NotNull
+    @Column(name = "roll_no", nullable = false)
+    private String rollNo;
+
+    // add roll no.
+
     public Long getId() {
         return id;
     }
@@ -53,6 +61,14 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
         this.standard = standard;
     }
 
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,6 +89,7 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
             "id=" + id +
             ", student=" + student +
             ", standard=" + standard +
+            ", rollNo='" + rollNo + '\'' +
             '}';
     }
 }

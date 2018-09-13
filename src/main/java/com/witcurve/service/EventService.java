@@ -14,9 +14,11 @@ public interface EventService {
 
     void deleteEvent(Long eventId) throws WitcurveException;
 
-    List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId);
+    List<EventDTO> findAllEventsOnGivenDateForClass(LocalDate eventDate, Long classId) throws WitcurveException;
 
-    List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId);
+    List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException;
 
-    List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId);
+    List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException;
+
+    List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) throws WitcurveException;
 }

@@ -39,11 +39,6 @@ public class Class extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private Term term;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private School school;
-
     public Long getId() {
         return id;
     }
@@ -84,14 +79,6 @@ public class Class extends AbstractAuditingEntity implements Serializable {
         this.term = term;
     }
 
-    public School getSchool() {
-        return school;
-    }
-
-    public void setSchool(School school) {
-        this.school = school;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,11 +97,10 @@ public class Class extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Class{" +
             "id=" + id +
-            ", grade='" + grade + '\'' +
+            ", grade=" + grade +
             ", section='" + section + '\'' +
             ", classTeacher=" + classTeacher +
             ", term=" + term +
-            ", school=" + school +
             '}';
     }
 }

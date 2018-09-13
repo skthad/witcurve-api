@@ -15,4 +15,6 @@ public interface SlotCourseDetailsService {
     void deleteSlotCourseDetails(Long slotCourseDetailsId) throws WitcurveException;
 
     List<SlotCourseDetailsDTO> getSlotCourseDetailsByClassId(Long classId);
+
+    List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherIdAndTermId(Long teacherId, Long termId);
 }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -115,6 +116,22 @@ public class SlotCourseDetailsResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * get slotCourseDetails by teacher id and term id
+     *
+     * @param teacherId
+     * @oaram termId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/slot-course-details/teacher/{teacherId}")
+    @Timed
+    public ResponseEntity<List<SlotCourseDetailsDTO>> getSlotCourseDetailsByTeacherAndTermId(@PathVariable("teacherId") Long teacherId, @RequestParam("termId") Long termId) throws WitcurveException {
+        log.debug("Request to get SlotCourseDetails with teacher id : {} and term id : {}", teacherId, termId);
+        List<SlotCourseDetailsDTO> result = slotCourseDetailsService.getSlotCourseDetailsByTeacherIdAndTermId(teacherId, termId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 
 }

@@ -10,10 +10,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {AcademicSessionMapper.class})
 public interface TermMapper extends EntityMapper<TermDTO, Term> {
 
-    @Mapping(target = "academicSessionId", source = "session.id")
     TermDTO toDto(Term term);
 
-    @Mapping(source = "academicSessionId", target = "session.id")
     Term toEntity(TermDTO termDTO);
 
     default Term fromId(Long id) {

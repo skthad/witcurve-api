@@ -6,6 +6,8 @@ import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
+import com.witcurve.service.util.RandomUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,11 +89,12 @@ public class WitcurveResource {
 
     private void loadSchoolDataForParent() {
 
+        String affiliationId = RandomStringUtils.randomAlphanumeric(6);
         //school data
         School school1 = new School();
         school1.setName("Witcurve");
         school1.setAddress1("Kondapur");
-        school1.setAffiliationId("affl_0001");
+        school1.setAffiliationId(affiliationId);
         school1.setCity("Hyderabad");
         school1.setState("Telangana");
         school1.setCountry("India");
@@ -107,7 +110,7 @@ public class WitcurveResource {
         // academic session
 
         AcademicSession academicSession1 = new AcademicSession();
-        academicSession1.setSchool(schoolRepository.findAll().get(0));
+        academicSession1.setSchool(school1);
         academicSession1.setStartDate(LocalDate.of(2018, 4, 20));
 
         academicSession1 = academicSessionRepository.save(academicSession1);
@@ -204,7 +207,6 @@ public class WitcurveResource {
 
         Class class1 = new Class();
         class1.setGrade(Grade.III);
-        class1.setSchool(school1);
         class1.setTerm(term2);
         class1.setSection("A");
         class1.setClassTeacher(staff1);
@@ -382,6 +384,7 @@ public class WitcurveResource {
         StudentClass studentClass = new StudentClass();
         studentClass.setStandard(class1);
         studentClass.setStudent(student1);
+        studentClass.setRollNo("1");
         studentClass = studentClassRepository.save(studentClass);
 
         //exam data
@@ -462,104 +465,104 @@ public class WitcurveResource {
 
         /*MONDAY*/
         SlotCourseDetails slotCourseDetails11 = new SlotCourseDetails();
-        slotCourseDetails11.setCourse(course1);
+        slotCourseDetails11.setCourseTeacher(courseTeacher1);
         slotCourseDetails11.setGsd(gsd1);
         slotCourseDetails11.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails11 = slotCourseDetailsRepository.save(slotCourseDetails11);
 
 
         SlotCourseDetails slotCourseDetails12 = new SlotCourseDetails();
-        slotCourseDetails12.setCourse(course2);
+        slotCourseDetails12.setCourseTeacher(courseTeacher2);
         slotCourseDetails12.setGsd(gsd2);
         slotCourseDetails12.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails12 = slotCourseDetailsRepository.save(slotCourseDetails12);
 
         SlotCourseDetails slotCourseDetails13 = new SlotCourseDetails();
-        slotCourseDetails13.setCourse(course3);
+        slotCourseDetails13.setCourseTeacher(courseTeacher3);
         slotCourseDetails13.setGsd(gsd3);
         slotCourseDetails13.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails13 = slotCourseDetailsRepository.save(slotCourseDetails13);
 
         SlotCourseDetails slotCourseDetails14 = new SlotCourseDetails();
-        slotCourseDetails14.setCourse(course4);
+        slotCourseDetails14.setCourseTeacher(courseTeacher4);
         slotCourseDetails14.setGsd(gsd4);
         slotCourseDetails14.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails14 = slotCourseDetailsRepository.save(slotCourseDetails14);
 
         SlotCourseDetails slotCourseDetails15 = new SlotCourseDetails();
-        slotCourseDetails15.setCourse(course5);
+        slotCourseDetails15.setCourseTeacher(courseTeacher5);
         slotCourseDetails15.setGsd(gsd5);
         slotCourseDetails15.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails15 = slotCourseDetailsRepository.save(slotCourseDetails15);
 
 
         SlotCourseDetails slotCourseDetails16 = new SlotCourseDetails();
-        slotCourseDetails16.setCourse(course6);
+        slotCourseDetails16.setCourseTeacher(courseTeacher6);
         slotCourseDetails16.setGsd(gsd6);
         slotCourseDetails16.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails16 = slotCourseDetailsRepository.save(slotCourseDetails16);
 
         SlotCourseDetails slotCourseDetails17 = new SlotCourseDetails();
-        slotCourseDetails17.setCourse(course7);
+        slotCourseDetails17.setCourseTeacher(courseTeacher7);
         slotCourseDetails17.setGsd(gsd7);
         slotCourseDetails17.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails17 = slotCourseDetailsRepository.save(slotCourseDetails17);
 
 
         SlotCourseDetails slotCourseDetails18 = new SlotCourseDetails();
-        slotCourseDetails18.setCourse(course8);
+        slotCourseDetails18.setCourseTeacher(courseTeacher8);
         slotCourseDetails18.setGsd(gsd8);
         slotCourseDetails18.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails18 = slotCourseDetailsRepository.save(slotCourseDetails18);
 
         /*TUESDAY*/
         SlotCourseDetails slotCourseDetails21 = new SlotCourseDetails();
-        slotCourseDetails21.setCourse(course1);
+        slotCourseDetails21.setCourseTeacher(courseTeacher1);
         slotCourseDetails21.setGsd(gsd1);
         slotCourseDetails21.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails21 = slotCourseDetailsRepository.save(slotCourseDetails21);
 
 
         SlotCourseDetails slotCourseDetails22 = new SlotCourseDetails();
-        slotCourseDetails22.setCourse(course2);
+        slotCourseDetails22.setCourseTeacher(courseTeacher2);
         slotCourseDetails22.setGsd(gsd2);
         slotCourseDetails22.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails22 = slotCourseDetailsRepository.save(slotCourseDetails22);
 
         SlotCourseDetails slotCourseDetails23 = new SlotCourseDetails();
-        slotCourseDetails23.setCourse(course3);
+        slotCourseDetails23.setCourseTeacher(courseTeacher3);
         slotCourseDetails23.setGsd(gsd3);
         slotCourseDetails23.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails23 = slotCourseDetailsRepository.save(slotCourseDetails23);
 
         SlotCourseDetails slotCourseDetails24 = new SlotCourseDetails();
-        slotCourseDetails24.setCourse(course4);
+        slotCourseDetails24.setCourseTeacher(courseTeacher4);
         slotCourseDetails24.setGsd(gsd4);
         slotCourseDetails24.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails24 = slotCourseDetailsRepository.save(slotCourseDetails24);
 
         SlotCourseDetails slotCourseDetails25 = new SlotCourseDetails();
-        slotCourseDetails25.setCourse(course5);
+        slotCourseDetails25.setCourseTeacher(courseTeacher5);
         slotCourseDetails25.setGsd(gsd5);
         slotCourseDetails25.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails25 = slotCourseDetailsRepository.save(slotCourseDetails25);
 
 
         SlotCourseDetails slotCourseDetails26 = new SlotCourseDetails();
-        slotCourseDetails26.setCourse(course6);
+        slotCourseDetails26.setCourseTeacher(courseTeacher6);
         slotCourseDetails26.setGsd(gsd6);
         slotCourseDetails26.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails26 = slotCourseDetailsRepository.save(slotCourseDetails26);
 
         SlotCourseDetails slotCourseDetails27 = new SlotCourseDetails();
-        slotCourseDetails27.setCourse(course7);
+        slotCourseDetails27.setCourseTeacher(courseTeacher7);
         slotCourseDetails27.setGsd(gsd7);
         slotCourseDetails27.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails27 = slotCourseDetailsRepository.save(slotCourseDetails27);
 
 
         SlotCourseDetails slotCourseDetails28 = new SlotCourseDetails();
-        slotCourseDetails28.setCourse(course8);
+        slotCourseDetails28.setCourseTeacher(courseTeacher8);
         slotCourseDetails28.setGsd(gsd8);
         slotCourseDetails28.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails28 = slotCourseDetailsRepository.save(slotCourseDetails28);
@@ -567,155 +570,155 @@ public class WitcurveResource {
 
         /*WEDNESDAY*/
         SlotCourseDetails slotCourseDetails31 = new SlotCourseDetails();
-        slotCourseDetails31.setCourse(course1);
+        slotCourseDetails31.setCourseTeacher(courseTeacher1);
         slotCourseDetails31.setGsd(gsd1);
         slotCourseDetails31.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails31 = slotCourseDetailsRepository.save(slotCourseDetails31);
 
 
         SlotCourseDetails slotCourseDetails32 = new SlotCourseDetails();
-        slotCourseDetails32.setCourse(course2);
+        slotCourseDetails32.setCourseTeacher(courseTeacher2);
         slotCourseDetails32.setGsd(gsd2);
         slotCourseDetails32.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails32 = slotCourseDetailsRepository.save(slotCourseDetails32);
 
         SlotCourseDetails slotCourseDetails33 = new SlotCourseDetails();
-        slotCourseDetails33.setCourse(course3);
+        slotCourseDetails33.setCourseTeacher(courseTeacher3);
         slotCourseDetails33.setGsd(gsd3);
         slotCourseDetails33.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails33 = slotCourseDetailsRepository.save(slotCourseDetails33);
 
         SlotCourseDetails slotCourseDetails34 = new SlotCourseDetails();
-        slotCourseDetails34.setCourse(course4);
+        slotCourseDetails34.setCourseTeacher(courseTeacher4);
         slotCourseDetails34.setGsd(gsd4);
         slotCourseDetails34.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails34 = slotCourseDetailsRepository.save(slotCourseDetails34);
 
         SlotCourseDetails slotCourseDetails35 = new SlotCourseDetails();
-        slotCourseDetails35.setCourse(course5);
+        slotCourseDetails35.setCourseTeacher(courseTeacher5);
         slotCourseDetails35.setGsd(gsd5);
         slotCourseDetails35.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails35 = slotCourseDetailsRepository.save(slotCourseDetails35);
 
 
         SlotCourseDetails slotCourseDetails36 = new SlotCourseDetails();
-        slotCourseDetails36.setCourse(course6);
+        slotCourseDetails36.setCourseTeacher(courseTeacher6);
         slotCourseDetails36.setGsd(gsd6);
         slotCourseDetails36.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails36 = slotCourseDetailsRepository.save(slotCourseDetails36);
 
         SlotCourseDetails slotCourseDetails37 = new SlotCourseDetails();
-        slotCourseDetails37.setCourse(course7);
+        slotCourseDetails37.setCourseTeacher(courseTeacher7);
         slotCourseDetails37.setGsd(gsd7);
         slotCourseDetails37.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails37 = slotCourseDetailsRepository.save(slotCourseDetails37);
 
 
         SlotCourseDetails slotCourseDetails38 = new SlotCourseDetails();
-        slotCourseDetails38.setCourse(course8);
+        slotCourseDetails38.setCourseTeacher(courseTeacher8);
         slotCourseDetails38.setGsd(gsd8);
         slotCourseDetails38.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails38 = slotCourseDetailsRepository.save(slotCourseDetails38);
 
         /*THURSDAY*/
         SlotCourseDetails slotCourseDetails41 = new SlotCourseDetails();
-        slotCourseDetails41.setCourse(course1);
+        slotCourseDetails41.setCourseTeacher(courseTeacher1);
         slotCourseDetails41.setGsd(gsd1);
         slotCourseDetails41.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails41 = slotCourseDetailsRepository.save(slotCourseDetails41);
 
 
         SlotCourseDetails slotCourseDetails42 = new SlotCourseDetails();
-        slotCourseDetails42.setCourse(course2);
+        slotCourseDetails42.setCourseTeacher(courseTeacher2);
         slotCourseDetails42.setGsd(gsd2);
         slotCourseDetails42.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails42 = slotCourseDetailsRepository.save(slotCourseDetails42);
 
         SlotCourseDetails slotCourseDetails43 = new SlotCourseDetails();
-        slotCourseDetails43.setCourse(course3);
+        slotCourseDetails43.setCourseTeacher(courseTeacher3);
         slotCourseDetails43.setGsd(gsd3);
         slotCourseDetails43.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails43 = slotCourseDetailsRepository.save(slotCourseDetails43);
 
         SlotCourseDetails slotCourseDetails44 = new SlotCourseDetails();
-        slotCourseDetails44.setCourse(course4);
+        slotCourseDetails44.setCourseTeacher(courseTeacher4);
         slotCourseDetails44.setGsd(gsd4);
         slotCourseDetails44.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails44 = slotCourseDetailsRepository.save(slotCourseDetails44);
 
         SlotCourseDetails slotCourseDetails45 = new SlotCourseDetails();
-        slotCourseDetails45.setCourse(course5);
+        slotCourseDetails45.setCourseTeacher(courseTeacher5);
         slotCourseDetails45.setGsd(gsd5);
         slotCourseDetails45.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails45 = slotCourseDetailsRepository.save(slotCourseDetails45);
 
 
         SlotCourseDetails slotCourseDetails46 = new SlotCourseDetails();
-        slotCourseDetails46.setCourse(course6);
+        slotCourseDetails46.setCourseTeacher(courseTeacher6);
         slotCourseDetails46.setGsd(gsd6);
         slotCourseDetails46.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails46 = slotCourseDetailsRepository.save(slotCourseDetails46);
 
         SlotCourseDetails slotCourseDetails47 = new SlotCourseDetails();
-        slotCourseDetails47.setCourse(course7);
+        slotCourseDetails47.setCourseTeacher(courseTeacher7);
         slotCourseDetails47.setGsd(gsd7);
         slotCourseDetails47.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails47 = slotCourseDetailsRepository.save(slotCourseDetails47);
 
 
         SlotCourseDetails slotCourseDetails48 = new SlotCourseDetails();
-        slotCourseDetails48.setCourse(course8);
+        slotCourseDetails48.setCourseTeacher(courseTeacher8);
         slotCourseDetails48.setGsd(gsd8);
         slotCourseDetails48.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails48 = slotCourseDetailsRepository.save(slotCourseDetails48);
 
         /*FRIDAY*/
         SlotCourseDetails slotCourseDetails51 = new SlotCourseDetails();
-        slotCourseDetails51.setCourse(course1);
+        slotCourseDetails51.setCourseTeacher(courseTeacher1);
         slotCourseDetails51.setGsd(gsd1);
         slotCourseDetails51.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails51 = slotCourseDetailsRepository.save(slotCourseDetails51);
 
 
         SlotCourseDetails slotCourseDetails52 = new SlotCourseDetails();
-        slotCourseDetails52.setCourse(course2);
+        slotCourseDetails52.setCourseTeacher(courseTeacher2);
         slotCourseDetails52.setGsd(gsd2);
         slotCourseDetails52.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails52 = slotCourseDetailsRepository.save(slotCourseDetails52);
 
         SlotCourseDetails slotCourseDetails53 = new SlotCourseDetails();
-        slotCourseDetails53.setCourse(course3);
+        slotCourseDetails53.setCourseTeacher(courseTeacher3);
         slotCourseDetails53.setGsd(gsd3);
         slotCourseDetails53.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails53 = slotCourseDetailsRepository.save(slotCourseDetails53);
 
         SlotCourseDetails slotCourseDetails54 = new SlotCourseDetails();
-        slotCourseDetails54.setCourse(course4);
+        slotCourseDetails54.setCourseTeacher(courseTeacher4);
         slotCourseDetails54.setGsd(gsd4);
         slotCourseDetails54.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails54 = slotCourseDetailsRepository.save(slotCourseDetails54);
 
         SlotCourseDetails slotCourseDetails55 = new SlotCourseDetails();
-        slotCourseDetails55.setCourse(course5);
+        slotCourseDetails55.setCourseTeacher(courseTeacher5);
         slotCourseDetails55.setGsd(gsd5);
         slotCourseDetails55.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails55 = slotCourseDetailsRepository.save(slotCourseDetails55);
 
 
         SlotCourseDetails slotCourseDetails56 = new SlotCourseDetails();
-        slotCourseDetails56.setCourse(course6);
+        slotCourseDetails56.setCourseTeacher(courseTeacher6);
         slotCourseDetails56.setGsd(gsd6);
         slotCourseDetails56.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails56 = slotCourseDetailsRepository.save(slotCourseDetails56);
 
         SlotCourseDetails slotCourseDetails57 = new SlotCourseDetails();
-        slotCourseDetails57.setCourse(course7);
+        slotCourseDetails57.setCourseTeacher(courseTeacher7);
         slotCourseDetails57.setGsd(gsd7);
         slotCourseDetails57.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails57 = slotCourseDetailsRepository.save(slotCourseDetails57);
 
         SlotCourseDetails slotCourseDetails58 = new SlotCourseDetails();
-        slotCourseDetails58.setCourse(course8);
+        slotCourseDetails58.setCourseTeacher(courseTeacher8);
         slotCourseDetails58.setGsd(gsd8);
         slotCourseDetails58.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails58 = slotCourseDetailsRepository.save(slotCourseDetails58);
@@ -1095,7 +1098,7 @@ public class WitcurveResource {
         testEvent11.setDate(LocalDate.of(2018, 9, 19));
         testEvent11.setStandard(class1);
         testEvent11.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent11.setScd(slotCourseDetails11);
+        testEvent11.setScd(slotCourseDetails31);
         testEvent11 = eventRepository.save(testEvent11);
 
         Event testEvent12 = new Event();
@@ -1105,7 +1108,7 @@ public class WitcurveResource {
         testEvent12.setDate(LocalDate.of(2018, 9, 19));
         testEvent12.setStandard(class1);
         testEvent12.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent12.setScd(slotCourseDetails12);
+        testEvent12.setScd(slotCourseDetails32);
         testEvent12 = eventRepository.save(testEvent12);
 
         Event testEvent13 = new Event();
@@ -1115,7 +1118,7 @@ public class WitcurveResource {
         testEvent13.setDate(LocalDate.of(2018, 9, 19));
         testEvent13.setStandard(class1);
         testEvent13.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent13.setScd(slotCourseDetails13);
+        testEvent13.setScd(slotCourseDetails33);
         testEvent13 = eventRepository.save(testEvent13);
 
         Event testEvent14 = new Event();
@@ -1125,7 +1128,7 @@ public class WitcurveResource {
         testEvent14.setDate(LocalDate.of(2018, 9, 19));
         testEvent14.setStandard(class1);
         testEvent14.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent14.setScd(slotCourseDetails14);
+        testEvent14.setScd(slotCourseDetails34);
         testEvent14 = eventRepository.save(testEvent14);
 
         Event testEvent15 = new Event();
@@ -1135,7 +1138,7 @@ public class WitcurveResource {
         testEvent15.setDate(LocalDate.of(2018, 9, 19));
         testEvent15.setStandard(class1);
         testEvent15.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent15.setScd(slotCourseDetails15);
+        testEvent15.setScd(slotCourseDetails35);
         testEvent15 = eventRepository.save(testEvent15);
 
         Event testEvent16 = new Event();
@@ -1145,7 +1148,7 @@ public class WitcurveResource {
         testEvent16.setDate(LocalDate.of(2018, 9, 19));
         testEvent16.setStandard(class1);
         testEvent16.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent16.setScd(slotCourseDetails16);
+        testEvent16.setScd(slotCourseDetails36);
         testEvent16 = eventRepository.save(testEvent16);
 
         Event testEvent17 = new Event();
@@ -1155,7 +1158,7 @@ public class WitcurveResource {
         testEvent17.setDate(LocalDate.of(2018, 9, 19));
         testEvent17.setStandard(class1);
         testEvent17.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent17.setScd(slotCourseDetails17);
+        testEvent17.setScd(slotCourseDetails37);
         testEvent17 = eventRepository.save(testEvent17);
 
         Event testEvent18 = new Event();
@@ -1165,7 +1168,7 @@ public class WitcurveResource {
         testEvent18.setDate(LocalDate.of(2018, 9, 19));
         testEvent18.setStandard(class1);
         testEvent18.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent18.setScd(slotCourseDetails18);
+        testEvent18.setScd(slotCourseDetails38);
         testEvent18 = eventRepository.save(testEvent18);
 
         Event testEvent41 = new Event();
@@ -1175,7 +1178,7 @@ public class WitcurveResource {
         testEvent41.setDate(LocalDate.of(2018, 9, 21));
         testEvent41.setStandard(class1);
         testEvent41.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent41.setScd(slotCourseDetails41);
+        testEvent41.setScd(slotCourseDetails51);
         testEvent41 = eventRepository.save(testEvent41);
 
         Event testEvent42 = new Event();
@@ -1185,7 +1188,7 @@ public class WitcurveResource {
         testEvent42.setDate(LocalDate.of(2018, 9, 21));
         testEvent42.setStandard(class1);
         testEvent42.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent42.setScd(slotCourseDetails42);
+        testEvent42.setScd(slotCourseDetails52);
         testEvent42 = eventRepository.save(testEvent42);
 
         Event testEvent43 = new Event();
@@ -1195,7 +1198,7 @@ public class WitcurveResource {
         testEvent43.setDate(LocalDate.of(2018, 9, 21));
         testEvent43.setStandard(class1);
         testEvent43.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent43.setScd(slotCourseDetails43);
+        testEvent43.setScd(slotCourseDetails53);
         testEvent43 = eventRepository.save(testEvent43);
 
         Event testEvent44 = new Event();
@@ -1205,7 +1208,7 @@ public class WitcurveResource {
         testEvent44.setDate(LocalDate.of(2018, 9, 21));
         testEvent44.setStandard(class1);
         testEvent44.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent44.setScd(slotCourseDetails44);
+        testEvent44.setScd(slotCourseDetails54);
         testEvent44 = eventRepository.save(testEvent44);
 
         Event testEvent45 = new Event();
@@ -1215,7 +1218,7 @@ public class WitcurveResource {
         testEvent45.setDate(LocalDate.of(2018, 9, 21));
         testEvent45.setStandard(class1);
         testEvent45.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent45.setScd(slotCourseDetails45);
+        testEvent45.setScd(slotCourseDetails55);
         testEvent45 = eventRepository.save(testEvent45);
 
         Event testEvent46 = new Event();
@@ -1225,7 +1228,7 @@ public class WitcurveResource {
         testEvent46.setDate(LocalDate.of(2018, 9, 21));
         testEvent46.setStandard(class1);
         testEvent46.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent46.setScd(slotCourseDetails46);
+        testEvent46.setScd(slotCourseDetails56);
         testEvent46 = eventRepository.save(testEvent46);
 
         Event testEvent47 = new Event();
@@ -1235,7 +1238,7 @@ public class WitcurveResource {
         testEvent47.setDate(LocalDate.of(2018, 9, 21));
         testEvent47.setStandard(class1);
         testEvent47.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent47.setScd(slotCourseDetails47);
+        testEvent47.setScd(slotCourseDetails57);
         testEvent47 = eventRepository.save(testEvent47);
 
         Event testEvent48 = new Event();
@@ -1245,7 +1248,7 @@ public class WitcurveResource {
         testEvent48.setDate(LocalDate.of(2018, 9, 21));
         testEvent48.setStandard(class1);
         testEvent48.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent48.setScd(slotCourseDetails48);
+        testEvent48.setScd(slotCourseDetails58);
         testEvent48 = eventRepository.save(testEvent48);
 
         //Assignment Events created on 10, 13 and dated for 12, 14
@@ -1256,7 +1259,7 @@ public class WitcurveResource {
         assignmentEvent11.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent11.setStandard(class1);
         assignmentEvent11.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent11.setScd(slotCourseDetails11);
+        assignmentEvent11.setScd(slotCourseDetails31);
         assignmentEvent11 = eventRepository.save(assignmentEvent11);
 
         Event assignmentEvent12 = new Event();
@@ -1266,7 +1269,7 @@ public class WitcurveResource {
         assignmentEvent12.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent12.setStandard(class1);
         assignmentEvent12.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent12.setScd(slotCourseDetails12);
+        assignmentEvent12.setScd(slotCourseDetails32);
         assignmentEvent12 = eventRepository.save(assignmentEvent12);
 
         Event assignmentEvent13 = new Event();
@@ -1276,7 +1279,7 @@ public class WitcurveResource {
         assignmentEvent13.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent13.setStandard(class1);
         assignmentEvent13.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent13.setScd(slotCourseDetails13);
+        assignmentEvent13.setScd(slotCourseDetails33);
         assignmentEvent13 = eventRepository.save(assignmentEvent13);
 
         Event assignmentEvent14 = new Event();
@@ -1286,7 +1289,7 @@ public class WitcurveResource {
         assignmentEvent14.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent14.setStandard(class1);
         assignmentEvent14.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent14.setScd(slotCourseDetails14);
+        assignmentEvent14.setScd(slotCourseDetails34);
         assignmentEvent14 = eventRepository.save(assignmentEvent14);
 
         Event assignmentEvent15 = new Event();
@@ -1296,7 +1299,7 @@ public class WitcurveResource {
         assignmentEvent15.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent15.setStandard(class1);
         assignmentEvent15.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent15.setScd(slotCourseDetails15);
+        assignmentEvent15.setScd(slotCourseDetails35);
         assignmentEvent15 = eventRepository.save(assignmentEvent15);
 
         Event assignmentEvent16 = new Event();
@@ -1306,7 +1309,7 @@ public class WitcurveResource {
         assignmentEvent16.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent16.setStandard(class1);
         assignmentEvent16.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent16.setScd(slotCourseDetails16);
+        assignmentEvent16.setScd(slotCourseDetails36);
         assignmentEvent16 = eventRepository.save(assignmentEvent16);
 
         Event assignmentEvent17 = new Event();
@@ -1316,7 +1319,7 @@ public class WitcurveResource {
         assignmentEvent17.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent17.setStandard(class1);
         assignmentEvent17.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent17.setScd(slotCourseDetails17);
+        assignmentEvent17.setScd(slotCourseDetails37);
         assignmentEvent17 = eventRepository.save(assignmentEvent17);
 
         Event assignmentEvent18 = new Event();
@@ -1326,7 +1329,7 @@ public class WitcurveResource {
         assignmentEvent18.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent18.setStandard(class1);
         assignmentEvent18.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent18.setScd(slotCourseDetails18);
+        assignmentEvent18.setScd(slotCourseDetails38);
         assignmentEvent18 = eventRepository.save(assignmentEvent18);
 
 
@@ -1337,7 +1340,7 @@ public class WitcurveResource {
         assignmentEvent41.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent41.setStandard(class1);
         assignmentEvent41.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent41.setScd(slotCourseDetails41);
+        assignmentEvent41.setScd(slotCourseDetails51);
         assignmentEvent41 = eventRepository.save(assignmentEvent41);
 
         Event assignmentEvent42 = new Event();
@@ -1347,7 +1350,7 @@ public class WitcurveResource {
         assignmentEvent42.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent42.setStandard(class1);
         assignmentEvent42.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent42.setScd(slotCourseDetails42);
+        assignmentEvent42.setScd(slotCourseDetails52);
         assignmentEvent42 = eventRepository.save(assignmentEvent42);
 
         Event assignmentEvent43 = new Event();
@@ -1357,7 +1360,7 @@ public class WitcurveResource {
         assignmentEvent43.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent43.setStandard(class1);
         assignmentEvent43.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent43.setScd(slotCourseDetails43);
+        assignmentEvent43.setScd(slotCourseDetails53);
         assignmentEvent43 = eventRepository.save(assignmentEvent43);
 
 
@@ -1368,7 +1371,7 @@ public class WitcurveResource {
         assignmentEvent44.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent44.setStandard(class1);
         assignmentEvent44.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent44.setScd(slotCourseDetails44);
+        assignmentEvent44.setScd(slotCourseDetails54);
         assignmentEvent44 = eventRepository.save(assignmentEvent44);
 
         Event assignmentEvent45 = new Event();
@@ -1378,7 +1381,7 @@ public class WitcurveResource {
         assignmentEvent45.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent45.setStandard(class1);
         assignmentEvent45.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent45.setScd(slotCourseDetails45);
+        assignmentEvent45.setScd(slotCourseDetails55);
         assignmentEvent45 = eventRepository.save(assignmentEvent45);
 
         Event assignmentEvent46 = new Event();
@@ -1388,7 +1391,7 @@ public class WitcurveResource {
         assignmentEvent46.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent46.setStandard(class1);
         assignmentEvent46.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent46.setScd(slotCourseDetails46);
+        assignmentEvent46.setScd(slotCourseDetails56);
         assignmentEvent46 = eventRepository.save(assignmentEvent46);
 
         Event assignmentEvent47 = new Event();
@@ -1398,7 +1401,7 @@ public class WitcurveResource {
         assignmentEvent47.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent47.setStandard(class1);
         assignmentEvent47.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent47.setScd(slotCourseDetails47);
+        assignmentEvent47.setScd(slotCourseDetails57);
         assignmentEvent47 = eventRepository.save(assignmentEvent47);
 
         Event assignmentEvent48 = new Event();
@@ -1408,7 +1411,7 @@ public class WitcurveResource {
         assignmentEvent48.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent48.setStandard(class1);
         assignmentEvent48.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent48.setScd(slotCourseDetails48);
+        assignmentEvent48.setScd(slotCourseDetails58);
         assignmentEvent48 = eventRepository.save(assignmentEvent48);
 
         //GSD for exam time table slots
@@ -1436,49 +1439,49 @@ public class WitcurveResource {
 
         //scd for exam
         SlotCourseDetails examScd1 = new SlotCourseDetails();
-        examScd1.setCourse(course1);
+        examScd1.setCourseTeacher(courseTeacher1);
         examScd1.setGsd(examGsd1);
         examScd1.setDayOfWeek(DayOfWeek.MONDAY);
         examScd1 = slotCourseDetailsRepository.save(examScd1);
 
         SlotCourseDetails examScd2 = new SlotCourseDetails();
-        examScd2.setCourse(course2);
+        examScd2.setCourseTeacher(courseTeacher2);
         examScd2.setGsd(examGsd2);
         examScd2.setDayOfWeek(DayOfWeek.TUESDAY);
         examScd2 = slotCourseDetailsRepository.save(examScd2);
 
         SlotCourseDetails examScd3 = new SlotCourseDetails();
-        examScd3.setCourse(course3);
+        examScd3.setCourseTeacher(courseTeacher3);
         examScd3.setGsd(examGsd1);
         examScd3.setDayOfWeek(DayOfWeek.WEDNESDAY);
         examScd3 = slotCourseDetailsRepository.save(examScd3);
 
         SlotCourseDetails examScd4 = new SlotCourseDetails();
-        examScd4.setCourse(course4);
+        examScd4.setCourseTeacher(courseTeacher4);
         examScd4.setGsd(examGsd2);
         examScd4.setDayOfWeek(DayOfWeek.THURSDAY);
         examScd4 = slotCourseDetailsRepository.save(examScd4);
 
         SlotCourseDetails examScd5 = new SlotCourseDetails();
-        examScd5.setCourse(course5);
+        examScd5.setCourseTeacher(courseTeacher5);
         examScd5.setGsd(examGsd1);
         examScd5.setDayOfWeek(DayOfWeek.FRIDAY);
         examScd5 = slotCourseDetailsRepository.save(examScd5);
 
         SlotCourseDetails examScd6 = new SlotCourseDetails();
-        examScd6.setCourse(course6);
+        examScd6.setCourseTeacher(courseTeacher6);
         examScd6.setGsd(examGsd2);
         examScd6.setDayOfWeek(DayOfWeek.MONDAY);
         examScd6 = slotCourseDetailsRepository.save(examScd6);
 
         SlotCourseDetails examScd7 = new SlotCourseDetails();
-        examScd7.setCourse(course7);
+        examScd7.setCourseTeacher(courseTeacher7);
         examScd7.setGsd(examGsd1);
         examScd7.setDayOfWeek(DayOfWeek.TUESDAY);
         examScd7 = slotCourseDetailsRepository.save(examScd7);
 
         SlotCourseDetails examScd8 = new SlotCourseDetails();
-        examScd8.setCourse(course8);
+        examScd8.setCourseTeacher(courseTeacher8);
         examScd8.setGsd(examGsd2);
         examScd8.setDayOfWeek(DayOfWeek.WEDNESDAY);
         examScd8 = slotCourseDetailsRepository.save(examScd8);
@@ -1614,11 +1617,13 @@ public class WitcurveResource {
 
     private void loadSchoolDataForTeacher() {
 
+        String affiliationId = RandomStringUtils.randomAlphanumeric(6);
+
         //school data
         School school1 = new School();
         school1.setName("Witcurve");
         school1.setAddress1("Kondapur");
-        school1.setAffiliationId("affl_0001");
+        school1.setAffiliationId(affiliationId);
         school1.setCity("Hyderabad");
         school1.setState("Telangana");
         school1.setCountry("India");
@@ -1634,7 +1639,7 @@ public class WitcurveResource {
         // academic session
 
         AcademicSession academicSession1 = new AcademicSession();
-        academicSession1.setSchool(schoolRepository.findAll().get(0));
+        academicSession1.setSchool(school1);
         academicSession1.setStartDate(LocalDate.of(2018, 4, 20));
 
         academicSession1 = academicSessionRepository.save(academicSession1);
@@ -1731,7 +1736,6 @@ public class WitcurveResource {
 
         Class class1 = new Class();
         class1.setGrade(Grade.III);
-        class1.setSchool(school1);
         class1.setTerm(term2);
         class1.setSection("A");
         class1.setClassTeacher(staff1);
@@ -1909,6 +1913,7 @@ public class WitcurveResource {
         StudentClass studentClass = new StudentClass();
         studentClass.setStandard(class1);
         studentClass.setStudent(student1);
+        studentClass.setRollNo("1");
         studentClass = studentClassRepository.save(studentClass);
 
         //exam data
@@ -1989,104 +1994,104 @@ public class WitcurveResource {
 
         /*MONDAY*/
         SlotCourseDetails slotCourseDetails11 = new SlotCourseDetails();
-        slotCourseDetails11.setCourse(course1);
+        slotCourseDetails11.setCourseTeacher(courseTeacher1);
         slotCourseDetails11.setGsd(gsd1);
         slotCourseDetails11.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails11 = slotCourseDetailsRepository.save(slotCourseDetails11);
 
 
         SlotCourseDetails slotCourseDetails12 = new SlotCourseDetails();
-        slotCourseDetails12.setCourse(course2);
+        slotCourseDetails12.setCourseTeacher(courseTeacher2);
         slotCourseDetails12.setGsd(gsd2);
         slotCourseDetails12.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails12 = slotCourseDetailsRepository.save(slotCourseDetails12);
 
         SlotCourseDetails slotCourseDetails13 = new SlotCourseDetails();
-        slotCourseDetails13.setCourse(course3);
+        slotCourseDetails13.setCourseTeacher(courseTeacher3);
         slotCourseDetails13.setGsd(gsd3);
         slotCourseDetails13.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails13 = slotCourseDetailsRepository.save(slotCourseDetails13);
 
         SlotCourseDetails slotCourseDetails14 = new SlotCourseDetails();
-        slotCourseDetails14.setCourse(course4);
+        slotCourseDetails14.setCourseTeacher(courseTeacher4);
         slotCourseDetails14.setGsd(gsd4);
         slotCourseDetails14.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails14 = slotCourseDetailsRepository.save(slotCourseDetails14);
 
         SlotCourseDetails slotCourseDetails15 = new SlotCourseDetails();
-        slotCourseDetails15.setCourse(course5);
+        slotCourseDetails15.setCourseTeacher(courseTeacher5);
         slotCourseDetails15.setGsd(gsd5);
         slotCourseDetails15.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails15 = slotCourseDetailsRepository.save(slotCourseDetails15);
 
 
         SlotCourseDetails slotCourseDetails16 = new SlotCourseDetails();
-        slotCourseDetails16.setCourse(course6);
+        slotCourseDetails16.setCourseTeacher(courseTeacher6);
         slotCourseDetails16.setGsd(gsd6);
         slotCourseDetails16.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails16 = slotCourseDetailsRepository.save(slotCourseDetails16);
 
         SlotCourseDetails slotCourseDetails17 = new SlotCourseDetails();
-        slotCourseDetails17.setCourse(course7);
+        slotCourseDetails17.setCourseTeacher(courseTeacher7);
         slotCourseDetails17.setGsd(gsd7);
         slotCourseDetails17.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails17 = slotCourseDetailsRepository.save(slotCourseDetails17);
 
 
         SlotCourseDetails slotCourseDetails18 = new SlotCourseDetails();
-        slotCourseDetails18.setCourse(course8);
+        slotCourseDetails18.setCourseTeacher(courseTeacher8);
         slotCourseDetails18.setGsd(gsd8);
         slotCourseDetails18.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails18 = slotCourseDetailsRepository.save(slotCourseDetails18);
 
         /*TUESDAY*/
         SlotCourseDetails slotCourseDetails21 = new SlotCourseDetails();
-        slotCourseDetails21.setCourse(course1);
+        slotCourseDetails21.setCourseTeacher(courseTeacher1);
         slotCourseDetails21.setGsd(gsd1);
         slotCourseDetails21.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails21 = slotCourseDetailsRepository.save(slotCourseDetails21);
 
 
         SlotCourseDetails slotCourseDetails22 = new SlotCourseDetails();
-        slotCourseDetails22.setCourse(course2);
+        slotCourseDetails22.setCourseTeacher(courseTeacher2);
         slotCourseDetails22.setGsd(gsd2);
         slotCourseDetails22.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails22 = slotCourseDetailsRepository.save(slotCourseDetails22);
 
         SlotCourseDetails slotCourseDetails23 = new SlotCourseDetails();
-        slotCourseDetails23.setCourse(course3);
+        slotCourseDetails23.setCourseTeacher(courseTeacher3);
         slotCourseDetails23.setGsd(gsd3);
         slotCourseDetails23.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails23 = slotCourseDetailsRepository.save(slotCourseDetails23);
 
         SlotCourseDetails slotCourseDetails24 = new SlotCourseDetails();
-        slotCourseDetails24.setCourse(course4);
+        slotCourseDetails24.setCourseTeacher(courseTeacher4);
         slotCourseDetails24.setGsd(gsd4);
         slotCourseDetails24.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails24 = slotCourseDetailsRepository.save(slotCourseDetails24);
 
         SlotCourseDetails slotCourseDetails25 = new SlotCourseDetails();
-        slotCourseDetails25.setCourse(course5);
+        slotCourseDetails25.setCourseTeacher(courseTeacher5);
         slotCourseDetails25.setGsd(gsd5);
         slotCourseDetails25.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails25 = slotCourseDetailsRepository.save(slotCourseDetails25);
 
 
         SlotCourseDetails slotCourseDetails26 = new SlotCourseDetails();
-        slotCourseDetails26.setCourse(course6);
+        slotCourseDetails26.setCourseTeacher(courseTeacher6);
         slotCourseDetails26.setGsd(gsd6);
         slotCourseDetails26.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails26 = slotCourseDetailsRepository.save(slotCourseDetails26);
 
         SlotCourseDetails slotCourseDetails27 = new SlotCourseDetails();
-        slotCourseDetails27.setCourse(course7);
+        slotCourseDetails27.setCourseTeacher(courseTeacher7);
         slotCourseDetails27.setGsd(gsd7);
         slotCourseDetails27.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails27 = slotCourseDetailsRepository.save(slotCourseDetails27);
 
 
         SlotCourseDetails slotCourseDetails28 = new SlotCourseDetails();
-        slotCourseDetails28.setCourse(course8);
+        slotCourseDetails28.setCourseTeacher(courseTeacher8);
         slotCourseDetails28.setGsd(gsd8);
         slotCourseDetails28.setDayOfWeek(DayOfWeek.TUESDAY);
         slotCourseDetails28 = slotCourseDetailsRepository.save(slotCourseDetails28);
@@ -2094,155 +2099,155 @@ public class WitcurveResource {
 
         /*WEDNESDAY*/
         SlotCourseDetails slotCourseDetails31 = new SlotCourseDetails();
-        slotCourseDetails31.setCourse(course1);
+        slotCourseDetails31.setCourseTeacher(courseTeacher1);
         slotCourseDetails31.setGsd(gsd1);
         slotCourseDetails31.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails31 = slotCourseDetailsRepository.save(slotCourseDetails31);
 
 
         SlotCourseDetails slotCourseDetails32 = new SlotCourseDetails();
-        slotCourseDetails32.setCourse(course2);
+        slotCourseDetails32.setCourseTeacher(courseTeacher2);
         slotCourseDetails32.setGsd(gsd2);
         slotCourseDetails32.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails32 = slotCourseDetailsRepository.save(slotCourseDetails32);
 
         SlotCourseDetails slotCourseDetails33 = new SlotCourseDetails();
-        slotCourseDetails33.setCourse(course3);
+        slotCourseDetails33.setCourseTeacher(courseTeacher3);
         slotCourseDetails33.setGsd(gsd3);
         slotCourseDetails33.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails33 = slotCourseDetailsRepository.save(slotCourseDetails33);
 
         SlotCourseDetails slotCourseDetails34 = new SlotCourseDetails();
-        slotCourseDetails34.setCourse(course4);
+        slotCourseDetails34.setCourseTeacher(courseTeacher4);
         slotCourseDetails34.setGsd(gsd4);
         slotCourseDetails34.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails34 = slotCourseDetailsRepository.save(slotCourseDetails34);
 
         SlotCourseDetails slotCourseDetails35 = new SlotCourseDetails();
-        slotCourseDetails35.setCourse(course5);
+        slotCourseDetails35.setCourseTeacher(courseTeacher5);
         slotCourseDetails35.setGsd(gsd5);
         slotCourseDetails35.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails35 = slotCourseDetailsRepository.save(slotCourseDetails35);
 
 
         SlotCourseDetails slotCourseDetails36 = new SlotCourseDetails();
-        slotCourseDetails36.setCourse(course6);
+        slotCourseDetails36.setCourseTeacher(courseTeacher6);
         slotCourseDetails36.setGsd(gsd6);
         slotCourseDetails36.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails36 = slotCourseDetailsRepository.save(slotCourseDetails36);
 
         SlotCourseDetails slotCourseDetails37 = new SlotCourseDetails();
-        slotCourseDetails37.setCourse(course7);
+        slotCourseDetails37.setCourseTeacher(courseTeacher7);
         slotCourseDetails37.setGsd(gsd7);
         slotCourseDetails37.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails37 = slotCourseDetailsRepository.save(slotCourseDetails37);
 
 
         SlotCourseDetails slotCourseDetails38 = new SlotCourseDetails();
-        slotCourseDetails38.setCourse(course8);
+        slotCourseDetails38.setCourseTeacher(courseTeacher8);
         slotCourseDetails38.setGsd(gsd8);
         slotCourseDetails38.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails38 = slotCourseDetailsRepository.save(slotCourseDetails38);
 
         /*THURSDAY*/
         SlotCourseDetails slotCourseDetails41 = new SlotCourseDetails();
-        slotCourseDetails41.setCourse(course1);
+        slotCourseDetails41.setCourseTeacher(courseTeacher1);
         slotCourseDetails41.setGsd(gsd1);
         slotCourseDetails41.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails41 = slotCourseDetailsRepository.save(slotCourseDetails41);
 
 
         SlotCourseDetails slotCourseDetails42 = new SlotCourseDetails();
-        slotCourseDetails42.setCourse(course2);
+        slotCourseDetails42.setCourseTeacher(courseTeacher2);
         slotCourseDetails42.setGsd(gsd2);
         slotCourseDetails42.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails42 = slotCourseDetailsRepository.save(slotCourseDetails42);
 
         SlotCourseDetails slotCourseDetails43 = new SlotCourseDetails();
-        slotCourseDetails43.setCourse(course3);
+        slotCourseDetails43.setCourseTeacher(courseTeacher3);
         slotCourseDetails43.setGsd(gsd3);
         slotCourseDetails43.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails43 = slotCourseDetailsRepository.save(slotCourseDetails43);
 
         SlotCourseDetails slotCourseDetails44 = new SlotCourseDetails();
-        slotCourseDetails44.setCourse(course4);
+        slotCourseDetails44.setCourseTeacher(courseTeacher4);
         slotCourseDetails44.setGsd(gsd4);
         slotCourseDetails44.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails44 = slotCourseDetailsRepository.save(slotCourseDetails44);
 
         SlotCourseDetails slotCourseDetails45 = new SlotCourseDetails();
-        slotCourseDetails45.setCourse(course5);
+        slotCourseDetails45.setCourseTeacher(courseTeacher5);
         slotCourseDetails45.setGsd(gsd5);
         slotCourseDetails45.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails45 = slotCourseDetailsRepository.save(slotCourseDetails45);
 
 
         SlotCourseDetails slotCourseDetails46 = new SlotCourseDetails();
-        slotCourseDetails46.setCourse(course6);
+        slotCourseDetails46.setCourseTeacher(courseTeacher6);
         slotCourseDetails46.setGsd(gsd6);
         slotCourseDetails46.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails46 = slotCourseDetailsRepository.save(slotCourseDetails46);
 
         SlotCourseDetails slotCourseDetails47 = new SlotCourseDetails();
-        slotCourseDetails47.setCourse(course7);
+        slotCourseDetails47.setCourseTeacher(courseTeacher7);
         slotCourseDetails47.setGsd(gsd7);
         slotCourseDetails47.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails47 = slotCourseDetailsRepository.save(slotCourseDetails47);
 
 
         SlotCourseDetails slotCourseDetails48 = new SlotCourseDetails();
-        slotCourseDetails48.setCourse(course8);
+        slotCourseDetails48.setCourseTeacher(courseTeacher8);
         slotCourseDetails48.setGsd(gsd8);
         slotCourseDetails48.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails48 = slotCourseDetailsRepository.save(slotCourseDetails48);
 
         /*FRIDAY*/
         SlotCourseDetails slotCourseDetails51 = new SlotCourseDetails();
-        slotCourseDetails51.setCourse(course1);
+        slotCourseDetails51.setCourseTeacher(courseTeacher1);
         slotCourseDetails51.setGsd(gsd1);
         slotCourseDetails51.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails51 = slotCourseDetailsRepository.save(slotCourseDetails51);
 
 
         SlotCourseDetails slotCourseDetails52 = new SlotCourseDetails();
-        slotCourseDetails52.setCourse(course2);
+        slotCourseDetails52.setCourseTeacher(courseTeacher2);
         slotCourseDetails52.setGsd(gsd2);
         slotCourseDetails52.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails52 = slotCourseDetailsRepository.save(slotCourseDetails52);
 
         SlotCourseDetails slotCourseDetails53 = new SlotCourseDetails();
-        slotCourseDetails53.setCourse(course3);
+        slotCourseDetails53.setCourseTeacher(courseTeacher3);
         slotCourseDetails53.setGsd(gsd3);
         slotCourseDetails53.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails53 = slotCourseDetailsRepository.save(slotCourseDetails53);
 
         SlotCourseDetails slotCourseDetails54 = new SlotCourseDetails();
-        slotCourseDetails54.setCourse(course4);
+        slotCourseDetails54.setCourseTeacher(courseTeacher4);
         slotCourseDetails54.setGsd(gsd4);
         slotCourseDetails54.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails54 = slotCourseDetailsRepository.save(slotCourseDetails54);
 
         SlotCourseDetails slotCourseDetails55 = new SlotCourseDetails();
-        slotCourseDetails55.setCourse(course5);
+        slotCourseDetails55.setCourseTeacher(courseTeacher5);
         slotCourseDetails55.setGsd(gsd5);
         slotCourseDetails55.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails55 = slotCourseDetailsRepository.save(slotCourseDetails55);
 
 
         SlotCourseDetails slotCourseDetails56 = new SlotCourseDetails();
-        slotCourseDetails56.setCourse(course6);
+        slotCourseDetails56.setCourseTeacher(courseTeacher6);
         slotCourseDetails56.setGsd(gsd6);
         slotCourseDetails56.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails56 = slotCourseDetailsRepository.save(slotCourseDetails56);
 
         SlotCourseDetails slotCourseDetails57 = new SlotCourseDetails();
-        slotCourseDetails57.setCourse(course7);
+        slotCourseDetails57.setCourseTeacher(courseTeacher7);
         slotCourseDetails57.setGsd(gsd7);
         slotCourseDetails57.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails57 = slotCourseDetailsRepository.save(slotCourseDetails57);
 
         SlotCourseDetails slotCourseDetails58 = new SlotCourseDetails();
-        slotCourseDetails58.setCourse(course8);
+        slotCourseDetails58.setCourseTeacher(courseTeacher8);
         slotCourseDetails58.setGsd(gsd8);
         slotCourseDetails58.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails58 = slotCourseDetailsRepository.save(slotCourseDetails58);
