@@ -24,7 +24,6 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
 
     @NotNull
     @Column(name = "day_of_week", nullable = false)
-    @Enumerated(EnumType.STRING)
     private DayOfWeek dayOfWeek;
 
     @NotNull

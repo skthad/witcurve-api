@@ -115,25 +115,43 @@ public class EventResource {
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "type") ViewType type,
-        @PathVariable Long studentId) {
+        @PathVariable Long studentId) throws WitcurveException, URISyntaxException{
         log.debug("Request to get events on given date : {} for student with id : {}", eventDate, studentId);
 
         //add null checks later and change log statement
         List<EventDTO> result = new ArrayList<>();
         if(type.equals(ViewType.DAY)) {
             if(eventDate == null) {
-                //throw error
+                throw new WitcurveException("There should be eventDate param for DAY view");
             }
             LocalDate date = getLocalDate(eventDate);
             result = eventService.findAllEventsOnGivenDateForStudent(date, studentId);
         }
         if(type.equals(ViewType.MONTH)) {
             if(month == null || year ==null) {
-               // throw error
+                throw new WitcurveException("There should be month and year param for MONTH view");
             }
             result = eventService.findAllEventsOnGivenMonthForStudent(month, year, studentId);
         }
 
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     * @param eventDate
+     * @param classId
+     * @return
+     */
+    @GetMapping("/event/class/{classId}")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getAllEventsForClass(
+        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @PathVariable Long classId) throws WitcurveException, URISyntaxException{
+        log.debug("Request to get events on given date : {} for class with id : {}", eventDate, classId);
+        LocalDate date = getLocalDate(eventDate);
+        List<EventDTO> result = eventService.findAllEventsOnGivenDateForClass(date, classId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 

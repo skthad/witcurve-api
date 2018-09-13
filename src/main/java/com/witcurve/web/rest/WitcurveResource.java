@@ -384,6 +384,7 @@ public class WitcurveResource {
         StudentClass studentClass = new StudentClass();
         studentClass.setStandard(class1);
         studentClass.setStudent(student1);
+        studentClass.setRollNo("1");
         studentClass = studentClassRepository.save(studentClass);
 
         //exam data
@@ -1097,7 +1098,7 @@ public class WitcurveResource {
         testEvent11.setDate(LocalDate.of(2018, 9, 19));
         testEvent11.setStandard(class1);
         testEvent11.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent11.setScd(slotCourseDetails11);
+        testEvent11.setScd(slotCourseDetails31);
         testEvent11 = eventRepository.save(testEvent11);
 
         Event testEvent12 = new Event();
@@ -1107,7 +1108,7 @@ public class WitcurveResource {
         testEvent12.setDate(LocalDate.of(2018, 9, 19));
         testEvent12.setStandard(class1);
         testEvent12.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent12.setScd(slotCourseDetails12);
+        testEvent12.setScd(slotCourseDetails32);
         testEvent12 = eventRepository.save(testEvent12);
 
         Event testEvent13 = new Event();
@@ -1117,7 +1118,7 @@ public class WitcurveResource {
         testEvent13.setDate(LocalDate.of(2018, 9, 19));
         testEvent13.setStandard(class1);
         testEvent13.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent13.setScd(slotCourseDetails13);
+        testEvent13.setScd(slotCourseDetails33);
         testEvent13 = eventRepository.save(testEvent13);
 
         Event testEvent14 = new Event();
@@ -1127,7 +1128,7 @@ public class WitcurveResource {
         testEvent14.setDate(LocalDate.of(2018, 9, 19));
         testEvent14.setStandard(class1);
         testEvent14.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent14.setScd(slotCourseDetails14);
+        testEvent14.setScd(slotCourseDetails34);
         testEvent14 = eventRepository.save(testEvent14);
 
         Event testEvent15 = new Event();
@@ -1137,7 +1138,7 @@ public class WitcurveResource {
         testEvent15.setDate(LocalDate.of(2018, 9, 19));
         testEvent15.setStandard(class1);
         testEvent15.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent15.setScd(slotCourseDetails15);
+        testEvent15.setScd(slotCourseDetails35);
         testEvent15 = eventRepository.save(testEvent15);
 
         Event testEvent16 = new Event();
@@ -1147,7 +1148,7 @@ public class WitcurveResource {
         testEvent16.setDate(LocalDate.of(2018, 9, 19));
         testEvent16.setStandard(class1);
         testEvent16.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent16.setScd(slotCourseDetails16);
+        testEvent16.setScd(slotCourseDetails36);
         testEvent16 = eventRepository.save(testEvent16);
 
         Event testEvent17 = new Event();
@@ -1157,7 +1158,7 @@ public class WitcurveResource {
         testEvent17.setDate(LocalDate.of(2018, 9, 19));
         testEvent17.setStandard(class1);
         testEvent17.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent17.setScd(slotCourseDetails17);
+        testEvent17.setScd(slotCourseDetails37);
         testEvent17 = eventRepository.save(testEvent17);
 
         Event testEvent18 = new Event();
@@ -1167,7 +1168,7 @@ public class WitcurveResource {
         testEvent18.setDate(LocalDate.of(2018, 9, 19));
         testEvent18.setStandard(class1);
         testEvent18.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent18.setScd(slotCourseDetails18);
+        testEvent18.setScd(slotCourseDetails38);
         testEvent18 = eventRepository.save(testEvent18);
 
         Event testEvent41 = new Event();
@@ -1177,7 +1178,7 @@ public class WitcurveResource {
         testEvent41.setDate(LocalDate.of(2018, 9, 21));
         testEvent41.setStandard(class1);
         testEvent41.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent41.setScd(slotCourseDetails41);
+        testEvent41.setScd(slotCourseDetails51);
         testEvent41 = eventRepository.save(testEvent41);
 
         Event testEvent42 = new Event();
@@ -1187,7 +1188,7 @@ public class WitcurveResource {
         testEvent42.setDate(LocalDate.of(2018, 9, 21));
         testEvent42.setStandard(class1);
         testEvent42.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent42.setScd(slotCourseDetails42);
+        testEvent42.setScd(slotCourseDetails52);
         testEvent42 = eventRepository.save(testEvent42);
 
         Event testEvent43 = new Event();
@@ -1197,7 +1198,7 @@ public class WitcurveResource {
         testEvent43.setDate(LocalDate.of(2018, 9, 21));
         testEvent43.setStandard(class1);
         testEvent43.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent43.setScd(slotCourseDetails43);
+        testEvent43.setScd(slotCourseDetails53);
         testEvent43 = eventRepository.save(testEvent43);
 
         Event testEvent44 = new Event();
@@ -1207,7 +1208,7 @@ public class WitcurveResource {
         testEvent44.setDate(LocalDate.of(2018, 9, 21));
         testEvent44.setStandard(class1);
         testEvent44.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent44.setScd(slotCourseDetails44);
+        testEvent44.setScd(slotCourseDetails54);
         testEvent44 = eventRepository.save(testEvent44);
 
         Event testEvent45 = new Event();
@@ -1217,7 +1218,7 @@ public class WitcurveResource {
         testEvent45.setDate(LocalDate.of(2018, 9, 21));
         testEvent45.setStandard(class1);
         testEvent45.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent45.setScd(slotCourseDetails45);
+        testEvent45.setScd(slotCourseDetails55);
         testEvent45 = eventRepository.save(testEvent45);
 
         Event testEvent46 = new Event();
@@ -1227,7 +1228,7 @@ public class WitcurveResource {
         testEvent46.setDate(LocalDate.of(2018, 9, 21));
         testEvent46.setStandard(class1);
         testEvent46.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent46.setScd(slotCourseDetails46);
+        testEvent46.setScd(slotCourseDetails56);
         testEvent46 = eventRepository.save(testEvent46);
 
         Event testEvent47 = new Event();
@@ -1237,7 +1238,7 @@ public class WitcurveResource {
         testEvent47.setDate(LocalDate.of(2018, 9, 21));
         testEvent47.setStandard(class1);
         testEvent47.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent47.setScd(slotCourseDetails47);
+        testEvent47.setScd(slotCourseDetails57);
         testEvent47 = eventRepository.save(testEvent47);
 
         Event testEvent48 = new Event();
@@ -1247,7 +1248,7 @@ public class WitcurveResource {
         testEvent48.setDate(LocalDate.of(2018, 9, 21));
         testEvent48.setStandard(class1);
         testEvent48.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        testEvent48.setScd(slotCourseDetails48);
+        testEvent48.setScd(slotCourseDetails58);
         testEvent48 = eventRepository.save(testEvent48);
 
         //Assignment Events created on 10, 13 and dated for 12, 14
@@ -1258,7 +1259,7 @@ public class WitcurveResource {
         assignmentEvent11.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent11.setStandard(class1);
         assignmentEvent11.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent11.setScd(slotCourseDetails11);
+        assignmentEvent11.setScd(slotCourseDetails31);
         assignmentEvent11 = eventRepository.save(assignmentEvent11);
 
         Event assignmentEvent12 = new Event();
@@ -1268,7 +1269,7 @@ public class WitcurveResource {
         assignmentEvent12.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent12.setStandard(class1);
         assignmentEvent12.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent12.setScd(slotCourseDetails12);
+        assignmentEvent12.setScd(slotCourseDetails32);
         assignmentEvent12 = eventRepository.save(assignmentEvent12);
 
         Event assignmentEvent13 = new Event();
@@ -1278,7 +1279,7 @@ public class WitcurveResource {
         assignmentEvent13.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent13.setStandard(class1);
         assignmentEvent13.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent13.setScd(slotCourseDetails13);
+        assignmentEvent13.setScd(slotCourseDetails33);
         assignmentEvent13 = eventRepository.save(assignmentEvent13);
 
         Event assignmentEvent14 = new Event();
@@ -1288,7 +1289,7 @@ public class WitcurveResource {
         assignmentEvent14.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent14.setStandard(class1);
         assignmentEvent14.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent14.setScd(slotCourseDetails14);
+        assignmentEvent14.setScd(slotCourseDetails34);
         assignmentEvent14 = eventRepository.save(assignmentEvent14);
 
         Event assignmentEvent15 = new Event();
@@ -1298,7 +1299,7 @@ public class WitcurveResource {
         assignmentEvent15.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent15.setStandard(class1);
         assignmentEvent15.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent15.setScd(slotCourseDetails15);
+        assignmentEvent15.setScd(slotCourseDetails35);
         assignmentEvent15 = eventRepository.save(assignmentEvent15);
 
         Event assignmentEvent16 = new Event();
@@ -1308,7 +1309,7 @@ public class WitcurveResource {
         assignmentEvent16.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent16.setStandard(class1);
         assignmentEvent16.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent16.setScd(slotCourseDetails16);
+        assignmentEvent16.setScd(slotCourseDetails36);
         assignmentEvent16 = eventRepository.save(assignmentEvent16);
 
         Event assignmentEvent17 = new Event();
@@ -1318,7 +1319,7 @@ public class WitcurveResource {
         assignmentEvent17.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent17.setStandard(class1);
         assignmentEvent17.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent17.setScd(slotCourseDetails17);
+        assignmentEvent17.setScd(slotCourseDetails37);
         assignmentEvent17 = eventRepository.save(assignmentEvent17);
 
         Event assignmentEvent18 = new Event();
@@ -1328,7 +1329,7 @@ public class WitcurveResource {
         assignmentEvent18.setDate(LocalDate.of(2018, 9, 19));
         assignmentEvent18.setStandard(class1);
         assignmentEvent18.setCreatedDate(LocalDate.of(2018, 9, 17).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent18.setScd(slotCourseDetails18);
+        assignmentEvent18.setScd(slotCourseDetails38);
         assignmentEvent18 = eventRepository.save(assignmentEvent18);
 
 
@@ -1339,7 +1340,7 @@ public class WitcurveResource {
         assignmentEvent41.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent41.setStandard(class1);
         assignmentEvent41.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent41.setScd(slotCourseDetails41);
+        assignmentEvent41.setScd(slotCourseDetails51);
         assignmentEvent41 = eventRepository.save(assignmentEvent41);
 
         Event assignmentEvent42 = new Event();
@@ -1349,7 +1350,7 @@ public class WitcurveResource {
         assignmentEvent42.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent42.setStandard(class1);
         assignmentEvent42.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent42.setScd(slotCourseDetails42);
+        assignmentEvent42.setScd(slotCourseDetails52);
         assignmentEvent42 = eventRepository.save(assignmentEvent42);
 
         Event assignmentEvent43 = new Event();
@@ -1359,7 +1360,7 @@ public class WitcurveResource {
         assignmentEvent43.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent43.setStandard(class1);
         assignmentEvent43.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent43.setScd(slotCourseDetails43);
+        assignmentEvent43.setScd(slotCourseDetails53);
         assignmentEvent43 = eventRepository.save(assignmentEvent43);
 
 
@@ -1370,7 +1371,7 @@ public class WitcurveResource {
         assignmentEvent44.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent44.setStandard(class1);
         assignmentEvent44.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent44.setScd(slotCourseDetails44);
+        assignmentEvent44.setScd(slotCourseDetails54);
         assignmentEvent44 = eventRepository.save(assignmentEvent44);
 
         Event assignmentEvent45 = new Event();
@@ -1380,7 +1381,7 @@ public class WitcurveResource {
         assignmentEvent45.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent45.setStandard(class1);
         assignmentEvent45.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent45.setScd(slotCourseDetails45);
+        assignmentEvent45.setScd(slotCourseDetails55);
         assignmentEvent45 = eventRepository.save(assignmentEvent45);
 
         Event assignmentEvent46 = new Event();
@@ -1390,7 +1391,7 @@ public class WitcurveResource {
         assignmentEvent46.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent46.setStandard(class1);
         assignmentEvent46.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent46.setScd(slotCourseDetails46);
+        assignmentEvent46.setScd(slotCourseDetails56);
         assignmentEvent46 = eventRepository.save(assignmentEvent46);
 
         Event assignmentEvent47 = new Event();
@@ -1400,7 +1401,7 @@ public class WitcurveResource {
         assignmentEvent47.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent47.setStandard(class1);
         assignmentEvent47.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent47.setScd(slotCourseDetails47);
+        assignmentEvent47.setScd(slotCourseDetails57);
         assignmentEvent47 = eventRepository.save(assignmentEvent47);
 
         Event assignmentEvent48 = new Event();
@@ -1410,7 +1411,7 @@ public class WitcurveResource {
         assignmentEvent48.setDate(LocalDate.of(2018, 9, 21));
         assignmentEvent48.setStandard(class1);
         assignmentEvent48.setCreatedDate(LocalDate.of(2018, 9, 20).atStartOfDay().toInstant(ZoneOffset.UTC));
-        assignmentEvent48.setScd(slotCourseDetails48);
+        assignmentEvent48.setScd(slotCourseDetails58);
         assignmentEvent48 = eventRepository.save(assignmentEvent48);
 
         //GSD for exam time table slots
@@ -1912,6 +1913,7 @@ public class WitcurveResource {
         StudentClass studentClass = new StudentClass();
         studentClass.setStandard(class1);
         studentClass.setStudent(student1);
+        studentClass.setRollNo("1");
         studentClass = studentClassRepository.save(studentClass);
 
         //exam data
