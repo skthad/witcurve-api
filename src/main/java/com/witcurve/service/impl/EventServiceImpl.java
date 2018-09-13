@@ -47,7 +47,7 @@ public class EventServiceImpl implements EventService {
         for(EventDTO eventDTO : eventDTOs) {
             if(eventDTO.getType().equals(EventType.DAILY_UPDATE) || eventDTO.getType().equals(EventType.TEST) || eventDTO.getType().equals(EventType.ASSIGNMENT)) {
                 Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
-                if(event == null) {
+                if(event != null) {
                     throw new WitcurveException("There already exists a record for given event type : "+eventDTO.getType()+" for scd with id : "+eventDTO.getScd().getId()+ " on date : "+eventDTO.getDate().toString());
                 }
             }
