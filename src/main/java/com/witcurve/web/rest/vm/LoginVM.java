@@ -2,6 +2,7 @@ package com.witcurve.web.rest.vm;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.Instant;
 
 /**
  * View Model object for storing a user's credentials.

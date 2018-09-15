@@ -1,7 +1,7 @@
 package com.witcurve.web.rest;
 
-import com.witcurve.config.Constants;
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.config.Constants;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.AuthoritiesConstants;
@@ -14,7 +14,6 @@ import com.witcurve.web.rest.errors.LoginAlreadyUsedException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import com.witcurve.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing users.
@@ -133,6 +133,7 @@ public class UserResource {
         return ResponseUtil.wrapOrNotFound(updatedUser,
             HeaderUtil.createAlert("A user is updated with identifier " + userDTO.getLogin(), userDTO.getLogin()));
     }
+
 
     /**
      * GET /users : get all users.
