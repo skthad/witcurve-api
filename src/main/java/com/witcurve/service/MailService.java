@@ -5,7 +5,6 @@ import io.github.jhipster.config.JHipsterProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -103,21 +102,9 @@ public class MailService {
     }
 
     @Async
-    public boolean sendOtpMessage(String to, String subject, String message) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(message);
-        log.info(subject);
-        log.info(to);
-        log.info(message);
-        try{
-            javaMailSender.send(simpleMailMessage);
-            return true;
-        }
-        catch (Exception e){
-            log.error("Sending OTP via Email failed "+e.getMessage());
-            return false;
-        }
+    public void sendOtpMail(User user) {
+        log.debug("Sending OTP email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/otpEmail", "email.otp.title");
     }
+
 }

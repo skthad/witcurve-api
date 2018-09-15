@@ -24,9 +24,9 @@ public class SmsService {
     public static boolean sendSms(String mobileNumber,String otp)
     {
 
-        URLConnection myURLConnection=null;
-        URL myURL=null;
-        BufferedReader reader=null;
+        URLConnection myURLConnection;
+        URL myURL;
+        BufferedReader reader;
 
         //Send SMS API
         //Prepare parameter string

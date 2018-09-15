@@ -40,7 +40,7 @@ public class OtpResource {
     public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber) {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
-        String otp = null;
+        String otp;
         if (result.isPresent()) {
             User user = result.get();
             if (user.getOtp() != null && user.getOtpExpiry() != null && user.getOtpExpiry().isAfter(Instant.now())) {
@@ -51,9 +51,9 @@ public class OtpResource {
                 user.setOtpExpiry(Instant.now().plusSeconds(300));
                 userRepository.save(user);
             }
-            smsService.sendSms(contactNumber,String.valueOf(otp));
+            //smsService.sendSms(contactNumber,String.valueOf(otp));
             if (user.getEmail() != null) {
-                mailService.sendOtpMessage(user.getEmail(), "OTP - Witcurve Login", "Your OTP is "+otp);
+                //mailService.sendOtpMail(user);
             }
         } else {
             return ResponseEntity.badRequest().build();
