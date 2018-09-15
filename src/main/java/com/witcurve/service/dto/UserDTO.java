@@ -25,6 +25,10 @@ public class UserDTO {
     @Size(min = 1, max = 50)
     private String login;
 
+    private String otp;
+
+    private Instant otpExpiry;
+
     @Size(max = 50)
     private String firstName;
 
@@ -89,6 +93,22 @@ public class UserDTO {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public Instant getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(Instant otpExpiry) {
+        this.otpExpiry = otpExpiry;
     }
 
     public String getFirstName() {
