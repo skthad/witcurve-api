@@ -1,23 +1,28 @@
 package com.witcurve.service;
 
-import com.witcurve.domain.Authority;
-import com.witcurve.domain.User;
-import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.config.Constants;
+import com.witcurve.domain.Authority;
+import com.witcurve.domain.Staff;
+import com.witcurve.domain.Student;
+import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.AuthorityRepository;
+import com.witcurve.repository.StaffRepository;
+import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.security.SecurityUtils;
-import com.witcurve.service.util.RandomUtil;
 import com.witcurve.service.dto.UserDTO;
-
+import com.witcurve.service.util.RandomUtil;
+import com.witcurve.web.rest.errors.InvalidPasswordException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.witcurve.web.rest.errors.InvalidPasswordException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +45,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
+
+    @Autowired
+    private StaffRepository staffRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     private final CacheManager cacheManager;
 
@@ -269,5 +280,31 @@ public class UserService {
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+    }
+
+    public List<String> getContactNumbersOfUser(String username) {
+        List<String> result = null;
+        Optional<User> user = userRepository.findOneByLogin(username);
+        if (user.isPresent()) {
+            if (UserType.STAFF.equals(user.get().getType())) {
+                Staff staff = staffRepository.getStaffByUserId(user.get().getId());
+                if (staff != null) {
+                    result = new ArrayList<>();
+                    result.add(staff.getPrimaryPhone());
+                    if (staff.getSecondaryPhone() != null) {
+                        result.add(staff.getSecondaryPhone());
+                    }
+                }
+            } else if (UserType.PARENT.equals(user.get().getType())) {
+                Student student = studentRepository.getStudentByUserId(user.get().getId());
+                if (student != null) {
+                    result.add(student.getRegisteredMobileNumber());
+                    if (student.getAlternateMobileNumbers() != null && student.getAlternateMobileNumbers().size() > 0) {
+                        result.addAll(student.getAlternateMobileNumbers());
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

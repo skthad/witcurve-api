@@ -2,6 +2,7 @@ package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.witcurve.config.Constants;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.util.InstantTimeConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.BatchSize;
@@ -67,6 +68,11 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Size(min = 5, max = 254)
     @Column(length = 254, unique = true)
     private String email;
+
+    @NotNull
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserType type;
 
     @NotNull
     @Column(nullable = false)
@@ -166,6 +172,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 
     public String getImageUrl() {

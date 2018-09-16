@@ -1,12 +1,14 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.Gender;
+import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,6 +32,10 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
+    @NotNull
+    @OneToOne
+    private User user;
 
     @NotNull
     @Column(name = "date_of_birth", nullable = false)
@@ -114,6 +120,10 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(length = 50)
     private String registeredMobileNumber;
 
+    @Column
+    @Convert(converter = ListToStringConverter.class)
+    private List<String> alternateMobileNumbers;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
@@ -152,6 +162,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDate getDateOfBirth() {
@@ -352,6 +370,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setRegisteredMobileNumber(String registeredMobileNumber) {
         this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public List<String> getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public Gender getGender() {

@@ -5,6 +5,7 @@ import com.witcurve.domain.enumeration.Gender;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
@@ -20,6 +21,8 @@ public class StudentDTO extends AbstractAuditingDTO {
     private String lastName;
 
     private String middleName;
+
+    private UserDTO user;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
@@ -77,6 +80,8 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String registeredMobileNumber;
 
+    private List<String> alternateMobileNumbers;
+
     private Gender gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
@@ -112,6 +117,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public LocalDate getDateOfBirth() {
@@ -312,6 +325,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setRegisteredMobileNumber(String registeredMobileNumber) {
         this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public List<String> getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public Gender getGender() {

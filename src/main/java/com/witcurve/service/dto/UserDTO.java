@@ -1,12 +1,9 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.config.Constants;
-
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.User;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import com.witcurve.domain.enumeration.UserType;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
@@ -38,6 +35,9 @@ public class UserDTO {
     @Email
     @Size(min = 5, max = 254)
     private String email;
+
+    @NotNull
+    private UserType type;
 
     @Size(max = 256)
     private String imageUrl;
@@ -133,6 +133,14 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 
     public String getImageUrl() {

@@ -134,6 +134,18 @@ public class UserResource {
             HeaderUtil.createAlert("A user is updated with identifier " + userDTO.getLogin(), userDTO.getLogin()));
     }
 
+    /**
+     * GET /users/{username}/contact-numbers : get all contact numbers associated with a username.
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body all users
+     */
+    @GetMapping("/users/{username}/contact-numbers")
+    @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
+    public ResponseEntity<List<String>> getContactNumbersOfUser(@PathVariable (name = "username") String username) {
+        final List<String> contactNumbers = userService.getContactNumbersOfUser(username);
+        return new ResponseEntity<>(contactNumbers, HttpStatus.OK);
+    }
 
     /**
      * GET /users : get all users.
