@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -26,22 +27,19 @@ public class TermResource {
     TermService termService;
 
     /**
-     * creates a term
-     * @param termDTO
+     * creates terms
+     * @param termDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/term")
+    @PostMapping("/terms")
     @Timed
-    public ResponseEntity<TermDTO> createTerm(@RequestBody @Valid TermDTO termDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request Save Term");
-        if (termDTO.getId() != null) {
-            throw new WitcurveException("New Term can't already have an id");
-        }
-        TermDTO result = termService.saveOrUpdate(termDTO);
-        return ResponseEntity.created(new URI("/api/term/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("term", result.getId().toString()))
+    public ResponseEntity<List<TermDTO>> saveOrUpdate(@RequestBody @Valid List<TermDTO> termDTOs) throws WitcurveException, URISyntaxException {
+        log.debug("Request to save Terms");
+        List<TermDTO> result = termService.saveOrUpdate(termDTOs);
+        return ResponseEntity.created(new URI("/api/terms/"))
+            .headers(HeaderUtil.createEntityCreationAlert("terms", null))
             .body(result);
     }
 
@@ -58,26 +56,6 @@ public class TermResource {
         log.debug("Request to get Term with id {}", termId);
         TermDTO result = termService.getTermById(termId);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * update the given term
-     * @param termDTO
-     * @return
-     * @throws WitcurveException
-     */
-
-    @PutMapping("/term")
-    @Timed
-    public ResponseEntity<TermDTO> updateTerm(@RequestBody @Valid TermDTO termDTO) throws WitcurveException {
-        log.debug("Request to update term");
-        if (termDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        TermDTO result = termService.saveOrUpdate(termDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("term", termDTO.getId().toString()))
-            .body(result);
     }
 
     /**

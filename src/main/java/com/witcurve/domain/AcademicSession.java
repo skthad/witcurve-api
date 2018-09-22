@@ -32,6 +32,9 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
     @JoinColumn(nullable = false)
     private School school;
 
+    @NotNull
+    private Boolean active = true;
+
     public Long getId() {
         return id;
     }
@@ -54,6 +57,14 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
 
     public void setSchool(School school) {
         this.school = school;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override

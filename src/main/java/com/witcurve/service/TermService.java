@@ -3,9 +3,11 @@ package com.witcurve.service;
 import com.witcurve.service.dto.TermDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
+import java.util.List;
+
 public interface TermService {
 
-    TermDTO saveOrUpdate(TermDTO termDTO);
+    List<TermDTO> saveOrUpdate(List<TermDTO> termDTOs);
 
     TermDTO getTermById(Long termId) throws WitcurveException;
 

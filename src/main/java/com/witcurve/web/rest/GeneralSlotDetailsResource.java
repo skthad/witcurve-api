@@ -29,21 +29,17 @@ public class GeneralSlotDetailsResource {
     /**
      * creates a generalSlotDetails
      *
-     * @param generalSlotDetailsDTO
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/general-slot-details")
     @Timed
-    public ResponseEntity<GeneralSlotDetailsDTO> createGeneralSlotDetails(@RequestBody @Valid GeneralSlotDetailsDTO generalSlotDetailsDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> createGeneralSlotDetails(@RequestBody @Valid List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save generalSlotDetails");
-        if (generalSlotDetailsDTO.getId() != null) {
-            throw new WitcurveException("New generalSlotDetails can't already have an id");
-        }
-        GeneralSlotDetailsDTO result = generalSlotDetailsService.saveOrUpdate(generalSlotDetailsDTO);
-        return ResponseEntity.created(new URI("/api/general-slot-details/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", result.getId().toString()))
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.saveOrUpdate(generalSlotDetailsDTOs);
+        return ResponseEntity.created(new URI("/api/general-slot-details/"))
+            .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
             .body(result);
     }
 
@@ -66,22 +62,17 @@ public class GeneralSlotDetailsResource {
     /**
      * update the given generalSlotDetails
      *
-     * @param generalSlotDetailsDTO
      * @return
      * @throws WitcurveException
      */
 
-    @PutMapping("/general-slot-details")
+    @PutMapping("/general-slot-details/clone")
     @Timed
-    public ResponseEntity<GeneralSlotDetailsDTO> updateGeneralSlotDetails(@RequestBody @Valid GeneralSlotDetailsDTO generalSlotDetailsDTO) throws WitcurveException {
-        log.debug("Request to update generalSlotDetails");
-        if (generalSlotDetailsDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        GeneralSlotDetailsDTO result = generalSlotDetailsService.saveOrUpdate(generalSlotDetailsDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("generalSlotDetails", generalSlotDetailsDTO.getId().toString()))
-            .body(result);
+    public ResponseEntity<Void> cloneGeneralSlotDetails(@RequestParam("sourceClassId") Long sourceClassId,
+                                                                         @RequestParam("destinationClassIds") List<Long> destinationClassIds) throws WitcurveException {
+        log.debug("Request to clone generalSlotDetails");
+        generalSlotDetailsService.clone(sourceClassId, destinationClassIds);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "General slot details cloned", null)).build();
     }
 
     /**

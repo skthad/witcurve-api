@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface GeneralSlotDetailsService {
 
-    GeneralSlotDetailsDTO saveOrUpdate(GeneralSlotDetailsDTO generalSlotDetailsDTO);
+    List<GeneralSlotDetailsDTO> saveOrUpdate(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
+
+    void clone(Long sourceClassId, List<Long> destinationClassIds);
 
     GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
 
