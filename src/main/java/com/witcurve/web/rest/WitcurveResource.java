@@ -6,13 +6,11 @@ import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
-import com.witcurve.service.util.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.DayOfWeek;
@@ -75,13 +73,13 @@ public class WitcurveResource {
     @Autowired
     private EventRepository eventRepository;
 
-    @RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
+    //@RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
     public ResponseEntity loadDataForParent() {
         loadSchoolDataForParent();
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/load-data/teacher", method = RequestMethod.POST)
+    //@RequestMapping(value = "/load-data/teacher", method = RequestMethod.POST)
     public ResponseEntity loadDataForTeacher() {
         loadSchoolDataForTeacher();
         return ResponseEntity.ok().build();

@@ -1,0 +1,69 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1537619143551-1">
+        <addColumn tableName="academic_session">
+            <column name="active" type="boolean"/>
+        </addColumn>
+        <sql>update academic_session set active = true</sql>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/school.csv"
+                  separator=","
+                  tableName="school">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/school_info.csv"
+                  separator=","
+                  tableName="school_info">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/academic_session.csv"
+                  separator=","
+                  tableName="academic_session">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/term.csv"
+                  separator=","
+                  tableName="term">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/staff.csv"
+                  separator=","
+                  tableName="staff">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/class.csv"
+                  separator=","
+                  tableName="class">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/student.csv"
+                  separator=","
+                  tableName="student">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/master_subject.csv"
+                  separator=","
+                  tableName="master_subject">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/course.csv"
+                  separator=","
+                  tableName="course">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/course_teacher.csv"
+                  separator=","
+                  tableName="course_teacher">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/general_slot_details.csv"
+                  separator=","
+                  tableName="general_slot_details">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/slot_course_details.csv"
+                  separator=","
+                  tableName="slot_course_details">
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
