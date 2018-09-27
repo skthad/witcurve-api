@@ -6,7 +6,6 @@ import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
-import com.witcurve.service.util.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

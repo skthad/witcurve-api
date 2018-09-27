@@ -11,7 +11,9 @@ import com.witcurve.repository.StudentClassRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
+import com.witcurve.service.util.RandomUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -40,17 +42,23 @@ public class EventServiceImpl implements EventService {
     @Autowired
     ClassRepository classRepository;
 
+    private static final ArrayList<EventType> firstList = new ArrayList<EventType>(
+        Arrays.asList(EventType.DAILY_UPDATE, EventType.TEST, EventType.ASSIGNMENT, EventType.EXAM));
+
 
     @Override
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
+        String groupId = null;
+        List<Event> eventList = new ArrayList<>();
+        do {
+            groupId = generateGroupId();
+            eventList = eventRepository.findEventsByBindingId(groupId);
+        } while (eventList != null);
+
         for(EventDTO eventDTO : eventDTOs) {
-            if(eventDTO.getType().equals(EventType.DAILY_UPDATE) || eventDTO.getType().equals(EventType.TEST) || eventDTO.getType().equals(EventType.ASSIGNMENT)) {
-                Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
-                if(event != null) {
-                    throw new WitcurveException("There already exists a record for given event type : "+eventDTO.getType()+" for scd with id : "+eventDTO.getScd().getId()+ " on date : "+eventDTO.getDate().toString());
-                }
-            }
+
+            eventDTO.setBindingId(groupId);
         }
         List<Event> events = eventMapper.toEntity(eventDTOs);
         events = eventRepository.saveAll(events);
@@ -109,6 +117,7 @@ public class EventServiceImpl implements EventService {
 
         List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, classId, grade, sessionId);
 
+
         return eventMapper.toDto(events);
     }
 
@@ -131,7 +140,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) throws WitcurveException {
+    public List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) throws WitcurveException{
         log.debug("Request to get tests with week having weekDate : {} of year : {} or student with id : {}", weekDate, year, studentId);
 
         // Go backward to get Sunday
@@ -148,11 +157,109 @@ public class EventServiceImpl implements EventService {
             saturday = saturday.plusDays(1);
         }
         StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
+            throw new WitcurveException("There is no student class with given student id : "+studentId);
+        }
         Long classId = studentClass.getStandard().getId();
         Grade grade = studentClass.getStandard().getGrade();
         Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
         List<Event> events = eventRepository.findEventsDuringWeekForStudent(sunday, saturday, studentId, classId, grade, sessionId);
         return eventMapper.toDto(events);
 
+    }
+
+    @Override
+    public List<EventDTO> findAllEventsForDiary(LocalDate date, Long studentId) throws WitcurveException {
+        log.debug("Find events for diary for a duration of week from date : {} and for student with id : {}", date, studentId);
+        LocalDate startDate = date.minusDays(7);
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
+            throw new WitcurveException("There is no student class with given student id : "+studentId);
+        }
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
+        List<Event> events = eventRepository.findEventsForDiaryForStudent(startDate, date, studentId, classId, grade, sessionId);
+        String lastBindingId = events.get(events.size()-1).getBindingId();
+        if(lastBindingId != null) {
+            List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
+            if(remainingList.size() != 0) {
+                events.addAll(remainingList);
+                Set<Event> eventSet = new LinkedHashSet<>(events);
+                events = new ArrayList<>(eventSet);
+            }
+        }
+        return eventMapper.toDto(events);
+
+    }
+
+    @Override
+    public List<EventDTO> findAllEventsForAnnouncements(LocalDate date, Long studentId) throws WitcurveException {
+        log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
+        LocalDate endDate = date.plusDays(7);
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
+            throw new WitcurveException("There is no student class with given student id : "+studentId);
+        }
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
+        List<Event> events = eventRepository.findEventsForAnnouncementsForStudent(date, endDate, studentId, classId, grade, sessionId);
+        String lastBindingId = events.get(events.size()-1).getBindingId();
+        if(lastBindingId != null) {
+            List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
+            if(remainingList.size() != 0) {
+                events.addAll(remainingList);
+                Set<Event> eventSet = new LinkedHashSet<>(events);
+                events = new ArrayList<>(eventSet);
+            }
+        }
+        return eventMapper.toDto(events);
+
+    }
+
+    private String generateGroupId() {
+        RandomStringUtils randomStringUtils = new RandomStringUtils();
+        return RandomStringUtils.randomAlphanumeric(8);
+    }
+
+    private void isEventValid(EventDTO eventDTO) throws WitcurveException {
+        if(firstList.contains(eventDTO.getType())) {
+            if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
+                if(eventDTO.getStandardId() == null) {
+                    throw new WitcurveException("Event of type : "+eventDTO.getType()+"cannot have empty standardId");
+                }
+            } else {
+                if(eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
+                    throw new WitcurveException("Event of type : "+eventDTO.getType()+"cannot have empty standardId and scd");
+                }
+            }
+            Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
+            if(event != null) {
+                throw new WitcurveException("There already exists a record for given event type : "+eventDTO.getType()+" for scd with id : "+eventDTO.getScd().getId()+ " on date : "+eventDTO.getDate().toString());
+            }
+        } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
+            if(!(eventDTO.getGrade() == null ^ eventDTO.getAcademicSessionId() == null)) {
+                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : grade, academicSessionId");
+            }
+            // add a check for event existence - check for all types
+        } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
+            if(!(eventDTO.getGrade() == null ^ eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
+                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : grade, academicSessionId, standardId");
+            }
+            // add a check for event existence - check for all types
+
+        } else if(eventDTO.getType().equals(EventType.NOTE)) {
+            if(!(eventDTO.getGrade() == null ^ eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
+                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : grade, academicSessionId, standardId, studentId");
+            }
+            // add a check for event existence - check for all types
+
+        }  else if(eventDTO.getType().equals(EventType.LEAVE)) {
+            if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
+                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : studentId, staffId");
+            }
+            // add a check for event existence - check for all types
+        }
     }
 }
