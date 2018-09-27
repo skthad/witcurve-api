@@ -1,6 +1,8 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.Event;
+import com.witcurve.domain.enumeration.View;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -131,8 +133,22 @@ public class EventResource {
             }
             result = eventService.findAllEventsOnGivenMonthForStudent(month, year, studentId);
         }
+        if(type.equals(ViewType.DIARY)) {
+            if(eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for DIARY view");
+            }
+            LocalDate date = getLocalDate(eventDate);
+            result = eventService.findAllEventsForDiary(date, studentId);
+        }
+        if(type.equals(ViewType.ANNOUNCEMENT)) {
+            if (eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
+            }
+            LocalDate date = getLocalDate(eventDate);
+            result = eventService.findAllEventsForAnnouncements(date, studentId);
+        }
 
-        return new ResponseEntity<>(result,  HttpStatus.OK);
+            return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
 
