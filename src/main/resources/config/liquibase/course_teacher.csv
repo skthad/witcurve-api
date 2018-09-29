@@ -1,4 +1,4 @@
-id,created_by,course_id,teacher_id,class_id
+id,created_by,course_id,teacher_id,standard_id
 1,staff,1,9,5
 2,staff,2,2,5
 3,staff,3,3,5

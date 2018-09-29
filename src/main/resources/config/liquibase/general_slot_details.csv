@@ -1,4 +1,4 @@
-id,class_id,start,duration,is_recess,created_by
+id,standard_id,start,duration,is_recess,created_by
 1,5,0700,40,FALSE,staff
 2,5,0740,40,FALSE,staff
 3,5,0820,40,FALSE,staff

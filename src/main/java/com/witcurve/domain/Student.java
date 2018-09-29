@@ -104,8 +104,8 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "previous_school_address")
     private String previousSchoolAddress;
 
-    @Column(name = "previous_school_class", length = 50)
-    private String previousSchoolClass;
+    @Column(name = "previous_school_standard", length = 50)
+    private String previousSchoolStandard;
 
     @NotNull
     @ManyToOne
@@ -114,8 +114,8 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "class_id", nullable = false)
-    private Class standard;
+    @JoinColumn(name = "standard_id", nullable = false)
+    private Standard standard;
 
     @Column(length = 50)
     private String registeredMobileNumber;
@@ -340,12 +340,12 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.previousSchoolAddress = previousSchoolAddress;
     }
 
-    public String getPreviousSchoolClass() {
-        return previousSchoolClass;
+    public String getPreviousSchoolStandard() {
+        return previousSchoolStandard;
     }
 
-    public void setPreviousSchoolClass(String previousSchoolClass) {
-        this.previousSchoolClass = previousSchoolClass;
+    public void setPreviousSchoolStandard(String previousSchoolStandard) {
+        this.previousSchoolStandard = previousSchoolStandard;
     }
 
     public School getSchool() {
@@ -356,11 +356,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.school = school;
     }
 
-    public Class getStandard() {
+    public Standard getStandard() {
         return standard;
     }
 
-    public void setStandard(Class standard) {
+    public void setStandard(Standard standard) {
         this.standard = standard;
     }
 
@@ -438,7 +438,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
             ", identificationMark2='" + identificationMark2 + '\'' +
             ", previousSchoolName='" + previousSchoolName + '\'' +
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
-            ", previousSchoolClass='" + previousSchoolClass + '\'' +
+            ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", school=" + school +
             ", standard=" + standard +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +

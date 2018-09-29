@@ -1,7 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.Class;
+import com.witcurve.domain.Standard;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
@@ -29,7 +29,7 @@ public class WitcurveResource {
     private AcademicSessionRepository academicSessionRepository;
 
     @Autowired
-    private ClassRepository classRepository;
+    private StandardRepository classRepository;
 
     @Autowired
     private MasterSubjectRepository masterSubjectRepository;
@@ -41,7 +41,7 @@ public class WitcurveResource {
     private CourseTeacherRepository courseTeacherRepository;
 
     @Autowired
-    private StudentClassRepository studentClassRepository;
+    private StudentStandardRepository studentStandardRepository;
 
     @Autowired
     private GuardianRepository guardianRepository;
@@ -203,7 +203,7 @@ public class WitcurveResource {
 
         // class data
 
-        Class class1 = new Class();
+        Standard class1 = new Standard();
         class1.setGrade(Grade.III);
         class1.setTerm(term2);
         class1.setSection("A");
@@ -379,11 +379,11 @@ public class WitcurveResource {
 
         guardianRepository.save(g1);
 
-        StudentClass studentClass = new StudentClass();
-        studentClass.setStandard(class1);
-        studentClass.setStudent(student1);
-        studentClass.setRollNo("1");
-        studentClass = studentClassRepository.save(studentClass);
+        StudentStandard studentStandard = new StudentStandard();
+        studentStandard.setStandard(class1);
+        studentStandard.setStudent(student1);
+        studentStandard.setRollNo("1");
+        studentStandard = studentStandardRepository.save(studentStandard);
 
         //exam data
         Exam exam1 = new Exam();
@@ -1732,7 +1732,7 @@ public class WitcurveResource {
 
         // class data
 
-        Class class1 = new Class();
+        Standard class1 = new Standard();
         class1.setGrade(Grade.III);
         class1.setTerm(term2);
         class1.setSection("A");
@@ -1908,11 +1908,11 @@ public class WitcurveResource {
 
         guardianRepository.save(g1);
 
-        StudentClass studentClass = new StudentClass();
-        studentClass.setStandard(class1);
-        studentClass.setStudent(student1);
-        studentClass.setRollNo("1");
-        studentClass = studentClassRepository.save(studentClass);
+        StudentStandard studentStandard = new StudentStandard();
+        studentStandard.setStandard(class1);
+        studentStandard.setStudent(student1);
+        studentStandard.setRollNo("1");
+        studentStandard = studentStandardRepository.save(studentStandard);
 
         //exam data
         Exam exam1 = new Exam();

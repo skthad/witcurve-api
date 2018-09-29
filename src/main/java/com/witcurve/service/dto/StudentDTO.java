@@ -70,13 +70,13 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String previousSchoolAddress;
 
-    private String previousSchoolClass;
+    private String previousSchoolStandard;
 
     @NotNull
     private Long schoolId;
 
     @NotNull
-    private Long classId;
+    private Long standardId;
 
     private String registeredMobileNumber;
 
@@ -295,12 +295,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.previousSchoolAddress = previousSchoolAddress;
     }
 
-    public String getPreviousSchoolClass() {
-        return previousSchoolClass;
+    public String getPreviousSchoolStandard() {
+        return previousSchoolStandard;
     }
 
-    public void setPreviousSchoolClass(String previousSchoolClass) {
-        this.previousSchoolClass = previousSchoolClass;
+    public void setPreviousSchoolStandard(String previousSchoolStandard) {
+        this.previousSchoolStandard = previousSchoolStandard;
     }
 
     public Long getSchoolId() {
@@ -311,12 +311,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.schoolId = schoolId;
     }
 
-    public Long getClassId() {
-        return classId;
+    public Long getStandardId() {
+        return standardId;
     }
 
-    public void setClassId(Long classId) {
-        this.classId = classId;
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
     }
 
     public String getRegisteredMobileNumber() {
@@ -393,9 +393,9 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", identificationMark2='" + identificationMark2 + '\'' +
             ", previousSchoolName='" + previousSchoolName + '\'' +
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
-            ", previousSchoolClass='" + previousSchoolClass + '\'' +
+            ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", schoolId=" + schoolId +
-            ", classId=" + classId +
+            ", standardId=" + standardId +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
             ", gender=" + gender +
             ", admissionDate=" + admissionDate +

@@ -21,7 +21,7 @@ public class ExamDetailsDTO extends AbstractAuditingDTO {
     private Long courseId;
 
     @NotNull
-    private Long classId;
+    private Long standardId;
 
     @NotNull
     private Long examId;
@@ -59,12 +59,12 @@ public class ExamDetailsDTO extends AbstractAuditingDTO {
         this.courseId = courseId;
     }
 
-    public Long getClassId() {
-        return classId;
+    public Long getStandardId() {
+        return standardId;
     }
 
-    public void setClassId(Long classId) {
-        this.classId = classId;
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
     }
 
     public Long getExamId() {
@@ -119,7 +119,7 @@ public class ExamDetailsDTO extends AbstractAuditingDTO {
             "id=" + id +
             ", examDate=" + examDate +
             ", courseId=" + courseId +
-            ", classId=" + classId +
+            ", standardId=" + standardId +
             ", examId=" + examId +
             ", syllabus='" + syllabus + '\'' +
             ", startTime=" + startTime +

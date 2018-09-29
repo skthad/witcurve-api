@@ -1,6 +1,5 @@
 package com.witcurve.service;
 
-import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -14,7 +13,7 @@ public interface SlotCourseDetailsService {
 
     void deleteSlotCourseDetails(Long slotCourseDetailsId) throws WitcurveException;
 
-    List<SlotCourseDetailsDTO> getSlotCourseDetailsByClassId(Long classId);
+    List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId);
 
     List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherIdAndTermId(Long teacherId, Long termId);
 }

@@ -3,7 +3,6 @@ package com.witcurve.repository;
 import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,7 +21,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")" +
         " order by e.scd.gsd.start asc")
-    List<Event> findEventsByDateForStudent(LocalDate date, Long studentId, Long classId, Grade grade, Long sessionId);
+    List<Event> findEventsByDateForStudent(LocalDate date, Long studentId, Long standardId, Grade grade, Long sessionId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and " +
         "(" +
@@ -32,7 +31,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")" +
         " order by e.date asc")
-        List<Event> findEventsDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long classId, Grade grade, Long sessionId);
+        List<Event> findEventsDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and" +
         "(" +
@@ -43,7 +42,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         ")" +
         " order by e.date asc, e.scd.gsd.start asc")
     List<Event> findEventsDuringWeekForStudent(LocalDate weekStart, LocalDate weekEnd,
-                                     Long studentId, Long classId, Grade grade,
+                                     Long studentId, Long standardId, Grade grade,
                                      Long sessionId);
 
 
@@ -54,7 +53,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.academicSession.id=?4 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")" +
         " order by e.scd.gsd.start asc")
-    List<Event> findEventsByDateForClass(LocalDate date, Long classId, Grade grade, Long sessionId);
+    List<Event> findEventsByDateForStandard(LocalDate date, Long standardId, Grade grade, Long sessionId);
 
     @Query("Select e from Event e where e.date = ?1 and e.type = ?2 and e.scd.id = ?3")
     Event findEventOnDateAndSlot(LocalDate date, EventType type, Long scdId);

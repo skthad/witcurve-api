@@ -1,6 +1,5 @@
 package com.witcurve.service.impl;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
 import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.repository.SlotCourseDetailsRepository;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -56,9 +55,9 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     }
 
     @Override
-    public List<SlotCourseDetailsDTO> getSlotCourseDetailsByClassId(Long classId) {
-        log.debug("Requqest to get list of slotCourseDetails for given class id : {}", classId);
-        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStart(classId);
+    public List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId) {
+        log.debug("Requqest to get list of slotCourseDetails for given standard id : {}", standardId);
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStart(standardId);
         return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 

@@ -4,7 +4,7 @@
         <createSequence sequenceName="academic_session_id_seq"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-2">
-        <createSequence sequenceName="class_id_seq"/>
+        <createSequence sequenceName="standard_id_seq"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-3">
         <createSequence sequenceName="course_id_seq"/>
@@ -70,7 +70,7 @@
         </createTable>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-18">
-        <createTable tableName="class">
+        <createTable tableName="standard">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -136,7 +136,7 @@
             <column name="course_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="class_id" type="BIGINT">
+            <column name="standard_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="teacher_id" type="BIGINT">
@@ -177,7 +177,7 @@
             <column name="academic_session_id" type="BIGINT"/>
             <column name="scd_id" type="BIGINT"/>
             <column name="staff_id" type="BIGINT"/>
-            <column name="class_id" type="BIGINT"/>
+            <column name="standard_id" type="BIGINT"/>
             <column name="student_id" type="BIGINT"/>
         </createTable>
     </changeSet>
@@ -234,7 +234,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="exam_id" type="BIGINT"/>
-            <column name="class_id" type="BIGINT">
+            <column name="standard_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -500,7 +500,7 @@
             </column>
             <column name="pincode" type="VARCHAR(50)"/>
             <column name="previous_school_address" type="VARCHAR(255)"/>
-            <column name="previous_school_class" type="VARCHAR(50)"/>
+            <column name="previous_school_standard" type="VARCHAR(50)"/>
             <column name="previous_school_name" type="VARCHAR(255)"/>
             <column name="registered_mobile_number" type="VARCHAR(50)"/>
             <column name="religion" type="VARCHAR(50)"/>
@@ -509,15 +509,15 @@
             <column name="school_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="class_id" type="BIGINT">
+            <column name="standard_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-32">
-        <createTable tableName="student_class">
+        <createTable tableName="student_standard">
             <column autoIncrement="true" name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="student_classPK"/>
+                <constraints primaryKey="true" primaryKeyName="student_standardPK"/>
             </column>
             <column name="created_by" type="VARCHAR(50)">
                 <constraints nullable="false"/>
@@ -530,7 +530,7 @@
             <column name="roll_no" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="class_id" type="BIGINT">
+            <column name="standard_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="student_id" type="BIGINT">
@@ -563,7 +563,7 @@
         <addPrimaryKey columnNames="id" constraintName="academic_sessionPK" tableName="academic_session"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-35">
-        <addPrimaryKey columnNames="id" constraintName="classPK" tableName="class"/>
+        <addPrimaryKey columnNames="id" constraintName="standardPK" tableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-36">
         <addPrimaryKey columnNames="id" constraintName="coursePK" tableName="course"/>
@@ -620,25 +620,25 @@
         <addUniqueConstraint columnNames="course_name, school_id" constraintName="course_name_school_id_UK" tableName="course"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-54">
-        <addUniqueConstraint columnNames="course_id, teacher_id, class_id" constraintName="course_teacher_class_UK" tableName="course_teacher"/>
+        <addUniqueConstraint columnNames="course_id, teacher_id, standard_id" constraintName="course_teacher_standard_UK" tableName="course_teacher"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-55">
         <addUniqueConstraint columnNames="name, academic_session_id" constraintName="exam_name_academic_session_UK" tableName="exam"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-56">
-        <addUniqueConstraint columnNames="grade, section, term_id, class_teacher_id" constraintName="grade_section_teacher_term_UK" tableName="class"/>
+        <addUniqueConstraint columnNames="grade, section, term_id, class_teacher_id" constraintName="grade_section_teacher_term_UK" tableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-57">
         <addUniqueConstraint columnNames="school_id, start_date" constraintName="start_date_school_id_UK" tableName="academic_session"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-58">
-        <addUniqueConstraint columnNames="student_id, class_id" constraintName="student_standard_UK" tableName="student_class"/>
+        <addUniqueConstraint columnNames="student_id, standard_id" constraintName="student_standard_UK" tableName="student_standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-59">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="student" constraintName="FK1vm0oqhk9viil6eocn49rj1l9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-60">
-        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_class" constraintName="FK2f81ovfviq7rv4jhpdr46dk3e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_standard" constraintName="FK2f81ovfviq7rv4jhpdr46dk3e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-61">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="event" constraintName="FK60ua7upltt4d7k4uqrg6b0vhq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
@@ -653,7 +653,7 @@
         <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="exam" constraintName="FK796ohp1rjtd0wk2xu5kli8pok" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-65">
-        <addForeignKeyConstraint baseColumnNames="class_teacher_id" baseTableName="class" constraintName="FK9rgsr1gydk2t2ifbmfl20r7vf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+        <addForeignKeyConstraint baseColumnNames="class_teacher_id" baseTableName="standard" constraintName="FK9rgsr1gydk2t2ifbmfl20r7vf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-66">
         <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="slot_course_details" constraintName="FK9y0yt7d4g5x592m3mv7ert0pc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
@@ -671,16 +671,16 @@
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course_teacher" constraintName="FKddm8d9rfgge8fdpk76tesgi1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-71">
-        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student" constraintName="FKdwhkib64u47wc4yo4hk0cub90" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="student" constraintName="FKdwhkib64u47wc4yo4hk0cub90" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-72">
         <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="term" constraintName="FKfa37vnb6yypg7osr3wcqf3odg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-73">
-        <addForeignKeyConstraint baseColumnNames="term_id" baseTableName="class" constraintName="FKfc9fmjl1pr35tihlklw54vw2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="term"/>
+        <addForeignKeyConstraint baseColumnNames="term_id" baseTableName="standard" constraintName="FKfc9fmjl1pr35tihlklw54vw2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="term"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-74">
-        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="student_class" constraintName="FKfyryxclt2okb0bxjfhct0pv5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="student_standard" constraintName="FKfyryxclt2okb0bxjfhct0pv5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-75">
         <addForeignKeyConstraint baseColumnNames="scd_id" baseTableName="event" constraintName="FKhlxo94ac3s2ng8e3ot142coso" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot_course_details"/>
@@ -692,10 +692,10 @@
         <addForeignKeyConstraint baseColumnNames="master_subject_id" baseTableName="course" constraintName="FKjwkwr16lu0s8nfaxy5t8iqhki" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="master_subject"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-78">
-        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="event" constraintName="FKkqtw8xsbsbfi12psyh4txu0s4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="event" constraintName="FKkqtw8xsbsbfi12psyh4txu0s4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-79">
-        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="general_slot_details" constraintName="FKlgkm2hwig9xig9wua6n1hplmg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="general_slot_details" constraintName="FKlgkm2hwig9xig9wua6n1hplmg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-80">
         <addForeignKeyConstraint baseColumnNames="academic_session_id" baseTableName="event" constraintName="FKnysic7kbh1pv8bhm9ygn3su1e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
@@ -710,7 +710,7 @@
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_teacher" constraintName="FKrna6ik293g84mo3rslnkk7m1a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-84">
-        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="course_teacher" constraintName="FKs0jkp3qcjb13si9emoirftm97" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="class"/>
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="course_teacher" constraintName="FKs0jkp3qcjb13si9emoirftm97" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-85">
         <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="general_slot_details" constraintName="FKt2cmdy4f0qmk0jrythjpr2b9g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>

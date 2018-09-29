@@ -68,10 +68,10 @@ public class GeneralSlotDetailsResource {
 
     @PutMapping("/general-slot-details/clone")
     @Timed
-    public ResponseEntity<Void> cloneGeneralSlotDetails(@RequestParam("sourceClassId") Long sourceClassId,
-                                                                         @RequestParam("destinationClassIds") List<Long> destinationClassIds) throws WitcurveException {
+    public ResponseEntity<Void> cloneGeneralSlotDetails(@RequestParam("sourceStandardId") Long sourceStandardId,
+                                                                         @RequestParam("destinationStandardIds") List<Long> destinationStandardIds) throws WitcurveException {
         log.debug("Request to clone generalSlotDetails");
-        generalSlotDetailsService.clone(sourceClassId, destinationClassIds);
+        generalSlotDetailsService.clone(sourceStandardId, destinationStandardIds);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "General slot details cloned", null)).build();
     }
 
@@ -91,18 +91,18 @@ public class GeneralSlotDetailsResource {
     }
 
     /**
-     * get generalSlotDetails by class id
+     * get generalSlotDetails by standard id
      *
-     * @param classId
+     * @param standardId
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/general-slot-details/class/{classId}")
+    @GetMapping("/general-slot-details/standard/{standardId}")
     @Timed
-    public ResponseEntity<List<GeneralSlotDetailsDTO>> getGeneralSlotDetailsByClassId(@PathVariable("classId") Long classId) throws WitcurveException {
-        log.debug("Request to get GeneralSlotDetails with class id {}", classId);
-        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getGeneralSlotDetailsByClassId(classId);
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> getGeneralSlotDetailsByStandardId(@PathVariable("standardId") Long standardId) throws WitcurveException {
+        log.debug("Request to get GeneralSlotDetails with standard id {}", standardId);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getGeneralSlotDetailsByStandardId(standardId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

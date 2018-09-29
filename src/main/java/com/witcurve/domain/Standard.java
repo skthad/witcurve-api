@@ -8,17 +8,17 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name="class", uniqueConstraints = {
+@Table(name="standard", uniqueConstraints = {
     @UniqueConstraint(name = "grade_section_teacher_term_UK",
         columnNames = {"grade", "section", "term_id", "class_teacher_id"})
 })
-public class Class extends AbstractAuditingEntity implements Serializable {
+public class Standard extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "classIdSeq")
-    @SequenceGenerator(name = "classIdSeq", sequenceName="class_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "standardIdSeq")
+    @SequenceGenerator(name = "standardIdSeq", sequenceName="standard_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
@@ -82,9 +82,9 @@ public class Class extends AbstractAuditingEntity implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Class aClass = (Class) o;
-        return Objects.equals(id, aClass.id);
+        if (!(o instanceof Standard)) return false;
+        Standard standard = (Standard) o;
+        return Objects.equals(getId(), standard.getId());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class Class extends AbstractAuditingEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "Class{" +
+        return "Standard{" +
             "id=" + id +
             ", grade=" + grade +
             ", section='" + section + '\'' +

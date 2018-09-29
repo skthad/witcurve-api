@@ -20,7 +20,7 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     private Boolean recess;
 
     @NotNull
-    private ClassDTO standard;
+    private StandardDTO standard;
 
     private Long examId;
 
@@ -59,11 +59,11 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.recess = recess;
     }
 
-    public ClassDTO getStandard() {
+    public StandardDTO getStandard() {
         return standard;
     }
 
-    public void setStandard(ClassDTO standard) {
+    public void setStandard(StandardDTO standard) {
         this.standard = standard;
     }
 

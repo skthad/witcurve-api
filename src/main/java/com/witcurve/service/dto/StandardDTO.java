@@ -5,7 +5,7 @@ import com.witcurve.domain.enumeration.Grade;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
-public class ClassDTO extends AbstractAuditingDTO {
+public class StandardDTO extends AbstractAuditingDTO {
 
     private Long id;
 
@@ -63,9 +63,9 @@ public class ClassDTO extends AbstractAuditingDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ClassDTO)) return false;
-        ClassDTO classDTO = (ClassDTO) o;
-        return Objects.equals(getId(), classDTO.getId());
+        if (!(o instanceof StandardDTO)) return false;
+        StandardDTO standardDTO = (StandardDTO) o;
+        return Objects.equals(getId(), standardDTO.getId());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ClassDTO extends AbstractAuditingDTO {
 
     @Override
     public String toString() {
-        return "ClassDTO{" +
+        return "StandardDTO{" +
             "id=" + id +
             ", grade=" + grade +
             ", section='" + section + '\'' +
