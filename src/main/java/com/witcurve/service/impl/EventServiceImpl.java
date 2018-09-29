@@ -1,13 +1,13 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Standard;
+import com.witcurve.domain.Class;
 import com.witcurve.domain.Event;
-import com.witcurve.domain.StudentStandard;
+import com.witcurve.domain.StudentClass;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.repository.StandardRepository;
+import com.witcurve.repository.ClassRepository;
 import com.witcurve.repository.EventRepository;
-import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.repository.StudentClassRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
@@ -37,10 +37,10 @@ public class EventServiceImpl implements EventService {
     EventMapper eventMapper;
 
     @Autowired
-    StudentStandardRepository studentStandardRepository;
+    StudentClassRepository studentClassRepository;
 
     @Autowired
-    StandardRepository classRepository;
+    ClassRepository classRepository;
 
     private static final ArrayList<EventType> firstList = new ArrayList<EventType>(
         Arrays.asList(EventType.DAILY_UPDATE, EventType.TEST, EventType.ASSIGNMENT, EventType.EXAM));
@@ -88,17 +88,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllEventsOnGivenDateForStandard(LocalDate eventDate, Long standardId) throws WitcurveException {
-        log.debug("Request to get tests with eventDate : {} for class with id : {}", eventDate, standardId);
+    public List<EventDTO> findAllEventsOnGivenDateForClass(LocalDate eventDate, Long classId) throws WitcurveException {
+        log.debug("Request to get tests with eventDate : {} for class with id : {}", eventDate, classId);
 
-        Standard standard  = classRepository.findById(standardId).get();
+        Class standard  = classRepository.findById(classId).get();
         if(standard == null) {
-            throw new WitcurveException("There is no class with given class id : "+standardId);
+            throw new WitcurveException("There is no class with given class id : "+classId);
         }
         Grade grade = standard.getGrade();
         Long sessionId = standard.getTerm().getSession().getId();
 
-        List<Event> events = eventRepository.findEventsByDateForStandard(eventDate, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsByDateForClass(eventDate, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
     }
@@ -107,16 +108,16 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
         // null checks
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
-        if(studentStandard == null) {
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
             throw new WitcurveException("There is no student class with given student id : "+studentId);
         }
-        Long standardId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
 
-        List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, standardId, grade, sessionId);
-
+        List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
     }
@@ -126,16 +127,17 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to get tests with month no. : {} of year : {} or student with id : {}", month, year, studentId);
         // need to get Events of type Holiday, Leave, Exam, SchoolEvent
         // null checks
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
-        if(studentStandard == null) {
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
             throw new WitcurveException("There is no student class with given student id : "+studentId);
         }
-        Long standardId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).withDayOfMonth(month).minusDays(1);
-        List<Event> events = eventRepository.findEventsDuringMonthForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsDuringMonthForStudent(monthStart, monthEnd, studentId, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
     }
 
@@ -156,14 +158,15 @@ public class EventServiceImpl implements EventService {
         {
             saturday = saturday.plusDays(1);
         }
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
-        if(studentStandard == null) {
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
             throw new WitcurveException("There is no student class with given student id : "+studentId);
         }
-        Long classId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
         List<Event> events = eventRepository.findEventsDuringWeekForStudent(sunday, saturday, studentId, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
@@ -172,23 +175,22 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsForDiary(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for diary for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate startDate = date.minusDays(7);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
-        if(studentStandard == null) {
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
             throw new WitcurveException("There is no student class with given student id : "+studentId);
         }
-        Long classId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
         List<Event> events = eventRepository.findEventsForDiaryForStudent(startDate, date, studentId, classId, grade, sessionId);
         String lastBindingId = events.get(events.size()-1).getBindingId();
         if(lastBindingId != null) {
             List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
             if(remainingList.size() != 0) {
                 events.addAll(remainingList);
-                Set<Event> eventSet = new LinkedHashSet<>(events);
-                events = new ArrayList<>(eventSet);
             }
         }
+        Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
 
     }
@@ -197,23 +199,22 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsForAnnouncements(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate endDate = date.plusDays(7);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
-        if(studentStandard == null) {
+        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
+        if(studentClass == null) {
             throw new WitcurveException("There is no student class with given student id : "+studentId);
         }
-        Long classId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long classId = studentClass.getStandard().getId();
+        Grade grade = studentClass.getStandard().getGrade();
+        Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
         List<Event> events = eventRepository.findEventsForAnnouncementsForStudent(date, endDate, studentId, classId, grade, sessionId);
         String lastBindingId = events.get(events.size()-1).getBindingId();
         if(lastBindingId != null) {
             List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
             if(remainingList.size() != 0) {
                 events.addAll(remainingList);
-                Set<Event> eventSet = new LinkedHashSet<>(events);
-                events = new ArrayList<>(eventSet);
             }
         }
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
@@ -262,4 +263,59 @@ public class EventServiceImpl implements EventService {
             // add a check for event existence - check for all types
         }
     }
+
+    public class EventDateAscComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event o1, Event o2) {
+            if (o1.getDate().isAfter( o2.getDate())) {
+                return 1;
+            } else if(o1.getDate().isBefore( o2.getDate())) {
+                return -1;
+            } else {
+                if(o1.getScd() != null && o2.getScd() != null) {
+                    Integer start1 = Integer.parseInt(o1.getScd().getGsd().getStart());
+                    Integer start2 = Integer.parseInt(o2.getScd().getGsd().getStart());
+                    if(start1 > start2) {
+                        return 1;
+                    } else if(start1 < start2) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+
+    public class EventDateDescComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event o1, Event o2) {
+            if (o1.getDate().isAfter( o2.getDate())) {
+                return -1;
+            } else if(o1.getDate().isBefore( o2.getDate())) {
+                return 1;
+            } else {
+                if(o1.getScd() != null && o2.getScd() != null) {
+                    Integer start1 = Integer.parseInt(o1.getScd().getGsd().getStart());
+                    Integer start2 = Integer.parseInt(o2.getScd().getGsd().getStart());
+                    if(start1 > start2) {
+                        return 1;
+                    } else if(start1 < start2) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+
 }
