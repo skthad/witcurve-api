@@ -1,52 +1,52 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <changeSet author="srujankumar (generated)" id="1536843761117-1">
-        <createSequence sequenceName="academic_session_id_seq"/>
+        <createSequence sequenceName="academic_session_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-2">
-        <createSequence sequenceName="standard_id_seq"/>
+        <createSequence sequenceName="standard_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-3">
-        <createSequence sequenceName="course_id_seq"/>
+        <createSequence sequenceName="course_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-4">
-        <createSequence sequenceName="course_teacher_id_seq"/>
+        <createSequence sequenceName="course_teacher_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-5">
-        <createSequence sequenceName="event_id_seq"/>
+        <createSequence sequenceName="event_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-6">
-        <createSequence sequenceName="exam_id_seq"/>
+        <createSequence sequenceName="exam_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-7">
-        <createSequence sequenceName="general_slot_details_seq"/>
+        <createSequence sequenceName="general_slot_details_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-8">
-        <createSequence sequenceName="guardian_id_seq"/>
+        <createSequence sequenceName="guardian_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-9">
-        <createSequence sequenceName="master_subject_id_seq"/>
+        <createSequence sequenceName="master_subject_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-10">
-        <createSequence sequenceName="school_id_seq"/>
+        <createSequence sequenceName="school_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-11">
-        <createSequence sequenceName="school_info_id_seq"/>
+        <createSequence sequenceName="school_info_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-12">
-        <createSequence sequenceName="sibling_info_id_seq"/>
+        <createSequence sequenceName="sibling_info_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-13">
-        <createSequence sequenceName="slot_course_details_seq"/>
+        <createSequence sequenceName="slot_course_details_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-14">
-        <createSequence sequenceName="staff_id_seq"/>
+        <createSequence sequenceName="staff_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-15">
-        <createSequence sequenceName="student_id_seq"/>
+        <createSequence sequenceName="student_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-16">
-        <createSequence sequenceName="term_id_seq"/>
+        <createSequence sequenceName="term_id_seq" startValue="1000"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-17">
         <createTable tableName="academic_session">

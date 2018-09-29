@@ -30,7 +30,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
-    @NotNull
+    //@NotNull
     @OneToOne
     private User user;
 
