@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1538216318912-1">
+        <createSequence sequenceName="instititute_id_seq"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1538216318912-2">
+        <createTable tableName="institute">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1538216318912-3">
+        <addColumn tableName="school">
+            <column name="institute_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1538216318912-4">
+        <addPrimaryKey columnNames="id" constraintName="institutePK" tableName="institute"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1538216318912-5">
+        <addForeignKeyConstraint baseColumnNames="institute_id" baseTableName="school" constraintName="FKrh24djgqkiw9hjmlwphpf8wvy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="institute"/>
+    </changeSet>
+</databaseChangeLog>
