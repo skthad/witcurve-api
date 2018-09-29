@@ -51,7 +51,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "class_id")
     private Standard standard;
 
     @ManyToOne

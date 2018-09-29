@@ -33,7 +33,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @NotNull
+    //@NotNull
     @OneToOne
     private User user;
 

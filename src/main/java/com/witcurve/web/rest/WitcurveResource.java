@@ -1,7 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.Standard;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.DayOfWeek;
@@ -73,13 +73,16 @@ public class WitcurveResource {
     @Autowired
     private EventRepository eventRepository;
 
-    //@RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
+    @Autowired
+    private InstituteRepository instituteRepository;
+
+    @RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
     public ResponseEntity loadDataForParent() {
         loadSchoolDataForParent();
         return ResponseEntity.ok().build();
     }
 
-    //@RequestMapping(value = "/load-data/teacher", method = RequestMethod.POST)
+    @RequestMapping(value = "/load-data/teacher", method = RequestMethod.POST)
     public ResponseEntity loadDataForTeacher() {
         loadSchoolDataForTeacher();
         return ResponseEntity.ok().build();
@@ -89,6 +92,11 @@ public class WitcurveResource {
 
         String affiliationId = RandomStringUtils.randomAlphanumeric(6);
         //school data
+
+        Institute institute1 = new Institute();
+        institute1.setName("Chirec");
+        institute1 = instituteRepository.save(institute1);
+
         School school1 = new School();
         school1.setName("Witcurve");
         school1.setAddress1("Kondapur");
@@ -101,7 +109,7 @@ public class WitcurveResource {
         school1.setPrimaryPhone("9999999999");
         school1.setPrimaryEmail("contact@witcurve.com");
         school1.setFax("9999999999");
-
+        school1.setInstitute(institute1);
 
         school1= schoolRepository.save(school1);
 
@@ -132,6 +140,7 @@ public class WitcurveResource {
         staff1.setAddress1("Kondpaur");
         staff1.setFirstName("Anuranjan");
         staff1.setLastName("Kumar");
+        staff1.setPrimaryPhone("1234567980");
         staff1.setSchool(school1);
         staff1.setType("Teaching");
 
@@ -141,6 +150,7 @@ public class WitcurveResource {
         staff2.setAddress1("Hitech City");
         staff2.setFirstName("Dhiraj");
         staff2.setLastName("Kumar");
+        staff2.setPrimaryPhone("1234567980");
         staff2.setSchool(school1);
         staff2.setType("Teaching");
 
@@ -150,6 +160,7 @@ public class WitcurveResource {
         staff3.setAddress1("Hitech City");
         staff3.setFirstName("Srujan Kumar");
         staff3.setLastName("Tad");
+        staff3.setPrimaryPhone("1234567980");
         staff3.setSchool(school1);
         staff3.setType("Teaching");
 
@@ -159,6 +170,7 @@ public class WitcurveResource {
         staff4.setAddress1("Hitech City");
         staff4.setFirstName("Kishore Kumar");
         staff4.setLastName("SVR");
+        staff4.setPrimaryPhone("1234567980");
         staff4.setSchool(school1);
         staff4.setType("Teaching");
 
@@ -166,8 +178,9 @@ public class WitcurveResource {
 
         Staff staff5 = new Staff();
         staff5.setAddress1("Hitech City");
-        staff5.setFirstName("Manohar");
+        staff5.setFirstName("Mahendra");
         staff5.setLastName("No Idea");
+        staff5.setPrimaryPhone("1234567980");
         staff5.setSchool(school1);
         staff5.setType("Teaching");
 
@@ -177,6 +190,7 @@ public class WitcurveResource {
         staff6.setAddress1("Hitech City");
         staff6.setFirstName("Satya");
         staff6.setLastName("No Idea");
+        staff6.setPrimaryPhone("1234567980");
         staff6.setSchool(school1);
         staff6.setType("Teaching");
 
@@ -187,6 +201,7 @@ public class WitcurveResource {
         staff7.setAddress1("Hitech City");
         staff7.setFirstName("Sai Chand");
         staff7.setLastName("Gandivasala");
+        staff7.setPrimaryPhone("1234567980");
         staff7.setSchool(school1);
         staff7.setType("Teaching");
 
@@ -196,6 +211,7 @@ public class WitcurveResource {
         staff8.setAddress1("Hitech City");
         staff8.setFirstName("Kalyan");
         staff8.setLastName("Naik");
+        staff8.setPrimaryPhone("1234567980");
         staff8.setSchool(school1);
         staff8.setType("Teaching");
 
@@ -213,85 +229,85 @@ public class WitcurveResource {
         // courses
 
         MasterSubject masterSubject1 = new MasterSubject();
-        masterSubject1.setName("Telugu");
+        masterSubject1.setName("Telugu1");
         masterSubject1 = masterSubjectRepository.save(masterSubject1);
 
         Course course1 = new Course();
-        course1.setCourseName("Telugu");
+        course1.setCourseName("Telugu1");
         course1.setMasterSubject(masterSubject1);
-        course1.setDescription("Telugu");
+        course1.setDescription("Telugu1");
         course1.setSchool(school1);
         course1 = courseRepository.save(course1);
 
         MasterSubject masterSubject2 = new MasterSubject();
-        masterSubject2.setName("Hindi");
+        masterSubject2.setName("Hindi1");
         masterSubject2 = masterSubjectRepository.save(masterSubject1);
 
         Course course2 = new Course();
-        course2.setCourseName("Hindi");
+        course2.setCourseName("Hindi1");
         course2.setMasterSubject(masterSubject2);
-        course2.setDescription("Hindi");
+        course2.setDescription("Hindi1");
         course2.setSchool(school1);
         course2 = courseRepository.save(course2);
 
         MasterSubject masterSubject3 = new MasterSubject();
-        masterSubject3.setName("English");
+        masterSubject3.setName("English1");
         masterSubject3 = masterSubjectRepository.save(masterSubject3);
 
         Course course3 = new Course();
-        course3.setCourseName("English");
+        course3.setCourseName("English1");
         course3.setMasterSubject(masterSubject3);
-        course3.setDescription("English");
+        course3.setDescription("English1");
         course3.setSchool(school1);
         course3 = courseRepository.save(course3);
 
         MasterSubject masterSubject4 = new MasterSubject();
-        masterSubject4.setName("Maths");
+        masterSubject4.setName("Maths1");
         masterSubject4 = masterSubjectRepository.save(masterSubject4);
 
         Course course4 = new Course();
-        course4.setCourseName("Maths");
+        course4.setCourseName("Maths1");
         course4.setMasterSubject(masterSubject4);
-        course4.setDescription("Maths");
+        course4.setDescription("Maths1");
         course4.setSchool(school1);
         course4 = courseRepository.save(course4);
 
         MasterSubject masterSubject5 = new MasterSubject();
-        masterSubject5.setName("Science");
+        masterSubject5.setName("Science1");
         masterSubject5 = masterSubjectRepository.save(masterSubject5);
 
         Course course5 = new Course();
-        course5.setCourseName("Science");
+        course5.setCourseName("Science1");
         course5.setMasterSubject(masterSubject5);
-        course5.setDescription("Science");
+        course5.setDescription("Science1");
         course5.setSchool(school1);
         course5 = courseRepository.save(course5);
 
         MasterSubject masterSubject6 = new MasterSubject();
-        masterSubject6.setName("Social Studies");
+        masterSubject6.setName("Social Studies1");
         masterSubject6 = masterSubjectRepository.save(masterSubject6);
 
         Course course6 = new Course();
-        course6.setCourseName("Social Studies");
+        course6.setCourseName("Social Studies1");
         course6.setMasterSubject(masterSubject6);
-        course6.setDescription("Social Students");
+        course6.setDescription("Social Studies1");
         course6.setSchool(school1);
         course6 = courseRepository.save(course6);
 
         MasterSubject masterSubject7 = new MasterSubject();
-        masterSubject7.setName("Drawing");
+        masterSubject7.setName("Drawing1");
         masterSubject7 = masterSubjectRepository.save(masterSubject7);
 
         Course course7 = new Course();
-        course7.setCourseName("Drawing");
+        course7.setCourseName("Drawing1");
         course7.setMasterSubject(masterSubject7);
-        course7.setDescription("Drawing");
+        course7.setDescription("Drawing1");
         course7.setSchool(school1);
         course7 = courseRepository.save(course7);
 
 
         MasterSubject masterSubject8 = new MasterSubject();
-        masterSubject8.setName("Physical Training");
+        masterSubject8.setName("Physical Training1");
         masterSubject8 = masterSubjectRepository.save(masterSubject8);
 
         Course course8 = new Course();
@@ -1616,8 +1632,12 @@ public class WitcurveResource {
     private void loadSchoolDataForTeacher() {
 
         String affiliationId = RandomStringUtils.randomAlphanumeric(6);
-
         //school data
+
+        Institute institute1 = new Institute();
+        institute1.setName("Chirec");
+        institute1 = instituteRepository.save(institute1);
+
         School school1 = new School();
         school1.setName("Witcurve");
         school1.setAddress1("Kondapur");
@@ -1661,6 +1681,7 @@ public class WitcurveResource {
         staff1.setAddress1("Kondpaur");
         staff1.setFirstName("Anuranjan");
         staff1.setLastName("Kumar");
+        staff1.setPrimaryPhone("1234567980");
         staff1.setSchool(school1);
         staff1.setType("Teaching");
 
@@ -1670,6 +1691,7 @@ public class WitcurveResource {
         staff2.setAddress1("Hitech City");
         staff2.setFirstName("Dhiraj");
         staff2.setLastName("Kumar");
+        staff2.setPrimaryPhone("1234567980");
         staff2.setSchool(school1);
         staff2.setType("Teaching");
 
@@ -1679,6 +1701,7 @@ public class WitcurveResource {
         staff3.setAddress1("Hitech City");
         staff3.setFirstName("Srujan Kumar");
         staff3.setLastName("Tad");
+        staff3.setPrimaryPhone("1234567980");
         staff3.setSchool(school1);
         staff3.setType("Teaching");
 
@@ -1688,6 +1711,7 @@ public class WitcurveResource {
         staff4.setAddress1("Hitech City");
         staff4.setFirstName("Kishore Kumar");
         staff4.setLastName("SVR");
+        staff4.setPrimaryPhone("1234567980");
         staff4.setSchool(school1);
         staff4.setType("Teaching");
 
@@ -1695,8 +1719,9 @@ public class WitcurveResource {
 
         Staff staff5 = new Staff();
         staff5.setAddress1("Hitech City");
-        staff5.setFirstName("Manohar");
+        staff5.setFirstName("Mahendra");
         staff5.setLastName("No Idea");
+        staff5.setPrimaryPhone("1234567980");
         staff5.setSchool(school1);
         staff5.setType("Teaching");
 
@@ -1706,6 +1731,7 @@ public class WitcurveResource {
         staff6.setAddress1("Hitech City");
         staff6.setFirstName("Satya");
         staff6.setLastName("No Idea");
+        staff6.setPrimaryPhone("1234567980");
         staff6.setSchool(school1);
         staff6.setType("Teaching");
 
@@ -1716,6 +1742,7 @@ public class WitcurveResource {
         staff7.setAddress1("Hitech City");
         staff7.setFirstName("Sai Chand");
         staff7.setLastName("Gandivasala");
+        staff7.setPrimaryPhone("1234567980");
         staff7.setSchool(school1);
         staff7.setType("Teaching");
 
@@ -1725,6 +1752,7 @@ public class WitcurveResource {
         staff8.setAddress1("Hitech City");
         staff8.setFirstName("Kalyan");
         staff8.setLastName("Naik");
+        staff8.setPrimaryPhone("1234567980");
         staff8.setSchool(school1);
         staff8.setType("Teaching");
 
@@ -1742,85 +1770,85 @@ public class WitcurveResource {
         // courses
 
         MasterSubject masterSubject1 = new MasterSubject();
-        masterSubject1.setName("Telugu");
+        masterSubject1.setName("Telugu1");
         masterSubject1 = masterSubjectRepository.save(masterSubject1);
 
         Course course1 = new Course();
-        course1.setCourseName("Telugu");
+        course1.setCourseName("Telugu1");
         course1.setMasterSubject(masterSubject1);
-        course1.setDescription("Telugu");
+        course1.setDescription("Telugu1");
         course1.setSchool(school1);
         course1 = courseRepository.save(course1);
 
         MasterSubject masterSubject2 = new MasterSubject();
-        masterSubject2.setName("Hindi");
+        masterSubject2.setName("Hindi1");
         masterSubject2 = masterSubjectRepository.save(masterSubject1);
 
         Course course2 = new Course();
-        course2.setCourseName("Hindi");
+        course2.setCourseName("Hindi1");
         course2.setMasterSubject(masterSubject2);
-        course2.setDescription("Hindi");
+        course2.setDescription("Hindi1");
         course2.setSchool(school1);
         course2 = courseRepository.save(course2);
 
         MasterSubject masterSubject3 = new MasterSubject();
-        masterSubject3.setName("English");
+        masterSubject3.setName("English1");
         masterSubject3 = masterSubjectRepository.save(masterSubject3);
 
         Course course3 = new Course();
-        course3.setCourseName("English");
+        course3.setCourseName("English1");
         course3.setMasterSubject(masterSubject3);
-        course3.setDescription("English");
+        course3.setDescription("English1");
         course3.setSchool(school1);
         course3 = courseRepository.save(course3);
 
         MasterSubject masterSubject4 = new MasterSubject();
-        masterSubject4.setName("Maths");
+        masterSubject4.setName("Maths1");
         masterSubject4 = masterSubjectRepository.save(masterSubject4);
 
         Course course4 = new Course();
-        course4.setCourseName("Maths");
+        course4.setCourseName("Maths1");
         course4.setMasterSubject(masterSubject4);
-        course4.setDescription("Maths");
+        course4.setDescription("Maths1");
         course4.setSchool(school1);
         course4 = courseRepository.save(course4);
 
         MasterSubject masterSubject5 = new MasterSubject();
-        masterSubject5.setName("Science");
+        masterSubject5.setName("Science1");
         masterSubject5 = masterSubjectRepository.save(masterSubject5);
 
         Course course5 = new Course();
-        course5.setCourseName("Science");
+        course5.setCourseName("Science1");
         course5.setMasterSubject(masterSubject5);
-        course5.setDescription("Science");
+        course5.setDescription("Science1");
         course5.setSchool(school1);
         course5 = courseRepository.save(course5);
 
         MasterSubject masterSubject6 = new MasterSubject();
-        masterSubject6.setName("Social Studies");
+        masterSubject6.setName("Social Studies1");
         masterSubject6 = masterSubjectRepository.save(masterSubject6);
 
         Course course6 = new Course();
-        course6.setCourseName("Social Studies");
+        course6.setCourseName("Social Studies1");
         course6.setMasterSubject(masterSubject6);
-        course6.setDescription("Social Students");
+        course6.setDescription("Social Studies1");
         course6.setSchool(school1);
         course6 = courseRepository.save(course6);
 
         MasterSubject masterSubject7 = new MasterSubject();
-        masterSubject7.setName("Drawing");
+        masterSubject7.setName("Drawing1");
         masterSubject7 = masterSubjectRepository.save(masterSubject7);
 
         Course course7 = new Course();
-        course7.setCourseName("Drawing");
+        course7.setCourseName("Drawing1");
         course7.setMasterSubject(masterSubject7);
-        course7.setDescription("Drawing");
+        course7.setDescription("Drawing1");
         course7.setSchool(school1);
         course7 = courseRepository.save(course7);
 
 
         MasterSubject masterSubject8 = new MasterSubject();
-        masterSubject8.setName("Physical Training");
+        masterSubject8.setName("Physical Training1");
         masterSubject8 = masterSubjectRepository.save(masterSubject8);
 
         Course course8 = new Course();

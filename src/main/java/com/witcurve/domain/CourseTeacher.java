@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 @Table(name="course_teacher", uniqueConstraints = {
     @UniqueConstraint(name = "course_teacher_class_UK",
-        columnNames = {"course_id", "teacher_id", "class_id"})
+        columnNames = {"course_id", "teacher_id", "standard_id"})
 })
 public class CourseTeacher extends AbstractAuditingEntity implements Serializable {
 
@@ -31,7 +31,7 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "class_id",nullable = false)
+    @JoinColumn(name = "standard_id",nullable = false)
     private Standard standard;
 
     public Long getId() {
