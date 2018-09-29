@@ -2,11 +2,10 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Event;
 import com.witcurve.service.dto.EventDTO;
-import com.witcurve.service.dto.StaffDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {ClassMapper.class, StaffMapper.class, AcademicSessionMapper.class, StudentMapper.class, SlotCourseDetailsMapper.class})
+@Mapper(componentModel = "spring", uses = {StandardMapper.class, StaffMapper.class, AcademicSessionMapper.class, StudentMapper.class, SlotCourseDetailsMapper.class})
 public interface EventMapper extends EntityMapper<EventDTO, Event>{
 
     @Mapping(source = "academicSessionId", target = "academicSession")

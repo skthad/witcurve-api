@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1537098272203-1">
+        <addColumn tableName="student">
+            <column name="alternate_mobile_numbers" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1537098272203-2">
+        <addColumn tableName="staff">
+            <column name="user_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1537098272203-3">
+        <addColumn tableName="student">
+            <column name="user_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1537098272203-4">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="student" constraintName="FKknya7m8erxyg8i1uwna24g5to" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1537098272203-5">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="staff" constraintName="FKl5t2bilqa83t0xpj5seluwi3c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1537098272203-6">
+        <addNotNullConstraint columnDataType="varchar(50)" columnName="primary_phone" tableName="staff"/>
+    </changeSet>
+</databaseChangeLog>

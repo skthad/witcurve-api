@@ -5,7 +5,7 @@ import com.witcurve.service.dto.GeneralSlotDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {ClassMapper.class, ExamMapper.class})
+@Mapper(componentModel = "spring", uses = {StandardMapper.class, ExamMapper.class})
 public interface GeneralSlotDetailsMapper extends EntityMapper<GeneralSlotDetailsDTO, GeneralSlotDetails> {
 
 

@@ -32,7 +32,7 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
     @NotNull
     @ManyToOne
     @JoinColumn(name = "class_id",nullable = false)
-    private Class standard;
+    private Standard standard;
 
     public Long getId() {
         return id;
@@ -58,11 +58,11 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
         this.teacher = teacher;
     }
 
-    public Class getStandard() {
+    public Standard getStandard() {
         return standard;
     }
 
-    public void setStandard(Class standard) {
+    public void setStandard(Standard standard) {
         this.standard = standard;
     }
 

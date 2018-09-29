@@ -28,7 +28,7 @@ public class StudentResource {
     public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO studentDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request create student");
         if (studentDTO.getId() != null) {
-            throw new WitcurveException("New Class can't already have an id");
+            throw new WitcurveException("New Standard can't already have an id");
         }
         StudentDTO result = studentService.saveOrUpdate(studentDTO);
         return ResponseEntity.created(new URI("/api/student/" + result.getId()))
@@ -38,7 +38,7 @@ public class StudentResource {
 
     @PutMapping("/student")
     public ResponseEntity<StudentDTO> updateStudent(@RequestBody @Valid StudentDTO studentDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request create class");
+        log.debug("Request create standard");
         if (studentDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
@@ -50,7 +50,7 @@ public class StudentResource {
 
     @GetMapping("/student/{studentId}")
     @Timed
-    public ResponseEntity<StudentDTO> getClassById(@PathVariable("studentId") Long studentId) throws WitcurveException {
+    public ResponseEntity<StudentDTO> getStandardById(@PathVariable("studentId") Long studentId) throws WitcurveException {
         log.debug("Request to get student by id");
         StudentDTO result = studentService.getStudentById(studentId);
         return ResponseEntity.ok(result);

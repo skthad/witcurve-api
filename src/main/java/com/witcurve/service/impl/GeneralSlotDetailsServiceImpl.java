@@ -1,7 +1,8 @@
 package com.witcurve.service.impl;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
+import com.witcurve.domain.Standard;
 import com.witcurve.domain.GeneralSlotDetails;
+import com.witcurve.repository.StandardRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.service.GeneralSlotDetailsService;
 import com.witcurve.service.dto.GeneralSlotDetailsDTO;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,12 +30,32 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Autowired
     private GeneralSlotDetailsRepository generalSlotDetailsRepository;
 
+    @Autowired
+    private StandardRepository standardRepository;
+
     @Override
-    public GeneralSlotDetailsDTO saveOrUpdate(GeneralSlotDetailsDTO generalSlotDetailsDTO) {
-        log.debug("Request to save or update generalSlotDetails : {}", generalSlotDetailsDTO);
-        GeneralSlotDetails generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTO);
-        generalSlotDetails = generalSlotDetailsRepository.save(generalSlotDetails);
-        return generalSlotDetailsMapper.toDto(generalSlotDetails);
+    public List<GeneralSlotDetailsDTO> saveOrUpdate(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) {
+        log.debug("Request to save or update generalSlotDetails");
+        List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
+        List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));
+        return slots;
+    }
+
+    @Override
+    public void clone(Long sourceStandardId, List<Long> destinationStandardIds) {
+        log.debug("Request to clone generalSlotDetails ");
+        List<GeneralSlotDetails> slots = generalSlotDetailsRepository.findByStandardIdAndExamIdNullOrderByStart(sourceStandardId);
+
+        for (Long destinationStandardId : destinationStandardIds) {
+            List<GeneralSlotDetails> slotsToCreate = slots.stream().collect(Collectors.toList());
+            Standard standard = standardRepository.findById(destinationStandardId).get();
+            for (GeneralSlotDetails slot : slotsToCreate) {
+                slot.setId(null);
+                slot.setStandard(standard);
+            }
+            generalSlotDetailsRepository.saveAll(slotsToCreate);
+        }
+
     }
 
     @Override
@@ -58,9 +80,9 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByClassId(Long classId) throws WitcurveException {
-        log.debug("Request to get generalSlotDetails by class id : {}", classId);
-        List<GeneralSlotDetails> generalSlotDetailsList = generalSlotDetailsRepository.findByStandardIdAndExamIdNullOrderByStart(classId);
+    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId) throws WitcurveException {
+        log.debug("Request to get generalSlotDetails by standard id : {}", standardId);
+        List<GeneralSlotDetails> generalSlotDetailsList = generalSlotDetailsRepository.findByStandardIdAndExamIdNullOrderByStart(standardId);
         return generalSlotDetailsMapper.toDto(generalSlotDetailsList);
     }
 

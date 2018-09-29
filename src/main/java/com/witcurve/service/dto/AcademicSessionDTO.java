@@ -19,6 +19,9 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
     @NotNull
     private Long schoolId;
 
+    @NotNull
+    private Boolean active = true;
+
     public Long getId() {
         return id;
     }
@@ -41,6 +44,14 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
 
     public void setSchoolId(Long schoolId) {
         this.schoolId = schoolId;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override

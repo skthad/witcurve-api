@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface GeneralSlotDetailsService {
 
-    GeneralSlotDetailsDTO saveOrUpdate(GeneralSlotDetailsDTO generalSlotDetailsDTO);
+    List<GeneralSlotDetailsDTO> saveOrUpdate(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
+
+    void clone(Long sourceStandardId, List<Long> destinationStandardIds);
 
     GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
 
     void deleteGeneralSlotDetails(Long generalSlotDetailsId) throws WitcurveException;
 
-    List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByClassId(Long classId) throws WitcurveException;
+    List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId) throws WitcurveException;
 }

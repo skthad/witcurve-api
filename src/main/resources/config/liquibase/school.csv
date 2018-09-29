@@ -1,0 +1,3 @@
+id,created_by,last_modified_by,address1,address2,affiliation_id,city,country,district,fax,name,pincode,primary_email,primary_phone,secondary_email,secondary_phone,state,institute_id
+1,staff,staff,Masjid Banda,"Botanical Garden, Kondapur",affiliation-01,Hyderabad,India,RR,888888877,Jain Heritage School,500084,jainHeritage@witcurve.com,88888888df77,jainHeritage@witcurve.com,8888888f877,Telangana,1
+2,staff,staff,Botanical Garden Road,"Masjid banda, Kondapur",affiliation-003,Hyderabad,India,RR,8899988877,Chirec International School,500084,chirec@witcurve.com,8899988877,,8899988877,Telangana,1

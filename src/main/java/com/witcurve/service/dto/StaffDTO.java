@@ -20,6 +20,8 @@ public class StaffDTO extends AbstractAuditingDTO {
     @NotNull
     private String lastName;
 
+    private UserDTO user;
+
     @NotNull
     private Long schoolId;
 
@@ -46,6 +48,7 @@ public class StaffDTO extends AbstractAuditingDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
 
+    @NotNull
     private String primaryPhone;
 
     private String secondaryPhone;
@@ -83,6 +86,14 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public Long getSchoolId() {

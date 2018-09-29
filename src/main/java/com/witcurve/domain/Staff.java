@@ -30,6 +30,10 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
+    //@NotNull
+    @OneToOne
+    private User user;
+
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -68,7 +72,8 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Convert(converter = LocalDateConverter.class)
     private LocalDate dateOfBirth;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(length = 50, nullable = false)
     private String primaryPhone;
 
     @Column(length = 50)
@@ -104,6 +109,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public School getSchool() {

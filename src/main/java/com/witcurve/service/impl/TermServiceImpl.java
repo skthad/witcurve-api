@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class TermServiceImpl implements TermService {
@@ -26,11 +28,11 @@ public class TermServiceImpl implements TermService {
 
 
     @Override
-    public TermDTO saveOrUpdate(TermDTO termDTO) {
-        log.debug("Request to save or update term : {}", termDTO);
-        Term term = termMapper.toEntity(termDTO);
-        term =  termRepository.save(term);
-        return termMapper.toDto(term);
+    public List<TermDTO> saveOrUpdate(List<TermDTO> termDTOs) {
+        log.debug("Request to save or update terms : {}", termDTOs);
+        List<Term> terms = termMapper.toEntity(termDTOs);
+        terms =  termRepository.saveAll(terms);
+        return termMapper.toDto(terms);
 }
 
     @Override

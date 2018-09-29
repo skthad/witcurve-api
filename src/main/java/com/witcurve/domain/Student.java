@@ -1,12 +1,14 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.Gender;
+import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,6 +32,10 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
+    @NotNull
+    @OneToOne
+    private User user;
 
     @NotNull
     @Column(name = "date_of_birth", nullable = false)
@@ -98,8 +104,8 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "previous_school_address")
     private String previousSchoolAddress;
 
-    @Column(name = "previous_school_class", length = 50)
-    private String previousSchoolClass;
+    @Column(name = "previous_school_standard", length = 50)
+    private String previousSchoolStandard;
 
     @NotNull
     @ManyToOne
@@ -108,11 +114,15 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "class_id", nullable = false)
-    private Class standard;
+    @JoinColumn(name = "standard_id", nullable = false)
+    private Standard standard;
 
     @Column(length = 50)
     private String registeredMobileNumber;
+
+    @Column
+    @Convert(converter = ListToStringConverter.class)
+    private List<String> alternateMobileNumbers;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
@@ -152,6 +162,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDate getDateOfBirth() {
@@ -322,12 +340,12 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.previousSchoolAddress = previousSchoolAddress;
     }
 
-    public String getPreviousSchoolClass() {
-        return previousSchoolClass;
+    public String getPreviousSchoolStandard() {
+        return previousSchoolStandard;
     }
 
-    public void setPreviousSchoolClass(String previousSchoolClass) {
-        this.previousSchoolClass = previousSchoolClass;
+    public void setPreviousSchoolStandard(String previousSchoolStandard) {
+        this.previousSchoolStandard = previousSchoolStandard;
     }
 
     public School getSchool() {
@@ -338,11 +356,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.school = school;
     }
 
-    public Class getStandard() {
+    public Standard getStandard() {
         return standard;
     }
 
-    public void setStandard(Class standard) {
+    public void setStandard(Standard standard) {
         this.standard = standard;
     }
 
@@ -352,6 +370,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setRegisteredMobileNumber(String registeredMobileNumber) {
         this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public List<String> getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public Gender getGender() {
@@ -412,7 +438,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
             ", identificationMark2='" + identificationMark2 + '\'' +
             ", previousSchoolName='" + previousSchoolName + '\'' +
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
-            ", previousSchoolClass='" + previousSchoolClass + '\'' +
+            ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", school=" + school +
             ", standard=" + standard +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +

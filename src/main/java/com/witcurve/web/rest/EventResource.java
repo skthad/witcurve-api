@@ -1,7 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -141,17 +139,17 @@ public class EventResource {
     /**
      *
      * @param eventDate
-     * @param classId
+     * @param standardId
      * @return
      */
-    @GetMapping("/event/class/{classId}")
+    @GetMapping("/event/standard/{standardId}")
     @Timed
-    public ResponseEntity<List<EventDTO>> getAllEventsForClass(
+    public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
         @RequestParam(value = "eventDate", required = false) String eventDate,
-        @PathVariable Long classId) throws WitcurveException, URISyntaxException{
-        log.debug("Request to get events on given date : {} for class with id : {}", eventDate, classId);
+        @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
+        log.debug("Request to get events on given date : {} for standard with id : {}", eventDate, standardId);
         LocalDate date = getLocalDate(eventDate);
-        List<EventDTO> result = eventService.findAllEventsOnGivenDateForClass(date, classId);
+        List<EventDTO> result = eventService.findAllEventsOnGivenDateForStandard(date, standardId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 

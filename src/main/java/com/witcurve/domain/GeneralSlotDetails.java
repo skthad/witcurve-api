@@ -32,8 +32,8 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "class_id", nullable = false)
-    private Class standard;
+    @JoinColumn(name = "standard_id", nullable = false)
+    private Standard standard;
 
     @ManyToOne
     @JoinColumn
@@ -72,11 +72,11 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
         this.recess = recess;
     }
 
-    public Class getStandard() {
+    public Standard getStandard() {
         return standard;
     }
 
-    public void setStandard(Class standard) {
+    public void setStandard(Standard standard) {
         this.standard = standard;
     }
 

@@ -3,3 +3,5 @@ ROLE_ADMIN;Admin
 ROLE_TEACHING;Teaching Staff
 ROLE_NON_TEACHING;Non-Teaching Staff
 ROLE_GUARDIAN;Parent/Guardian
+ROLE_INSTITUTE_ADMIN;Admin of the Institute/group of schools
+ROLE_SCHOOL_ADMIN;Admin of a school or branch

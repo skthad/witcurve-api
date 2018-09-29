@@ -1,5 +1,5 @@
-id;login;password_hash;first_name;last_name;email;image_url;activated;lang_key;created_by;last_modified_by
-1;system;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;System;System;system@localhost;;true;en;system;system
-2;admin;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;Witcurve;Administrator;admin@localhost;;true;en;system;system
-3;staff;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;Teaching;Staff;staff@localhost;;true;en;system;system
-4;guardian;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;Parent;Guardian;guardian@localhost;;true;en;system;system
+id;login;password_hash;first_name;last_name;type;email;image_url;activated;lang_key;created_by;last_modified_by
+1;system;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;System;System;STAFF;system@localhost;;true;en;system;system
+2;admin;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;Witcurve;Administrator;STAFF;admin@localhost;;true;en;system;system
+3;staff;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;Teaching;Staff;STAFF;staff@localhost;;true;en;system;system
+4;guardian;$2a$10$5waEW48.24YExA5hZ06PqeAjg6giei/mJ5tkSb6v4CZ.vgj1oZ9zG;Parent;Guardian;PARENT;guardian@localhost;;true;en;system;system

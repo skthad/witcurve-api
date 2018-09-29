@@ -5,6 +5,7 @@ import com.witcurve.domain.enumeration.Gender;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
@@ -20,6 +21,8 @@ public class StudentDTO extends AbstractAuditingDTO {
     private String lastName;
 
     private String middleName;
+
+    private UserDTO user;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
@@ -67,15 +70,17 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String previousSchoolAddress;
 
-    private String previousSchoolClass;
+    private String previousSchoolStandard;
 
     @NotNull
     private Long schoolId;
 
     @NotNull
-    private Long classId;
+    private Long standardId;
 
     private String registeredMobileNumber;
+
+    private List<String> alternateMobileNumbers;
 
     private Gender gender;
 
@@ -112,6 +117,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public LocalDate getDateOfBirth() {
@@ -282,12 +295,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.previousSchoolAddress = previousSchoolAddress;
     }
 
-    public String getPreviousSchoolClass() {
-        return previousSchoolClass;
+    public String getPreviousSchoolStandard() {
+        return previousSchoolStandard;
     }
 
-    public void setPreviousSchoolClass(String previousSchoolClass) {
-        this.previousSchoolClass = previousSchoolClass;
+    public void setPreviousSchoolStandard(String previousSchoolStandard) {
+        this.previousSchoolStandard = previousSchoolStandard;
     }
 
     public Long getSchoolId() {
@@ -298,12 +311,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.schoolId = schoolId;
     }
 
-    public Long getClassId() {
-        return classId;
+    public Long getStandardId() {
+        return standardId;
     }
 
-    public void setClassId(Long classId) {
-        this.classId = classId;
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
     }
 
     public String getRegisteredMobileNumber() {
@@ -312,6 +325,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setRegisteredMobileNumber(String registeredMobileNumber) {
         this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public List<String> getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public Gender getGender() {
@@ -372,9 +393,9 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", identificationMark2='" + identificationMark2 + '\'' +
             ", previousSchoolName='" + previousSchoolName + '\'' +
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
-            ", previousSchoolClass='" + previousSchoolClass + '\'' +
+            ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", schoolId=" + schoolId +
-            ", classId=" + classId +
+            ", standardId=" + standardId +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
             ", gender=" + gender +
             ", admissionDate=" + admissionDate +

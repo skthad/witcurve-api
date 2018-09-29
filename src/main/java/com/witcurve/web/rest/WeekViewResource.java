@@ -1,8 +1,8 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.StudentClass;
-import com.witcurve.repository.StudentClassRepository;
+import com.witcurve.domain.StudentStandard;
+import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.GeneralSlotDetailsService;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -26,7 +26,7 @@ public class WeekViewResource {
     private final Logger log = LoggerFactory.getLogger(WeekViewResource.class);
 
     @Autowired
-    private StudentClassRepository studentClassRepository;
+    private StudentStandardRepository studentStandardRepository;
 
     @Autowired
     private EventService eventService;
@@ -60,10 +60,10 @@ public class WeekViewResource {
         } else {
             //throw error
         }
-        StudentClass studentClass = studentClassRepository.findByStudentId(studentId);
-        Long classId = studentClass.getStandard().getId();
-        result.setGsdList(generalSlotDetailsService.getGeneralSlotDetailsByClassId(classId));
-        result.setScdList(slotCourseDetailsService.getSlotCourseDetailsByClassId(classId));
+        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        Long standardId = studentStandard.getStandard().getId();
+        result.setGsdList(generalSlotDetailsService.getGeneralSlotDetailsByStandardId(standardId));
+        result.setScdList(slotCourseDetailsService.getSlotCourseDetailsByStandardId(standardId));
         result.setEventList(eventService.findAllEventsOnGivenWeekForStudent(getLocalDate(weekDate), year, studentId));
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }

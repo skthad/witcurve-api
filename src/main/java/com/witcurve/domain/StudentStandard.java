@@ -1,18 +1,16 @@
 package com.witcurve.domain;
 
-import org.mapstruct.Mapping;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name="student_class", uniqueConstraints = {
+@Table(name="student_standard", uniqueConstraints = {
     @UniqueConstraint(name = "student_standard_UK",
-        columnNames = {"student_id", "class_id"})
+        columnNames = {"student_id", "standard_id"})
 })
-public class StudentClass extends AbstractAuditingEntity implements Serializable {
+public class StudentStandard extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,8 +26,8 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "class_id")
-    private Class standard;
+    @JoinColumn(nullable = false, name = "standard_id")
+    private Standard standard;
 
     @NotNull
     @Column(name = "roll_no", nullable = false)
@@ -53,11 +51,11 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
         this.student = student;
     }
 
-    public Class getStandard() {
+    public Standard getStandard() {
         return standard;
     }
 
-    public void setStandard(Class standard) {
+    public void setStandard(Standard standard) {
         this.standard = standard;
     }
 
@@ -72,8 +70,8 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof StudentClass)) return false;
-        StudentClass that = (StudentClass) o;
+        if (!(o instanceof StudentStandard)) return false;
+        StudentStandard that = (StudentStandard) o;
         return Objects.equals(getId(), that.getId());
     }
 
@@ -85,7 +83,7 @@ public class StudentClass extends AbstractAuditingEntity implements Serializable
 
     @Override
     public String toString() {
-        return "StudentClass{" +
+        return "StudentStandard{" +
             "id=" + id +
             ", student=" + student +
             ", standard=" + standard +

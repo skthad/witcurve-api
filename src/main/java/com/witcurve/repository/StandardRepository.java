@@ -1,9 +1,10 @@
 package com.witcurve.repository;
 
-import com.witcurve.domain.Class;
+import com.witcurve.domain.Standard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClassRepository extends JpaRepository<Class,Long> {
+public interface StandardRepository extends JpaRepository<Standard,Long> {
+
 }

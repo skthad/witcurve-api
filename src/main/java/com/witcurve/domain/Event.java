@@ -52,7 +52,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private Class standard;
+    private Standard standard;
 
     @ManyToOne
     private Staff staff;
@@ -139,11 +139,11 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.student = student;
     }
 
-    public Class getStandard() {
+    public Standard getStandard() {
         return standard;
     }
 
-    public void setStandard(Class standard) {
+    public void setStandard(Standard standard) {
         this.standard = standard;
     }
 
