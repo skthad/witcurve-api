@@ -99,6 +99,7 @@ public class EventServiceImpl implements EventService {
         Long sessionId = standard.getTerm().getSession().getId();
 
         List<Event> events = eventRepository.findEventsByDateForClass(eventDate, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
     }
@@ -116,7 +117,7 @@ public class EventServiceImpl implements EventService {
         Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
 
         List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, classId, grade, sessionId);
-
+        Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
     }
@@ -136,6 +137,7 @@ public class EventServiceImpl implements EventService {
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).withDayOfMonth(month).minusDays(1);
         List<Event> events = eventRepository.findEventsDuringMonthForStudent(monthStart, monthEnd, studentId, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
     }
 
@@ -164,6 +166,7 @@ public class EventServiceImpl implements EventService {
         Grade grade = studentClass.getStandard().getGrade();
         Long sessionId = studentClass.getStandard().getTerm().getSession().getId();
         List<Event> events = eventRepository.findEventsDuringWeekForStudent(sunday, saturday, studentId, classId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
@@ -185,10 +188,9 @@ public class EventServiceImpl implements EventService {
             List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
             if(remainingList.size() != 0) {
                 events.addAll(remainingList);
-                Set<Event> eventSet = new LinkedHashSet<>(events);
-                events = new ArrayList<>(eventSet);
             }
         }
+        Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
 
     }
@@ -210,10 +212,9 @@ public class EventServiceImpl implements EventService {
             List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
             if(remainingList.size() != 0) {
                 events.addAll(remainingList);
-                Set<Event> eventSet = new LinkedHashSet<>(events);
-                events = new ArrayList<>(eventSet);
             }
         }
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
@@ -262,4 +263,59 @@ public class EventServiceImpl implements EventService {
             // add a check for event existence - check for all types
         }
     }
+
+    public class EventDateAscComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event o1, Event o2) {
+            if (o1.getDate().isAfter( o2.getDate())) {
+                return 1;
+            } else if(o1.getDate().isBefore( o2.getDate())) {
+                return -1;
+            } else {
+                if(o1.getScd() != null && o2.getScd() != null) {
+                    Integer start1 = Integer.parseInt(o1.getScd().getGsd().getStart());
+                    Integer start2 = Integer.parseInt(o2.getScd().getGsd().getStart());
+                    if(start1 > start2) {
+                        return 1;
+                    } else if(start1 < start2) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+
+    public class EventDateDescComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event o1, Event o2) {
+            if (o1.getDate().isAfter( o2.getDate())) {
+                return -1;
+            } else if(o1.getDate().isBefore( o2.getDate())) {
+                return 1;
+            } else {
+                if(o1.getScd() != null && o2.getScd() != null) {
+                    Integer start1 = Integer.parseInt(o1.getScd().getGsd().getStart());
+                    Integer start2 = Integer.parseInt(o2.getScd().getGsd().getStart());
+                    if(start1 > start2) {
+                        return 1;
+                    } else if(start1 < start2) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+
 }
