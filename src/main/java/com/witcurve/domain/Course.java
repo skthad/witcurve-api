@@ -31,7 +31,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(nullable = false)
     private MasterSubject masterSubject;
 
     @NotNull

@@ -26,22 +26,11 @@ public class MasterSubjectServiceImpl implements MasterSubjectService {
     }
 
     @Override
-    public MasterSubject getMasterSubjectId(Long masterSubjectId) throws WitcurveException {
-        log.debug("Request to get master subject with id : {}", masterSubjectId);
-
-        MasterSubject masterSubject = masterSubjectRepository.findById(masterSubjectId).get();
+    public void deleteMasterSubject(String name) throws WitcurveException {
+        log.debug("Request to delete masterSubject with name {}", name);
+        MasterSubject masterSubject = masterSubjectRepository.findByName(name);
         if (masterSubject == null) {
-            throw new WitcurveException("No master subject with given id");
-        }
-        return masterSubject;
-    }
-
-    @Override
-    public void deleteMasterSubject(Long masterSubjectId) throws WitcurveException {
-        log.debug("Request to delete masterSubject with id {}", masterSubjectId);
-        MasterSubject masterSubject = masterSubjectRepository.findById(masterSubjectId).get();
-        if (masterSubject == null) {
-            throw new WitcurveException("No masterSubject with given Id");
+            throw new WitcurveException("No masterSubject with given name");
         }
         masterSubjectRepository.delete(masterSubject);
     }

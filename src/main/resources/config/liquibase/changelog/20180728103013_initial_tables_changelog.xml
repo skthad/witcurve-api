@@ -24,9 +24,6 @@
     <changeSet author="srujankumar (generated)" id="1536843761117-8">
         <createSequence sequenceName="guardian_id_seq" startValue="1000"/>
     </changeSet>
-    <changeSet author="srujankumar (generated)" id="1536843761117-9">
-        <createSequence sequenceName="master_subject_id_seq" startValue="1000"/>
-    </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-10">
         <createSequence sequenceName="school_id_seq" startValue="1000"/>
     </changeSet>
@@ -112,7 +109,7 @@
             </column>
             <column name="description" type="VARCHAR(255)"/>
             <column name="eligible_for_substitute" type="BOOLEAN"/>
-            <column name="master_subject_id" type="BIGINT">
+            <column name="master_subject_name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="school_id" type="BIGINT">
@@ -287,17 +284,6 @@
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-25">
         <createTable tableName="master_subject">
-            <column name="id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_by" type="VARCHAR(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_by" type="VARCHAR(50)"/>
-            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
@@ -584,7 +570,7 @@
         <addPrimaryKey columnNames="id" constraintName="guardianPK" tableName="guardian"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-42">
-        <addPrimaryKey columnNames="id" constraintName="master_subjectPK" tableName="master_subject"/>
+        <addPrimaryKey columnNames="name" constraintName="master_subjectPK" tableName="master_subject"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-43">
         <addPrimaryKey columnNames="id" constraintName="schoolPK" tableName="school"/>
@@ -606,9 +592,6 @@
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-49">
         <addPrimaryKey columnNames="id" constraintName="termPK" tableName="term"/>
-    </changeSet>
-    <changeSet author="srujankumar (generated)" id="1536843761117-50">
-        <addUniqueConstraint columnNames="name" constraintName="UC_MASTER_SUBJECTNAME_COL" tableName="master_subject"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-51">
         <addUniqueConstraint columnNames="affiliation_id" constraintName="UC_SCHOOLAFFILIATION_ID_COL" tableName="school"/>
@@ -689,7 +672,7 @@
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="school_info" constraintName="FKj04lleyrvp6l6k1fg3ew0f0bd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-77">
-        <addForeignKeyConstraint baseColumnNames="master_subject_id" baseTableName="course" constraintName="FKjwkwr16lu0s8nfaxy5t8iqhki" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="master_subject"/>
+        <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="course" constraintName="FKjwkwr16lu0s8nfaxy5t8iqhki" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-78">
         <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="event" constraintName="FKkqtw8xsbsbfi12psyh4txu0s4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>

@@ -64,4 +64,11 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(teacherId);
         return courseTeacherMapper.toDto(courseTeachers);
     }
+
+    @Override
+    public List<CourseTeacherDTO> getCoursesByStandardId(Long standardId) {
+        List<CourseTeacher> results = courseTeacherRepository.findByStandardId(standardId);
+
+        return courseTeacherMapper.toDto(results);
+    }
 }

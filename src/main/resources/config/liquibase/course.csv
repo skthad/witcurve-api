@@ -1,16 +1,16 @@
-id,course_name,description,eligible_for_substitute,master_subject_id,school_id,created_by
-1,MATH003,Mathemattics for grade 3,false,1,1,staff
-2,TLGU003,Telugu for grade 3,false,2,1,staff
-3,ENG003,English(verbal and writen) for grade 3,false,3,1,staff
-4,SCI003,Science for grade 3,false,4,1,staff
-5,ART003,Drawing and Arts for grade 3,false,6,1,staff
-6,PT003,Physical Education for grade 3,false,5,1,staff
-7,PHY010,Physics for grade 10,false,7,1,staff
-8,CHEM010,Chemistry for grade 10,false,8,1,staff
-9,CHEMLAB010,Chemistry Lab for grade 10,false,10,1,staff
-10,PHYLAB010,Physics Lab for grade 10,false,9,1,staff
-11,CS010,Computer Science (theory and practical) for grade 10,false,11,1,staff
-12,ECO010,Economics for grade 10,false,12,1,staff
-13,MATH010,Mahematics for grade 10,false,1,1,staff
-14,ENG010,English (gramar and literature) for grade 10,false,3,1,staff
-15,PT010,Physical Education (theory and practical) for grade 10,false,5,1,staff
+id,course_name,description,eligible_for_substitute,master_subject_name,school_id,created_by
+1,MATH003,Mathematics for grade 3,false,Mathematics,1,staff
+2,TLGU003,Telugu for grade 3,false,Telugu,1,staff
+3,ENG003,English(verbal and written) for grade 3,false,English,1,staff
+4,SCI003,Science for grade 3,false,Science,1,staff
+5,ART003,Drawing and Arts for grade 3,true,Drawing,1,staff
+6,PT003,Physical Education for grade 3,true,P.T.,1,staff
+7,PHY010,Physics for grade 10,false,Physics,1,staff
+8,CHEM010,Chemistry for grade 10,false,Chemistry,1,staff
+9,CHEMLAB010,Chemistry Lab for grade 10,false,Chemistry Lab,1,staff
+10,PHYLAB010,Physics Lab for grade 10,false,Physics Lab,1,staff
+11,CS010,Computer Science (theory and practical) for grade 10,false,Computer Science,1,staff
+12,ECO010,Economics for grade 10,false,Economics,1,staff
+13,MATH010,Mathematics for grade 10,false,Mathematics,1,staff
+14,ENG010,English (gramar and literature) for grade 10,false,English,1,staff
+15,PT010,Physical Education (theory and practical) for grade 10,true,P.T.,1,staff

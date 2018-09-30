@@ -7,7 +7,5 @@ public interface MasterSubjectService {
 
     MasterSubject saveOrUpdate(MasterSubject masterSubject);
 
-    MasterSubject getMasterSubjectId(Long subjectId) throws WitcurveException;
-
-    void deleteMasterSubject(Long masterSubjectId) throws WitcurveException;
+    void deleteMasterSubject(String name) throws WitcurveException;
 }

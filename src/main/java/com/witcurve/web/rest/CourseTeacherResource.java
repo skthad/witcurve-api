@@ -107,9 +107,17 @@ public class CourseTeacherResource {
 
     @GetMapping("/course-teacher/teacher/{teacherId}")
     @Timed
-    public ResponseEntity<List<CourseTeacherDTO>> getCourseTeacherByTeacherId(@PathVariable("teacherId") Long teacherId) throws WitcurveException {
+    public ResponseEntity<List<CourseTeacherDTO>> getCoursesByTeacherId(@PathVariable("teacherId") Long teacherId) throws WitcurveException {
         log.debug("Request to get CourseTeacher with teacher id {}", teacherId);
         List<CourseTeacherDTO> result = courseTeacherService.getCourseTeacherByTeacherId(teacherId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/course-teacher/standard/{standardId}")
+    @Timed
+    public ResponseEntity<List<CourseTeacherDTO>> getCoursesByStandardId(@PathVariable("standardId") Long standardId) throws WitcurveException {
+        log.debug("Request to get Course with standardId {}", standardId);
+        List<CourseTeacherDTO> result = courseTeacherService.getCoursesByStandardId(standardId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

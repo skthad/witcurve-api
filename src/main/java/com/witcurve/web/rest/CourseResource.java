@@ -54,7 +54,7 @@ public class CourseResource {
 
     @GetMapping("/course/{courseId}")
     @Timed
-    public ResponseEntity<CourseDTO> getCourseUpdateById(@PathVariable("courseId") Long courseId) throws WitcurveException {
+    public ResponseEntity<CourseDTO> getCourseById(@PathVariable("courseId") Long courseId) throws WitcurveException {
         log.debug("Request to get Course with id {}", courseId);
         CourseDTO result = courseService.getCourseById(courseId);
         return new ResponseEntity<>(result, HttpStatus.OK);

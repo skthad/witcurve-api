@@ -12,7 +12,6 @@ import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,16 +47,13 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
-        String groupId = null;
+
         List<Event> eventList = new ArrayList<>();
-        do {
-            groupId = generateGroupId();
-            eventList = eventRepository.findEventsByBindingId(groupId);
-        } while (eventList != null);
-
-        for(EventDTO eventDTO : eventDTOs) {
-
-            eventDTO.setBindingId(groupId);
+        if (eventDTOs.size() > 1) {
+            String bindingId = UUID.randomUUID().toString();
+            for(EventDTO eventDTO : eventDTOs) {
+                eventDTO.setBindingId(bindingId);
+            }
         }
         List<Event> events = eventMapper.toEntity(eventDTOs);
         events = eventRepository.saveAll(events);
@@ -216,11 +212,6 @@ public class EventServiceImpl implements EventService {
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
-    }
-
-    private String generateGroupId() {
-        RandomStringUtils randomStringUtils = new RandomStringUtils();
-        return RandomStringUtils.randomAlphanumeric(8);
     }
 
     private void isEventValid(EventDTO eventDTO) throws WitcurveException {

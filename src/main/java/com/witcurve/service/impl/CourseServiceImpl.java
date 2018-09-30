@@ -1,10 +1,10 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
-import com.witcurve.domain.Course;
 import com.witcurve.repository.CourseRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
+import com.witcurve.service.dto.CourseTeacherDTO;
 import com.witcurve.service.mapper.CourseMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
