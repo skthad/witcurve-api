@@ -75,9 +75,6 @@ public class StudentDTO extends AbstractAuditingDTO {
     @NotNull
     private Long schoolId;
 
-    @NotNull
-    private Long standardId;
-
     private String registeredMobileNumber;
 
     private List<String> alternateMobileNumbers;
@@ -311,14 +308,6 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.schoolId = schoolId;
     }
 
-    public Long getStandardId() {
-        return standardId;
-    }
-
-    public void setStandardId(Long standardId) {
-        this.standardId = standardId;
-    }
-
     public String getRegisteredMobileNumber() {
         return registeredMobileNumber;
     }
@@ -395,7 +384,6 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
             ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", schoolId=" + schoolId +
-            ", standardId=" + standardId +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
             ", gender=" + gender +
             ", admissionDate=" + admissionDate +

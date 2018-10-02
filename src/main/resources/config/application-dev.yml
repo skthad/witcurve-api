@@ -18,6 +18,8 @@ logging:
         ROOT: DEBUG
         io.github.jhipster: DEBUG
         com.witcurve: DEBUG
+        org.hibernate.sql: DEBUG
+        org.hibernate.type.descriptor.sql: TRACE
 
 spring:
     profiles:

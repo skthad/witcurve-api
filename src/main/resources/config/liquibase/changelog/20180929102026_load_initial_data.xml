@@ -42,6 +42,11 @@
                   tableName="student">
         </loadData>
         <loadData encoding="UTF-8"
+                  file="config/liquibase/student_standard.csv"
+                  separator=","
+                  tableName="student_standard">
+        </loadData>
+        <loadData encoding="UTF-8"
                   file="config/liquibase/master_subject.csv"
                   separator=","
                   tableName="master_subject">

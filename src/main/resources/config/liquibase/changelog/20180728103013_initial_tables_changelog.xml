@@ -495,9 +495,6 @@
             <column name="school_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="standard_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-32">
@@ -520,6 +517,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -652,9 +652,6 @@
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-70">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course_teacher" constraintName="FKddm8d9rfgge8fdpk76tesgi1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
-    </changeSet>
-    <changeSet author="srujankumar (generated)" id="1536843761117-71">
-        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="student" constraintName="FKdwhkib64u47wc4yo4hk0cub90" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-72">
         <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="term" constraintName="FKfa37vnb6yypg7osr3wcqf3odg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>

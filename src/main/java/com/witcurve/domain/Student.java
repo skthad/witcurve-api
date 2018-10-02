@@ -112,11 +112,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private School school;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "standard_id", nullable = false)
-    private Standard standard;
-
     @Column(length = 50)
     private String registeredMobileNumber;
 
@@ -356,14 +351,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.school = school;
     }
 
-    public Standard getStandard() {
-        return standard;
-    }
-
-    public void setStandard(Standard standard) {
-        this.standard = standard;
-    }
-
     public String getRegisteredMobileNumber() {
         return registeredMobileNumber;
     }
@@ -440,7 +427,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
             ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", school=" + school +
-            ", standard=" + standard +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
             ", gender=" + gender +
             ", admissionDate=" + admissionDate +

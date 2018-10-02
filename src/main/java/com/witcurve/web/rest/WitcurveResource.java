@@ -379,7 +379,6 @@ public class WitcurveResource {
         student1.setGender(Gender.MALE);
         student1.setPincode("500001");
         student1.setState("Telangana");
-        student1.setStandard(class1);
         student1.setSchool(school1);
         studentRepository.save(student1);
 
@@ -1920,7 +1919,6 @@ public class WitcurveResource {
         student1.setGender(Gender.MALE);
         student1.setPincode("500001");
         student1.setState("Telangana");
-        student1.setStandard(class1);
         student1.setSchool(school1);
         studentRepository.save(student1);
 
