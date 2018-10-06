@@ -11,6 +11,7 @@
     <include file="config/liquibase/changelog/20180922122536_added_active_in_session.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180929101831_added_instititute.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180929102026_load_initial_data.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181006120322_added_course_teacher_in_events.xml" relativeToChangelogFile="false"/>
 
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->

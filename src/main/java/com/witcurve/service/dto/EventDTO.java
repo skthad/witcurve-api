@@ -3,7 +3,6 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
@@ -41,6 +40,8 @@ public class EventDTO extends AbstractAuditingDTO {
     private Long academicSessionId;
 
     private SlotCourseDetailsDTO scd;
+
+    private CourseTeacherDTO courseTeacher;
 
     private String bindingId;
 
@@ -148,6 +149,14 @@ public class EventDTO extends AbstractAuditingDTO {
 
     public void setScd(SlotCourseDetailsDTO scd) {
         this.scd = scd;
+    }
+
+    public CourseTeacherDTO getCourseTeacher() {
+        return courseTeacher;
+    }
+
+    public void setCourseTeacher(CourseTeacherDTO courseTeacher) {
+        this.courseTeacher = courseTeacher;
     }
 
     public String getBindingId() {

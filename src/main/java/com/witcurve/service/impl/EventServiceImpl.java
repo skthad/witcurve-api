@@ -228,6 +228,9 @@ public class EventServiceImpl implements EventService {
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {
+            if (eventDTO.getScd() != null && eventDTO.getCourseTeacher() != null) {
+                throw new WitcurveException("Invalid request body");
+            }
             if(FIRST_LIST.contains(eventDTO.getType())) {
                 if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
                     if(eventDTO.getStandardId() == null) {
