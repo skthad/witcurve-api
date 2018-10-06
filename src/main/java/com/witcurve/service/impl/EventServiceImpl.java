@@ -201,13 +201,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllEventsForAnnouncements(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
-<<<<<<< Updated upstream
-        LocalDate endDate = date.plusDays(7);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
-=======
         LocalDate endDate = date.plusDays(6);
         StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
->>>>>>> Stashed changes
         if(studentStandard == null) {
             throw new WitcurveException("There is no student standard with given student id : "+studentId);
         }
