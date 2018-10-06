@@ -187,9 +187,10 @@ public class EventServiceImpl implements EventService {
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
                 if(remainingList.size() != 0) {
                     events.addAll(remainingList);
+                    events = new ArrayList<>(new HashSet<>(events));
                 }
             }
         }
@@ -213,13 +214,14 @@ public class EventServiceImpl implements EventService {
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId);
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
                 if(remainingList.size() != 0) {
                     events.addAll(remainingList);
+                    events = new ArrayList<>(new HashSet<>(events));
                 }
             }
         }
-        Collections.sort(events, new EventDateAscComparator());
+        Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
 
     }
