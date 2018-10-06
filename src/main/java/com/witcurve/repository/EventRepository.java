@@ -17,8 +17,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(" +
         "(e.student.id = ?2 and e.type = 'LEAVE') or " +
         "(e.standard.id=?3 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
-        "(e.grade=?4 and ( e.type = 'HOLIDAY' or e.type='SCHOOL_EVENT')) or" +
-        "(e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.grade=?4 and e.academicSession.id=?5 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
+        "(e.grade is null and e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
     List<Event> findEventsByDateForStudent(LocalDate date, Long studentId, Long standardId, Grade grade, Long sessionId);
 
@@ -26,8 +26,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
         "(e.standard.id=?4 and e.type='SCHOOL_EVENT') or " +
-        "(e.grade=?5 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
-        "(e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.grade=?5 and e.academicSession.id=?6 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
+        "(e.grade is null and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
         List<Event> findEventsDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
 
@@ -35,8 +35,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
         "(e.standard.id=?4 and (e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
-        "(e.grade=?5 and ( e.type = 'HOLIDAY' or e.type='SCHOOL_EVENT')) or" +
-        "(e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.grade=?5 and e.academicSession.id=?6 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
+        "(e.grade is null and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
     List<Event> findEventsDuringWeekForStudent(LocalDate weekStart, LocalDate weekEnd,
                                      Long studentId, Long standardId, Grade grade,
@@ -46,8 +46,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
         "(e.standard.id=?4 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT'  or e.type='EXAM')) or " +
-        "(e.grade=?5 and ( e.type = 'HOLIDAY' or e.type='SCHOOL_EVENT')) or" +
-        "(e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.grade=?5 and e.academicSession.id=?6 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
+        "(e.grade is null and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
     List<Event> findEventsForDiaryForStudent(LocalDate startDate, LocalDate endDate,
                                                 Long studentId, Long standardId, Grade grade,
@@ -57,8 +57,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
         "(e.standard.id=?4 and (e.type = 'TEST' or e.type = 'ASSIGNMENT' or e.type='SCHOOL_EVENT' or e.type='EXAM')) or " +
-        "(e.grade=?5 and ( e.type = 'HOLIDAY' or e.type='SCHOOL_EVENT')) or" +
-        "(e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.grade=?5 and e.academicSession.id=?6 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
+        "(e.grade is null and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
     List<Event> findEventsForAnnouncementsForStudent(LocalDate startDate, LocalDate endDate,
                                              Long studentId, Long standardId, Grade grade,
@@ -69,16 +69,19 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and" +
         "(" +
         "(e.standard.id=?2 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
-        "(e.grade=?3 and ( e.type = 'HOLIDAY' or e.type='SCHOOL_EVENT')) or" +
-        "(e.academicSession.id=?4 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.grade=?3 and e.academicSession.id=?4 and (e.type = 'SCHOOL_EVENT' or e.type = 'HOLIDAY')) or" +
+        "(e.grade is null and e.academicSession.id=?4 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
     List<Event> findEventsByDateForStandard(LocalDate date, Long standardId, Grade grade, Long sessionId);
 
     @Query("Select e from Event e where e.date = ?1 and e.type = ?2 and e.scd.id = ?3")
     Event findEventOnDateAndSlot(LocalDate date, EventType type, Long scdId);
 
-    @Query
-    Event findEventByDateAndType(LocalDate date, EventType type);
+    @Query("Select e from Event e where e.date = ?1 and (e.academicSession.id=?3 or e.standard.term.session.id =?3) and e.type in ?2")
+    List<Event> eventsBlockingHolidayAndSchoolEvents(LocalDate date, List<EventType> types, Long sessionId);
+
+    @Query("Select e from Event e where e.date = ?1 and (e.academicSession.id=?3 or e.standard.term.session.id =?3 or e.student.id=?4) and e.type in ?2")
+    List<Event> eventsBlockingLeave(LocalDate date, List<EventType> types, Long sessionId, Long studentId);
 
     List<Event> findEventsByBindingId(String bindingId);
 }

@@ -35,9 +35,7 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
 
     @NotNull
     @Column(name = "active", nullable = false)
-    private String active;
-
-    // add roll no.
+    private Boolean active = true;
 
     public Long getId() {
         return id;
@@ -71,11 +69,11 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
         this.rollNo = rollNo;
     }
 
-    public String getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(String active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 

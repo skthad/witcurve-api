@@ -11,7 +11,7 @@ public class MasterSubject implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
     public String getName() {

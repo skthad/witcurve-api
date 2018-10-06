@@ -40,14 +40,20 @@ public class EventServiceImpl implements EventService {
     @Autowired
     StandardRepository standardRepository;
 
-    private static final ArrayList<EventType> firstList = new ArrayList<EventType>(
+    private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.DAILY_UPDATE, EventType.TEST, EventType.ASSIGNMENT, EventType.EXAM));
+
+    private static final ArrayList<EventType> SECOND_LIST = new ArrayList<EventType>(
+        Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT));
+
+    private static final ArrayList<EventType> THIRD_LIST = new ArrayList<EventType>(
+        Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT, EventType.LEAVE));
 
 
     @Override
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
-
+        isEventValid(eventDTOs);
         List<Event> eventList = new ArrayList<>();
         if (eventDTOs.size() > 1) {
             String bindingId = UUID.randomUUID().toString();
@@ -103,7 +109,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
         // null checks
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
         if(studentStandard == null) {
             throw new WitcurveException("There is no student standard with given student id : "+studentId);
         }
@@ -122,7 +128,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to get tests with month no. : {} of year : {} or student with id : {}", month, year, studentId);
         // need to get Events of type Holiday, Leave, Exam, SchoolEvent
         // null checks
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
         if(studentStandard == null) {
             throw new WitcurveException("There is no student standard with given student id : "+studentId);
         }
@@ -153,7 +159,7 @@ public class EventServiceImpl implements EventService {
         {
             saturday = saturday.plusDays(1);
         }
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
         if(studentStandard == null) {
             throw new WitcurveException("There is no student standard with given student id : "+studentId);
         }
@@ -170,7 +176,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsForDiary(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for diary for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate startDate = date.minusDays(6);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
         if(studentStandard == null) {
             throw new WitcurveException("There is no student standard with given student id : "+studentId);
         }
@@ -195,8 +201,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllEventsForAnnouncements(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
-        LocalDate endDate = date.plusDays(7);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        LocalDate endDate = date.plusDays(6);
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
         if(studentStandard == null) {
             throw new WitcurveException("There is no student standard with given student id : "+studentId);
         }
@@ -218,43 +224,87 @@ public class EventServiceImpl implements EventService {
 
     }
 
-    private void isEventValid(EventDTO eventDTO) throws WitcurveException {
-        if(firstList.contains(eventDTO.getType())) {
-            if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
-                if(eventDTO.getStandardId() == null) {
-                    throw new WitcurveException("Event of type : "+eventDTO.getType()+"cannot have empty standardId");
-                }
-            } else {
-                if(eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
-                    throw new WitcurveException("Event of type : "+eventDTO.getType()+"cannot have empty standardId and scd");
-                }
-            }
-            Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
-            if(event != null) {
-                throw new WitcurveException("There already exists a record for given event type : "+eventDTO.getType()+" for scd with id : "+eventDTO.getScd().getId()+ " on date : "+eventDTO.getDate().toString());
-            }
-        } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
-            if(!(eventDTO.getGrade() == null ^ eventDTO.getAcademicSessionId() == null)) {
-                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : grade, academicSessionId");
-            }
-            // add a check for event existence - check for all types
-        } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
-            if(!(eventDTO.getGrade() == null ^ eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
-                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : grade, academicSessionId, standardId");
-            }
-            // add a check for event existence - check for all types
+    private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
+        for(EventDTO eventDTO : eventDTOs) {
+            if(FIRST_LIST.contains(eventDTO.getType())) {
+                if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
+                    if(eventDTO.getStandardId() == null) {
+                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId for event with date");
+                        throw new WitcurveException("Invalid request body");
+                    }
+                    // add a check later
 
-        } else if(eventDTO.getType().equals(EventType.NOTE)) {
-            if(!(eventDTO.getGrade() == null ^ eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
-                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : grade, academicSessionId, standardId, studentId");
-            }
-            // add a check for event existence - check for all types
+                } else {
+                    if(eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
+                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId and scd");
+                        throw new WitcurveException("Invalid request body");
+                    }
+                    Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
+                    if(event != null) {
+                        log.error("There already exists a record for given event type : "+eventDTO.getType()+" for scd with id : "+eventDTO.getScd().getId()+ " on date : "+eventDTO.getDate().toString());
+                        throw new WitcurveException("Invalid request body");
+                    }
+                }
+            } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
+                if(eventDTO.getAcademicSessionId() == null) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have the field : academicSessionId");
+                    throw new WitcurveException("Invalid request body");
+                }
 
-        }  else if(eventDTO.getType().equals(EventType.LEAVE)) {
-            if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
-                throw new WitcurveException("Event of type : "+eventDTO.getType()+"should have only of the fields : studentId, staffId");
+                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, eventDTO.getAcademicSessionId());
+                if(events.size() !=0) {
+                    log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
+                    throw new WitcurveException("Invalid request body");
+                }
+            } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
+                if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : academicSessionId, standardId");
+                    throw new WitcurveException("Invalid request body");
+                }
+                Long sessionId = eventDTO.getAcademicSessionId();
+                if(sessionId == null) {
+                    Standard standard = standardRepository.findById(eventDTO.getStandardId()).get();
+                    if(standard == null) {
+                        throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
+                    }
+                    sessionId = standard.getTerm().getSession().getId();
+
+                }
+                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, sessionId);
+                if(events.size() !=0) {
+                    log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
+                    throw new WitcurveException("Invalid request body");
+                }
+
+            } else if(eventDTO.getType().equals(EventType.NOTE)) {
+                if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : academicSessionId, standardId, studentId");
+                    throw new WitcurveException("Invalid request body");
+                }
+
+            }  else if(eventDTO.getType().equals(EventType.LEAVE)) {
+                if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : studentId, staffId");
+                    throw new WitcurveException("Invalid request body");
+                }
+                Long sessionId = null;
+                List<Event> events = new ArrayList<>();
+                if(eventDTO.getStudentId() != null) {
+                    StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(eventDTO.getStudentId());
+                    if(studentStandard == null) {
+                        throw new WitcurveException("Invalid Student Id : "+eventDTO.getStudentId()+", not marked to any class in current session");
+                    }
+                    sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+                    events = eventRepository.eventsBlockingLeave(eventDTO.getDate(), THIRD_LIST, sessionId, eventDTO.getStudentId());
+                } else {
+                    // get session id for staff - I think it would be better to have both staff id and session id for leave.
+
+                }
+                if(events.size() !=0) {
+                    log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT or LEAVE");
+                    throw new WitcurveException("Invalid request body");
+                }
             }
-            // add a check for event existence - check for all types
         }
     }
 

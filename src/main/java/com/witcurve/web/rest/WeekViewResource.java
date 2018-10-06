@@ -60,7 +60,7 @@ public class WeekViewResource {
         } else {
             //throw error
         }
-        StudentStandard studentStandard = studentStandardRepository.findByStudentId(studentId);
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
         Long standardId = studentStandard.getStandard().getId();
         result.setGsdList(generalSlotDetailsService.getGeneralSlotDetailsByStandardId(standardId));
         result.setScdList(slotCourseDetailsService.getSlotCourseDetailsByStandardId(standardId));
