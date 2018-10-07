@@ -8,12 +8,14 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -69,6 +71,22 @@ public class StandardResource {
         log.debug("Request to get standard by id");
         StandardDTO result = standardService.getStandardById(standardId);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get standards by teacher ID
+     * @param teacherId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/standard/teacher/{teacherId}")
+    @Timed
+    public ResponseEntity<List<StandardDTO>> getCoursesByTeacherIdAndTermId(
+        @PathVariable(value = "teacherId") Long teacherId,
+        @RequestParam(value = "termId", required = false) Long termId) throws WitcurveException {
+        log.debug("Request to get standards with teacher id {}", teacherId);
+        List<StandardDTO> result = standardService.getStandardsByTeacherIdAndTermId(teacherId, termId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**

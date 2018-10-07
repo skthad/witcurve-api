@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Standard;
+import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.StandardService;
 import com.witcurve.service.dto.StandardDTO;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class StandardServiceImpl implements StandardService {
@@ -20,6 +23,9 @@ public class StandardServiceImpl implements StandardService {
 
     @Autowired
     StandardRepository standardRepository;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
 
     @Autowired
     StandardMapper standardMapper;
@@ -41,6 +47,13 @@ public class StandardServiceImpl implements StandardService {
             throw new WitcurveException("No standard exits with given id");
         }
         return standardMapper.toDto(standard);
+    }
+
+    @Override
+    public List<StandardDTO> getStandardsByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException {
+        log.debug("Request to get all standards by by teacher id : {}", teacherId);
+        List<Standard> result = courseTeacherRepository.findStandardsByTeacherIdAndTermId(teacherId, termId);
+        return standardMapper.toDto(result);
     }
 
     @Override

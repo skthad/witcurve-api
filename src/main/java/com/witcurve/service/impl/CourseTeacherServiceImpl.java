@@ -59,10 +59,15 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     }
 
     @Override
-    public List<CourseTeacherDTO> getCourseTeacherByTeacherId(Long teacherId) throws WitcurveException {
+    public List<CourseTeacherDTO> getCourseTeachersByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException {
         log.debug("Request to get all course teachers by teacher id : {}", teacherId);
-        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(teacherId);
-        return courseTeacherMapper.toDto(courseTeachers);
+        List<CourseTeacher> result;
+        if (termId == null) {
+            result = courseTeacherRepository.findByTeacherId(teacherId);
+        } else {
+            result = courseTeacherRepository.findByTeacherIdAndTermId(teacherId, termId);
+        }
+        return courseTeacherMapper.toDto(result);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Student;
 import com.witcurve.repository.StudentRepository;
+import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.mapper.StudentMapper;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class StudentServiceImpl implements StudentService {
@@ -20,6 +23,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
 
     @Autowired
     StudentMapper studentMapper;
@@ -40,6 +46,16 @@ public class StudentServiceImpl implements StudentService {
             throw new WitcurveException("No student with given id");
         }
         return studentMapper.toDto(student);
+    }
+
+    @Override
+    public List<StudentDTO> getStudentsByStandardId(Long standardId) throws WitcurveException {
+        log.debug("Request to get students with standard id : {}", standardId);
+        List<Student> students = studentStandardRepository.getStudentsByStandardId(standardId);
+        if (students ==  null || students.size() == 0) {
+            throw new WitcurveException("No students in the given standard id");
+        }
+        return studentMapper.toDto(students);
     }
 
     @Override

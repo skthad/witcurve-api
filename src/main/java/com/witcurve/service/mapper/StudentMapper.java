@@ -9,9 +9,11 @@ import org.mapstruct.Mapping;
 public interface StudentMapper extends EntityMapper<StudentDTO, Student>{
 
     @Mapping(target = "schoolId", source = "school.id")
+    @Mapping(target = "user", ignore = true)
     StudentDTO toDto(Student student);
 
     @Mapping(source = "schoolId", target = "school.id")
+    @Mapping(target = "user", ignore = true)
     Student toEntity(StudentDTO studentDTO);
 
     default Student fromId(Long id) {
