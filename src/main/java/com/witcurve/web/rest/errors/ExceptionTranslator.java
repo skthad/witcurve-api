@@ -3,11 +3,14 @@ package com.witcurve.web.rest.errors;
 import com.witcurve.web.rest.util.HeaderUtil;
 
 import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.DefaultProblem;
 import org.zalando.problem.Problem;
@@ -104,5 +107,12 @@ public class ExceptionTranslator implements ProblemHandling {
             .with("message", ErrorConstants.ERR_CONCURRENCY_FAILURE)
             .build();
         return create(ex, problem, request);
+    }
+
+    @ExceptionHandler(WitcurveException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String processIccWebappException(WitcurveException ex) {
+        return ex.getMessage();
     }
 }

@@ -3,6 +3,7 @@ package com.witcurve.web.rest;
 import com.witcurve.WitcurveApp;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
+import com.witcurve.security.OtpAuthenticationProvider;
 import com.witcurve.security.jwt.TokenProvider;
 import com.witcurve.web.rest.vm.LoginVM;
 import com.witcurve.web.rest.errors.ExceptionTranslator;
@@ -42,6 +43,9 @@ public class UserJWTControllerIntTest {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private OtpAuthenticationProvider otpAuthenticationProvider;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -54,7 +58,7 @@ public class UserJWTControllerIntTest {
 
     @Before
     public void setup() {
-        UserJWTController userJWTController = new UserJWTController(tokenProvider, authenticationManager);
+        UserJWTController userJWTController = new UserJWTController(tokenProvider, authenticationManager, otpAuthenticationProvider);
         this.mockMvc = MockMvcBuilders.standaloneSetup(userJWTController)
             .setControllerAdvice(exceptionTranslator)
             .build();

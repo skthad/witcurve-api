@@ -20,6 +20,10 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(nullable = false, unique = true)
+    private String staffId;
+
+    @NotNull
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
@@ -85,6 +89,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
     public String getFirstName() {
@@ -241,9 +253,11 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Staff{" +
             "id=" + id +
+            ", staffId='" + staffId + '\'' +
             ", firstName='" + firstName + '\'' +
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
+            ", user=" + user +
             ", school=" + school +
             ", type='" + type + '\'' +
             ", address1='" + address1 + '\'' +

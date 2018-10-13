@@ -13,6 +13,9 @@ public class StaffDTO extends AbstractAuditingDTO {
     private Long id;
 
     @NotNull
+    private String staffId;
+
+    @NotNull
     private String firstName;
 
     private String middleName;
@@ -62,6 +65,14 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
     public String getFirstName() {
@@ -218,9 +229,11 @@ public class StaffDTO extends AbstractAuditingDTO {
     public String toString() {
         return "StaffDTO{" +
             "id=" + id +
+            ", staffId='" + staffId + '\'' +
             ", firstName='" + firstName + '\'' +
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
+            ", user=" + user +
             ", schoolId=" + schoolId +
             ", type='" + type + '\'' +
             ", address1='" + address1 + '\'' +
