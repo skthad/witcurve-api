@@ -23,6 +23,10 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(nullable = false, unique = true)
+    private String admissionId;
+
+    @NotNull
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -133,6 +137,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAdmissionId() {
+        return admissionId;
+    }
+
+    public void setAdmissionId(String admissionId) {
+        this.admissionId = admissionId;
     }
 
     public String getFirstName() {
@@ -401,9 +413,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Student{" +
             "id=" + id +
+            ", admissionId='" + admissionId + '\'' +
             ", firstName='" + firstName + '\'' +
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
+            ", user=" + user +
             ", dateOfBirth=" + dateOfBirth +
             ", bloodGroup='" + bloodGroup + '\'' +
             ", nationality='" + nationality + '\'' +
@@ -428,6 +442,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
             ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", school=" + school +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
+            ", alternateMobileNumbers=" + alternateMobileNumbers +
             ", gender=" + gender +
             ", admissionDate=" + admissionDate +
             '}';

@@ -1,5 +1,7 @@
 package com.witcurve.web.rest;
 
+import com.witcurve.domain.enumeration.LoginType;
+import com.witcurve.security.OtpAuthenticationProvider;
 import com.witcurve.security.jwt.JWTConfigurer;
 import com.witcurve.security.jwt.TokenProvider;
 import com.witcurve.web.rest.vm.LoginVM;
@@ -17,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 /**
  * Controller to authenticate users.
@@ -29,19 +32,29 @@ public class UserJWTController {
 
     private final AuthenticationManager authenticationManager;
 
-    public UserJWTController(TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
+    private final OtpAuthenticationProvider otpAuthenticationProvider;
+
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManager authenticationManager, OtpAuthenticationProvider otpAuthenticationProvider) {
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
+        this.otpAuthenticationProvider = otpAuthenticationProvider;
     }
 
     @PostMapping("/authenticate")
     @Timed
-    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVM loginVM) {
+    public ResponseEntity<JWTToken> authorize(@Valid @RequestBody LoginVM loginVM, @RequestParam(value = "otp", required = false)Boolean otp) {
 
+        Authentication authentication = null;
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
 
-        Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+        if(otp!= null && otp) {
+            authentication = this.otpAuthenticationProvider.authenticate(authenticationToken);
+
+        } else {
+            authentication = this.authenticationManager.authenticate(authenticationToken);
+        }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
         String jwt = tokenProvider.createToken(authentication, rememberMe);

@@ -15,6 +15,9 @@ public class StudentDTO extends AbstractAuditingDTO {
     private Long id;
 
     @NotNull
+    private String admissionId;
+
+    @NotNull
     private String firstName;
 
     @NotNull
@@ -90,6 +93,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAdmissionId() {
+        return admissionId;
+    }
+
+    public void setAdmissionId(String admissionId) {
+        this.admissionId = admissionId;
     }
 
     public String getFirstName() {
@@ -358,9 +369,11 @@ public class StudentDTO extends AbstractAuditingDTO {
     public String toString() {
         return "StudentDTO{" +
             "id=" + id +
+            ", admissionId='" + admissionId + '\'' +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", middleName='" + middleName + '\'' +
+            ", user=" + user +
             ", dateOfBirth=" + dateOfBirth +
             ", bloodGroup='" + bloodGroup + '\'' +
             ", nationality='" + nationality + '\'' +
@@ -385,6 +398,7 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
             ", schoolId=" + schoolId +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
+            ", alternateMobileNumbers=" + alternateMobileNumbers +
             ", gender=" + gender +
             ", admissionDate=" + admissionDate +
             '}';
