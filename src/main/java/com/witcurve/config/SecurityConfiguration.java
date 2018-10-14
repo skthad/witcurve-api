@@ -102,14 +102,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
-            .antMatchers("/api/load-data").permitAll()
+            .antMatchers("/api/load-data/parent").permitAll()
+            .antMatchers("/api/load-data/teacher").permitAll()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/account/reset-password/init").permitAll()
             .antMatchers("/api/account/reset-password/finish").permitAll()
             .antMatchers("/api/generate-otp").permitAll()
+            .antMatchers("/users/contact-numbers/**").permitAll()
+
 
             //temp permitAll, need to be changes once user service is fixed
-            .antMatchers("/api/**").permitAll()
+            .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)

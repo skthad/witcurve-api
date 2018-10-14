@@ -4,6 +4,7 @@ import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -78,9 +79,11 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(length = 50, nullable = false)
+    @Pattern(regexp = "^[6-9]\\d{9}$")
     private String primaryPhone;
 
     @Column(length = 50)
+    @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
 
     public Long getId() {

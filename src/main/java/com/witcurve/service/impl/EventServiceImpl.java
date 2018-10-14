@@ -143,6 +143,21 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<LocalDate> findAllEventDatesOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
+        if(studentStandard == null) {
+            throw new WitcurveException("There is no student standard with given student id : "+studentId);
+        }
+        Long standardId = studentStandard.getStandard().getId();
+        Grade grade = studentStandard.getStandard().getGrade();
+        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        LocalDate monthStart = LocalDate.of(year,month,1);
+        LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
+        List<LocalDate> eventDates = eventRepository.findEventDatesDuringMonthForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId);
+        return eventDates;
+    }
+
+    @Override
     public List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) throws WitcurveException{
         log.debug("Request to get tests with week having weekDate : {} of year : {} or student with id : {}", weekDate, year, studentId);
 

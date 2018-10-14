@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 /**
- * Created by Manoj Bandaru on 8/18/2018.
+ * Created by Anuranjan on 8/18/2018.
  */
 public class OtpUtil {
     private static final Logger logger = LoggerFactory.getLogger("OtpUtil");

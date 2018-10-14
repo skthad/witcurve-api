@@ -140,7 +140,7 @@ public class WitcurveResource {
         staff1.setAddress1("Kondpaur");
         staff1.setFirstName("Anuranjan");
         staff1.setLastName("Kumar");
-        staff1.setPrimaryPhone("1234567980");
+        staff1.setPrimaryPhone("9876543210");
         staff1.setSchool(school1);
         staff1.setType("Teaching");
         staff1.setStaffId("STAFF_01");
@@ -151,7 +151,7 @@ public class WitcurveResource {
         staff2.setAddress1("Hitech City");
         staff2.setFirstName("Dhiraj");
         staff2.setLastName("Kumar");
-        staff2.setPrimaryPhone("1234567980");
+        staff2.setPrimaryPhone("9876543210");
         staff2.setSchool(school1);
         staff2.setType("Teaching");
         staff2.setStaffId("STAFF_02");
@@ -162,7 +162,7 @@ public class WitcurveResource {
         staff3.setAddress1("Hitech City");
         staff3.setFirstName("Srujan Kumar");
         staff3.setLastName("Tad");
-        staff3.setPrimaryPhone("1234567980");
+        staff3.setPrimaryPhone("9876543210");
         staff3.setSchool(school1);
         staff3.setType("Teaching");
         staff3.setStaffId("STAFF_03");
@@ -173,7 +173,7 @@ public class WitcurveResource {
         staff4.setAddress1("Hitech City");
         staff4.setFirstName("Kishore Kumar");
         staff4.setLastName("SVR");
-        staff4.setPrimaryPhone("1234567980");
+        staff4.setPrimaryPhone("9876543210");
         staff4.setSchool(school1);
         staff4.setType("Teaching");
         staff4.setStaffId("STAFF_04");
@@ -184,7 +184,7 @@ public class WitcurveResource {
         staff5.setAddress1("Hitech City");
         staff5.setFirstName("Mahendra");
         staff5.setLastName("No Idea");
-        staff5.setPrimaryPhone("1234567980");
+        staff5.setPrimaryPhone("9876543210");
         staff5.setSchool(school1);
         staff5.setType("Teaching");
         staff5.setStaffId("STAFF_05");
@@ -195,7 +195,7 @@ public class WitcurveResource {
         staff6.setAddress1("Hitech City");
         staff6.setFirstName("Satya");
         staff6.setLastName("No Idea");
-        staff6.setPrimaryPhone("1234567980");
+        staff6.setPrimaryPhone("9876543210");
         staff6.setSchool(school1);
         staff6.setType("Teaching");
         staff6.setStaffId("STAFF_06");
@@ -207,7 +207,7 @@ public class WitcurveResource {
         staff7.setAddress1("Hitech City");
         staff7.setFirstName("Sai Chand");
         staff7.setLastName("Gandivasala");
-        staff7.setPrimaryPhone("1234567980");
+        staff7.setPrimaryPhone("9876543210");
         staff7.setSchool(school1);
         staff7.setType("Teaching");
         staff7.setStaffId("STAFF_07");
@@ -218,7 +218,7 @@ public class WitcurveResource {
         staff8.setAddress1("Hitech City");
         staff8.setFirstName("Kalyan");
         staff8.setLastName("Naik");
-        staff8.setPrimaryPhone("1234567980");
+        staff8.setPrimaryPhone("9876543210");
         staff8.setSchool(school1);
         staff8.setType("Teaching");
         staff8.setStaffId("STAFF_08");
@@ -389,6 +389,7 @@ public class WitcurveResource {
         student1.setState("Telangana");
         student1.setSchool(school1);
         student1.setAdmissionId("STD_001");
+        student1.setRegisteredMobileNumber("9876543210");
         studentRepository.save(student1);
 
         Guardian g1 = new Guardian();
@@ -1690,7 +1691,7 @@ public class WitcurveResource {
         staff1.setAddress1("Kondpaur");
         staff1.setFirstName("Anuranjan");
         staff1.setLastName("Kumar");
-        staff1.setPrimaryPhone("1234567980");
+        staff1.setPrimaryPhone("9876543210");
         staff1.setSchool(school1);
         staff1.setType("Teaching");
         staff1.setStaffId("STAFF_01");
@@ -1701,7 +1702,7 @@ public class WitcurveResource {
         staff2.setAddress1("Hitech City");
         staff2.setFirstName("Dhiraj");
         staff2.setLastName("Kumar");
-        staff2.setPrimaryPhone("1234567980");
+        staff2.setPrimaryPhone("9876543210");
         staff2.setSchool(school1);
         staff2.setType("Teaching");
         staff2.setStaffId("STAFF_02");
@@ -1712,7 +1713,7 @@ public class WitcurveResource {
         staff3.setAddress1("Hitech City");
         staff3.setFirstName("Srujan Kumar");
         staff3.setLastName("Tad");
-        staff3.setPrimaryPhone("1234567980");
+        staff3.setPrimaryPhone("9876543210");
         staff3.setSchool(school1);
         staff3.setType("Teaching");
         staff3.setStaffId("STAFF_03");
@@ -1723,7 +1724,7 @@ public class WitcurveResource {
         staff4.setAddress1("Hitech City");
         staff4.setFirstName("Kishore Kumar");
         staff4.setLastName("SVR");
-        staff4.setPrimaryPhone("1234567980");
+        staff4.setPrimaryPhone("9876543210");
         staff4.setSchool(school1);
         staff4.setType("Teaching");
         staff4.setStaffId("STAFF_04");
@@ -1734,7 +1735,7 @@ public class WitcurveResource {
         staff5.setAddress1("Hitech City");
         staff5.setFirstName("Mahendra");
         staff5.setLastName("No Idea");
-        staff5.setPrimaryPhone("1234567980");
+        staff5.setPrimaryPhone("9876543210");
         staff5.setSchool(school1);
         staff5.setType("Teaching");
         staff5.setStaffId("STAFF_05");
@@ -1745,7 +1746,7 @@ public class WitcurveResource {
         staff6.setAddress1("Hitech City");
         staff6.setFirstName("Satya");
         staff6.setLastName("No Idea");
-        staff6.setPrimaryPhone("1234567980");
+        staff6.setPrimaryPhone("9876543210");
         staff6.setSchool(school1);
         staff6.setType("Teaching");
         staff6.setStaffId("STAFF_06");
@@ -1757,7 +1758,7 @@ public class WitcurveResource {
         staff7.setAddress1("Hitech City");
         staff7.setFirstName("Sai Chand");
         staff7.setLastName("Gandivasala");
-        staff7.setPrimaryPhone("1234567980");
+        staff7.setPrimaryPhone("9876543210");
         staff7.setSchool(school1);
         staff7.setType("Teaching");
         staff7.setStaffId("STAFF_07");
@@ -1768,7 +1769,7 @@ public class WitcurveResource {
         staff8.setAddress1("Hitech City");
         staff8.setFirstName("Kalyan");
         staff8.setLastName("Naik");
-        staff8.setPrimaryPhone("1234567980");
+        staff8.setPrimaryPhone("9876543210");
         staff8.setSchool(school1);
         staff8.setType("Teaching");
         staff8.setStaffId("STAFF_08");
@@ -1939,6 +1940,7 @@ public class WitcurveResource {
         student1.setState("Telangana");
         student1.setSchool(school1);
         student1.setAdmissionId("STD_001");
+        student1.setRegisteredMobileNumber("9876543210");
         studentRepository.save(student1);
 
         Guardian g1 = new Guardian();
