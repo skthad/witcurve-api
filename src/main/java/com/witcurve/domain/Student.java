@@ -6,6 +6,7 @@ import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -116,12 +117,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private School school;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(length = 50, nullable = false)
+    @Pattern(regexp = "^[6-9]\\d{9}$")
     private String registeredMobileNumber;
 
     @Column
     @Convert(converter = ListToStringConverter.class)
-    private List<String> alternateMobileNumbers;
+    private List<@Pattern(regexp="^[6-9]\\d{9}$")String> alternateMobileNumbers;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")

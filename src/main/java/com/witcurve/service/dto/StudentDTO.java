@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.Gender;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -78,6 +79,8 @@ public class StudentDTO extends AbstractAuditingDTO {
     @NotNull
     private Long schoolId;
 
+    @NotNull
+    @Pattern(regexp = "^[6-9]\\d{9}$")
     private String registeredMobileNumber;
 
     private List<String> alternateMobileNumbers;

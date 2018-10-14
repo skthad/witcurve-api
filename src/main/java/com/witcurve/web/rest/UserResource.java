@@ -3,6 +3,7 @@ package com.witcurve.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.config.Constants;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.MailService;
@@ -11,6 +12,7 @@ import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.BadRequestAlertException;
 import com.witcurve.web.rest.errors.EmailAlreadyUsedException;
 import com.witcurve.web.rest.errors.LoginAlreadyUsedException;
+import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import com.witcurve.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -139,11 +141,10 @@ public class UserResource {
      *
      * @return the ResponseEntity with status 200 (OK) and with body all users
      */
-    @GetMapping("/users/{username}/contact-numbers")
+    @GetMapping("/users/contact-numbers/{username}")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
-    public ResponseEntity<List<String>> getContactNumbersOfUser(@PathVariable (name = "username") String username) {
-        final List<String> contactNumbers = userService.getContactNumbersOfUser(username);
+    public ResponseEntity<List<String>> getContactNumbersOfUser(@PathVariable (name = "username") String username, @RequestParam(name = "type") UserType type) throws WitcurveException {
+        final List<String> contactNumbers = userService.getContactNumbersOfUser(username, type);
         return new ResponseEntity<>(contactNumbers, HttpStatus.OK);
     }
 
@@ -178,7 +179,7 @@ public class UserResource {
      * @param login the login of the user to find
      * @return the ResponseEntity with status 200 (OK) and with body the "login" user, or with status 404 (Not Found)
      */
-    @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @GetMapping("/users/{login}")
     @Timed
     public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
@@ -193,7 +194,7 @@ public class UserResource {
      * @param login the login of the user to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
+    @DeleteMapping("/users/{login}")
     @Timed
     @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {

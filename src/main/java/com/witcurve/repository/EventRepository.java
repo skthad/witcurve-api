@@ -24,10 +24,19 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date between ?1 and ?2 and " +
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?4 and e.type='SCHOOL_EVENT') or " +
+        "(e.standard.id=?4 and (e.type='SCHOOL_EVENT' or e.type='EXAM')) or " +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-        List<Event> findEventsDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
+    List<Event> findEventsDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
+
+
+    @Query("Select e.date from Event e where e.date between ?1 and ?2 and " +
+        "(" +
+        "(e.student.id = ?3 and e.type = 'LEAVE') or " +
+        "(e.standard.id=?4 and (e.type='SCHOOL_EVENT' or e.type='EXAM')) or " +
+        "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        ")")
+    List<LocalDate> findEventDatesDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and" +
         "(" +

@@ -151,6 +151,28 @@ public class EventResource {
             return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
+    /**
+     *
+     *
+     * @param month
+     * @param studentId
+     * @return
+     */
+    @GetMapping("/event/student/{studentId}/dates")
+    @Timed
+    public ResponseEntity<List<LocalDate>> getAllEventsDatesForStudentInAMonth(
+        @RequestParam(value = "month", required = false) Integer month,
+        @RequestParam(value = "year", required = false) Integer year,
+        @PathVariable Long studentId) throws WitcurveException, URISyntaxException{
+        if(month == null || year ==null) {
+            throw new WitcurveException("There should be month and year param for MONTH view");
+        }
+        List<LocalDate> result = eventService.findAllEventDatesOnGivenMonthForStudent(month, year, studentId);
+
+
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
 
     /**
      *

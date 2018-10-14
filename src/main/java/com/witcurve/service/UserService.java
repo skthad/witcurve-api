@@ -15,6 +15,7 @@ import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.service.util.RandomUtil;
 import com.witcurve.web.rest.errors.InvalidPasswordException;
+import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -282,27 +283,36 @@ public class UserService {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
     }
 
-    public List<String> getContactNumbersOfUser(String username) {
+    public List<String> getContactNumbersOfUser(String username, UserType type) throws WitcurveException{
         List<String> result = null;
         Optional<User> user = userRepository.findOneByLogin(username);
         if (user.isPresent()) {
-            if (UserType.STAFF.equals(user.get().getType())) {
-                Staff staff = staffRepository.getStaffByUserId(user.get().getId());
-                if (staff != null) {
-                    result = new ArrayList<>();
-                    result.add(staff.getPrimaryPhone());
-                    if (staff.getSecondaryPhone() != null) {
-                        result.add(staff.getSecondaryPhone());
+            if (type.equals(user.get().getType())) {
+                if(type.equals(UserType.STAFF)) {
+                    Staff staff = staffRepository.getStaffByUserId(user.get().getId());
+                    if (staff != null) {
+                        result = new ArrayList<>();
+                        result.add(staff.getPrimaryPhone());
+                        if (staff.getSecondaryPhone() != null) {
+                            result.add(staff.getSecondaryPhone());
+                        }
+                    } else {
+                        throw new WitcurveException("There is not staff related to given user");
+                    }
+
+                } else if(type.equals(UserType.PARENT)) {
+                    Student student = studentRepository.getStudentByUserId(user.get().getId());
+                    if (student != null) {
+                        result.add(student.getRegisteredMobileNumber());
+                        if (student.getAlternateMobileNumbers() != null && student.getAlternateMobileNumbers().size() > 0) {
+                            result.addAll(student.getAlternateMobileNumbers());
+                        }
+                    } else {
+                        throw new WitcurveException("There is not student related to given user");
                     }
                 }
-            } else if (UserType.PARENT.equals(user.get().getType())) {
-                Student student = studentRepository.getStudentByUserId(user.get().getId());
-                if (student != null) {
-                    result.add(student.getRegisteredMobileNumber());
-                    if (student.getAlternateMobileNumbers() != null && student.getAlternateMobileNumbers().size() > 0) {
-                        result.addAll(student.getAlternateMobileNumbers());
-                    }
-                }
+            } else {
+               throw new WitcurveException("No user with given login and type exists");
             }
         }
         return result;

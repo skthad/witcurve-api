@@ -20,6 +20,8 @@ public interface EventService {
 
     List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException;
 
+    List<LocalDate> findAllEventDatesOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException;
+
     List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) throws WitcurveException;
 
     List<EventDTO> findAllEventsForDiary(LocalDate date, Long studentId) throws WitcurveException;
