@@ -55,7 +55,7 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
         user.setOtp(null);
         userRepository.save(user);
 
-        return new UsernamePasswordAuthenticationToken(user, password, authorities);
+        return new UsernamePasswordAuthenticationToken(user.getLogin(), password, authorities);
     }
 
     @Override
