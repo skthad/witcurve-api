@@ -88,7 +88,7 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
-    @Override
+    /*@Override
     public List<EventDTO> findAllEventsOnGivenDateForStandard(LocalDate eventDate, Long standardId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for standard with id : {}", eventDate, standardId);
 
@@ -103,7 +103,7 @@ public class EventServiceImpl implements EventService {
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
-    }
+    }*/
 
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
@@ -241,6 +241,72 @@ public class EventServiceImpl implements EventService {
 
     }
 
+    @Override
+    public List<EventDTO> getAllLeavesForStudent(LocalDate date, Long studentId) throws WitcurveException {
+        log.debug("Find events for leaves for a student with id : {}", studentId);
+
+        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
+
+        if(studentStandard == null) {
+            throw new WitcurveException("There is no student standard with given student id : "+studentId);
+        }
+
+        Long standardId = studentStandard.getStandard().getId();
+        Grade grade = studentStandard.getStandard().getGrade();
+        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+
+        List<Event> events;
+        if (date == null) { // get all leaves info for the current term
+
+            //TODO change the implementation to have only those events associated with leave application
+            events = eventRepository.findLeavesForStudent(studentId, sessionId);
+        } else { // get attendance data for a day
+            events = eventRepository.findAttendanceForStudent(date, studentId, sessionId);
+        }
+
+        if (events != null && events.size() > 0) {
+            String lastBindingId = events.get(events.size()-1).getBindingId();
+            if(lastBindingId != null) {
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
+                if(remainingList.size() != 0) {
+                    events.addAll(remainingList);
+                    events = new ArrayList<>(new HashSet<>(events));
+                }
+            }
+            Collections.sort(events, new EventDateDescComparator());
+        }
+        return eventMapper.toDto(events);
+
+    }
+
+    @Override
+    public List<EventDTO> getAllLeavesForStandard(LocalDate date, Long standardId) throws WitcurveException {
+        log.debug("Find events for leaves for a standard with id : {}", standardId);
+
+        Optional<Standard> result = standardRepository.findById(standardId);
+
+        if(!result.isPresent()) {
+            throw new WitcurveException("There is no standard with given standard id : " + standardId);
+        }
+
+        Standard standard = result.get();
+
+        Long sessionId = standard.getTerm().getSession().getId();
+
+        List<Event> events = new ArrayList<>();
+        if (date == null) { // get all leaves info for the current term
+
+            //TODO change the implementation to have only those events associated with leave application
+            events = eventRepository.findLeavesForStandard(standardId, sessionId);
+        } else { // get attendance data for a day
+            events = eventRepository.findAttendanceForStandard(date, standardId, sessionId);
+        }
+
+        Collections.sort(events, new EventDateDescComparator());
+        return eventMapper.toDto(events);
+
+    }
+
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {
             if (eventDTO.getScd() != null && eventDTO.getCourseTeacher() != null) {
@@ -296,7 +362,7 @@ public class EventServiceImpl implements EventService {
                     throw new WitcurveException("Invalid request body");
                 }
 
-            } else if(eventDTO.getType().equals(EventType.NOTE)) {
+            } else if(eventDTO.getType().equals(EventType.SUBJECT_NOTE)) {
                 if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
                     log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : academicSessionId, standardId, studentId");
                     throw new WitcurveException("Invalid request body");

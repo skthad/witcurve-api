@@ -1,8 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.Event;
-import com.witcurve.domain.enumeration.View;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -147,12 +145,40 @@ public class EventResource {
             LocalDate date = getLocalDate(eventDate);
             result = eventService.findAllEventsForAnnouncements(date, studentId);
         }
+        if(type.equals(ViewType.LEAVE)) {
+            result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);
+        }
 
             return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
     /**
      *
+     * @param eventDate
+     * @param standardId
+     * @return
+     */
+    @GetMapping("/event/standard/{standardId}")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
+        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @RequestParam(value = "type") ViewType type,
+        @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
+        log.debug("Request to get events on given date : {} for standard id : {}", eventDate, standardId);
+
+        //add null checks later and change log statement
+        List<EventDTO> result = new ArrayList<>();
+
+        if(type.equals(ViewType.LEAVE)) {
+            result = eventService.getAllLeavesForStandard(eventDate == null ? null : getLocalDate(eventDate), standardId);
+        }
+
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     *attendance - one day
+     * leave - all days
      *
      * @param month
      * @param studentId
@@ -180,7 +206,7 @@ public class EventResource {
      * @param standardId
      * @return
      */
-    @GetMapping("/event/standard/{standardId}")
+    /*@GetMapping("/event/standard/{standardId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
         @RequestParam(value = "eventDate", required = false) String eventDate,
@@ -189,7 +215,7 @@ public class EventResource {
         LocalDate date = getLocalDate(eventDate);
         List<EventDTO> result = eventService.findAllEventsOnGivenDateForStandard(date, standardId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
-    }
+    }*/
 
 
 }
