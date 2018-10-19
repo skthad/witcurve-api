@@ -362,7 +362,7 @@ public class EventServiceImpl implements EventService {
                     throw new WitcurveException("Invalid request body");
                 }
 
-            } else if(eventDTO.getType().equals(EventType.NOTE)) {
+            } else if(eventDTO.getType().equals(EventType.SUBJECT_NOTE)) {
                 if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
                     log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : academicSessionId, standardId, studentId");
                     throw new WitcurveException("Invalid request body");
