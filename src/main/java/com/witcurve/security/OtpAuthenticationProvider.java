@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -36,11 +35,12 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Username not found.");
         }
         User user = result.get();
-        if (!user.getOtp().equals(password)) {
+        if (!password.equals(user.getOtp())) {
             throw new BadCredentialsException("Wrong Otp.");
         } else {
             if(user.getOtpExpiry().isBefore(Instant.now())) {
                 user.setOtp(null);
+                user.setOtpExpiry(null);
                 userRepository.save(user);
                 throw new BadCredentialsException("Otp Expired.");
             }
@@ -53,6 +53,7 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             authorities.add(simpleGrantedAuthority);
         }
         user.setOtp(null);
+        user.setOtpExpiry(null);
         userRepository.save(user);
 
         return new UsernamePasswordAuthenticationToken(user, password, authorities);
