@@ -138,7 +138,7 @@ public class EventResource {
             LocalDate date = getLocalDate(eventDate);
             result = eventService.findAllEventsForDiary(date, studentId);
         }
-        if(type.equals(ViewType.ANNOUNCEMENT)) {
+        if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
             }
