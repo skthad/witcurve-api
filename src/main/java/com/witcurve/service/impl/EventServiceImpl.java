@@ -88,23 +88,6 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
-    /*@Override
-    public List<EventDTO> findAllEventsOnGivenDateForStandard(LocalDate eventDate, Long standardId) throws WitcurveException {
-        log.debug("Request to get tests with eventDate : {} for standard with id : {}", eventDate, standardId);
-
-        Standard standard  = standardRepository.findById(standardId).get();
-        if(standard == null) {
-            throw new WitcurveException("There is no standard with given standard id : "+standardId);
-        }
-        Grade grade = standard.getGrade();
-        Long sessionId = standard.getTerm().getSession().getId();
-
-        List<Event> events = eventRepository.findEventsByDateForStandard(eventDate, standardId, grade, sessionId);
-        Collections.sort(events, new EventDateAscComparator());
-
-        return eventMapper.toDto(events);
-    }*/
-
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
