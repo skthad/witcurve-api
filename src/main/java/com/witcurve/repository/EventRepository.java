@@ -68,15 +68,6 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
                                              Long studentId, Long standardId, Grade grade,
                                              Long sessionId);
 
-
-
-    /*@Query("Select e from Event e where e.date = ?1 and" +
-        "(" +
-        "(e.standard.id=?2 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
-        "((e.grade is null or (e.grade is not null and e.grade = ?3)) and e.academicSession.id=?4 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
-        ")")
-    List<Event> findEventsByDateForStandard(LocalDate date, Long standardId, Grade grade, Long sessionId);*/
-
     @Query("Select e from Event e where e.date = ?1 and e.type = ?2 and e.scd.id = ?3")
     Event findEventOnDateAndSlot(LocalDate date, EventType type, Long scdId);
 
