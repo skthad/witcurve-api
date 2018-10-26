@@ -3,4 +3,10 @@
     <changeSet author="srujankumar (generated)" id="1539520996695-1">
         <addNotNullConstraint columnDataType="varchar(50)" columnName="registered_mobile_number" tableName="student"/>
     </changeSet>
+    <changeSet author="srujankumar (generated)" id="1539520996695-2">
+        <addUniqueConstraint columnNames="staff_id" constraintName="UC_STAFFSTAFF_ID_COL" tableName="staff"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1539520996695-3">
+        <addUniqueConstraint columnNames="admission_id" constraintName="UC_STUDENTADMISSION_ID_COL" tableName="student"/>
+    </changeSet>
 </databaseChangeLog>
