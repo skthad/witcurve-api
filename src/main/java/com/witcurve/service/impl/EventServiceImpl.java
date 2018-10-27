@@ -93,11 +93,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
-        // null checks
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
+
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -134,11 +131,8 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with month no. : {} of year : {} or student with id : {}", month, year, studentId);
         // need to get Events of type Holiday, Leave, Exam, SchoolEvent
-        // null checks
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
+
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -151,10 +145,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<LocalDate> findAllEventDatesOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
+
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -181,10 +173,8 @@ public class EventServiceImpl implements EventService {
         {
             saturday = saturday.plusDays(1);
         }
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
+
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -198,10 +188,8 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsForDiary(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for diary for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate startDate = date.minusDays(6);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
+
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -225,10 +213,8 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsForAnnouncements(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate endDate = date.plusDays(6);
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
+
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -252,12 +238,8 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> getAllLeavesForStudent(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for leaves for a student with id : {}", studentId);
 
-        StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(studentId);
 
-        if(studentStandard == null) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        }
-
+        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
@@ -383,10 +365,8 @@ public class EventServiceImpl implements EventService {
                 Long sessionId = null;
                 List<Event> events = new ArrayList<>();
                 if(eventDTO.getStudentId() != null) {
-                    StudentStandard studentStandard = studentStandardRepository.findByStudentIdAndActiveTrue(eventDTO.getStudentId());
-                    if(studentStandard == null) {
-                        throw new WitcurveException("Invalid Student Id : "+eventDTO.getStudentId()+", not marked to any class in current session");
-                    }
+
+                    StudentStandard studentStandard = getStudentStandardFromStudentId(eventDTO.getStudentId());
                     sessionId = studentStandard.getStandard().getTerm().getSession().getId();
                     events = eventRepository.eventsBlockingLeave(eventDTO.getDate(), THIRD_LIST, sessionId, eventDTO.getStudentId());
                 } else {
@@ -454,5 +434,18 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    private StudentStandard getStudentStandardFromStudentId(Long studentId) throws WitcurveException {
+
+        StudentStandard studentStandard = null;
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+        if(studentStandards.isEmpty()) {
+            throw new WitcurveException("There is no student standard with given student id : "+studentId);
+        } else if (studentStandards.size() > 1) {
+            throw new WitcurveException("There are more than one active student standard with given student id : "+studentId);
+        } else {
+            studentStandard = studentStandards.get(0);
+        }
+        return studentStandard;
+    }
 
 }
