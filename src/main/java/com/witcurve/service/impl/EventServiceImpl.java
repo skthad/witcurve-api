@@ -49,7 +49,7 @@ public class EventServiceImpl implements EventService {
         Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT));
 
     private static final ArrayList<EventType> THIRD_LIST = new ArrayList<EventType>(
-        Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT, EventType.LEAVE));
+        Arrays.asList(EventType.HOLIDAY, EventType.LEAVE));
 
 
     @Override
