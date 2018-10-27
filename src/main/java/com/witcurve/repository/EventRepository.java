@@ -84,7 +84,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and (e.academicSession.id=?3 or e.standard.term.session.id =?3) and e.type in ?2")
     List<Event> eventsBlockingHolidayAndSchoolEvents(LocalDate date, List<EventType> types, Long sessionId);
 
-    @Query("Select e from Event e where e.date = ?1 and (e.academicSession.id=?3 or e.standard.term.session.id =?3 or e.student.id=?4) and e.type in ?2")
+    @Query("Select e from Event e where e.date = ?1 and (e.academicSession.id=?3 or e.standard.term.session.id =?3) and e.student.id=?4 and e.type in ?2")
     List<Event> eventsBlockingLeave(LocalDate date, List<EventType> types, Long sessionId, Long studentId);
 
     @Query("Select e from Event e where e.bindingId = ?1 and " +

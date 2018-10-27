@@ -78,6 +78,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "send_sms", nullable = false)
     private Boolean sendSms = false;
 
+    private Boolean present;
+
     public Long getId() {
         return id;
     }
@@ -206,6 +208,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.sendSms = sendSms;
     }
 
+    public Boolean gePresent() {
+        return present;
+    }
+
+    public void setPresent(Boolean present) {
+        this.present = present;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -238,6 +248,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
+            ( type == EventType.LEAVE ? ", present=" + present : "") +
             '}';
     }
 }

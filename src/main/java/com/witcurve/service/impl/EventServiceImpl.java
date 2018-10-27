@@ -1,6 +1,5 @@
 package com.witcurve.service.impl;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
@@ -378,7 +377,7 @@ public class EventServiceImpl implements EventService {
 
             }  else if(eventDTO.getType().equals(EventType.LEAVE)) {
                 if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : studentId, staffId");
+                    log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
                     throw new WitcurveException("Invalid request body");
                 }
                 Long sessionId = null;

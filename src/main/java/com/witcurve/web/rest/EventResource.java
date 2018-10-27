@@ -38,7 +38,7 @@ public class EventResource {
      */
     @PostMapping("/event")
     @Timed
-    public ResponseEntity<List<EventDTO>> createEvent(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Events : {}",eventDTOs);
         for(EventDTO eventDTO: eventDTOs) {
             if (eventDTO.getId() != null) {
