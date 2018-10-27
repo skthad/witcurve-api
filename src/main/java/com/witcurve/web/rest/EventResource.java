@@ -138,7 +138,7 @@ public class EventResource {
             LocalDate date = getLocalDate(eventDate);
             result = eventService.findAllEventsForDiary(date, studentId);
         }
-        if(type.equals(ViewType.ANNOUNCEMENT)) {
+        if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
             }
@@ -150,6 +150,60 @@ public class EventResource {
         }
 
             return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param eventDate
+     * @param month
+     * @param staffId
+     * @return
+     */
+    @GetMapping("/event/staff/{staffId}")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getAllEventsForTeacher(
+        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @RequestParam(value = "month", required = false) Integer month,
+        @RequestParam(value = "year", required = false) Integer year,
+        @RequestParam(value = "type") ViewType type,
+        @RequestParam(value = "termId") Long termId,
+        @PathVariable Long staffId) throws WitcurveException, URISyntaxException{
+        log.debug("Request to get events on given date : {} for staff with id : {} fro term with id : {}", eventDate, staffId, termId);
+
+        //add null checks later and change log statement
+        List<EventDTO> result = new ArrayList<>();
+        if(type.equals(ViewType.DAY)) {
+            if(eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for DAY view");
+            }
+            LocalDate date = getLocalDate(eventDate);
+            result = eventService.findAllEventsOnGivenDateForStaff(date, staffId, termId);
+        }
+//        if(type.equals(ViewType.MONTH)) {
+//            if(month == null || year ==null) {
+//                throw new WitcurveException("There should be month and year param for MONTH view");
+//            }
+//            result = eventService.findAllEventsOnGivenMonthForStudent(month, year, studentId);
+//        }
+//        if(type.equals(ViewType.DIARY)) {
+//            if(eventDate == null) {
+//                throw new WitcurveException("There should be eventDate param for DIARY view");
+//            }
+//            LocalDate date = getLocalDate(eventDate);
+//            result = eventService.findAllEventsForDiary(date, studentId);
+//        }
+//        if(type.equals(ViewType.UPCOMING_EVENTS)) {
+//            if (eventDate == null) {
+//                throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
+//            }
+//            LocalDate date = getLocalDate(eventDate);
+//            result = eventService.findAllEventsForAnnouncements(date, studentId);
+//        }
+//        if(type.equals(ViewType.LEAVE)) {
+//            result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);
+//        }
+
+        return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
     /**
@@ -177,13 +231,13 @@ public class EventResource {
     }
 
     /**
-     *attendance - one day
-     * leave - all days
+     *
      *
      * @param month
      * @param studentId
      * @return
      */
+
     @GetMapping("/event/student/{studentId}/dates")
     @Timed
     public ResponseEntity<List<LocalDate>> getAllEventsDatesForStudentInAMonth(
@@ -198,24 +252,6 @@ public class EventResource {
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
-
-
-    /**
-     *
-     * @param eventDate
-     * @param standardId
-     * @return
-     */
-    /*@GetMapping("/event/standard/{standardId}")
-    @Timed
-    public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
-        @RequestParam(value = "eventDate", required = false) String eventDate,
-        @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
-        log.debug("Request to get events on given date : {} for standard with id : {}", eventDate, standardId);
-        LocalDate date = getLocalDate(eventDate);
-        List<EventDTO> result = eventService.findAllEventsOnGivenDateForStandard(date, standardId);
-        return new ResponseEntity<>(result,  HttpStatus.OK);
-    }*/
 
 
 }

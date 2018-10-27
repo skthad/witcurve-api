@@ -1,13 +1,10 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Event;
-import com.witcurve.domain.Standard;
-import com.witcurve.domain.StudentStandard;
+import afu.org.checkerframework.checker.oigj.qual.O;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.repository.EventRepository;
-import com.witcurve.repository.StandardRepository;
-import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
@@ -39,6 +36,12 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     StandardRepository standardRepository;
+
+    @Autowired
+    TermRepository termRepository;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.DAILY_UPDATE, EventType.TEST, EventType.ASSIGNMENT, EventType.EXAM));
@@ -88,23 +91,6 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
-    /*@Override
-    public List<EventDTO> findAllEventsOnGivenDateForStandard(LocalDate eventDate, Long standardId) throws WitcurveException {
-        log.debug("Request to get tests with eventDate : {} for standard with id : {}", eventDate, standardId);
-
-        Standard standard  = standardRepository.findById(standardId).get();
-        if(standard == null) {
-            throw new WitcurveException("There is no standard with given standard id : "+standardId);
-        }
-        Grade grade = standard.getGrade();
-        Long sessionId = standard.getTerm().getSession().getId();
-
-        List<Event> events = eventRepository.findEventsByDateForStandard(eventDate, standardId, grade, sessionId);
-        Collections.sort(events, new EventDateAscComparator());
-
-        return eventMapper.toDto(events);
-    }*/
-
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
@@ -118,6 +104,28 @@ public class EventServiceImpl implements EventService {
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
 
         List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, standardId, grade, sessionId);
+        Collections.sort(events, new EventDateAscComparator());
+
+        return eventMapper.toDto(events);
+    }
+
+    @Override
+    public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId, Long termId) throws WitcurveException {
+        log.debug("Request to get tests with eventDate : {} for staff with id : {} for term with id : {}", eventDate, staffId, termId);
+
+        Optional<Term> termOptional = termRepository.findById(termId);
+        if(!termOptional.isPresent()) {
+            throw new WitcurveException("Term doesn't exist with given term id : "+termId);
+        }
+        Long sessionId = termOptional.get().getSession().getId();
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherIdAndTermId(staffId, termId);
+        Set<Long> standardIds = new HashSet<>();
+        Set<Grade> grades = new HashSet<>();
+        for(CourseTeacher courseTeacher : courseTeachers) {
+            standardIds.add(courseTeacher.getStandard().getId());
+            grades.add(courseTeacher.getStandard().getGrade());
+        }
+        List<Event> events = eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades, sessionId);
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);

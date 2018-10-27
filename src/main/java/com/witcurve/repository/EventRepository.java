@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface EventRepository  extends JpaRepository<Event, Long> {
@@ -20,6 +21,15 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "((e.grade is null or (e.grade is not null and e.grade = ?4)) and e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
     List<Event> findEventsByDateForStudent(LocalDate date, Long studentId, Long standardId, Grade grade, Long sessionId);
+
+    @Query("Select e from Event e where e.date = ?1 and" +
+        "(" +
+        "(e.staff.id = ?2 and e.type = 'LEAVE') or " +
+        "(e.scd.courseTeacher.teacher.id=?2 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT')) or " +
+        "(e.standard.id in ?3 and e.type='SCHOOL_EVENT') or " +
+        "((e.grade is null or (e.grade is not null and e.grade in ?4)) and e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        ")")
+    List<Event> findEventsByDateForStaff(LocalDate date, Long staffId, Set<Long> standardIds, Set<Grade> grades, Long sessionId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and " +
         "(" +
@@ -67,15 +77,6 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findEventsForAnnouncementsForStudent(LocalDate startDate, LocalDate endDate,
                                              Long studentId, Long standardId, Grade grade,
                                              Long sessionId);
-
-
-
-    /*@Query("Select e from Event e where e.date = ?1 and" +
-        "(" +
-        "(e.standard.id=?2 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
-        "((e.grade is null or (e.grade is not null and e.grade = ?3)) and e.academicSession.id=?4 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
-        ")")
-    List<Event> findEventsByDateForStandard(LocalDate date, Long standardId, Grade grade, Long sessionId);*/
 
     @Query("Select e from Event e where e.date = ?1 and e.type = ?2 and e.scd.id = ?3")
     Event findEventOnDateAndSlot(LocalDate date, EventType type, Long scdId);

@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.Event;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -14,9 +15,9 @@ public interface EventService {
 
     void deleteEvent(Long eventId) throws WitcurveException;
 
-    //List<EventDTO> findAllEventsOnGivenDateForStandard(LocalDate eventDate, Long standardId) throws WitcurveException;
-
     List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException;
+
+    List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId, Long termId) throws WitcurveException;
 
     List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException;
 
