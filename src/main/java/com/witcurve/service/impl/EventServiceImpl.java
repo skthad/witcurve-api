@@ -259,9 +259,9 @@ public class EventServiceImpl implements EventService {
         if (date == null) { // get all leaves info for the current term
 
             //TODO change the implementation to have only those events associated with leave application
-            events = eventRepository.findLeavesForStudent(studentId, sessionId);
-        } else { // get attendance data for a day
-            events = eventRepository.findAttendanceForStudent(date, studentId, sessionId);
+            events = eventRepository.findAllLeavesForStudentInSession(studentId, sessionId);
+        } else { // get leave data for a day
+            events = eventRepository.findLeaveForStudent(date, studentId);
         }
 
         if (events != null && events.size() > 0) {
