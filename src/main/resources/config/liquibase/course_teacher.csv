@@ -1,6 +1,6 @@
 id,created_by,course_id,teacher_id,standard_id
-1,staff,1,9,5
-2,staff,2,2,5
+1,staff,1,9,1
+2,staff,2,2,2
 3,staff,3,3,5
 4,staff,4,4,5
 5,staff,5,5,5
