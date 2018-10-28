@@ -43,13 +43,28 @@ public class EventServiceImpl implements EventService {
     CourseTeacherRepository courseTeacherRepository;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
-        Arrays.asList(EventType.DAILY_UPDATE, EventType.TEST, EventType.ASSIGNMENT, EventType.EXAM));
+        Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.EXAM, EventType.TEST));
 
     private static final ArrayList<EventType> SECOND_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT));
 
     private static final ArrayList<EventType> THIRD_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.HOLIDAY, EventType.LEAVE));
+
+    private static final ArrayList<EventType> LIST_FOR_STUDENT = new ArrayList<EventType>(
+        Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.SCHOOL_EVENT, EventType.TEST));
+
+    private static final ArrayList<EventType> LIST_FOR_MONTH = new ArrayList<EventType>(
+        Arrays.asList(EventType.EXAM, EventType.SCHOOL_EVENT));
+
+    private static final ArrayList<EventType> LIST_FOR_WEEK = new ArrayList<EventType>(
+        Arrays.asList(EventType.ASSIGNMENT, EventType.SCHOOL_EVENT, EventType.TEST));
+
+    private static final ArrayList<EventType> LIST_FOR_DIARY = new ArrayList<EventType>(
+        Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.EXAM, EventType.SCHOOL_EVENT, EventType.TEST));
+
+    private static final ArrayList<EventType> LIST_FOR_UPCOMING_EVENTS = new ArrayList<EventType>(
+        Arrays.asList(EventType.ASSIGNMENT, EventType.EXAM, EventType.SCHOOL_EVENT, EventType.TEST));
 
 
     @Override
@@ -99,7 +114,7 @@ public class EventServiceImpl implements EventService {
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
 
-        List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, standardId, grade, sessionId, LIST_FOR_STUDENT);
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
@@ -138,7 +153,7 @@ public class EventServiceImpl implements EventService {
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        List<Event> events = eventRepository.findEventsDuringMonthForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId, LIST_FOR_MONTH);
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
     }
@@ -152,7 +167,7 @@ public class EventServiceImpl implements EventService {
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        List<LocalDate> eventDates = eventRepository.findEventDatesDuringMonthForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId);
+        List<LocalDate> eventDates = eventRepository.findEventDatesByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId, LIST_FOR_MONTH);
         return eventDates;
     }
 
@@ -178,7 +193,7 @@ public class EventServiceImpl implements EventService {
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsDuringWeekForStudent(sunday, saturday, studentId, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(sunday, saturday, studentId, standardId, grade, sessionId, LIST_FOR_WEEK);
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
@@ -193,7 +208,7 @@ public class EventServiceImpl implements EventService {
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsForDiaryForStudent(startDate, date, studentId, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(startDate, date, studentId, standardId, grade, sessionId, LIST_FOR_DIARY);
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
@@ -210,7 +225,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllEventsForAnnouncements(LocalDate date, Long studentId) throws WitcurveException {
+    public List<EventDTO> findEventsByDateRangeForStudentInUpcomingEvents(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate endDate = date.plusDays(6);
 
@@ -218,7 +233,7 @@ public class EventServiceImpl implements EventService {
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsForAnnouncementsForStudent(date, endDate, studentId, standardId, grade, sessionId);
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade, sessionId, LIST_FOR_UPCOMING_EVENTS);
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {

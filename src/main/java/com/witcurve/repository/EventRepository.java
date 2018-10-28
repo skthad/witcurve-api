@@ -17,10 +17,10 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and" +
         "(" +
         "(e.student.id = ?2 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?3 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
+        "(e.standard.id=?3 and e.type in ?6) or " +
         "((e.grade is null or (e.grade is not null and e.grade = ?4)) and e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-    List<Event> findEventsByDateForStudent(LocalDate date, Long studentId, Long standardId, Grade grade, Long sessionId);
+    List<Event> findEventsByDateForStudent(LocalDate date, Long studentId, Long standardId, Grade grade, Long sessionId, List<EventType> types);
 
     @Query("Select e from Event e where e.date = ?1 and" +
         "(" +
@@ -31,52 +31,25 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         ")")
     List<Event> findEventsByDateForStaff(LocalDate date, Long staffId, Set<Long> standardIds, Set<Grade> grades, Long sessionId);
 
-    @Query("Select e from Event e where e.date between ?1 and ?2 and " +
-        "(" +
-        "(e.student.id = ?3 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?4 and (e.type='SCHOOL_EVENT' or e.type='EXAM')) or " +
-        "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
-        ")")
-    List<Event> findEventsDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
-
-
-    @Query("Select e.date from Event e where e.date between ?1 and ?2 and " +
-        "(" +
-        "(e.student.id = ?3 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?4 and (e.type='SCHOOL_EVENT' or e.type='EXAM')) or " +
-        "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
-        ")")
-    List<LocalDate> findEventDatesDuringMonthForStudent(LocalDate monthStart, LocalDate monthEnd, Long studentId, Long standardId, Grade grade, Long sessionId);
-
     @Query("Select e from Event e where e.date between ?1 and ?2 and" +
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?4 and (e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT')) or " +
+        "(e.standard.id=?4 and e.type in ?7) or " +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-    List<Event> findEventsDuringWeekForStudent(LocalDate weekStart, LocalDate weekEnd,
-                                     Long studentId, Long standardId, Grade grade,
-                                     Long sessionId);
-
-    @Query("Select e from Event e where e.date between ?1 and ?2 and" +
-        "(" +
-        "(e.student.id = ?3 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?4 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT'  or e.type='SCHOOL_EVENT'  or e.type='EXAM')) or " +
-        "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
-        ")")
-    List<Event> findEventsForDiaryForStudent(LocalDate startDate, LocalDate endDate,
+    List<Event> findEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
                                                 Long studentId, Long standardId, Grade grade,
-                                                Long sessionId);
+                                                Long sessionId, List<EventType> types);
 
-    @Query("Select e from Event e where e.date between ?1 and ?2 and" +
+    @Query("Select distinct e.date from Event e where e.date between ?1 and ?2 and" +
         "(" +
         "(e.student.id = ?3 and e.type = 'LEAVE') or " +
-        "(e.standard.id=?4 and (e.type = 'TEST' or e.type = 'ASSIGNMENT' or e.type='SCHOOL_EVENT' or e.type='EXAM')) or " +
+        "(e.standard.id=?4 and e.type in ?7) or " +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.academicSession.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-    List<Event> findEventsForAnnouncementsForStudent(LocalDate startDate, LocalDate endDate,
-                                             Long studentId, Long standardId, Grade grade,
-                                             Long sessionId);
+    List<LocalDate> findEventDatesByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
+                                                Long studentId, Long standardId, Grade grade,
+                                                Long sessionId, List<EventType> types);
 
     @Query("Select e from Event e where e.date = ?1 and e.type = ?2 and e.scd.id = ?3")
     Event findEventOnDateAndSlot(LocalDate date, EventType type, Long scdId);

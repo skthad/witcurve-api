@@ -143,7 +143,7 @@ public class EventResource {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
             }
             LocalDate date = getLocalDate(eventDate);
-            result = eventService.findAllEventsForAnnouncements(date, studentId);
+            result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(date, studentId);
         }
         if(type.equals(ViewType.LEAVE)) {
             result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);
@@ -197,7 +197,7 @@ public class EventResource {
 //                throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
 //            }
 //            LocalDate date = getLocalDate(eventDate);
-//            result = eventService.findAllEventsForAnnouncements(date, studentId);
+//            result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(date, studentId);
 //        }
 //        if(type.equals(ViewType.LEAVE)) {
 //            result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);
