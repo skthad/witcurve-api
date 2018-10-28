@@ -53,7 +53,7 @@ public class OtpResource {
             }
             smsService.sendSms(contactNumber,String.valueOf(otp));
             if (user.getEmail() != null) {
-                //mailService.sendOtpMail(user);
+                mailService.sendOtpMail(user);
             }
         } else {
             return ResponseEntity.badRequest().build();

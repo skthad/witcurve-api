@@ -107,4 +107,22 @@ public class MailService {
         sendEmailFromTemplate(user, "mail/otpEmail", "email.otp.title");
     }
 
+    @Async
+    public void sendLeaveApplicationMail(User user) {
+        log.debug("Sending Leave Application email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/leaveApplicationEmail", "email.leave.application.title");
+    }
+
+    @Async
+    public void sendMeetingRequestMail(User user) {
+        log.debug("Sending Meeting Request email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/meetingRequestEmail", "email.meeting.request.title");
+    }
+
+    @Async
+    public void sendPersonalMessageMail(User user) {
+        log.debug("Sending Personal Message email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/personalMessageEmail", "email.personal.message.title");
+    }
+
 }
