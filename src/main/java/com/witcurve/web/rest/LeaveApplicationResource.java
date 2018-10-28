@@ -26,13 +26,13 @@ public class LeaveApplicationResource {
     LeaveApplicationService leaveApplicationService;
 
     /**
-     * creates a course
+     * creates a leave-application
      * @param leaveApplicationDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/leaveApplication")
+    @PostMapping("/leave-application")
     @Timed
     public ResponseEntity<List<LeaveApplicationDTO>> createLeaveApplication(@RequestBody @Valid List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Leave Application",leaveApplicationDTOs);
@@ -40,19 +40,19 @@ public class LeaveApplicationResource {
         {
             if (leaveApplicationDTO.getId() != null) {
                 throw new WitcurveException("New leave application can't already have an id");
-            }
+                }
         }
             List<LeaveApplicationDTO> result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
             return ResponseEntity.ok(result);
     }
     /**
-     * get course by id
+     * get leave-application by id
      * @param leaveApplicationId
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/leaveApplication/{leavaApplicationId}")
+    @GetMapping("/leave-application/{leaveApplicationId}")
     @Timed
     public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationById(@PathVariable("leaveApplicationId") Long leaveApplicationId) throws WitcurveException {
         log.debug("Request to get LeaveApplication with id {}", leaveApplicationId);
@@ -61,13 +61,13 @@ public class LeaveApplicationResource {
     }
 
     /**
-     * update the given course
+     * update the given leave-application
      * @param leaveApplicationDTOs
      * @return
      * @throws WitcurveException
      */
 
-    @PutMapping("/leaveApplication")
+    @PutMapping("/leave-application")
     @Timed
     public ResponseEntity<List<LeaveApplicationDTO>> updateLeaveApplication(@RequestBody @Valid List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException {
         log.debug("Request to update leave application");
@@ -81,12 +81,12 @@ public class LeaveApplicationResource {
     }
 
     /**
-     * delete the course
+     * delete the leave-application
      * @param leaveApplicationId
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/leaveApplication/{leaveApplicationId}")
+    @DeleteMapping("/leave-application/{leaveApplicationId}")
     @Timed
     public ResponseEntity<Void> deleteLeaveApplication(@PathVariable Long leaveApplicationId) throws WitcurveException {
         log.debug("REST request to delete leave application: {}", leaveApplicationId);
@@ -102,11 +102,41 @@ public class LeaveApplicationResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/leaveApplication/{leavaApplicationApprover}")
+    @GetMapping("/leave-application/{leaveApplicationId}/application")
     @Timed
-    public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationApproval(@PathVariable("leaveApplicationApprover") Long applicationId, Long staffId) throws WitcurveException {
+    public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationApproval(@PathVariable("leaveApplicationId") Long applicationId,@RequestParam Long staffId) throws WitcurveException {
         log.debug("The LeaveApplication approved by staff id {}", staffId, "for application",applicationId);
         LeaveApplicationDTO result = leaveApplicationService.getLeaveApplicationApprover(applicationId,staffId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get leave-application of staff by id
+     * @param leaveApplicationId,staffId,sessionId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/leave-application/{leaveApplicationId}/staff")
+    @Timed
+    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStaffIdAndSessionId(@PathVariable("leaveApplicationId") Long leaveApplicationId,@RequestParam Long staffId,@RequestParam Long sessionId) throws WitcurveException {
+        log.debug("Request to get LeaveApplication with id {}", leaveApplicationId," and staff id {}", staffId);
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStaff(staffId,sessionId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get leave-application of student by id
+     * @param leaveApplicationId,studentId,sessionId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/leave-application/{leaveApplicationId}/student")
+    @Timed
+    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStudentIdAndSessionId(@PathVariable("leaveApplicationId") Long leaveApplicationId,@RequestParam Long studentId,@RequestParam Long sessionId) throws WitcurveException {
+        log.debug("Request to get LeaveApplication with id {}", leaveApplicationId," and student id {}", studentId);
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStudent(studentId,sessionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

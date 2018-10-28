@@ -55,7 +55,6 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 leaveApplicationDTO.setBindingId(bindingId);
             }
         }
-
             List<LeaveApplication> leaveApplication = leaveApplicationMapper.toEntity(leaveApplicationDTOs);
             leaveApplication = leaveApplicationRepository.saveAll(leaveApplication);
             return  leaveApplicationMapper.toDto(leaveApplication);
@@ -116,20 +115,29 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private void isLeaveApplicationValid(List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException {
         log.debug("Request to check staffId, guardianId,studentId: {}", leaveApplicationDTOs);
         for (LeaveApplicationDTO leaveApplicationDTO : leaveApplicationDTOs) {
-            if (leaveApplicationDTO.getType().equalsIgnoreCase("staff") && leaveApplicationDTO.getAppliedStaffId()== null) {
-                log.error("No such staff exists with id :"+leaveApplicationDTO.getBindingId());
+            if (leaveApplicationDTO.getAppliedStudentId() != null) {
+                if(!leaveApplicationRepository.findByAppliedStudentIdAndLeaveDate(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getLeaveDate()).isEmpty())
+                {
+                throw new WitcurveException("Already exists for the student id on todays date ");
+            }
+        }
+            if (leaveApplicationDTO.getAppliedStaffId() != null) {
+                if (!leaveApplicationRepository.findByAppliedStaffIdAndLeaveDate(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getLeaveDate()).isEmpty()) {
+                    throw new WitcurveException("Already exists for the staff id on todays date ");
+                }
+            }
+            if (leaveApplicationDTO.getType().equalsIgnoreCase("staff") && leaveApplicationDTO.getAppliedStaffId() == null) {
+                log.error("No such staff exists with id :" + leaveApplicationDTO.getBindingId());
                 throw new WitcurveException("Invalid id ");
             }
-            else
-            if (leaveApplicationDTO.getType().equalsIgnoreCase("student") && leaveApplicationDTO.getAppliedStudentId()== null ) {
-                log.error("No such student exists with id :"+leaveApplicationDTO.getBindingId());
-                throw new WitcurveException("Invalid id ");
-            }
-            else
-            if (leaveApplicationDTO.getAppliedGuardianId()== null) {
-                log.error("No such guardian exists with id :"+leaveApplicationDTO.getBindingId());
-                throw new WitcurveException("Invalid id");
-            }
+                if (leaveApplicationDTO.getType().equalsIgnoreCase("student") && leaveApplicationDTO.getAppliedStudentId() == null) {
+                    log.error("No such student exists with id :" + leaveApplicationDTO.getBindingId());
+                    throw new WitcurveException("Invalid id ");
+                }
+                if (leaveApplicationDTO.getType().equalsIgnoreCase("student") && leaveApplicationDTO.getAppliedGuardianId() == null) {
+                    log.error("No such guardian exists with id :" + leaveApplicationDTO.getBindingId());
+                    throw new WitcurveException("Invalid id");
+                }
         }
     }
 }
