@@ -4,10 +4,13 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
+import com.witcurve.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Util controller to load data
@@ -76,6 +83,12 @@ public class WitcurveResource {
     @Autowired
     private InstituteRepository instituteRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
+
     @RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
     public ResponseEntity loadDataForParent() {
         loadSchoolDataForParent();
@@ -85,6 +98,56 @@ public class WitcurveResource {
     @RequestMapping(value = "/load-data/teacher", method = RequestMethod.POST)
     public ResponseEntity loadDataForTeacher() {
         loadSchoolDataForTeacher();
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/load-user", method = RequestMethod.POST)
+    public ResponseEntity loadUserRelationForStudentAndStaff() {
+        List<Staff> staffList = staffRepository.findAll();
+        for(Staff staff : staffList) {
+            if(staff.getUser() == null) {
+                User user = new User();
+                user.setLogin(staff.getStaffId());
+                user.setFirstName(staff.getFirstName());
+                user.setLastName(staff.getLastName());
+                user.setPassword(passwordEncoder.encode("witcurve"));
+                user.setType(UserType.STAFF);
+                Set<Authority> authorities = new HashSet<>();
+                Authority authority = null;
+                if(staffList.get(0).equals(staff)) {
+                    authority = authorityRepository.findById("ROLE_ADMIN").get();
+                } else if(staffList.get(1).equals(staff)) {
+                    authority = authorityRepository.findById("ROLE_NON_TEACHING").get();
+                } else {
+                    authority = authorityRepository.findById("ROLE_TEACHING").get();
+                }
+                authorities.add(authority);
+                user.setAuthorities(authorities);
+                user = userRepository.save(user);
+                staff.setSecondaryPhone(null);
+                staff.setUser(user);
+            }
+        }
+
+        List<Student> studentList = studentRepository.findAll();
+        List<Long> ids = new ArrayList<>();
+        for(Student student : studentList) {
+            if(student.getUser() == null) {
+                User user = new User();
+                user.setFirstName(student.getFirstName());
+                user.setLastName(student.getLastName());
+                user.setLogin(student.getAdmissionId());
+                user.setPassword(passwordEncoder.encode("witcurve"));
+                user.setType(UserType.PARENT);
+                Set<Authority> authorities = new HashSet<>();
+                Authority authority = authorityRepository.findById("ROLE_GUARDIAN").get();
+                authorities.add(authority);
+                user.setAuthorities(authorities);
+                user = userRepository.save(user);
+                ids.add(user.getId());
+                student.setUser(user);
+            }
+        }
         return ResponseEntity.ok().build();
     }
 

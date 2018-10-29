@@ -1,9 +1,9 @@
 created_by,roll_no,id,student_id,standard_id,active
 staff,1,1,1,1,true
-staff,2,2,2,1,true
-staff,3,3,3,1,true
+staff,2,2,2,2,true
+staff,3,3,3,5,true
 staff,4,4,4,1,true
-staff,5,5,5,2,true
+staff,5,5,5,1,true
 staff,6,6,6,2,true
 staff,7,7,7,2,true
 staff,8,8,8,2,true
@@ -11,7 +11,7 @@ staff,9,9,9,4,true
 staff,10,10,10,4,true
 staff,11,11,11,4,true
 staff,12,12,12,4,true
-staff,13,13,13,5,true
+staff,13,13,13,1,true
 staff,14,14,14,5,true
 staff,15,15,15,5,true
 staff,16,16,16,5,true
