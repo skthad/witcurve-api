@@ -303,6 +303,7 @@ public class UserService {
                 } else if(type.equals(UserType.PARENT)) {
                     Student student = studentRepository.getStudentByUserId(user.get().getId());
                     if (student != null) {
+                        result= new ArrayList<>();
                         result.add(student.getRegisteredMobileNumber());
                         if (student.getAlternateMobileNumbers() != null && student.getAlternateMobileNumbers().size() > 0) {
                             result.addAll(student.getAlternateMobileNumbers());
