@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,10 @@ public class UserDTO {
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
+
+    private StudentDTO studentDTO;
+
+    private StaffDTO staffDTO;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -208,21 +213,57 @@ public class UserDTO {
         this.authorities = authorities;
     }
 
+    public StudentDTO getStudentDTO() {
+        return studentDTO;
+    }
+
+    public void setStudentDTO(StudentDTO studentDTO) {
+        this.studentDTO = studentDTO;
+    }
+
+    public StaffDTO getStaffDTO() {
+        return staffDTO;
+    }
+
+    public void setStaffDTO(StaffDTO staffDTO) {
+        this.staffDTO = staffDTO;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
+            "id=" + id +
+            ", login='" + login + '\'' +
+            ", otp='" + otp + '\'' +
+            ", otpExpiry=" + otpExpiry +
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
+            ", type=" + type +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
+            ", createdBy='" + createdBy + '\'' +
             ", createdDate=" + createdDate +
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
-            "}";
+            ", studentDTO=" + studentDTO +
+            ", staffDTO=" + staffDTO +
+            '}';
     }
 }

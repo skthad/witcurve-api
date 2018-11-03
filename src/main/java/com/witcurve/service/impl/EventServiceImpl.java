@@ -49,7 +49,7 @@ public class EventServiceImpl implements EventService {
         Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT));
 
     private static final ArrayList<EventType> THIRD_LIST = new ArrayList<EventType>(
-        Arrays.asList(EventType.HOLIDAY, EventType.LEAVE));
+        Arrays.asList(EventType.HOLIDAY, EventType.ATTENDANCE));
 
     private static final ArrayList<EventType> LIST_FOR_STUDENT = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.SCHOOL_EVENT, EventType.TEST));
@@ -372,7 +372,7 @@ public class EventServiceImpl implements EventService {
                     throw new WitcurveException("Invalid request body");
                 }
 
-            }  else if(eventDTO.getType().equals(EventType.LEAVE)) {
+            }  else if(eventDTO.getType().equals(EventType.ATTENDANCE)) {
                 if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
                     log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
                     throw new WitcurveException("Invalid request body");

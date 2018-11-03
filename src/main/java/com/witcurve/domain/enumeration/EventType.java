@@ -5,7 +5,7 @@ public enum EventType {
     DAILY_UPDATE,
     EXAM,
     HOLIDAY,
-    LEAVE,
+    ATTENDANCE,
     NOTICE,
     SCHOOL_EVENT,
     SUBJECT_NOTE,

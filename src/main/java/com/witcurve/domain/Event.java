@@ -248,7 +248,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
-            ( type == EventType.LEAVE ? ", present=" + present : "") +
+            ( type == EventType.ATTENDANCE ? ", present=" + present : "") +
             '}';
     }
 }
