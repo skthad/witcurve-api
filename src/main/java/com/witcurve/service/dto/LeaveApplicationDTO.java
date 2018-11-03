@@ -1,5 +1,8 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.LeaveApplyor;
+import com.witcurve.domain.enumeration.Reason;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -9,12 +12,12 @@ public class LeaveApplicationDTO {
     private Long id;
 
     @NotNull
-    private String reason;
+    private Reason reason;
 
     private String description;
 
     @NotNull
-    private String type;
+    private LeaveApplyor type;
 
     @NotNull
     private Boolean approved = false;
@@ -45,11 +48,11 @@ public class LeaveApplicationDTO {
         this.id = id;
     }
 
-    public String getReason() {
+    public Reason getReason() {
         return reason;
     }
 
-    public void setReason(String reason) {
+    public void setReason(Reason reason) {
         this.reason = reason;
     }
 
@@ -61,11 +64,11 @@ public class LeaveApplicationDTO {
         this.description = description;
     }
 
-    public String getType() {
+    public LeaveApplyor getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(LeaveApplyor type) {
         this.type = type;
     }
 
@@ -146,19 +149,20 @@ public class LeaveApplicationDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LeaveApplicationDTO that = (LeaveApplicationDTO) o;
-        return Objects.equals(bindingId, that.bindingId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bindingId);
+
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "LeaveApplicationDTO{" +
             "id=" + id +
-            ", reason='" + reason + '\'' +
+            ", reason=" + reason +
             ", description='" + description + '\'' +
             ", type='" + type + '\'' +
             ", approved=" + approved +
