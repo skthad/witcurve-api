@@ -216,7 +216,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
-            ( type == EventType.LEAVE ? ", present=" + present : "") +
+            ( type == EventType.ATTENDANCE ? ", present=" + present : "") +
             '}';
     }
 }
