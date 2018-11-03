@@ -16,6 +16,7 @@
     <include file="config/liquibase/changelog/20181014124309_added_unique_constraint_for_admissionId_and_staffId_and_not_null_for_mobile_in_student.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181027110605_added_present_boolean.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181027181924_added_idseq_to_User.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181026200727_added_entity_LeaveApplication.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

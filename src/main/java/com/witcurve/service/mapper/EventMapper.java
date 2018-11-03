@@ -19,4 +19,13 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(target = "staffId", source = "staff.id")
     @Mapping(target = "studentId", source = "student.id")
     EventDTO toDto(Event event);
+
+    default Event fromId(Long id) {
+        if (id == null) {
+            return  null;
+        }
+        Event event = new Event();
+        event.setId(id);
+        return event;
+    }
 }
