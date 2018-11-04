@@ -3,14 +3,12 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.LeaveApplication;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.Standard;
-import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.repository.*;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.mapper.LeaveApplicationMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,12 +179,13 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                         throw new WitcurveException("Already exists a leave application with student id : " + leaveApplicationDTO.getAppliedStudentId() + " on date : " + leaveApplicationDTO.getLeaveDate());
                     }
                 } else {
-                    if (!existingLeaveApplications.get(0).getId().equals(leaveApplicationDTO.getId())) {
-                        log.error("Cannot be updated leaveApplication with  student id : {} on date : {}", leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getLeaveDate());
-                        throw new WitcurveException("Invalid details for update, another record already exists for leave application with student id : " + leaveApplicationDTO.getAppliedStudentId() + " on date : " + leaveApplicationDTO.getLeaveDate());
+                    if(existingLeaveApplications.size() !=0) {
+                        if (!existingLeaveApplications.get(0).getId().equals(leaveApplicationDTO.getId())) {
+                            log.error("Cannot be updated leaveApplication with  student id : {} on date : {}", leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getLeaveDate());
+                            throw new WitcurveException("Invalid details for update, another record already exists for leave application with student id : " + leaveApplicationDTO.getAppliedStudentId() + " on date : " + leaveApplicationDTO.getLeaveDate());
+                        }
                     }
                 }
-
             }
             if (leaveApplicationDTO.getType().equals(LeaveApplyor.STAFF)) {
                 if (leaveApplicationDTO.getAppliedStaffId() == null) {
@@ -200,16 +199,15 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                         throw new WitcurveException("Already exists a leave application with staff id : " + leaveApplicationDTO.getAppliedStaffId() + " on date : " + leaveApplicationDTO.getLeaveDate());
                     }
                 } else {
-                    if (!existingLeaveApplications.get(0).getId().equals(leaveApplicationDTO.getId())) {
-                        log.error("Cannot be updated leaveApplication with  staff id : {} on date : {}", leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getLeaveDate());
-                        throw new WitcurveException("Invalid details for update, another record already exists for leave application with staff id : " + leaveApplicationDTO.getAppliedStaffId() + " on date : " + leaveApplicationDTO.getLeaveDate());
+                    if(existingLeaveApplications.size() !=0) {
+                        if (!existingLeaveApplications.get(0).getId().equals(leaveApplicationDTO.getId())) {
+                            log.error("Cannot be updated leaveApplication with  staff id : {} on date : {}", leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getLeaveDate());
+                            throw new WitcurveException("Invalid details for update, another record already exists for leave application with staff id : " + leaveApplicationDTO.getAppliedStaffId() + " on date : " + leaveApplicationDTO.getLeaveDate());
+                        }
                     }
                 }
 
             }
         }
     }
-
-
-
 }
