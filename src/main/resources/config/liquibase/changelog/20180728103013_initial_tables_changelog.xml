@@ -115,6 +115,7 @@
             <column name="school_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
+            <column name="subject" type="varchar(255)"/>
         </createTable>
     </changeSet>
     <changeSet author="srujankumar (generated)" id="1536843761117-20">

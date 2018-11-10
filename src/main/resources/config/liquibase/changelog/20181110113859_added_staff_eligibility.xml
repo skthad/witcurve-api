@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1541849946345-1">
+        <createSequence sequenceName="staff_eligibility_id_seq"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541849946345-2">
+        <createTable tableName="staff_eligibility">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="master_subject_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="staff_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541849946345-3">
+        <addPrimaryKey columnNames="id" constraintName="staff_eligibilityPK" tableName="staff_eligibility"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541849946345-4">
+        <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="staff_eligibility" constraintName="FKecfpqxuyqcegslvtvijgnjwmw" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541849946345-5">
+        <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="staff_eligibility" constraintName="FKq70xgtv2m6r2uhvnxvnjswsan" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541849946345-6">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="staff_eligibility" constraintName="FKqecwbr0tge02seg00ud2yhw0s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541849946345-7">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/staff_eligibility.csv"
+                  separator=","
+                  tableName="staff_eligibility">
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

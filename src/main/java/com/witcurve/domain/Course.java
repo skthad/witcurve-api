@@ -39,6 +39,8 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private School school;
 
+    private String subject;
+
     public Long getId() {
         return id;
     }
@@ -87,6 +89,14 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.school = school;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,6 +114,7 @@ public class Course extends AbstractAuditingEntity implements Serializable {
             ", eligibleForSubstitute=" + eligibleForSubstitute +
             ", masterSubject=" + masterSubject +
             ", school=" + school +
+            ", subject=" + subject +
             '}';
     }
 

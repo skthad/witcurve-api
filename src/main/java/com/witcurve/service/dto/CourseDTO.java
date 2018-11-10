@@ -20,6 +20,8 @@ public class CourseDTO extends AbstractAuditingDTO {
     @NotNull
     private Long schoolId;
 
+    private String subject;
+
     public Long getId() {
         return id;
     }
@@ -68,6 +70,14 @@ public class CourseDTO extends AbstractAuditingDTO {
         this.schoolId = schoolId;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,6 +101,7 @@ public class CourseDTO extends AbstractAuditingDTO {
             ", eligibleForSubstitute=" + eligibleForSubstitute +
             ", masterSubject=" + masterSubject +
             ", schoolId=" + schoolId +
+            ", subject=" + subject +
             '}';
     }
 }
