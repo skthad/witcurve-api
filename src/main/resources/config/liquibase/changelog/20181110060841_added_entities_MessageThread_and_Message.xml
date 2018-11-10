@@ -1,0 +1,98 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankumar (generated)" id="1541830127613-1">
+        <createSequence sequenceName="message_id_seq"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-2">
+        <createSequence sequenceName="message_thread_id_seq"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-3">
+        <createTable tableName="message">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="body" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_thread_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-4">
+        <createTable tableName="message_thread">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="approved" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meeting_date" type="date"/>
+            <column name="meeting_time" type="VARCHAR(255)"/>
+            <column name="message_type" type="VARCHAR(255)"/>
+            <column name="course_teacher_id" type="BIGINT"/>
+            <column name="from_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="guardian_id" type="BIGINT"/>
+            <column name="leave_application_id" type="BIGINT"/>
+            <column name="to_user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-5">
+        <addPrimaryKey columnNames="id" constraintName="messagePK" tableName="message"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-6">
+        <addPrimaryKey columnNames="id" constraintName="message_threadPK" tableName="message_thread"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-7">
+        <addForeignKeyConstraint baseColumnNames="message_thread_id" baseTableName="message" constraintName="FK34fio3ckeu9d8o6nhgk8k3kxq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="message_thread"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-8">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="message" constraintName="FK4tatqxf6if2ubj6ackme8uqtc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-9">
+        <addForeignKeyConstraint baseColumnNames="guardian_id" baseTableName="message_thread" constraintName="FK8mw5pnu97iycrcu3a6yakyo0m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="guardian"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-10">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="message_thread" constraintName="FKbgrahylbbqkg2de7a1ifx93ih" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-11">
+        <addForeignKeyConstraint baseColumnNames="leave_application_id" baseTableName="message_thread" constraintName="FKgnssdc59lafqw2pcv7bs1sp5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="leave_application"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-12">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="message" constraintName="FKlgohkk9qg53mg7q5s2bpaa2a9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-13">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="message_thread" constraintName="FKsgfa069ojxn4upg129vi8wncb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="srujankumar (generated)" id="1541830127613-14">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="message_thread" constraintName="FKsnmwber7vy0li4b7c0761myrx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+</databaseChangeLog>
