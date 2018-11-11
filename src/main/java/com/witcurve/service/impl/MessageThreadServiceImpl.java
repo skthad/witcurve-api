@@ -57,7 +57,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     }
 
-    public MessageThreadDTO getMessageThreadyById(Long messageThreadId) throws WitcurveException {
+    public MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException {
         log.debug("Request to find a mesage thread with id : {}", messageThreadId);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageThreadId);
         if(!messageThread.isPresent()) {
@@ -77,6 +77,13 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         toBeApprovedLeave.setApproved(true);
         toBeApprovedLeave = messageThreadRepository.save(toBeApprovedLeave);
         return messageThreadMapper.toDto(toBeApprovedLeave);
+    }
+
+    public MessageDTO getMessageById(Long messageId) throws WitcurveException {
+
+        Optional<Message> message = messageRepository.findById(messageId);
+        Message result= message.get();
+        return messageMapper.toDto(result);
     }
 
     private void isValidMessageThread(MessageThreadDTO messageThreadDTO) throws WitcurveException{

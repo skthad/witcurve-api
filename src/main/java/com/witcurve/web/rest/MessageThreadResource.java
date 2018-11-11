@@ -68,7 +68,7 @@ public class MessageThreadResource {
     @Timed
     public ResponseEntity<MessageThreadDTO> getMessageThreadById(@PathVariable("messageThreadId") Long messageThreadId) throws WitcurveException {
         log.debug("Request to get MessageThread with id {}", messageThreadId);
-        MessageThreadDTO result = messageThreadService.getMessageThreadyById(messageThreadId);
+        MessageThreadDTO result = messageThreadService.getMessageThreadById(messageThreadId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -87,12 +87,12 @@ public class MessageThreadResource {
         {
             throw new WitcurveException("cannot reply to a message without a thread id");
         }
-        if(messageThreadService.getMessageThreadyById(messageDTO.getMessageThreadId()).getMessageType().equals("NOTE"))
+        if(messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId()).getMessageType().equals("NOTE"))
         {
             throw new WitcurveException("cannot reply to a message with type NOTE");
         }
 
-        MessageThreadDTO result = messageThreadService.getMessageThreadyById(messageDTO.getMessageThreadId());;
+        MessageThreadDTO result = messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId());;
         List<MessageDTO> messageDTOs= new ArrayList<>();
         messageDTOs.add(messageDTO);
         result.setMessageDTOs(messageDTOs);
@@ -125,10 +125,10 @@ public class MessageThreadResource {
      */
     @PatchMapping("/message-thread/read")
     @Timed
-    public ResponseEntity<MessageThreadDTO> readMessages(@PathVariable("messageDTO") Long messageId) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<MessageDTO> readMessage(@PathVariable("messageDTO") Long messageId) throws WitcurveException,URISyntaxException {
         log.debug("The message is read with message id : {}" + messageId);
-        MessageThreadDTO result = messageThreadService.getMeetingApprover(threadId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        MessageDTO messageDTO = messageThreadService.getMessageById(messageId) ;
+        messageDTO.setRead(true);
+        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
     }
-
 }
