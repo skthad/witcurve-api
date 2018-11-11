@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1541932376735-1">
+        <createSequence sequenceName="student_marks_id_seq"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541932376735-2">
+        <createTable tableName="student_marks">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="marks" type="INT"/>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="test_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541932376735-3">
+        <addColumn tableName="event">
+            <column name="marks" type="int4"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541932376735-4">
+        <addPrimaryKey columnNames="id" constraintName="student_marksPK" tableName="student_marks"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541932376735-5">
+        <addForeignKeyConstraint baseColumnNames="test_id" baseTableName="student_marks" constraintName="FK5j59jfbmsqriwi6q88mgtc9w0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541932376735-6">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_marks" constraintName="FKrwo5tmg1dbm4vm2ywmmufmiwi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1541932376735-7">
+        <addUniqueConstraint columnNames="student_id, test_id" constraintName="student_marks_unique_key-UK" tableName="student_marks"/>
+    </changeSet>
+</databaseChangeLog>

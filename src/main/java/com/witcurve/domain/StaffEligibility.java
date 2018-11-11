@@ -79,7 +79,7 @@ public class StaffEligibility extends AbstractAuditingEntity implements Serializ
 
     @Override
     public String toString() {
-        return "Institute{" +
+        return "StaffEligibility{" +
             "id=" + id +
             ", staffId='" + staff.getId()+ '\'' +
             ", standardId='" + standard.getId()+ '\'' +

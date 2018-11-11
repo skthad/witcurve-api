@@ -49,6 +49,8 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Boolean present;
 
+    private Integer marks;
+
     public Long getId() {
         return id;
     }
@@ -185,6 +187,14 @@ public class EventDTO extends AbstractAuditingDTO {
         this.present = present;
     }
 
+    public Integer getMarks() {
+        return marks;
+    }
+
+    public void setMarks(Integer marks) {
+        this.marks = marks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -217,6 +227,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             ( type == EventType.ATTENDANCE ? ", present=" + present : "") +
+            ( type == EventType.TEST ? ", marks=" + marks : "") +
             '}';
     }
 }

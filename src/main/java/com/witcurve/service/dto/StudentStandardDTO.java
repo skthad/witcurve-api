@@ -59,8 +59,8 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof StudentStandard)) return false;
-        StudentStandard that = (StudentStandard) o;
+        if (!(o instanceof StudentStandardDTO)) return false;
+        StudentStandardDTO that = (StudentStandardDTO) o;
         return Objects.equals(getId(), that.getId());
     }
 

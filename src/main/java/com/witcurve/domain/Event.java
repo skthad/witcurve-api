@@ -80,6 +80,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     private Boolean present;
 
+    private Integer marks;
+
     public Long getId() {
         return id;
     }
@@ -216,6 +218,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.present = present;
     }
 
+    public Integer getMarks() {
+        return marks;
+    }
+
+    public void setMarks(Integer marks) {
+        this.marks = marks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -249,6 +259,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             ( type == EventType.ATTENDANCE ? ", present=" + present : "") +
+            ( type == EventType.TEST ? ", marks=" + marks : "") +
             '}';
     }
 }
