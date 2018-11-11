@@ -11,6 +11,7 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private String subject;
 
+    @NotNull
     private String body;
 
     @NotNull

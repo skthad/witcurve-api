@@ -30,7 +30,8 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @ManyToOne
     private CourseTeacher courseTeacher;
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(unique = true)
     private LeaveApplication leaveApplication;
 
     @ManyToOne
@@ -56,8 +57,9 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @Column(nullable = false)
     private Boolean approved = false;
 
-    @OneToMany
-
+    @OneToMany(
+    orphanRemoval = true, fetch=FetchType.EAGER)
+    @JoinColumn(name="message_thread_id")
     private Set<Message> messages;
 
     public Long getId() {
@@ -140,6 +142,14 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.approved = approved;
     }
 
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -167,6 +177,7 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
             ", approved=" + approved +
+            ", messages=" + messages +
             '}';
     }
 }

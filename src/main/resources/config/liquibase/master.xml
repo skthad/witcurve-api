@@ -18,6 +18,7 @@
     <include file="config/liquibase/changelog/20181027181924_added_idseq_to_User.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181026200727_added_entity_LeaveApplication.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181110060841_added_entities_MessageThread_and_Message.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181111032630_unique_leaveApplication_MessageThread.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181110113859_added_staff_eligibility.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
