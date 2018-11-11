@@ -58,6 +58,28 @@ public class MessageThreadResource {
     }
 
     /**
+     * reply message
+     * @param messageDTO
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PostMapping("/message-thread/reply-message")
+    @Timed
+    public ResponseEntity<MessageThreadDTO> replyMessage(@PathVariable("messageDTO") MessageDTO messageDTO) throws WitcurveException,URISyntaxException {
+        log.debug("Request to reply Messages : {}"+messageDTO);
+        if(messageDTO.getMessageThreadId()== null)
+        {
+            throw new WitcurveException("cannot reply to a message without a thread id");
+        }
+        MessageThreadDTO messageThreadDTO = messageThreadService.getMessageThreadyById(messageDTO.getMessageThreadId());;
+        messageThreadDTO.setMessageDTOs(messageDTO);
+        return ResponseEntity.created(new URI("/api/message-thread/reply-message" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert("messageThread", result.getId().toString()))
+            .body(result);
+    }
+
+    /**
      * get messageThread by id
      * @param messageThreadId
      * @return

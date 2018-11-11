@@ -38,6 +38,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     MessageMapper messageMapper;
 
+    @Autowired
 
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
