@@ -38,7 +38,6 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     MessageMapper messageMapper;
 
-    @Autowired
 
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
@@ -65,6 +64,19 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             throw new WitcurveException("No Message Thread exists with given Id");
         }
         return messageThreadMapper.toDto(messageThread.get());
+    }
+
+
+    public MessageThreadDTO getMeetingApprover(Long threadId) throws WitcurveException {
+        log.debug("Approval for meting request with id {}, by staff id {}", threadId);
+        Optional<MessageThreadDTO> messageThreadDTO = messageThreadRepository.findAllById(threadId);
+        if (!MessageThreadDTO.isPresent()) {
+            throw new WitcurveException("No leave application with given id");
+        }
+        MessageThreadDTO toBeApprovedLeave = messageThreadDTO.get();
+        toBeApprovedLeave.setApproved(true);
+        toBeApprovedLeave = messageThreadRepository.save(toBeApprovedLeave);
+        return messageThreadMapper.toDto(toBeApprovedLeave);
     }
 
     private void isValidMessageThread(MessageThreadDTO messageThreadDTO) throws WitcurveException{

@@ -57,6 +57,21 @@ public class MessageThreadResource {
             .body(result);
     }
 
+        /**
+         * get messageThread by id
+         * @param messageThreadId
+         * @return
+         * @throws WitcurveException
+         */
+
+    @GetMapping("/message-thread/{messageThreadId}")
+    @Timed
+    public ResponseEntity<MessageThreadDTO> getMessageThreadById(@PathVariable("messageThreadId") Long messageThreadId) throws WitcurveException {
+        log.debug("Request to get MessageThread with id {}", messageThreadId);
+        MessageThreadDTO result = messageThreadService.getMessageThreadyById(messageThreadId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     /**
      * reply message
      * @param messageDTO
@@ -72,27 +87,32 @@ public class MessageThreadResource {
         {
             throw new WitcurveException("cannot reply to a message without a thread id");
         }
-        MessageThreadDTO messageThreadDTO = messageThreadService.getMessageThreadyById(messageDTO.getMessageThreadId());;
-        messageThreadDTO.setMessageDTOs(messageDTO);
+        if(messageThreadService.getMessageThreadyById(messageDTO.getMessageThreadId()).getMessageType().equals("NOTE"))
+        {
+            throw new WitcurveException("cannot reply to a message with type NOTE");
+        }
+
+        MessageThreadDTO result = messageThreadService.getMessageThreadyById(messageDTO.getMessageThreadId());;
+        List<MessageDTO> messageDTOs= new ArrayList<>();
+        messageDTOs.add(messageDTO);
+        result.setMessageDTOs(messageDTOs);
         return ResponseEntity.created(new URI("/api/message-thread/reply-message" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("messageThread", result.getId().toString()))
             .body(result);
     }
 
     /**
-     * get messageThread by id
-     * @param messageThreadId
+     * reply message
+     * @param threadId
      * @return
      * @throws WitcurveException
+     * @throws URISyntaxException
      */
-
-    @GetMapping("/message-thread/{messageThreadId}")
+    @PatchMapping("/message-thread/meeting-approval")
     @Timed
-    public ResponseEntity<MessageThreadDTO> getMessageThreadById(@PathVariable("messageThreadId") Long messageThreadId) throws WitcurveException {
-        log.debug("Request to get MessageThread with id {}", messageThreadId);
-        MessageThreadDTO result = messageThreadService.getMessageThreadyById(messageThreadId);
+    public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageDTO") Long threadId) throws WitcurveException,URISyntaxException {
+        log.debug("Request to approve the Meeting request for thread id : {}" + threadId);
+        MessageThreadDTO result = messageThreadService.getMeetingApprover(threadId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
-
 }
