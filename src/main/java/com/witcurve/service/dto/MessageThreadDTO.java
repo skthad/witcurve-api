@@ -1,12 +1,14 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.Message;
 import com.witcurve.domain.enumeration.MessageType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.*;
 
 public class MessageThreadDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -32,7 +34,10 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     private String meetingTime;
 
     @NotNull
-    private Boolean approved;
+    private Boolean approved = false;
+
+    @NotNull
+    private List<MessageDTO> messageDTOs;
 
     public Long getId() {
         return id;
@@ -114,6 +119,22 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
         this.approved = approved;
     }
 
+    public List<MessageDTO> getMessageDTOs() {
+        return messageDTOs;
+    }
+
+    public void setMessageDTOs(List<MessageDTO> messageDTOs) {
+        Collections.sort(messageDTOs, new Comparator<MessageDTO>() {
+            @Override
+            public int compare(MessageDTO o1, MessageDTO o2) {
+                return o1.getCreatedDate().isBefore(o2.getCreatedDate()) ? -1
+                    : o1.getCreatedDate().isAfter(o2.getCreatedDate()) ? 1
+                    : 0;
+            }
+        });
+        this.messageDTOs = messageDTOs;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -141,6 +162,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
             ", approved=" + approved +
+            ", messageDTOs=" + messageDTOs +
             '}';
     }
 }
