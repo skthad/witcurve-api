@@ -115,4 +115,20 @@ public class MessageThreadResource {
         MessageThreadDTO result = messageThreadService.getMeetingApprover(threadId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    /**
+     * reply message
+     * @param messageId
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PatchMapping("/message-thread/read")
+    @Timed
+    public ResponseEntity<MessageThreadDTO> readMessages(@PathVariable("messageDTO") Long messageId) throws WitcurveException,URISyntaxException {
+        log.debug("The message is read with message id : {}" + messageId);
+        MessageThreadDTO result = messageThreadService.getMeetingApprover(threadId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

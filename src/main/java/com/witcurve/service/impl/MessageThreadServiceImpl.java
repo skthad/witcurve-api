@@ -68,12 +68,12 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
 
     public MessageThreadDTO getMeetingApprover(Long threadId) throws WitcurveException {
-        log.debug("Approval for meting request with id {}, by staff id {}", threadId);
-        Optional<MessageThreadDTO> messageThreadDTO = messageThreadRepository.findAllById(threadId);
-        if (!MessageThreadDTO.isPresent()) {
-            throw new WitcurveException("No leave application with given id");
+        log.debug("Approval for meeting request with id {}", threadId);
+        Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
+        if (!messageThread.isPresent()) {
+            throw new WitcurveException("No message thread with given id");
         }
-        MessageThreadDTO toBeApprovedLeave = messageThreadDTO.get();
+        MessageThread toBeApprovedLeave = messageThread.get();
         toBeApprovedLeave.setApproved(true);
         toBeApprovedLeave = messageThreadRepository.save(toBeApprovedLeave);
         return messageThreadMapper.toDto(toBeApprovedLeave);

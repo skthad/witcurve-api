@@ -10,4 +10,6 @@ public interface MessageThreadService {
 
     MessageThreadDTO getMessageThreadyById(Long messageThreadId) throws WitcurveException;
 
+    MessageThreadDTO getMeetingApprover(Long messageThreadId) throws WitcurveException;
+
 }
