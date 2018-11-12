@@ -81,7 +81,7 @@ public class MessageThreadResource {
      */
     @PostMapping("/message-thread/reply-message")
     @Timed
-    public ResponseEntity<MessageThreadDTO> replyMessage(@RequestBody MessageDTO messageDTO) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<MessageThreadDTO> replyMessage(@RequestBody @Valid MessageDTO messageDTO) throws WitcurveException,URISyntaxException {
         log.debug("Request to reply Messages : {}"+messageDTO);
         if(messageDTO.getMessageThreadId()== null)
         {
