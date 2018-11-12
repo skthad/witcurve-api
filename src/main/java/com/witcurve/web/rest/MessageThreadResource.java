@@ -81,7 +81,7 @@ public class MessageThreadResource {
      */
     @PostMapping("/message-thread/reply-message")
     @Timed
-    public ResponseEntity<MessageThreadDTO> replyMessage(@PathVariable("messageDTO") MessageDTO messageDTO) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<MessageThreadDTO> replyMessage(@RequestBody MessageDTO messageDTO) throws WitcurveException,URISyntaxException {
         log.debug("Request to reply Messages : {}"+messageDTO);
         if(messageDTO.getMessageThreadId()== null)
         {
@@ -91,7 +91,7 @@ public class MessageThreadResource {
         {
             throw new WitcurveException("cannot reply to a message with type NOTE");
         }
-
+        messageThreadService.saveMessage(messageDTO);
         MessageThreadDTO result = messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId());;
         List<MessageDTO> messageDTOs= new ArrayList<>();
         messageDTOs.add(messageDTO);
@@ -102,33 +102,32 @@ public class MessageThreadResource {
     }
 
     /**
-     * reply message
+     * meeting approval
      * @param threadId
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PatchMapping("/message-thread/meeting-approval")
+    @PatchMapping("/message-thread/meeting-approval/{messageThreadId}")
     @Timed
-    public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageDTO") Long threadId) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageThreadId") Long threadId) throws WitcurveException,URISyntaxException {
         log.debug("Request to approve the Meeting request for thread id : {}" + threadId);
-        MessageThreadDTO result = messageThreadService.getMeetingApprover(threadId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        messageThreadService.approveMessageThread(threadId);
+        return null;
     }
 
     /**
-     * reply message
+     * read message
      * @param messageId
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PatchMapping("/message-thread/read")
+    @PatchMapping("/message-thread/read/{messageId}")
     @Timed
-    public ResponseEntity<MessageDTO> readMessage(@PathVariable("messageDTO") Long messageId) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<MessageDTO> readMessage(@PathVariable("messageId") Long messageId) throws WitcurveException,URISyntaxException {
         log.debug("The message is read with message id : {}" + messageId);
-        MessageDTO messageDTO = messageThreadService.getMessageById(messageId) ;
-        messageDTO.setRead(true);
-        return new ResponseEntity<>(messageDTO, HttpStatus.OK);
+        messageThreadService.readMessageService(messageId);
+        return null;
     }
 }

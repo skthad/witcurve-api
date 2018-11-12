@@ -10,7 +10,9 @@ public interface MessageThreadService {
 
     MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException;
 
-    MessageThreadDTO getMeetingApprover(Long threadId) throws WitcurveException;
+    void approveMessageThread(Long threadId) throws WitcurveException;
 
-    MessageDTO getMessageById(Long messageId) throws WitcurveException;
+    MessageDTO saveMessage(MessageDTO messageDTO) throws WitcurveException;
+
+    void readMessageService(Long messageId) throws WitcurveException;
 }

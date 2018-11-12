@@ -57,6 +57,13 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     }
 
+    public MessageDTO saveMessage(MessageDTO messageDTO) throws WitcurveException {
+        log.debug("Request to save the message  : {}", messageDTO);
+        Message message = messageMapper.toEntity(messageDTO);
+        message = messageRepository.save(message);
+        return messageMapper.toDto(message);
+    }
+
     public MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException {
         log.debug("Request to find a mesage thread with id : {}", messageThreadId);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageThreadId);
@@ -67,23 +74,30 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     }
 
 
-    public MessageThreadDTO getMeetingApprover(Long threadId) throws WitcurveException {
+    public void approveMessageThread(Long threadId) throws WitcurveException {
         log.debug("Approval for meeting request with id {}", threadId);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
         if (!messageThread.isPresent()) {
             throw new WitcurveException("No message thread with given id");
         }
-        MessageThread toBeApprovedLeave = messageThread.get();
-        toBeApprovedLeave.setApproved(true);
-        toBeApprovedLeave = messageThreadRepository.save(toBeApprovedLeave);
-        return messageThreadMapper.toDto(toBeApprovedLeave);
+        MessageThread toBeApproved = messageThread.get();
+        toBeApproved.setApproved(true);
+        toBeApproved = messageThreadRepository.save(toBeApproved);
     }
 
-    public MessageDTO getMessageById(Long messageId) throws WitcurveException {
+    public void readMessageService(Long messageId) throws WitcurveException {
+        log.debug("Read message is set for the message id {}", messageId);
+        Optional<Message> message= messageRepository.findById(messageId);
+        MessageDTO messageDTO = messageThreadMapper.toDto(message);
+        saveMessage(messageDTO);
+        message.get().setRead(true);
+    }
+
+    public void messageApproval(Long messageId) throws WitcurveException {
 
         Optional<Message> message = messageRepository.findById(messageId);
         Message result= message.get();
-        return messageMapper.toDto(result);
+
     }
 
     private void isValidMessageThread(MessageThreadDTO messageThreadDTO) throws WitcurveException{
