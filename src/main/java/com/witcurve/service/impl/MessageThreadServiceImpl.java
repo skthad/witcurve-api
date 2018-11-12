@@ -88,17 +88,16 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     public void readMessageService(Long messageId) throws WitcurveException {
         log.debug("Read message is set for the message id {}", messageId);
         Optional<Message> message= messageRepository.findById(messageId);
-        MessageDTO messageDTO = messageThreadMapper.toDto(message);
+        MessageDTO messageDTO = messageMapper.toDto(message.get());
         saveMessage(messageDTO);
+        MessageThreadDTO messageThreadDTO = getMessageThreadById(messageDTO.getMessageThreadId());
+        if(messageThreadDTO.getMessageType().equals("LEAVE_MESSAGE"))
+        {
+            messageThreadDTO.getLeaveApplicationDTO().setApproved(true);
+        }
         message.get().setRead(true);
     }
 
-    public void messageApproval(Long messageId) throws WitcurveException {
-
-        Optional<Message> message = messageRepository.findById(messageId);
-        Message result= message.get();
-
-    }
 
     private void isValidMessageThread(MessageThreadDTO messageThreadDTO) throws WitcurveException{
         MessageType messageType = messageThreadDTO.getMessageType();
