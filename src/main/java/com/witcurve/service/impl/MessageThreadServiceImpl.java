@@ -81,8 +81,15 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             throw new WitcurveException("No message thread with given id");
         }
         MessageThread toBeApproved = messageThread.get();
-        toBeApproved.setApproved(true);
-        toBeApproved = messageThreadRepository.save(toBeApproved);
+        if(messageThread.get().getMessageType().equals(MessageType.MEETING_REQUEST) || messageThread.get().getMessageType().equals(MessageType.LEAVE) )
+        {
+            toBeApproved.setApproved(true);
+            toBeApproved = messageThreadRepository.save(toBeApproved);
+        }
+        else
+        {
+            throw new WitcurveException("Meeting request is valid only for leave and meeting request");
+        }
     }
 
     public void readMessageService(Long messageId) throws WitcurveException {
@@ -91,7 +98,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         MessageDTO messageDTO = messageMapper.toDto(message.get());
         saveMessage(messageDTO);
         MessageThreadDTO messageThreadDTO = getMessageThreadById(messageDTO.getMessageThreadId());
-        if(messageThreadDTO.getMessageType().equals("LEAVE_MESSAGE"))
+        if(messageThreadDTO.getMessageType().equals("LEAVE"))
         {
             messageThreadDTO.getLeaveApplicationDTO().setApproved(true);
         }

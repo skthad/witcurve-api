@@ -3,6 +3,7 @@ package com.witcurve.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.Message;
 import com.witcurve.domain.MessageThread;
+import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.service.MessageThreadService;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
@@ -112,7 +113,7 @@ public class MessageThreadResource {
     @Timed
     public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageThreadId") Long threadId) throws WitcurveException,URISyntaxException {
         log.debug("Request to approve the Meeting request for thread id : {}" + threadId);
-        messageThreadService.approveMessageThread(threadId);
+            messageThreadService.approveMessageThread(threadId);
         return null;
     }
 
