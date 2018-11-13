@@ -96,7 +96,7 @@ public class MessageThreadResource {
         MessageThreadDTO result = messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId());;
         List<MessageDTO> messageDTOs= new ArrayList<>();
         messageDTOs.add(messageDTO);
-        result.setMessageDTOs(messageDTOs);
+        //result.setMessageDTOs(messageDTOs);
         return ResponseEntity.created(new URI("/api/message-thread/reply-message" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("messageThread", result.getId().toString()))
             .body(result);
