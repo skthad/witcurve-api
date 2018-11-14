@@ -82,7 +82,11 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findLeaveForStudent(LocalDate date, Long studentId);
 
     @Query("Select e from Event e where e.date = ?1 and e.standard.id = ?2 " +
-        "and e.type = 'ATTENDANCE' and e.academicSession.id=?3")
-    List<Event> findAttendanceForStandard(LocalDate date, Long studentId, Long sessionId);
+        "and e.type = 'ATTENDANCE'")
+    List<Event> findAttendanceForStandard(LocalDate date, Long standardId);
+
+    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
+        "and e.type = 'ATTENDANCE'")
+    List<Event> findAttendanceForStudent(LocalDate date, Long student);
 }
 

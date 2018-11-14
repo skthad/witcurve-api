@@ -303,12 +303,27 @@ public class EventServiceImpl implements EventService {
             //TODO change the implementation to have only those events associated with leave application
             events = eventRepository.findLeavesForStandard(standardId, sessionId);
         } else { // get attendance data for a day
-            events = eventRepository.findAttendanceForStandard(date, standardId, sessionId);
+            events = eventRepository.findAttendanceForStandard(date, standardId);
         }
 
         Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
 
+    }
+
+    @Override
+    public List<EventDTO> getAttendance(LocalDate date, Long studentId, Long standardId) throws WitcurveException {
+        if (studentId == null && standardId == null) {
+            throw new WitcurveException("Student ID and Standard ID both cannot be null");
+        }
+        List<Event> attendance = null;
+        if (studentId != null) {
+            attendance = eventRepository.findAttendanceForStudent(date, studentId);
+        } else {
+            attendance =eventRepository.findAttendanceForStandard(date, standardId);
+        }
+
+        return eventMapper.toDto(attendance);
     }
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {

@@ -1,6 +1,5 @@
 package com.witcurve.service;
 
-import com.witcurve.domain.Event;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -32,4 +31,6 @@ public interface EventService {
     List<EventDTO> getAllLeavesForStudent(LocalDate date, Long studentId) throws WitcurveException;
 
     List<EventDTO> getAllLeavesForStandard(LocalDate date, Long standardId) throws WitcurveException;
+
+    List<EventDTO> getAttendance(LocalDate date, Long studentId, Long standardId) throws WitcurveException;
 }

@@ -210,7 +210,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.sendSms = sendSms;
     }
 
-    public Boolean gePresent() {
+    public Boolean getPresent() {
         return present;
     }
 
