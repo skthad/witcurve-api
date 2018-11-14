@@ -124,14 +124,16 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     }
 
     public void setMessageDTOs(List<MessageDTO> messageDTOs) {
-        Collections.sort(messageDTOs, new Comparator<MessageDTO>() {
-            @Override
-            public int compare(MessageDTO o1, MessageDTO o2) {
-                return o1.getCreatedDate().isBefore(o2.getCreatedDate()) ? -1
-                    : o1.getCreatedDate().isAfter(o2.getCreatedDate()) ? 1
-                    : 0;
-            }
-        });
+        if(messageDTOs != null){
+            Collections.sort(messageDTOs, new Comparator<MessageDTO>() {
+                @Override
+                public int compare(MessageDTO o1, MessageDTO o2) {
+                    return o1.getCreatedDate().isBefore(o2.getCreatedDate()) ? -1
+                        : o1.getCreatedDate().isAfter(o2.getCreatedDate()) ? 1
+                        : 0;
+                }
+            });
+        }
         this.messageDTOs = messageDTOs;
     }
 

@@ -1,7 +1,9 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.LeaveApplication;
 import com.witcurve.domain.Message;
 import com.witcurve.domain.MessageThread;
+import com.witcurve.domain.Staff;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.repository.MessageRepository;
 import com.witcurve.repository.MessageThreadRepository;
@@ -11,7 +13,6 @@ import com.witcurve.service.dto.MessageThreadDTO;
 import com.witcurve.service.mapper.MessageMapper;
 import com.witcurve.service.mapper.MessageThreadMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,6 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     MessageMapper messageMapper;
 
-
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
         isValidMessageThread(messageThreadDTO);
@@ -57,7 +57,14 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     }
 
-    public MessageThreadDTO getMessageThreadyById(Long messageThreadId) throws WitcurveException {
+    public MessageDTO saveMessage(MessageDTO messageDTO) throws WitcurveException {
+        log.debug("Request to save the message  : {}", messageDTO);
+        Message message = messageMapper.toEntity(messageDTO);
+        message = messageRepository.save(message);
+        return messageMapper.toDto(message);
+    }
+
+    public MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException {
         log.debug("Request to find a mesage thread with id : {}", messageThreadId);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageThreadId);
         if(!messageThread.isPresent()) {
@@ -65,6 +72,40 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         }
         return messageThreadMapper.toDto(messageThread.get());
     }
+
+
+    public void approveMessageThread(Long threadId, Long staffId) throws WitcurveException {
+        log.debug("Approval for meeting request with id {}", threadId);
+        Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
+        if (!messageThread.isPresent()) {
+            throw new WitcurveException("No message thread with given id");
+        }
+        MessageThread toBeApproved = messageThread.get();
+        if(messageThread.get().getMessageType().equals(MessageType.MEETING_REQUEST) || messageThread.get().getMessageType().equals(MessageType.LEAVE) )
+        {
+            toBeApproved.setApproved(true);
+            if(messageThread.get().getMessageType().equals(MessageType.LEAVE)) {
+                LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
+                leaveApplication.setApproved(true);
+                Staff staff = new Staff();
+                staff.setId(staffId);
+                leaveApplication.setApprovedBy(staff);
+            }
+        } else
+        {
+            throw new WitcurveException("Thread approval is valid only for leave and meeting request");
+        }
+    }
+
+    public void readMessageService(Long messageId) throws WitcurveException {
+        log.debug("Read message is set for the message id {}", messageId);
+        Optional<Message> message= messageRepository.findById(messageId);
+        if(!message.isPresent()) {
+            throw new WitcurveException("No Message exists with given Id");
+        }
+        message.get().setRead(true);
+    }
+
 
     private void isValidMessageThread(MessageThreadDTO messageThreadDTO) throws WitcurveException{
         MessageType messageType = messageThreadDTO.getMessageType();
