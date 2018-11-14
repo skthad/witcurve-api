@@ -1,8 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.Message;
-import com.witcurve.domain.MessageThread;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.service.MessageThreadService;
 import com.witcurve.service.dto.MessageDTO;
@@ -88,9 +86,9 @@ public class MessageThreadResource {
         {
             throw new WitcurveException("cannot reply to a message without a thread id");
         }
-        if(messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId()).getMessageType().equals("NOTE"))
+        if(messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId()).getMessageType().equals(MessageType.SUBJECT_NOTE))
         {
-            throw new WitcurveException("cannot reply to a message with type NOTE");
+            throw new WitcurveException("Cannot reply to a message with type SUBJECT_NOTE");
         }
         messageThreadService.saveMessage(messageDTO);
         MessageThreadDTO result = messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId());;
@@ -111,9 +109,9 @@ public class MessageThreadResource {
      */
     @PatchMapping("/message-thread/meeting-approval/{messageThreadId}")
     @Timed
-    public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageThreadId") Long threadId) throws WitcurveException,URISyntaxException {
-        log.debug("Request to approve the Meeting request for thread id : {}" + threadId);
-            messageThreadService.approveMessageThread(threadId);
+    public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageThreadId") Long threadId, @RequestParam(value = "staffId", required = false) Long staffId) throws WitcurveException,URISyntaxException {
+        log.debug("Request to approve thread with id : {}" + threadId);
+        messageThreadService.approveMessageThread(threadId, staffId);
         return null;
     }
 

@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.LeaveApplication;
 import com.witcurve.domain.Message;
 import com.witcurve.domain.MessageThread;
+import com.witcurve.domain.Staff;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.repository.MessageRepository;
 import com.witcurve.repository.MessageThreadRepository;
@@ -13,7 +14,6 @@ import com.witcurve.service.mapper.LeaveApplicationMapper;
 import com.witcurve.service.mapper.MessageMapper;
 import com.witcurve.service.mapper.MessageThreadMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +78,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     }
 
 
-    public void approveMessageThread(Long threadId) throws WitcurveException {
+    public void approveMessageThread(Long threadId, Long staffId) throws WitcurveException {
         log.debug("Approval for meeting request with id {}", threadId);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
         if (!messageThread.isPresent()) {
@@ -88,23 +88,25 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         if(messageThread.get().getMessageType().equals(MessageType.MEETING_REQUEST) || messageThread.get().getMessageType().equals(MessageType.LEAVE) )
         {
             toBeApproved.setApproved(true);
-            toBeApproved = messageThreadRepository.save(toBeApproved);
-        }
-        else
+            if(messageThread.get().getMessageType().equals(MessageType.LEAVE)) {
+                LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
+                leaveApplication.setApproved(true);
+                Staff staff = new Staff();
+                staff.setId(staffId);
+                leaveApplication.setApprovedBy(staff);
+//                leaveApplicationRe
+            }
+        } else
         {
-            throw new WitcurveException("Meeting request is valid only for leave and meeting request");
+            throw new WitcurveException("Thread approval is valid only for leave and meeting request");
         }
     }
 
     public void readMessageService(Long messageId) throws WitcurveException {
         log.debug("Read message is set for the message id {}", messageId);
         Optional<Message> message= messageRepository.findById(messageId);
-        MessageDTO messageDTO = messageMapper.toDto(message.get());
-        MessageThreadDTO messageThreadDTO = getMessageThreadById(messageDTO.getMessageThreadId());
-        if(messageThreadDTO.getMessageType().equals("LEAVE"))
-        {
-            LeaveApplication leaveApplication=leaveApplicationMapper.toEntity(messageThreadDTO.getLeaveApplicationDTO());
-            leaveApplication.setApproved(true);
+        if(!message.isPresent()) {
+            throw new WitcurveException("No Message exists with given Id");
         }
         message.get().setRead(true);
     }
