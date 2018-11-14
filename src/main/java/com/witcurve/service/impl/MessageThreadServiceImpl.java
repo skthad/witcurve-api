@@ -10,7 +10,6 @@ import com.witcurve.repository.MessageThreadRepository;
 import com.witcurve.service.MessageThreadService;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
-import com.witcurve.service.mapper.LeaveApplicationMapper;
 import com.witcurve.service.mapper.MessageMapper;
 import com.witcurve.service.mapper.MessageThreadMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -39,9 +38,6 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     @Autowired
     MessageMapper messageMapper;
-
-    @Autowired
-    LeaveApplicationMapper leaveApplicationMapper;
 
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
@@ -94,7 +90,6 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 Staff staff = new Staff();
                 staff.setId(staffId);
                 leaveApplication.setApprovedBy(staff);
-//                leaveApplicationRe
             }
         } else
         {

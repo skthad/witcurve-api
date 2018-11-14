@@ -56,13 +56,12 @@ public class MessageThreadResource {
             .body(result);
     }
 
-        /**
-         * get messageThread by id
-         * @param messageThreadId
-         * @return
-         * @throws WitcurveException
-         */
-
+    /**
+     * get messageThread by id
+     * @param messageThreadId
+     * @return
+     * @throws WitcurveException
+     */
     @GetMapping("/message-thread/{messageThreadId}")
     @Timed
     public ResponseEntity<MessageThreadDTO> getMessageThreadById(@PathVariable("messageThreadId") Long messageThreadId) throws WitcurveException {
