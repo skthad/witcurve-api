@@ -1,8 +1,11 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MessageThreadService {
 
@@ -12,7 +15,18 @@ public interface MessageThreadService {
 
     void approveMessageThread(Long threadId, Long staffId) throws WitcurveException;
 
-    MessageDTO saveMessage(MessageDTO messageDTO) throws WitcurveException;
+    MessageThreadDTO replyMessage(MessageDTO messageDTO) throws WitcurveException;
 
     void readMessageService(Long messageId) throws WitcurveException;
+
+    Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
+                                                          Long userId,
+                                                          MessageType messageType,
+                                                          Boolean approved,
+                                                          Boolean read) throws WitcurveException;
+
+    Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
+                                                           Long userId,
+                                                           MessageType messageType,
+                                                           Boolean approved) throws WitcurveException;
 }

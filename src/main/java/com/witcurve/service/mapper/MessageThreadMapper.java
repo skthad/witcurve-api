@@ -1,9 +1,12 @@
 package com.witcurve.service.mapper;
 
+import com.witcurve.domain.Message;
 import com.witcurve.domain.MessageThread;
 import com.witcurve.service.dto.MessageThreadDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {MessageMapper.class, LeaveApplicationMapper.class,
 CourseTeacherMapper.class, GuardianMapper.class})
@@ -15,6 +18,7 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
     @Mapping(source = "courseTeacher", target = "courseTeacherDTO")
     @Mapping(source = "leaveApplication", target = "leaveApplicationDTO")
     @Mapping(source = "guardian.id", target = "guardianId")
+    @Mapping(target = "read", expression = "java(isThreadFullyRead(messageThread))")
     MessageThreadDTO toDto(MessageThread messageThread);
 
     @Mapping(source = "messageDTOs", target = "messages")
@@ -32,5 +36,17 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
         MessageThread messageThread = new MessageThread();
         messageThread.setId(id);
         return messageThread;
+    }
+
+    default Boolean isThreadFullyRead(MessageThread messageThread) {
+        Boolean result = true;
+        Set<Message> messageSet = messageThread.getMessages();
+        for(Message message : messageSet) {
+            if(!message.getRead()) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 }

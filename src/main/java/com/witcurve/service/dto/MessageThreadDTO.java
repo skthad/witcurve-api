@@ -39,6 +39,8 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     private List<MessageDTO> messageDTOs;
 
+    private Boolean read;
+
     public Long getId() {
         return id;
     }
@@ -137,6 +139,14 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
         this.messageDTOs = messageDTOs;
     }
 
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -165,6 +175,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
             ", meetingTime='" + meetingTime + '\'' +
             ", approved=" + approved +
             ", messageDTOs=" + messageDTOs +
+            ", read=" + read +
             '}';
     }
 }
