@@ -7,9 +7,12 @@ import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,11 +92,7 @@ public class MessageThreadResource {
         {
             throw new WitcurveException("Cannot reply to a message with type SUBJECT_NOTE");
         }
-        messageThreadService.saveMessage(messageDTO);
-        MessageThreadDTO result = messageThreadService.getMessageThreadById(messageDTO.getMessageThreadId());;
-        List<MessageDTO> messageDTOs= new ArrayList<>();
-        messageDTOs.add(messageDTO);
-        //result.setMessageDTOs(messageDTOs);
+        MessageThreadDTO result = messageThreadService.replyMessage(messageDTO);
         return ResponseEntity.created(new URI("/api/message-thread/reply-message" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("messageThread", result.getId().toString()))
             .body(result);
@@ -106,12 +105,12 @@ public class MessageThreadResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PatchMapping("/message-thread/meeting-approval/{messageThreadId}")
+    @PatchMapping("/message-thread/thread-approval/{messageThreadId}")
     @Timed
-    public ResponseEntity<MessageThreadDTO> meetingApproval(@PathVariable("messageThreadId") Long threadId, @RequestParam(value = "staffId", required = false) Long staffId) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<Void> meetingApproval(@PathVariable("messageThreadId") Long threadId, @RequestParam(value = "staffId", required = false) Long staffId) throws WitcurveException,URISyntaxException {
         log.debug("Request to approve thread with id : {}" + threadId);
         messageThreadService.approveMessageThread(threadId, staffId);
-        return null;
+        return ResponseEntity.ok(null);
     }
 
     /**
@@ -121,11 +120,47 @@ public class MessageThreadResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PatchMapping("/message-thread/read/{messageId}")
+    @PatchMapping("/message-thread/read/message/{messageId}")
     @Timed
-    public ResponseEntity<MessageDTO> readMessage(@PathVariable("messageId") Long messageId) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<Void> readMessage(@PathVariable("messageId") Long messageId) throws WitcurveException,URISyntaxException {
         log.debug("The message is read with message id : {}" + messageId);
         messageThreadService.readMessageService(messageId);
-        return null;
+        return ResponseEntity.ok(null);
+    }
+
+
+    /**
+     * get Inbox messageThreads for a user
+     * @param userId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/message-thread/user/{userId}/inbox")
+    @Timed
+    public ResponseEntity<Page<MessageThreadDTO>> getInboxMessagesForUser(@ApiParam Pageable pageable,
+                                                                          @PathVariable("userId") Long userId,
+                                                                          @RequestParam MessageType type,
+                                                                          @RequestParam(required = false)Boolean approved,
+                                                                          @RequestParam(required = false)Boolean read) throws WitcurveException {
+        log.debug("Request to get MessageThreads for user with id {} of type : {} with approved : {} and read : {}", userId, type, approved, read);
+        Page<MessageThreadDTO> result = messageThreadService.getInboxMessageThreadsByUserId(pageable, userId, type, approved, read);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get Outbox messageThreads for a user
+     * @param userId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/message-thread/user/{userId}/outbox")
+    @Timed
+    public ResponseEntity<Page<MessageThreadDTO>> getOutboxMessagesForUser(@ApiParam Pageable pageable,
+                                                                           @PathVariable("userId") Long userId,
+                                                                          @RequestParam MessageType type,
+                                                                          @RequestParam(required = false)Boolean approved) throws WitcurveException {
+        log.debug("Request to get MessageThreads for user with id {} of type : {} with approved : {}", userId, type, approved);
+        Page<MessageThreadDTO> result = messageThreadService.getOutboxMessageThreadsByUserId(pageable, userId, type, approved);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

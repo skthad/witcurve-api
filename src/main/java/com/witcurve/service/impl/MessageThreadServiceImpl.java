@@ -1,12 +1,11 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.LeaveApplication;
-import com.witcurve.domain.Message;
-import com.witcurve.domain.MessageThread;
-import com.witcurve.domain.Staff;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.repository.MessageRepository;
 import com.witcurve.repository.MessageThreadRepository;
+import com.witcurve.repository.StudentRepository;
+import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.MessageThreadService;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
@@ -16,9 +15,12 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -39,6 +41,12 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     MessageMapper messageMapper;
 
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
         isValidMessageThread(messageThreadDTO);
@@ -57,15 +65,20 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     }
 
-    public MessageDTO saveMessage(MessageDTO messageDTO) throws WitcurveException {
-        log.debug("Request to save the message  : {}", messageDTO);
+    public MessageThreadDTO replyMessage(MessageDTO messageDTO) throws WitcurveException {
+        log.debug("Request to save a reply message : {}", messageDTO);
         Message message = messageMapper.toEntity(messageDTO);
         message = messageRepository.save(message);
-        return messageMapper.toDto(message);
+        Optional<MessageThread> messageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
+        if(!messageThread.isPresent()) {
+            throw new WitcurveException("No Message Thread exists with given Id");
+        }
+        messageThread.get().setLastModifiedDate(Instant.now());
+        return messageThreadMapper.toDto(messageThread.get());
     }
 
     public MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException {
-        log.debug("Request to find a mesage thread with id : {}", messageThreadId);
+        log.debug("Request to find a message thread with id : {}", messageThreadId);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageThreadId);
         if(!messageThread.isPresent()) {
             throw new WitcurveException("No Message Thread exists with given Id");
@@ -104,6 +117,97 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             throw new WitcurveException("No Message exists with given Id");
         }
         message.get().setRead(true);
+    }
+
+    public Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
+                                                                 Long userId,
+                                                                 MessageType messageType,
+                                                                 Boolean approved,
+                                                                 Boolean read) throws WitcurveException{
+        log.debug("Get inbox list of inbox message threads for user with id : {} of " +
+            "type : {} with approved : {} and read : {}", userId, messageType, approved, read);
+        Page<MessageThread> messageThreads = null;
+        if(messageType.equals(MessageType.SUBJECT_NOTE)) {
+            Student student = studentRepository.getStudentByUserId(userId);
+            if(student == null) {
+                throw new WitcurveException("No student exists for given user id to get subject note messages");
+            }
+            List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(student.getId());
+            if(studentStandards.isEmpty()) {
+                throw new WitcurveException("There is no student standard with given student id : "+student.getId());
+            }
+            if (studentStandards.size() > 1) {
+                throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
+            }
+            Long standardId = studentStandards.get(0).getStandard().getId();
+            if(approved == null && read == null) {
+                messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
+            } else if(approved != null && read == null) {
+                messageThreads = messageThreadRepository.
+                    findInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
+            } else if(approved == null && read !=null) {
+                if(read) {
+                    messageThreads = messageThreadRepository.
+                        findReadInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
+                } else {
+                    messageThreads = messageThreadRepository.
+                        findUnReadInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
+                }
+            } else {
+                if(read) {
+                    messageThreads = messageThreadRepository.
+                        findReadInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
+                } else {
+                    messageThreads = messageThreadRepository.
+                        findUnReadInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
+                }
+            }
+
+        } else {
+            if(approved == null && read == null) {
+                messageThreads = messageThreadRepository.findInboxMessageThreads(userId, messageType, pageable);
+            } else if(approved != null && read == null) {
+                messageThreads = messageThreadRepository.
+                    findInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
+            } else if(approved == null && read !=null) {
+                if(read) {
+                    messageThreads = messageThreadRepository.findReadInboxMessageThreads(userId, messageType, pageable);
+                } else {
+                    messageThreads = messageThreadRepository.findUnReadInboxMessageThreads(userId, messageType, pageable);
+                }
+            } else {
+                if(read) {
+                    messageThreads = messageThreadRepository.
+                        findReadInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
+                } else {
+                    messageThreads = messageThreadRepository.
+                        findUnReadInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
+                }
+            }
+        }
+
+        return messageThreads.map(messageThreadMapper::toDto);
+    }
+
+    public Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
+                                                                  Long userId,
+                                                                  MessageType messageType,
+                                                                  Boolean approved) throws WitcurveException {
+        log.debug("Get inbox list of inbox message threads for user with id : {} of " +
+            "type : {} with approved : {}", userId, messageType, approved);
+        Page<MessageThread> messageThreads = null;
+        if(messageType.equals(MessageType.SUBJECT_NOTE)) {
+            Student student = studentRepository.getStudentByUserId(userId);
+            if(student != null) {
+                throw new WitcurveException("Subject Note doesn't exist for student user ");
+            }
+        }
+        if(approved == null) {
+            messageThreads = messageThreadRepository.findOutboxMessageThreads(userId, messageType, pageable);
+        } else {
+            messageThreads = messageThreadRepository.findOutboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
+        }
+        return messageThreads.map(messageThreadMapper::toDto);
     }
 
 
