@@ -68,12 +68,11 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     public MessageThreadDTO replyMessage(MessageDTO messageDTO) throws WitcurveException {
         log.debug("Request to save a reply message : {}", messageDTO);
         Message message = messageMapper.toEntity(messageDTO);
-        message = messageRepository.save(message);
+        messageRepository.save(message);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
         if(!messageThread.isPresent()) {
             throw new WitcurveException("No Message Thread exists with given Id");
         }
-        messageThread.get().setLastModifiedDate(Instant.now());
         return messageThreadMapper.toDto(messageThread.get());
     }
 
