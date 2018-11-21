@@ -115,7 +115,6 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
     @Query("select m.messageThread from Message m where m.messageThread.fromUser.id=?1 " +
         "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id <> all (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
     Page<MessageThread> findOutboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
 
