@@ -7,6 +7,8 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
+
 public interface MessageThreadService {
 
     MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException;
@@ -24,6 +26,8 @@ public interface MessageThreadService {
                                                           MessageType messageType,
                                                           Boolean approved,
                                                           Boolean read) throws WitcurveException;
+
+    Map<MessageType, Integer> unReadCount(Long userId) throws WitcurveException;
 
     Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
                                                            Long userId,

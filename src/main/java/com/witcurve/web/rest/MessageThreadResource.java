@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -144,6 +145,20 @@ public class MessageThreadResource {
                                                                           @RequestParam(required = false)Boolean read) throws WitcurveException {
         log.debug("Request to get MessageThreads for user with id {} of type : {} with approved : {} and read : {}", userId, type, approved, read);
         Page<MessageThreadDTO> result = messageThreadService.getInboxMessageThreadsByUserId(pageable, userId, type, approved, read);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get Inbox messageThreads for a user
+     * @param userId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/message-thread/user/{userId}/inbox/count")
+    @Timed
+    public ResponseEntity<Map<MessageType, Integer>> getUnReadInboxCount(@PathVariable("userId") Long userId) throws WitcurveException {
+        log.debug("Request to get unread MessageThreads count for user with id {}", userId);
+        Map<MessageType, Integer> result = messageThreadService.unReadCount(userId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
