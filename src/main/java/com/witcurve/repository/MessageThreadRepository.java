@@ -31,10 +31,9 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
         "order by m.createdDate desc")
     Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithRead(Long standardId, MessageType messageType, Boolean read, Pageable pageable);
 
-    @Query("select count(m.messageThread) from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
+    @Query("select count(m) from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
         "and m.messageThread.read=FALSE and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
-        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "order by m.createdDate desc")
+        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) ")
     Integer findUnReadInboxMessageThreadsOfSubjectNoteCount(Long standardId, MessageType messageType);
 
     @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
@@ -63,10 +62,9 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
         "order by m.createdDate desc")
     Page<MessageThread> findOtherInboxMessageThreadsWithRead(Long userId, MessageType messageType, Boolean read, Pageable pageable);
 
-    @Query("select count(m.messageThread) from Message m where m.messageThread.toUser.id=?1 " +
+    @Query("select count(m) from Message m where m.messageThread.toUser.id=?1 " +
         "and m.messageThread.read=FALSE and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
-        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "order by m.createdDate desc")
+        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id)")
     Integer findUnReadOtherInboxMessageThreadsCount(Long userId, MessageType messageType);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +

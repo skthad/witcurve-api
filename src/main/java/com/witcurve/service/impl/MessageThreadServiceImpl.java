@@ -181,6 +181,35 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         return messageThreads.map(messageThreadMapper::toDto);
     }
 
+    public Map<MessageType, Integer> unReadCount(Long userId) throws WitcurveException {
+        log.debug("Get inbox unread message threads counts for user with id : {}", userId);
+        Map<MessageType, Integer> result = new HashMap<>();
+        Integer count = 0;
+        Student student = studentRepository.getStudentByUserId(userId);
+        if(student == null) {
+            result.put(MessageType.SUBJECT_NOTE, null);
+        } else {
+            List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(student.getId());
+            if(studentStandards.isEmpty()) {
+                throw new WitcurveException("There is no student standard with given student id : "+student.getId());
+            }
+            if (studentStandards.size() > 1) {
+                throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
+            }
+            Long standardId = studentStandards.get(0).getStandard().getId();
+            count = messageThreadRepository.findUnReadInboxMessageThreadsOfSubjectNoteCount(standardId, MessageType.SUBJECT_NOTE);
+            result.put(MessageType.SUBJECT_NOTE, count);
+        }
+        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.LEAVE);
+        result.put(MessageType.LEAVE, count);
+        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.MEETING_REQUEST);
+        result.put(MessageType.MEETING_REQUEST, count);
+        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.PERSONAL);
+        result.put(MessageType.PERSONAL, count);
+
+        return result;
+    }
+
     public Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
                                                                   Long userId,
                                                                   MessageType messageType,
