@@ -57,6 +57,10 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @Column(nullable = false)
     private Boolean approved = false;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean read = false;
+
     @OneToMany(
     orphanRemoval = true, fetch=FetchType.EAGER)
     @JoinColumn(name="message_thread_id")
@@ -142,6 +146,14 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.approved = approved;
     }
 
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
     public Set<Message> getMessages() {
         return messages;
     }
@@ -177,6 +189,7 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
             ", approved=" + approved +
+            ", read=" + read +
             ", messages=" + messages +
             '}';
     }

@@ -26,39 +26,22 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
 
 
     @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
+        "and m.messageThread.read=?3 and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id <> all (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
-    Page<MessageThread> findReadInboxMessageThreadsOfSubjectNote(Long standardId, MessageType messageType, Pageable pageable);
-
-    @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
-        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id = any (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
-        "order by m.createdDate desc")
-    Page<MessageThread> findUnReadInboxMessageThreadsOfSubjectNote(Long standardId, MessageType messageType, Pageable pageable);
+    Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithRead(Long standardId, MessageType messageType, Boolean read, Pageable pageable);
 
     @Query("select count(m.messageThread) from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
+        "and m.messageThread.read=FALSE and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id = any (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
     Integer findUnReadInboxMessageThreadsOfSubjectNoteCount(Long standardId, MessageType messageType);
 
     @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
+        "and m.messageThread.read=?4 and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id <> all (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
-    Page<MessageThread> findReadInboxMessageThreadsOfSubjectNoteWithApproved(Long standardId, MessageType messageType, Boolean approved, Pageable pageable);
-
-    @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
-        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id = any (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
-        "order by m.createdDate desc")
-    Page<MessageThread> findUnReadInboxMessageThreadsOfSubjectNoteWithApproved(Long standardId, MessageType messageType, Boolean approved, Pageable pageable);
+    Page<MessageThread> findReadInboxMessageThreadsOfSubjectNoteWithApprovedAndRead(Long standardId, MessageType messageType, Boolean approved, Boolean read, Pageable pageable);
 
 
     // list of inbox message for user for type other than subject note
@@ -66,49 +49,31 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
         "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findInboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
+    Page<MessageThread> findOtherInboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
         "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findInboxMessageThreadsWithApproved(Long userId, MessageType messageType, Boolean approved, Pageable pageable);
+    Page<MessageThread> findOtherInboxMessageThreadsWithApproved(Long userId, MessageType messageType, Boolean approved, Pageable pageable);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
+        "and m.messageThread.read=?3 and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id <> all (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
-    Page<MessageThread> findReadInboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
-
-    @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
-        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id = any (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
-        "order by m.createdDate desc")
-    Page<MessageThread> findUnReadInboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
+    Page<MessageThread> findOtherInboxMessageThreadsWithRead(Long userId, MessageType messageType, Boolean read, Pageable pageable);
 
     @Query("select count(m.messageThread) from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
+        "and m.messageThread.read=FALSE and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id = any (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
-    Integer findUnReadInboxMessageThreadsCount(Long userId, MessageType messageType);
+    Integer findUnReadOtherInboxMessageThreadsCount(Long userId, MessageType messageType);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
+        "and m.messageThread.read=?4 and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id <> all (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
         "order by m.createdDate desc")
-    Page<MessageThread> findReadInboxMessageThreadsWithApproved(Long userId, MessageType messageType, Boolean approved, Pageable pageable);
-
-    @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
-        "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
-        "and m.messageThread.id = any (select m2.messageThread.id from Message m2 where m2.messageThread.id = m.messageThread.id and m2.read=false)" +
-        "order by m.createdDate desc")
-    Page<MessageThread> findUnReadInboxMessageThreadsWithApproved(Long userId, MessageType messageType, Boolean approved, Pageable pageable);
-
+    Page<MessageThread> findOtherInboxMessageThreadsWithApprovedAndRead(Long userId, MessageType messageType, Boolean approved, Boolean read, Pageable pageable);
 
     //outbox for a user
 

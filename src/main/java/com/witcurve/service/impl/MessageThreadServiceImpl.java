@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.Instant;
 import java.util.*;
 
@@ -73,6 +74,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         if(!messageThread.isPresent()) {
             throw new WitcurveException("No Message Thread exists with given Id");
         }
+        messageThread.get().setRead(false);
         return messageThreadMapper.toDto(messageThread.get());
     }
 
@@ -115,7 +117,18 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         if(!message.isPresent()) {
             throw new WitcurveException("No Message exists with given Id");
         }
-        message.get().setRead(true);
+        message.get().setRead(true);;
+        Optional<MessageThread> messageThreadOptional = messageThreadRepository.findById(message.get().getMessageThread().getId());
+        if(!messageThreadOptional.isPresent()) {
+            throw new WitcurveException("No Message Thread exists with given Id");
+        }
+        Boolean isThreadRead = true;
+        for(Message existingMessage : messageThreadOptional.get().getMessages()) {
+            if(!existingMessage.getRead()) {
+                isThreadRead = false;
+            }
+        }
+        messageThreadOptional.get().setRead(isThreadRead);
     }
 
     public Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
@@ -139,52 +152,32 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
             }
             Long standardId = studentStandards.get(0).getStandard().getId();
-            if(approved == null && read == null) {
+            if(approved == null && read==null) {
                 messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
             } else if(approved != null && read == null) {
                 messageThreads = messageThreadRepository.
                     findInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
-            } else if(approved == null && read !=null) {
-                if(read) {
-                    messageThreads = messageThreadRepository.
-                        findReadInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
-                } else {
-                    messageThreads = messageThreadRepository.
-                        findUnReadInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
-                }
+            } else if(approved == null && read != null) {
+                messageThreads = messageThreadRepository.
+                    findInboxMessageThreadsOfSubjectNoteWithRead(standardId, messageType, read, pageable);
             } else {
-                if(read) {
-                    messageThreads = messageThreadRepository.
-                        findReadInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
-                } else {
-                    messageThreads = messageThreadRepository.
-                        findUnReadInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
-                }
+                messageThreads = messageThreadRepository.
+                    findOtherInboxMessageThreadsWithApprovedAndRead(standardId, messageType, approved, read, pageable);
             }
-
         } else {
-            if(approved == null && read == null) {
-                messageThreads = messageThreadRepository.findInboxMessageThreads(userId, messageType, pageable);
+            if(approved == null && read==null) {
+                messageThreads = messageThreadRepository.findOtherInboxMessageThreads(userId, messageType, pageable);
             } else if(approved != null && read == null) {
                 messageThreads = messageThreadRepository.
-                    findInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
-            } else if(approved == null && read !=null) {
-                if(read) {
-                    messageThreads = messageThreadRepository.findReadInboxMessageThreads(userId, messageType, pageable);
-                } else {
-                    messageThreads = messageThreadRepository.findUnReadInboxMessageThreads(userId, messageType, pageable);
-                }
+                    findOtherInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
+            } else if(approved == null && read != null) {
+                messageThreads = messageThreadRepository.
+                    findOtherInboxMessageThreadsWithRead(userId, messageType, read, pageable);
             } else {
-                if(read) {
-                    messageThreads = messageThreadRepository.
-                        findReadInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
-                } else {
-                    messageThreads = messageThreadRepository.
-                        findUnReadInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
-                }
+                messageThreads = messageThreadRepository.
+                    findOtherInboxMessageThreadsWithApprovedAndRead(userId, messageType, approved, read, pageable);
             }
         }
-
         return messageThreads.map(messageThreadMapper::toDto);
     }
 

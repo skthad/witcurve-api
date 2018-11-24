@@ -4,10 +4,11 @@ import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.domain.enumeration.Reason;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class LeaveApplicationDTO {
+public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
