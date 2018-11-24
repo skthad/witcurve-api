@@ -22,6 +22,7 @@
     <include file="config/liquibase/changelog/20181110113859_added_staff_eligibility.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181111103247_added_student_marks.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181124114337_added_read_to_MessageThread.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181124132734_added_payroll_info.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

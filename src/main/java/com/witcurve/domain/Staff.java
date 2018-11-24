@@ -86,6 +86,15 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
 
+    @Column
+    private String accountName;
+
+    @Column
+    private String accountNumber;
+
+    @Column
+    private String ifscCode;
+
     public Long getId() {
         return id;
     }
@@ -236,6 +245,30 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getIfscCode() {
+        return ifscCode;
+    }
+
+    public void setIfscCode(String ifscCode) {
+        this.ifscCode = ifscCode;
     }
 
     @Override
