@@ -39,7 +39,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     private List<MessageDTO> messageDTOs;
 
-    private Boolean read;
+    private Boolean read= false;
 
     public Long getId() {
         return id;

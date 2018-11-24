@@ -1,8 +1,9 @@
 package com.witcurve.service.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CourseTeacherDTO {
+public class CourseTeacherDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
