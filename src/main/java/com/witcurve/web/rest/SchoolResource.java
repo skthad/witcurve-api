@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 @RequestMapping("/api")
 public class SchoolResource {
 
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
+    private final Logger log = LoggerFactory.getLogger(SchoolResource.class);
 
     @Autowired
     SchoolService schoolService;

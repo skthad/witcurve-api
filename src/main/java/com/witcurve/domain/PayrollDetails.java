@@ -1,11 +1,11 @@
 package com.witcurve.domain;
 
-import com.witcurve.service.util.LocalDateConverter;
+import com.witcurve.service.util.InstantTimeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -25,14 +25,14 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     private Staff staff;
 
     @Column
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate deactivationDate;
-    
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant deactivationDate;
+
     @Column
     private Float basicSalary;
     
     @Column
-    private Float houseRengAllowance;
+    private Float houseRentAllowance;
 
     @Column
     private Float conveyanceAllowance;
@@ -50,7 +50,7 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     private Float providendFund;
 
     @Column
-    private Float professionalText;
+    private Float professionalTax;
     
     @Column
     private Float incomeTax;
@@ -71,11 +71,11 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
         this.staff = staff;
     }
 
-    public LocalDate getDeactivationDate() {
+    public Instant getDeactivationDate() {
         return deactivationDate;
     }
 
-    public void setDeactivationDate(LocalDate deactivationDate) {
+    public void setDeactivationDate(Instant deactivationDate) {
         this.deactivationDate = deactivationDate;
     }
 
@@ -87,12 +87,12 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
         this.basicSalary = basicSalary;
     }
 
-    public Float getHouseRengAllowance() {
-        return houseRengAllowance;
+    public Float getHouseRentAllowance() {
+        return houseRentAllowance;
     }
 
-    public void setHouseRengAllowance(Float houseRengAllowance) {
-        this.houseRengAllowance = houseRengAllowance;
+    public void setHouseRentAllowance(Float houseRentAllowance) {
+        this.houseRentAllowance = houseRentAllowance;
     }
 
     public Float getConveyanceAllowance() {
@@ -135,12 +135,12 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
         this.providendFund = providendFund;
     }
 
-    public Float getProfessionalText() {
-        return professionalText;
+    public Float getProfessionalTax() {
+        return professionalTax;
     }
 
-    public void setProfessionalText(Float professionalText) {
-        this.professionalText = professionalText;
+    public void setProfessionalTax(Float professionalTax) {
+        this.professionalTax = professionalTax;
     }
 
     public Float getIncomeTax() {

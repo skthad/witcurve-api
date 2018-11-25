@@ -2,28 +2,46 @@ package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.ModeOfPayment;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Objects;
 
 public class PayrollDTO extends AbstractAuditingDTO {
 
     private Long id;
 
+    @NotNull
     private PayrollDetailsDTO payrollDetails;
 
-    private Float bonus;
+    private Float bonus = 0f;
 
-    private Float lossOfPay;
+    private Float lossOfPay = 0f;
 
     private String reasonForLoss;
 
     private Integer checkNumber;
 
+    @NotNull
     private ModeOfPayment modeOfPayment;
 
     private LocalDate initiatedOn;
 
     private LocalDate closedOn;
+
+    @NotNull
+    private Month month;
+
+    @NotNull
+    @Pattern(regexp = "^[1-2]\\d{3}$")
+    private Integer year;
+
+    @NotNull
+    private Long staffId;
+
+    @NotNull
+    private Long sessionId;
 
     public PayrollDTO() {
     }
@@ -98,6 +116,38 @@ public class PayrollDTO extends AbstractAuditingDTO {
 
     public void setClosedOn(LocalDate closedOn) {
         this.closedOn = closedOn;
+    }
+
+    public Month getMonth() {
+        return month;
+    }
+
+    public void setMonth(Month month) {
+        this.month = month;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override

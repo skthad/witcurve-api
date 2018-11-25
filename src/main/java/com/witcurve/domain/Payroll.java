@@ -5,12 +5,17 @@ import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Objects;
 
 @Entity
-@Table(name="payroll")
+@Table(name="payroll", uniqueConstraints = {
+    @UniqueConstraint(name = "payroll_month_year_UK",
+        columnNames = {"month", "year"})
+})
 public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,8 +42,9 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @Column
     private Integer checkNumber;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "mode_of_payment")
+    @Column(name = "mode_of_payment", nullable = false)
     private ModeOfPayment modeOfPayment;
 
     @Column
@@ -48,6 +54,24 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @Column
     @Convert(converter = LocalDateConverter.class)
     private LocalDate closedOn;
+
+    @NotNull
+    @Column(name = "month", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Month month;
+
+    @NotNull
+    @Column(name = "year", nullable = false)
+    @Pattern(regexp = "^[1-2]\\d{3}$")
+    private Integer year;
+
+    @NotNull
+    @Column(name = "staff_id", nullable = false)
+    private Long staffId;
+
+    @NotNull
+    @Column(name = "session_id", nullable = false)
+    private long sessionId;
 
     public Long getId() {
         return id;
@@ -119,6 +143,38 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     public void setClosedOn(LocalDate closedOn) {
         this.closedOn = closedOn;
+    }
+
+    public Month getMonth() {
+        return month;
+    }
+
+    public void setMonth(Month month) {
+        this.month = month;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
+    public long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(long sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override

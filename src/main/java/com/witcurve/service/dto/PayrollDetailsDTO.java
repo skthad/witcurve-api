@@ -1,33 +1,35 @@
 package com.witcurve.service.dto;
 
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.util.Objects;
 
 public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     private Long id;
 
+    @NotNull
     private StaffDTO staff;
 
-    private LocalDate deactivationDate;
+    private Instant deactivationDate;
 
-    private Float basicSalary;
+    private Float basicSalary = 0f;
 
-    private Float houseRengAllowance;
+    private Float houseRentAllowance = 0f;
 
-    private Float conveyanceAllowance;
+    private Float conveyanceAllowance = 0f;
 
-    private Float medicalAllowance;
+    private Float medicalAllowance = 0f;
 
-    private Float managerialAllowance;
+    private Float managerialAllowance = 0f;
 
-    private Float leaveTravelAlowance;
+    private Float leaveTravelAlowance = 0f;
 
-    private Float providendFund;
+    private Float providendFund = 0f;
 
-    private Float professionalText;
+    private Float professionalTax = 0f;
 
-    private Float incomeTax;
+    private Float incomeTax = 0f;
 
     public PayrollDetailsDTO() {
     }
@@ -48,11 +50,11 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
         this.staff = staff;
     }
 
-    public LocalDate getDeactivationDate() {
+    public Instant getDeactivationDate() {
         return deactivationDate;
     }
 
-    public void setDeactivationDate(LocalDate deactivationDate) {
+    public void setDeactivationDate(Instant deactivationDate) {
         this.deactivationDate = deactivationDate;
     }
 
@@ -64,12 +66,12 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
         this.basicSalary = basicSalary;
     }
 
-    public Float getHouseRengAllowance() {
-        return houseRengAllowance;
+    public Float getHouseRentAllowance() {
+        return houseRentAllowance;
     }
 
-    public void setHouseRengAllowance(Float houseRengAllowance) {
-        this.houseRengAllowance = houseRengAllowance;
+    public void setHouseRentAllowance(Float houseRentAllowance) {
+        this.houseRentAllowance = houseRentAllowance;
     }
 
     public Float getConveyanceAllowance() {
@@ -112,12 +114,12 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
         this.providendFund = providendFund;
     }
 
-    public Float getProfessionalText() {
-        return professionalText;
+    public Float getProfessionalTax() {
+        return professionalTax;
     }
 
-    public void setProfessionalText(Float professionalText) {
-        this.professionalText = professionalText;
+    public void setProfessionalTax(Float professionalTax) {
+        this.professionalTax = professionalTax;
     }
 
     public Float getIncomeTax() {
