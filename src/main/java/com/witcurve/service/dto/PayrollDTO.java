@@ -1,12 +1,16 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.ModeOfPayment;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class PayrollDTO extends AbstractAuditingDTO {
 
@@ -26,15 +30,18 @@ public class PayrollDTO extends AbstractAuditingDTO {
     @NotNull
     private ModeOfPayment modeOfPayment;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate initiatedOn;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate closedOn;
 
     @NotNull
     private Month month;
 
     @NotNull
-    @Pattern(regexp = "^[1-2]\\d{3}$")
+    @Min(value = 1900)
+    @Max(value = 2099)
     private Integer year;
 
     @NotNull

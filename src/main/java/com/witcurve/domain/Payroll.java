@@ -4,8 +4,9 @@ import com.witcurve.domain.enumeration.ModeOfPayment;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
@@ -13,8 +14,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="payroll", uniqueConstraints = {
-    @UniqueConstraint(name = "payroll_month_year_UK",
-        columnNames = {"month", "year"})
+    @UniqueConstraint(name = "payroll_month_year_staff_UK",
+        columnNames = {"month", "year", "staff_id"})
 })
 public class Payroll extends AbstractAuditingEntity implements Serializable {
 
@@ -56,13 +57,12 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private LocalDate closedOn;
 
     @NotNull
-    @Column(name = "month", nullable = false)
     @Enumerated(EnumType.STRING)
     private Month month;
 
     @NotNull
-    @Column(name = "year", nullable = false)
-    @Pattern(regexp = "^[1-2]\\d{3}$")
+    @Min(value = 1900)
+    @Max(value = 2099)
     private Integer year;
 
     @NotNull
@@ -70,8 +70,7 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private Long staffId;
 
     @NotNull
-    @Column(name = "session_id", nullable = false)
-    private long sessionId;
+    private Long sessionId;
 
     public Long getId() {
         return id;
@@ -169,7 +168,7 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
         this.staffId = staffId;
     }
 
-    public long getSessionId() {
+    public Long getSessionId() {
         return sessionId;
     }
 

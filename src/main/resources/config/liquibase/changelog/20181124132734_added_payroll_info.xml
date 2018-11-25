@@ -40,6 +40,9 @@
             <column name="staff_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
+            <column name="session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1543066062786-4">
@@ -60,11 +63,11 @@
             <column name="deactivation_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="house_rent_allowance" type="FLOAT4"/>
             <column name="income_tax" type="FLOAT4"/>
-            <column name="leave_travel_alowance" type="FLOAT4"/>
+            <column name="leave_travel_allowance" type="FLOAT4"/>
             <column name="managerial_allowance" type="FLOAT4"/>
             <column name="medical_allowance" type="FLOAT4"/>
             <column name="professional_tax" type="FLOAT4"/>
-            <column name="providend_fund" type="FLOAT4"/>
+            <column name="provident_fund" type="FLOAT4"/>
             <column name="staff_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -98,6 +101,6 @@
         <addForeignKeyConstraint baseColumnNames="payroll_details_id" baseTableName="payroll" constraintName="FK7xbcnin67n2c6308pdi0uvf35" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_details"/>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1543066062786-12">
-        <addUniqueConstraint columnNames="month, year" constraintName="payroll_month_year_UK" tableName="payroll"/>
+        <addUniqueConstraint columnNames="month, year, staff_id" constraintName="payroll_month_year_staff_UK" tableName="payroll"/>
     </changeSet>
 </databaseChangeLog>

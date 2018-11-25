@@ -23,9 +23,9 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     private Float managerialAllowance = 0f;
 
-    private Float leaveTravelAlowance = 0f;
+    private Float leaveTravelAllowance = 0f;
 
-    private Float providendFund = 0f;
+    private Float providentFund = 0f;
 
     private Float professionalTax = 0f;
 
@@ -98,20 +98,20 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
         this.managerialAllowance = managerialAllowance;
     }
 
-    public Float getLeaveTravelAlowance() {
-        return leaveTravelAlowance;
+    public Float getLeaveTravelAllowance() {
+        return leaveTravelAllowance;
     }
 
-    public void setLeaveTravelAlowance(Float leaveTravelAlowance) {
-        this.leaveTravelAlowance = leaveTravelAlowance;
+    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+        this.leaveTravelAllowance = leaveTravelAllowance;
     }
 
-    public Float getProvidendFund() {
-        return providendFund;
+    public Float getProvidentFund() {
+        return providentFund;
     }
 
-    public void setProvidendFund(Float providendFund) {
-        this.providendFund = providendFund;
+    public void setProvidentFund(Float providentFund) {
+        this.providentFund = providentFund;
     }
 
     public Float getProfessionalTax() {

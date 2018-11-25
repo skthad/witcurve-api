@@ -28,57 +28,6 @@ public class PayrollResource {
     @Autowired
     PayrollService payrollService;
 
-    @PostMapping("/payroll")
-    @Timed
-    public ResponseEntity<PayrollDTO> createPayroll(@RequestBody @Valid PayrollDTO payrollDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request to save Payroll");
-        if (payrollDTO.getId() != null) {
-            throw new WitcurveException("New payroll can't already have an id");
-        }
-        PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
-        return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("payroll", result.getId().toString()))
-            .body(result);
-    }
-
-    @PutMapping("/payroll")
-    @Timed
-    public ResponseEntity<PayrollDTO> updatePayroll(@RequestBody @Valid PayrollDTO payrollDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request to update Payroll");
-        if (payrollDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
-        return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
-            .headers(HeaderUtil.createEntityUpdateAlert("payroll", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * get school by id
-     * @param staffId
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/payroll/{staffId}")
-    @Timed
-    public ResponseEntity<List<PayrollDTO>> getPayrollDetailsByStaffId(@PathVariable("staffId") Long staffId,
-                                                                       @RequestParam("sessionId") Long sessionId,
-                                                                       @RequestParam("year") Integer year,
-                                                                       @RequestParam("month") Month month) throws WitcurveException {
-        log.debug("Request to get payroll(s) for staffId {}", staffId);
-        if (sessionId == null && year == null && month == null) {
-            throw new WitcurveException("sessionId, year and month cannot be all null");
-        } else if (sessionId != null && (month != null || year != null)) {
-            throw new WitcurveException("Either sessionId or year/month info can be provided");
-        } else if (year == null) {
-            throw new WitcurveException("year cannot be null");
-        }
-        List<PayrollDTO> result = payrollService.getPayrollsForStaff(staffId, sessionId, year, month);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @PostMapping("/payroll-details")
     @Timed
     public ResponseEntity<PayrollDetailsDTO> createPayrollDetails(@RequestBody @Valid PayrollDetailsDTO payrollDetailsDTO) throws WitcurveException, URISyntaxException {
@@ -117,6 +66,58 @@ public class PayrollResource {
     public ResponseEntity<List<PayrollDetailsDTO>> getPayrollDetailsByStaffId(@PathVariable("staffId") Long staffId) throws WitcurveException {
         log.debug("Request to get payroll details for staffId {}", staffId);
         List<PayrollDetailsDTO> result = payrollService.getActivePayrollDetailsForStaff(staffId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/payroll")
+    @Timed
+    public ResponseEntity<PayrollDTO> createPayroll(@RequestBody @Valid PayrollDTO payrollDTO) throws WitcurveException, URISyntaxException {
+        log.debug("Request to save Payroll");
+        if (payrollDTO.getId() != null) {
+            throw new WitcurveException("New payroll can't already have an id");
+        }
+
+        PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
+        return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert("payroll", result.getId().toString()))
+            .body(result);
+    }
+
+    @PutMapping("/payroll")
+    @Timed
+    public ResponseEntity<PayrollDTO> updatePayroll(@RequestBody @Valid PayrollDTO payrollDTO) throws WitcurveException, URISyntaxException {
+        log.debug("Request to update Payroll");
+        if (payrollDTO.getId() == null) {
+            throw new WitcurveException("Id is required for update request");
+        }
+        PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
+        return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
+            .headers(HeaderUtil.createEntityUpdateAlert("payroll", result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * get school by id
+     * @param staffId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/payroll/{staffId}")
+    @Timed
+    public ResponseEntity<List<PayrollDTO>> getPayrollDetailsByStaffId(@PathVariable("staffId") Long staffId,
+                                                                       @RequestParam(value = "sessionId", required = false) Long sessionId,
+                                                                       @RequestParam(value = "year", required = false) Integer year,
+                                                                       @RequestParam(value = "month", required = false) Month month) throws WitcurveException {
+        log.debug("Request to get payroll(s) for staffId {}", staffId);
+        if (sessionId == null && year == null && month == null) {
+            throw new WitcurveException("sessionId, year and month cannot be all null");
+        } else if (sessionId != null && (month != null || year != null)) {
+            throw new WitcurveException("Either sessionId or year/month info can be provided");
+        } else if (sessionId == null && year == null) {
+            throw new WitcurveException("year cannot be null");
+        }
+        List<PayrollDTO> result = payrollService.getPayrollsForStaff(staffId, sessionId, year, month);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

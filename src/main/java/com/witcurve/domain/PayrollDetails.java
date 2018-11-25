@@ -44,10 +44,10 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     private Float managerialAllowance;
 
     @Column
-    private Float leaveTravelAlowance;
+    private Float leaveTravelAllowance;
 
     @Column
-    private Float providendFund;
+    private Float providentFund;
 
     @Column
     private Float professionalTax;
@@ -119,20 +119,20 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
         this.managerialAllowance = managerialAllowance;
     }
 
-    public Float getLeaveTravelAlowance() {
-        return leaveTravelAlowance;
+    public Float getLeaveTravelAllowance() {
+        return leaveTravelAllowance;
     }
 
-    public void setLeaveTravelAlowance(Float leaveTravelAlowance) {
-        this.leaveTravelAlowance = leaveTravelAlowance;
+    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+        this.leaveTravelAllowance = leaveTravelAllowance;
     }
 
-    public Float getProvidendFund() {
-        return providendFund;
+    public Float getProvidentFund() {
+        return providentFund;
     }
 
-    public void setProvidendFund(Float providendFund) {
-        this.providendFund = providendFund;
+    public void setProvidentFund(Float providentFund) {
+        this.providentFund = providentFund;
     }
 
     public Float getProfessionalTax() {
