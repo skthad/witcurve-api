@@ -58,11 +58,13 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "month", nullable = false)
     private Month month;
 
     @NotNull
     @Min(value = 1900)
     @Max(value = 2099)
+    @Column(name = "year", nullable = false)
     private Integer year;
 
     @NotNull
@@ -70,6 +72,7 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private Long staffId;
 
     @NotNull
+    @Column(name = "session_id", nullable = false)
     private Long sessionId;
 
     public Long getId() {

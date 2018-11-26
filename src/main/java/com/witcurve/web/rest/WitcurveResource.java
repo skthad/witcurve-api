@@ -6,7 +6,6 @@ import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
-import com.witcurve.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +87,9 @@ public class WitcurveResource {
 
     @Autowired
     private AuthorityRepository authorityRepository;
+
+    @Autowired
+    private SchoolInfoRepository schoolInfoRepository;
 
     @RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
     public ResponseEntity loadDataForParent() {
@@ -176,10 +178,17 @@ public class WitcurveResource {
 
         school1= schoolRepository.save(school1);
 
+        SchoolInfo schoolInfo = new SchoolInfo();
+        schoolInfo.setSchool(school1);
+        schoolInfo.setMedium("English");
+        schoolInfo.setBoard("CBSE");
+
+        schoolInfo = schoolInfoRepository.save(schoolInfo);
+
         // academic session
 
         AcademicSession academicSession1 = new AcademicSession();
-        academicSession1.setSchool(school1);
+        academicSession1.setSchoolInfo(schoolInfo);
         academicSession1.setStartDate(LocalDate.of(2018, 4, 20));
 
         academicSession1 = academicSessionRepository.save(academicSession1);
@@ -1726,10 +1735,17 @@ public class WitcurveResource {
 
         school1= schoolRepository.save(school1);
 
+        SchoolInfo schoolInfo = new SchoolInfo();
+        schoolInfo.setSchool(school1);
+        schoolInfo.setMedium("English");
+        schoolInfo.setBoard("CBSE");
+
+        schoolInfo = schoolInfoRepository.save(schoolInfo);
+
         // academic session
 
         AcademicSession academicSession1 = new AcademicSession();
-        academicSession1.setSchool(school1);
+        academicSession1.setSchoolInfo(schoolInfo);
         academicSession1.setStartDate(LocalDate.of(2018, 4, 20));
 
         academicSession1 = academicSessionRepository.save(academicSession1);
