@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface AcademicSessionRepository extends JpaRepository<AcademicSession, Long> {
 
     @Modifying
-    @Query("update AcademicSession a set a.active = false where a.school.id = ?1")
-    void deactivateExistingAcademicSessions(Long schoolId);
+    @Query("update AcademicSession a set a.active = false where a.schoolInfo.id = ?1")
+    void deactivateExistingAcademicSessions(Long schoolInfoId);
 }

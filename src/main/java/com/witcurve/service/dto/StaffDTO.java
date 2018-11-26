@@ -56,6 +56,12 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     private String secondaryPhone;
 
+    private String accountName;
+
+    private String accountNumber;
+
+    private String ifscCode;
+
     public StaffDTO() {
     }
 
@@ -209,6 +215,30 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getIfscCode() {
+        return ifscCode;
+    }
+
+    public void setIfscCode(String ifscCode) {
+        this.ifscCode = ifscCode;
     }
 
     @Override

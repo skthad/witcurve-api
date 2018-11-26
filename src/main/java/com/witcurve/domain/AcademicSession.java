@@ -10,8 +10,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="academic_session", uniqueConstraints = {
-    @UniqueConstraint(name = "start_date_school_id_UK",
-        columnNames = {"school_id", "start_date"})
+    @UniqueConstraint(name = "start_date_school_info_id_UK",
+        columnNames = {"school_info_id", "start_date"})
 })
 public class AcademicSession extends AbstractAuditingEntity implements Serializable {
 
@@ -30,7 +30,7 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private School school;
+    private SchoolInfo schoolInfo;
 
     @NotNull
     private Boolean active = true;
@@ -51,12 +51,12 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
         this.startDate = startDate;
     }
 
-    public School getSchool() {
-        return school;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Boolean getActive() {
@@ -86,7 +86,7 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
         return "AcademicSession{" +
             "id=" + id +
             ", startDate=" + startDate +
-            ", school=" + school +
+            ", schoolInfo=" + schoolInfo +
             '}';
     }
 }
