@@ -10,7 +10,7 @@ public interface PayrollService {
 
     PayrollDTO saveOrUpdate(PayrollDTO payrollDTO);
 
-    List<PayrollDTO> getPayrollsForStaff(Long staffId, Long sessionId, Integer year, Month month);
+    List<PayrollDTO> getPayrollsForStaff(Long staffId, Integer year, Month month);
 
     PayrollDetailsDTO saveOrUpdate(PayrollDetailsDTO payrollDetailsDTO);
 

@@ -71,10 +71,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @Column(name = "staff_id", nullable = false)
     private Long staffId;
 
-    @NotNull
-    @Column(name = "session_id", nullable = false)
-    private Long sessionId;
-
     public Long getId() {
         return id;
     }
@@ -169,14 +165,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     public void setStaffId(Long staffId) {
         this.staffId = staffId;
-    }
-
-    public Long getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(long sessionId) {
-        this.sessionId = sessionId;
     }
 
     @Override

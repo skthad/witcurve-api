@@ -47,9 +47,6 @@ public class PayrollDTO extends AbstractAuditingDTO {
     @NotNull
     private Long staffId;
 
-    @NotNull
-    private Long sessionId;
-
     public PayrollDTO() {
     }
 
@@ -147,14 +144,6 @@ public class PayrollDTO extends AbstractAuditingDTO {
 
     public void setStaffId(Long staffId) {
         this.staffId = staffId;
-    }
-
-    public Long getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(Long sessionId) {
-        this.sessionId = sessionId;
     }
 
     @Override

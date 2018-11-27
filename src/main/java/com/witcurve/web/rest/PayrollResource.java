@@ -106,18 +106,13 @@ public class PayrollResource {
     @GetMapping("/payroll/{staffId}")
     @Timed
     public ResponseEntity<List<PayrollDTO>> getPayrollDetailsByStaffId(@PathVariable("staffId") Long staffId,
-                                                                       @RequestParam(value = "sessionId", required = false) Long sessionId,
                                                                        @RequestParam(value = "year", required = false) Integer year,
                                                                        @RequestParam(value = "month", required = false) Month month) throws WitcurveException {
         log.debug("Request to get payroll(s) for staffId {}", staffId);
-        if (sessionId == null && year == null && month == null) {
-            throw new WitcurveException("sessionId, year and month cannot be all null");
-        } else if (sessionId != null && (month != null || year != null)) {
-            throw new WitcurveException("Either sessionId or year/month info can be provided");
-        } else if (sessionId == null && year == null) {
+        if (year == null && month != null) {
             throw new WitcurveException("year cannot be null");
         }
-        List<PayrollDTO> result = payrollService.getPayrollsForStaff(staffId, sessionId, year, month);
+        List<PayrollDTO> result = payrollService.getPayrollsForStaff(staffId, year, month);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

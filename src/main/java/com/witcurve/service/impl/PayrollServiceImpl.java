@@ -9,6 +9,7 @@ import com.witcurve.service.dto.PayrollDTO;
 import com.witcurve.service.dto.PayrollDetailsDTO;
 import com.witcurve.service.mapper.PayrollDetailsMapper;
 import com.witcurve.service.mapper.PayrollMapper;
+import com.witcurve.service.util.PayrollComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Month;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -57,15 +59,17 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
-    public List<PayrollDTO> getPayrollsForStaff(Long staffId, Long sessionId, Integer year, Month month) {
-        List<Payroll> result;
-        if (sessionId != null) {
-            result = payrollRepository.findPayrollsForStaffInAcademicSession(staffId, sessionId);
-        } else if (month == null) {
-            result = payrollRepository.findPayrollsForStaffInYear(staffId, year);
+    public List<PayrollDTO> getPayrollsForStaff(Long staffId, Integer year, Month month) {
+        List<Payroll> payrolls;
+        if (month != null) {
+            payrolls = payrollRepository.findPayrollForStaffInMonth(staffId, year, month);
+        } else if (year != null) {
+            payrolls = payrollRepository.findPayrollsForStaffInYear(staffId, year);
         } else {
-            result = payrollRepository.findActivePayrollForStaffInMonth(staffId, year, month);
+            payrolls = payrollRepository.findAllPayrollsForStaff(staffId);
         }
-        return payrollMapper.toDto(result);
+        List<PayrollDTO> result = payrollMapper.toDto(payrolls);
+        Collections.sort(result, new PayrollComparator());
+        return result;
     }
 }
