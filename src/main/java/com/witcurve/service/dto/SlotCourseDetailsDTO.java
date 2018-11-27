@@ -1,7 +1,5 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.GeneralSlotDetails;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.DayOfWeek;

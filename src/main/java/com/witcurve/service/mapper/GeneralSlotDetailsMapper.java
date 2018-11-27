@@ -1,11 +1,13 @@
 package com.witcurve.service.mapper;
 
 import com.witcurve.domain.GeneralSlotDetails;
+import com.witcurve.domain.Standard;
 import com.witcurve.service.dto.GeneralSlotDetailsDTO;
+import com.witcurve.service.dto.StandardDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {StandardMapper.class, ExamMapper.class})
+@Mapper(componentModel = "spring", uses = {ExamMapper.class})
 public interface GeneralSlotDetailsMapper extends EntityMapper<GeneralSlotDetailsDTO, GeneralSlotDetails> {
 
 
@@ -22,5 +24,17 @@ public interface GeneralSlotDetailsMapper extends EntityMapper<GeneralSlotDetail
         GeneralSlotDetails generalSlotDetails = new GeneralSlotDetails();
         generalSlotDetails.setId(id);
         return generalSlotDetails;
+    }
+
+    default Standard toStandard(StandardDTO standardDTO) {
+        Standard standard = new Standard();
+        standard.setId(standardDTO.getId());
+        return standard;
+    }
+
+    default StandardDTO toStandardDTO(Standard standard) {
+        StandardDTO standardDTO = new StandardDTO();
+        standardDTO.setId(standard.getId());
+        return standardDTO;
     }
 }

@@ -1,5 +1,7 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.GSDStatus;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -35,10 +37,17 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @JoinColumn(name = "standard_id", nullable = false)
     private Standard standard;
 
+    @NotNull
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private GSDStatus status;
+
+    @Column
+    private String bindingId;
+
     @ManyToOne
     @JoinColumn
     private Exam exam;
-
 
     public Long getId() {
         return id;
@@ -78,6 +87,22 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     public void setStandard(Standard standard) {
         this.standard = standard;
+    }
+
+    public GSDStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GSDStatus status) {
+        this.status = status;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     public Exam getExam() {

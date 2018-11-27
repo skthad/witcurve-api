@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.service.EventService;
 import com.witcurve.service.GeneralSlotDetailsService;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -62,7 +63,7 @@ public class WeekViewResource {
         }
         StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
         Long standardId = studentStandardDTO.getStandardId();
-        result.setGsdList(generalSlotDetailsService.getGeneralSlotDetailsByStandardId(standardId));
+        result.setGsdList(generalSlotDetailsService.getGeneralSlotDetailsByStandardIdAndStatus(standardId, GSDStatus.ACTIVE));
         result.setScdList(slotCourseDetailsService.getSlotCourseDetailsByStandardId(standardId));
         result.setEventList(eventService.findAllEventsOnGivenWeekForStudent(getLocalDate(weekDate), year, studentId));
         return new ResponseEntity<>(result,  HttpStatus.OK);

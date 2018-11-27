@@ -1,5 +1,7 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.GSDStatus;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -21,6 +23,11 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     @NotNull
     private StandardDTO standard;
+
+    @NotNull
+    private GSDStatus status;
+
+    private String bindingId;
 
     private Long examId;
 
@@ -65,6 +72,22 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     public void setStandard(StandardDTO standard) {
         this.standard = standard;
+    }
+
+    public GSDStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GSDStatus status) {
+        this.status = status;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     public Long getExamId() {

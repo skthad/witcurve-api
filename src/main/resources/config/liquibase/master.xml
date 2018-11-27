@@ -26,6 +26,7 @@
     <include file="config/liquibase/changelog/20181126143033_academic_session_changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181127095617_removed_session_id_from_payroll.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181127102904_added_school_info_in_students.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181127142849_added_status_in_gsd.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
