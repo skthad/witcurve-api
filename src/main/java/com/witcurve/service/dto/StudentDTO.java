@@ -77,7 +77,7 @@ public class StudentDTO extends AbstractAuditingDTO {
     private String previousSchoolStandard;
 
     @NotNull
-    private Long schoolId;
+    private SchoolInfoDTO schoolInfo;
 
     @NotNull
     @Pattern(regexp = "^[6-9]\\d{9}$")
@@ -314,12 +314,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.previousSchoolStandard = previousSchoolStandard;
     }
 
-    public Long getSchoolId() {
-        return schoolId;
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setSchoolId(Long schoolId) {
-        this.schoolId = schoolId;
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public String getRegisteredMobileNumber() {
@@ -399,7 +399,6 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", previousSchoolName='" + previousSchoolName + '\'' +
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
             ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
-            ", schoolId=" + schoolId +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
             ", alternateMobileNumbers=" + alternateMobileNumbers +
             ", gender=" + gender +

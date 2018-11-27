@@ -1,5 +1,7 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -7,9 +9,11 @@ public class SchoolInfoDTO extends AbstractAuditingDTO {
 
     private Long id;
 
+    @JsonIgnore
     @NotNull
     private String board;
 
+    @JsonIgnore
     @NotNull
     private String medium;
 

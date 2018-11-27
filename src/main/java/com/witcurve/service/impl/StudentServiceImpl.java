@@ -6,6 +6,7 @@ import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.mapper.StudentMapper;
+import com.witcurve.service.mapper.StudentMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     StudentMapper studentMapper;
 
+    @Autowired
+    StudentMapperLite studentMapperLite;
+
     @Override
     public StudentDTO saveOrUpdate(StudentDTO studentDTO) {
         log.debug("Request to save or update student : {}", studentDTO);
@@ -45,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
         if (student ==  null) {
             throw new WitcurveException("No student with given id");
         }
-        return studentMapper.toDto(student);
+        return studentMapperLite.toDto(student);
     }
 
     @Override
