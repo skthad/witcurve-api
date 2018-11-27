@@ -39,7 +39,7 @@ public class StudentServiceImpl implements StudentService {
         log.debug("Request to save or update student : {}", studentDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
-        return studentMapper.toDto(student);
+        return studentMapperLite.toDto(student);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class StudentServiceImpl implements StudentService {
         if (students ==  null || students.size() == 0) {
             throw new WitcurveException("No students in the given standard id");
         }
-        return studentMapper.toDto(students);
+        return studentMapperLite.toDto(students);
     }
 
     @Override

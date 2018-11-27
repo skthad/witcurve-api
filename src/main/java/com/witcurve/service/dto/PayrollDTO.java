@@ -1,7 +1,6 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.enumeration.ModeOfPayment;
 
 import javax.validation.constraints.Max;
@@ -13,7 +12,6 @@ import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PayrollDTO extends AbstractAuditingDTO {
 
     private Long id;

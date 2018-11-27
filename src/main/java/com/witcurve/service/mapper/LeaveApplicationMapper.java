@@ -5,9 +5,7 @@ import com.witcurve.service.dto.LeaveApplicationDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring", uses = {StaffMapper.class ,GuardianMapper.class, EventMapper.class, StudentMapper.class , AcademicSessionMapper.class})
+@Mapper(componentModel = "spring", uses = {StaffMapper.class ,GuardianMapper.class, EventMapper.class, StudentMapperLite.class , AcademicSessionMapper.class})
 public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO, LeaveApplication> {
 
     @Mapping(target = "appliedStaffId", source = "appliedStaff.id")

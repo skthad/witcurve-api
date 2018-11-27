@@ -1,10 +1,12 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import java.io.Serializable;
 import java.time.Instant;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AbstractAuditingDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
