@@ -17,7 +17,7 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
     private LocalDate startDate;
 
     @NotNull
-    private Long schoolInfoId;
+    private SchoolInfoDTO schoolInfo;
 
     @NotNull
     private Boolean active = true;
@@ -38,12 +38,12 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
         this.startDate = startDate;
     }
 
-    public Long getSchoolInfoId() {
-        return schoolInfoId;
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setSchoolInfoId(Long schoolInfoId) {
-        this.schoolInfoId = schoolInfoId;
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Boolean getActive() {
@@ -73,7 +73,7 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
         return "AcademicSessionDTO{" +
             "id=" + id +
             ", startDate=" + startDate +
-            ", schoolInfoId=" + schoolInfoId +
+            ", schoolInfoId=" + schoolInfo.getId() +
             '}';
     }
 }

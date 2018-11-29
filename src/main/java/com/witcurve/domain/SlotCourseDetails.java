@@ -7,7 +7,10 @@ import java.time.DayOfWeek;
 import java.util.Objects;
 
 @Entity
-@Table(name="slot_course_details")
+@Table(name="slot_course_details", uniqueConstraints = {
+    @UniqueConstraint(name = "scd_slot_day_UK",
+        columnNames = {"gsd_id", "day_of_week"})
+})
 public class SlotCourseDetails extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

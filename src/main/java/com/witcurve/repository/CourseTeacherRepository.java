@@ -1,6 +1,7 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.Staff;
 import com.witcurve.domain.Standard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,8 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
 
     @Query("select ct from CourseTeacher ct where ct.standard.id = ?1")
     List<CourseTeacher> findByStandardId(Long standardId);
+
+    @Query("select distinct ct.teacher from CourseTeacher ct where ct.course.eligibleForSubstitute = true " +
+        "and ct.teacher.id != ?1 and ct.teacher.school.id = ?2")
+    List<Staff> findEligibleForSubstituteBySchoolId(Long staffId, Long schoolId);
 }

@@ -3,15 +3,12 @@ package com.witcurve.service.mapper;
 import com.witcurve.domain.AcademicSession;
 import com.witcurve.service.dto.AcademicSessionDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {SchoolMapper.class})
+@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class})
 public interface AcademicSessionMapper extends EntityMapper<AcademicSessionDTO, AcademicSession>{
 
-    @Mapping(target = "schoolInfoId", source = "schoolInfo.id")
     AcademicSessionDTO toDto(AcademicSession academicSession);
 
-    @Mapping(target = "schoolInfo.id", source = "schoolInfoId")
     AcademicSession toEntity(AcademicSessionDTO academicSessionDTO);
 
     default AcademicSession fromId(Long id) {

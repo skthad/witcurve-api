@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -93,5 +95,22 @@ public class StaffResource {
         staffService.deleteStaffById(staffId);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("A staff is deleted with identifier " + staffId,
             staffId.toString())).build();
+    }
+
+    /**
+     * get Staff by id
+     * @param staffId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/staff/{staffId}/substitute")
+    @Timed
+    public ResponseEntity<List<StaffDTO>> getStaffListForSubstitute(@PathVariable("staffId") Long staffId,
+                                                              @RequestParam("gsdId") Long gsdId,
+                                                              @RequestParam("date") LocalDate date) throws WitcurveException {
+        log.debug("Request to get substitute teacher for Staff with id {} on {}", staffId, date);
+        List<StaffDTO> result = staffService.getSubstituteList(staffId, gsdId, date);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
