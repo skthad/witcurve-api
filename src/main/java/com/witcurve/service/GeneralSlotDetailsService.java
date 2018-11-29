@@ -21,4 +21,6 @@ public interface GeneralSlotDetailsService {
     GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
 
     List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardIdAndStatus(Long standardId, GSDStatus status) throws WitcurveException;
+
+    void deleteByBindingId(String bindingId) throws WitcurveException;
 }

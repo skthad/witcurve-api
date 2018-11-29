@@ -24,4 +24,8 @@ public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotD
     @Query("update GeneralSlotDetails set status = 'INACTIVE' where " +
         "standard.id in ?1 and exam.id is null and status = 'ACTIVE'")
     void deactivateSlotDetailsForStandards(Set<Long> standardIds);
+
+    @Modifying
+    @Query("delete from GeneralSlotDetails where bindingId = ?1")
+    void deleteByBindingId(String bindingId);
 }

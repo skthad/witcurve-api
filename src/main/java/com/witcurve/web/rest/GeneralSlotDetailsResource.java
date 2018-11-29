@@ -134,5 +134,20 @@ public class GeneralSlotDetailsResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * delete the gsd
+     * @param bindingId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/general-slot-details")
+    @Timed
+    public ResponseEntity<Void> deleteStaff(@RequestParam String bindingId) throws WitcurveException {
+        log.debug("REST request to delete GeneralSlotDetails for bindingId: {}", bindingId);
+        generalSlotDetailsService.deleteByBindingId(bindingId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("GSD was deleted with binding Id " + bindingId,
+            bindingId)).build();
+    }
+
 
 }

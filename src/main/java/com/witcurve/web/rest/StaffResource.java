@@ -34,7 +34,7 @@ public class StaffResource {
      */
     @PostMapping("/staff")
     @Timed
-    public ResponseEntity<StaffDTO> createExamDetails(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<StaffDTO> createStaff(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Staff");
         if (staffDTO.getId() != null) {
             throw new WitcurveException("New Staff can't already have an id");
@@ -54,8 +54,8 @@ public class StaffResource {
 
     @GetMapping("/staff/{staffId}")
     @Timed
-    public ResponseEntity<StaffDTO> getExamDetailsById(@PathVariable("staffId") Long staffId) throws WitcurveException {
-        log.debug("Request to get ExamDetails with id {}", staffId);
+    public ResponseEntity<StaffDTO> getStaff(@PathVariable("staffId") Long staffId) throws WitcurveException {
+        log.debug("Request to get Staff with id {}", staffId);
         StaffDTO result = staffService.getStaffById(staffId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -69,7 +69,7 @@ public class StaffResource {
 
     @PutMapping("/staff")
     @Timed
-    public ResponseEntity<StaffDTO> updateExamDetails(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException {
+    public ResponseEntity<StaffDTO> updateStaff(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException {
         log.debug("Request to update Staff");
         if (staffDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
@@ -88,7 +88,7 @@ public class StaffResource {
      */
     @DeleteMapping("/staff/{staffId}")
     @Timed
-    public ResponseEntity<Void> deleteAssigment(@PathVariable Long staffId) throws WitcurveException {
+    public ResponseEntity<Void> deleteStaff(@PathVariable Long staffId) throws WitcurveException {
         log.debug("REST request to delete Staff: {}", staffId);
         staffService.deleteStaffById(staffId);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("A staff is deleted with identifier " + staffId,

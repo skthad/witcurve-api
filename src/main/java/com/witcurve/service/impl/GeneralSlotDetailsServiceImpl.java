@@ -109,7 +109,10 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
         return generalSlotDetailsMapper.toDto(gsdList);
     }
 
-
+    @Override
+    public void deleteByBindingId(String bindingId) throws WitcurveException {
+        generalSlotDetailsRepository.deleteByBindingId(bindingId);
+    }
 
 
 }
