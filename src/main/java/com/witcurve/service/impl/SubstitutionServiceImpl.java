@@ -7,7 +7,6 @@ import com.witcurve.service.SubstitutionService;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
 import com.witcurve.service.dto.SubstitutionDTO;
 import com.witcurve.service.mapper.SlotCourseDetailsMapper;
-import com.witcurve.service.mapper.StaffMapper;
 import com.witcurve.service.mapper.SubstitutionMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -37,9 +36,6 @@ public class SubstitutionServiceImpl implements SubstitutionService {
     EventRepository eventRepository;
 
     @Autowired
-    StaffRepository staffRepository;
-
-    @Autowired
     CourseTeacherRepository courseTeacherRepository;
 
     @Autowired
@@ -50,9 +46,6 @@ public class SubstitutionServiceImpl implements SubstitutionService {
 
     @Autowired
     StaffEligibilityRepository staffEligibilityRepository;
-
-    @Autowired
-    StaffMapper staffMapper;
 
     @Override
     public HashMap<Long, List<SlotCourseDetailsDTO>> getSubstituteSuggestion(Long gsdId, Long teacherId, LocalDate date) throws WitcurveException {
