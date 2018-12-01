@@ -88,5 +88,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
         "and e.type = 'ATTENDANCE'")
     List<Event> findAttendanceForStudent(LocalDate date, Long student);
+
+    @Query("Select distinct count(*) from Event e where e.academicSession.id = ?1 and e.type = 'HOLIDAY'")
+    Long findHolidayInSession(Long SessionId);
 }
 
