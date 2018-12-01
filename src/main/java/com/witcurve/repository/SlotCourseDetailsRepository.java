@@ -18,4 +18,8 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
     @Query("Select scd from SlotCourseDetails scd where scd.gsd.id=?1 and scd.dayOfWeek = ?2")
     SlotCourseDetails findByGsdAndDayOfWeek(Long gsdId, DayOfWeek dayOfWeek);
 
+   /* @Query("select distinct scd.courseTeacher.teacher.id from SlotCourseDetails scd where " +
+        "scd.gsd.start = ?1 and scd.courseTeacher.teacher.id in ?3 and scd.dayOfWeek = ?4")
+    List<SlotCourseDetails> allocatedCourses(String start, Integer duration, List<Long> teacherIds, DayOfWeek dayOfWeek);*/
+
 }
