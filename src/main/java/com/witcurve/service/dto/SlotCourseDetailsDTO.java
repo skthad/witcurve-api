@@ -12,10 +12,8 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @NotNull
     private GeneralSlotDetailsDTO gsd;
 
-    @NotNull
     private DayOfWeek dayOfWeek;
 
-    @NotNull
     private CourseTeacherDTO courseTeacher;
 
     public Long getId() {
@@ -50,7 +48,6 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     public void setCourseTeacher(CourseTeacherDTO courseTeacher) {
         this.courseTeacher = courseTeacher;
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class StaffServiceImpl implements StaffService {
 
-    private final Logger log  = LoggerFactory.getLogger(StaffServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(StaffServiceImpl.class);
 
     @Autowired
     StaffRepository staffRepository;
@@ -24,13 +24,12 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     StaffMapper staffMapper;
 
-
     @Override
     public StaffDTO saveOrUpdate(StaffDTO staffDTO) {
         log.debug("Request to save or update staff : {}", staffDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
-       staff = staffRepository.save(staff);
-       return staffMapper.toDto(staff);
+        staff = staffRepository.save(staff);
+        return staffMapper.toDto(staff);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class StaffServiceImpl implements StaffService {
         log.debug("Request to get staff with id : {}", staffId);
         Staff staff = staffRepository.findById(staffId).get();
         if (staff == null) {
-            throw  new WitcurveException("No staff exists with given id");
+            throw new WitcurveException("No staff exists with given id");
         }
         return staffMapper.toDto(staff);
     }
@@ -48,7 +47,7 @@ public class StaffServiceImpl implements StaffService {
         log.debug("Request to delete staff with id : {}", staffId);
         Staff staff = staffRepository.findById(staffId).get();
         if (staff == null) {
-            throw  new WitcurveException("No staff exists with given id");
+            throw new WitcurveException("No staff exists with given id");
         }
         staffRepository.delete(staff);
     }
