@@ -3,6 +3,7 @@ package com.witcurve.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.service.SlotCourseDetailsService;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
+import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController

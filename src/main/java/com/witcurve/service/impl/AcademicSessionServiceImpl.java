@@ -28,7 +28,7 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
     @Override
     public AcademicSessionDTO saveOrUpdate(AcademicSessionDTO academicSessionDTO) {
         log.debug("Request to save or Update academic session {}", academicSessionDTO);
-        academicSessionRepository.deactivateExistingAcademicSessions(academicSessionDTO.getSchoolInfoId());
+        academicSessionRepository.deactivateExistingAcademicSessions(academicSessionDTO.getSchoolInfo().getId());
         academicSessionDTO.setActive(true);
         AcademicSession academicSession = academicSessionMapper.toEntity(academicSessionDTO);
         academicSession = academicSessionRepository.save(academicSession);
