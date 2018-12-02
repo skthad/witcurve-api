@@ -20,4 +20,6 @@ public interface LeaveApplicationService {
     List<LeaveApplicationDTO> getLeaveApplicationsForStaff(Long studentId,Long sessionId, Boolean approved) throws WitcurveException;
 
     List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, Boolean approved) throws WitcurveException;
+
+    Long getLeaveCount(Long leaveApplicationId,Long sessionId, boolean isSaturdayWorking) throws WitcurveException;
 }

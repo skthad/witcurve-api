@@ -37,7 +37,10 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     private Long appliedGuardianId;
 
     @NotNull
-    private LocalDate leaveDate;
+    private LocalDate fromLeaveDate;
+
+    @NotNull
+    private LocalDate toLeaveDate;
 
     private String bindingId;
 
@@ -129,12 +132,20 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.appliedGuardianId = appliedGuardianId;
     }
 
-    public LocalDate getLeaveDate() {
-        return leaveDate;
+    public LocalDate getFromLeaveDate() {
+        return fromLeaveDate;
     }
 
-    public void setLeaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public void setFromLeaveDate(LocalDate fromLeaveDate) {
+        this.fromLeaveDate = fromLeaveDate;
+    }
+
+    public LocalDate getToLeaveDate() {
+        return toLeaveDate;
+    }
+
+    public void setToLeaveDate(LocalDate toLeaveDate) {
+        this.toLeaveDate = toLeaveDate;
     }
 
     public String getBindingId() {
@@ -155,7 +166,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
     }
 
@@ -165,7 +175,7 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             "id=" + id +
             ", reason=" + reason +
             ", description='" + description + '\'' +
-            ", type='" + type + '\'' +
+            ", type=" + type +
             ", approved=" + approved +
             ", approvedById=" + approvedById +
             ", eventId=" + eventId +
@@ -173,7 +183,8 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", appliedStaffId=" + appliedStaffId +
             ", appliedStudentId=" + appliedStudentId +
             ", appliedGuardianId=" + appliedGuardianId +
-            ", leaveDate=" + leaveDate +
+            ", fromLeaveDate=" + fromLeaveDate +
+            ", toLeaveDate=" + toLeaveDate +
             ", bindingId='" + bindingId + '\'' +
             '}';
     }

@@ -56,9 +56,14 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     private Guardian appliedGuardian;
 
     @NotNull
-    @Column(name = "leave_date", nullable = false)
+    @Column(name = "from_leave_date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate leaveDate;
+    private LocalDate fromLeaveDate;
+
+    @NotNull
+    @Column(name = "to_leave_date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate toLeaveDate;
 
     @Column
     private String bindingId;
@@ -151,12 +156,20 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.appliedGuardian = appliedGuardian;
     }
 
-    public LocalDate getLeaveDate() {
-        return leaveDate;
+    public LocalDate getFromLeaveDate() {
+        return fromLeaveDate;
     }
 
-    public void setLeaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public void setFromLeaveDate(LocalDate fromLeaveDate) {
+        this.fromLeaveDate = fromLeaveDate;
+    }
+
+    public LocalDate getToLeaveDate() {
+        return toLeaveDate;
+    }
+
+    public void setToLeaveDate(LocalDate toLeaveDate) {
+        this.toLeaveDate = toLeaveDate;
     }
 
     public String getBindingId() {
@@ -172,12 +185,12 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LeaveApplication that = (LeaveApplication) o;
-        return Objects.equals(bindingId, that.bindingId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bindingId);
+        return Objects.hash(id);
     }
 
     @Override
@@ -194,7 +207,8 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
             ", appliedStaff=" + appliedStaff +
             ", appliedStudent=" + appliedStudent +
             ", appliedGuardian=" + appliedGuardian +
-            ", leaveDate=" + leaveDate +
+            ", fromLeaveDate=" + fromLeaveDate +
+            ", toLeaveDate=" + toLeaveDate +
             ", bindingId='" + bindingId + '\'' +
             '}';
     }
