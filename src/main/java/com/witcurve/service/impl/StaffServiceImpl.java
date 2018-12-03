@@ -4,6 +4,7 @@ import com.witcurve.domain.Staff;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.dto.StaffDTO;
+import com.witcurve.service.dto.UserDTO;
 import com.witcurve.service.mapper.StaffMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -39,7 +40,11 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null) {
             throw new WitcurveException("No staff exists with given id");
         }
-        return staffMapper.toDto(staff);
+        StaffDTO staffDTO = staffMapper.toDto(staff);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(staff.getUser().getId());
+        staffDTO.setUser(userDTO);
+        return staffDTO;
     }
 
     @Override
