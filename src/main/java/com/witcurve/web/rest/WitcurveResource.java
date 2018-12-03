@@ -1,10 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.EventType;
-import com.witcurve.domain.enumeration.Gender;
-import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -496,48 +493,56 @@ public class WitcurveResource {
         gsd1.setStandard(class1);
         gsd1.setStart("0900");
         gsd1.setDuration(40);
+        gsd1.setStatus(GSDStatus.ACTIVE);
         gsd1 = generalSlotDetailsRepository.save(gsd1);
 
         GeneralSlotDetails gsd2 = new GeneralSlotDetails();
         gsd2.setStandard(class1);
         gsd2.setStart("0940");
         gsd2.setDuration(40);
+        gsd2.setStatus(GSDStatus.ACTIVE);
         gsd2 = generalSlotDetailsRepository.save(gsd2);
 
         GeneralSlotDetails gsd3 = new GeneralSlotDetails();
         gsd3.setStandard(class1);
         gsd3.setStart("1040");
         gsd3.setDuration(40);
+        gsd3.setStatus(GSDStatus.ACTIVE);
         gsd3 = generalSlotDetailsRepository.save(gsd3);
 
         GeneralSlotDetails gsd4 = new GeneralSlotDetails();
         gsd4.setStandard(class1);
         gsd4.setStart("1120");
         gsd4.setDuration(40);
+        gsd4.setStatus(GSDStatus.ACTIVE);
         gsd4 = generalSlotDetailsRepository.save(gsd4);
 
         GeneralSlotDetails gsd5 = new GeneralSlotDetails();
         gsd5.setStandard(class1);
         gsd5.setStart("1300");
         gsd5.setDuration(40);
+        gsd5.setStatus(GSDStatus.ACTIVE);
         gsd5 = generalSlotDetailsRepository.save(gsd5);
 
         GeneralSlotDetails gsd6 = new GeneralSlotDetails();
         gsd6.setStandard(class1);
         gsd6.setStart("1340");
         gsd6.setDuration(40);
+        gsd6.setStatus(GSDStatus.ACTIVE);
         gsd6 = generalSlotDetailsRepository.save(gsd6);
 
         GeneralSlotDetails gsd7 = new GeneralSlotDetails();
         gsd7.setStandard(class1);
         gsd7.setStart("1420");
         gsd7.setDuration(40);
+        gsd7.setStatus(GSDStatus.ACTIVE);
         gsd7 = generalSlotDetailsRepository.save(gsd7);
 
         GeneralSlotDetails gsd8 = new GeneralSlotDetails();
         gsd8.setStandard(class1);
         gsd8.setStart("1500");
         gsd8.setDuration(40);
+        gsd8.setStatus(GSDStatus.ACTIVE);
         gsd8 = generalSlotDetailsRepository.save(gsd8);
 
         GeneralSlotDetails gsd9 = new GeneralSlotDetails();
@@ -545,6 +550,7 @@ public class WitcurveResource {
         gsd9.setStart("1020");
         gsd9.setDuration(20);
         gsd9.setRecess(true);
+        gsd9.setStatus(GSDStatus.ACTIVE);
         gsd9 = generalSlotDetailsRepository.save(gsd9);
 
 
@@ -553,6 +559,7 @@ public class WitcurveResource {
         gsd10.setStart("1200");
         gsd10.setDuration(60);
         gsd10.setRecess(true);
+        gsd10.setStatus(GSDStatus.ACTIVE);
         gsd10 = generalSlotDetailsRepository.save(gsd10);
 
 
@@ -1515,6 +1522,7 @@ public class WitcurveResource {
         examGsd1.setStart("0900");
         examGsd1.setDuration(180);
         examGsd1.setExam(exam1);
+        examGsd1.setStatus(GSDStatus.ACTIVE);
         examGsd1 = generalSlotDetailsRepository.save(examGsd1);
 
         GeneralSlotDetails examGsd2 = new GeneralSlotDetails();
@@ -1522,6 +1530,7 @@ public class WitcurveResource {
         examGsd2.setStart("1300");
         examGsd2.setDuration(180);
         examGsd2.setExam(exam1);
+        examGsd2.setStatus(GSDStatus.ACTIVE);
         examGsd2 = generalSlotDetailsRepository.save(examGsd2);
 
         GeneralSlotDetails examGsd3 = new GeneralSlotDetails();
@@ -1530,6 +1539,7 @@ public class WitcurveResource {
         examGsd3.setDuration(60);
         examGsd3.setExam(exam1);
         examGsd3.setRecess(true);
+        examGsd3.setStatus(GSDStatus.ACTIVE);
         examGsd3 = generalSlotDetailsRepository.save(examGsd3);
 
         //scd for exam
@@ -2054,48 +2064,56 @@ public class WitcurveResource {
         gsd1.setStandard(class1);
         gsd1.setStart("0900");
         gsd1.setDuration(40);
+        gsd1.setStatus(GSDStatus.ACTIVE);
         gsd1 = generalSlotDetailsRepository.save(gsd1);
 
         GeneralSlotDetails gsd2 = new GeneralSlotDetails();
         gsd2.setStandard(class1);
         gsd2.setStart("0940");
         gsd2.setDuration(40);
+        gsd2.setStatus(GSDStatus.ACTIVE);
         gsd2 = generalSlotDetailsRepository.save(gsd2);
 
         GeneralSlotDetails gsd3 = new GeneralSlotDetails();
         gsd3.setStandard(class1);
         gsd3.setStart("1040");
         gsd3.setDuration(40);
+        gsd3.setStatus(GSDStatus.ACTIVE);
         gsd3 = generalSlotDetailsRepository.save(gsd3);
 
         GeneralSlotDetails gsd4 = new GeneralSlotDetails();
         gsd4.setStandard(class1);
         gsd4.setStart("1120");
         gsd4.setDuration(40);
+        gsd4.setStatus(GSDStatus.ACTIVE);
         gsd4 = generalSlotDetailsRepository.save(gsd4);
 
         GeneralSlotDetails gsd5 = new GeneralSlotDetails();
         gsd5.setStandard(class1);
         gsd5.setStart("1300");
         gsd5.setDuration(40);
+        gsd5.setStatus(GSDStatus.ACTIVE);
         gsd5 = generalSlotDetailsRepository.save(gsd5);
 
         GeneralSlotDetails gsd6 = new GeneralSlotDetails();
         gsd6.setStandard(class1);
         gsd6.setStart("1340");
         gsd6.setDuration(40);
+        gsd6.setStatus(GSDStatus.ACTIVE);
         gsd6 = generalSlotDetailsRepository.save(gsd6);
 
         GeneralSlotDetails gsd7 = new GeneralSlotDetails();
         gsd7.setStandard(class1);
         gsd7.setStart("1420");
         gsd7.setDuration(40);
+        gsd7.setStatus(GSDStatus.ACTIVE);
         gsd7 = generalSlotDetailsRepository.save(gsd7);
 
         GeneralSlotDetails gsd8 = new GeneralSlotDetails();
         gsd8.setStandard(class1);
         gsd8.setStart("1500");
         gsd8.setDuration(40);
+        gsd8.setStatus(GSDStatus.ACTIVE);
         gsd8 = generalSlotDetailsRepository.save(gsd8);
 
         GeneralSlotDetails gsd9 = new GeneralSlotDetails();
@@ -2103,6 +2121,7 @@ public class WitcurveResource {
         gsd9.setStart("1020");
         gsd9.setDuration(20);
         gsd9.setRecess(true);
+        gsd9.setStatus(GSDStatus.ACTIVE);
         gsd9 = generalSlotDetailsRepository.save(gsd9);
 
 
@@ -2111,6 +2130,7 @@ public class WitcurveResource {
         gsd10.setStart("1200");
         gsd10.setDuration(60);
         gsd10.setRecess(true);
+        gsd10.setStatus(GSDStatus.ACTIVE);
         gsd10 = generalSlotDetailsRepository.save(gsd10);
 
 
