@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.AcademicSession;
 import com.witcurve.domain.LeaveApplication;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.Standard;
@@ -8,7 +9,7 @@ import com.witcurve.repository.*;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.mapper.LeaveApplicationMapper;
-import com.witcurve.service.util.WorkingDaysUtil;
+import com.witcurve.service.util.LocalDateConverter;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @Transactional
@@ -47,6 +46,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     @Autowired
     StandardRepository standardRepository;
+
+    @Autowired
+    EventRepository eventRepository;
+
 
     @Override
     public List<LeaveApplicationDTO> saveOrUpdate(List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException {
@@ -169,10 +172,61 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     public Long getLeaveCount(Long leaveApplicationId,Long sessionId,boolean isSaturdayWorking) throws WitcurveException {
         log.debug("Request to count number of working days for leave Application with id {}", leaveApplicationId);
         Optional<LeaveApplication> leaveApplication = leaveApplicationRepository.findById(leaveApplicationId);
-        WorkingDaysUtil wd= new WorkingDaysUtil();
-        Long workingDays= (Long) wd.workingDays(leaveApplication.get().getFromLeaveDate(), leaveApplication.get().getToLeaveDate(),sessionId,isSaturdayWorking);
+        Long workingDays= (Long) workingDays(leaveApplication.get().getFromLeaveDate(), leaveApplication.get().getToLeaveDate(),sessionId,isSaturdayWorking);
         return workingDays;
     }
+
+    private Long workingDays(LocalDate fromDate, LocalDate toDate, Long sessionId, boolean isSaturdayWorking)
+        throws WitcurveException {
+        Optional<AcademicSession> academicSession = academicSessionRepository.findById(sessionId);
+        if(!academicSession.isPresent()) {
+            throw new WitcurveException("session id not present !");
+        }
+        LocalDate startDate= academicSession.get().getStartDate();
+        LocalDate endDate = startDate.plusYears(1);
+        Long workingDays = 0L;
+        if (fromDate.isAfter(toDate)) {
+            throw new WitcurveException("from date cannot be after to date.");
+        }
+        if (fromDate.isAfter(startDate) && toDate.isBefore(endDate)) {
+            LocalDateConverter lcon = new LocalDateConverter();
+            Date startVal= lcon.convertToDatabaseColumn(fromDate);
+            Date endVal= lcon.convertToDatabaseColumn(toDate);
+            Calendar startCal = Calendar.getInstance();
+            startCal.setTime(startVal);
+            Calendar endCal= Calendar.getInstance();
+            endCal.setTime(endVal);
+            if (isSaturdayWorking == false) {
+                do {
+                    startCal.add(Calendar.DAY_OF_MONTH, 1);
+                    if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                        workingDays++;
+                    }
+
+                } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis());
+            }
+            else
+            {
+                do {
+                    startCal.add(Calendar.DAY_OF_MONTH, 1);
+                    if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                        workingDays++;
+                    }
+
+                } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis());
+            }
+            // to remove the holidays
+            Long holidays = eventRepository.findHolidayInSession(sessionId);
+            workingDays = workingDays - holidays;
+
+        }
+        else
+        {
+            throw new WitcurveException("start date and end date are out of academic session");
+        }
+        return workingDays;
+    }
+
 
     private void isLeaveApplicationValid(List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException {
         log.debug("Request to check valid leaveApplications in list : {}",leaveApplicationDTOs);

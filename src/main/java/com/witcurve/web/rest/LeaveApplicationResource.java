@@ -165,7 +165,7 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application/leave-count/{leaveApplicationId}")
     @Timed
-    public ResponseEntity<Long> getLeaveCount(@PathVariable Long applicationId, @RequestParam(required = false) Long sessionId, @RequestParam(required = false) Boolean isSaturdayWorking) throws WitcurveException {
+    public ResponseEntity<Long> getLeaveCount(@PathVariable(name="leaveApplicationId") Long applicationId, @RequestParam(required = false) Long sessionId, @RequestParam Boolean isSaturdayWorking) throws WitcurveException {
         log.debug("Request to get number of leaves with application id : {}", applicationId);
         Long workingDays= leaveApplicationService.getLeaveCount(applicationId,sessionId,isSaturdayWorking);
         return new ResponseEntity<>(workingDays, HttpStatus.OK);
