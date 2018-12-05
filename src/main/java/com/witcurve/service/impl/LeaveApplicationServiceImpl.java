@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -169,14 +170,14 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
 
-    public Long getLeaveCount(Long leaveApplicationId,Long sessionId,boolean isSaturdayWorking) throws WitcurveException {
+    public Long getLeaveCount(Long leaveApplicationId,Long sessionId, Boolean isSaturdayWorking) throws WitcurveException {
         log.debug("Request to count number of working days for leave Application with id {}", leaveApplicationId);
         Optional<LeaveApplication> leaveApplication = leaveApplicationRepository.findById(leaveApplicationId);
         Long workingDays= (Long) workingDays(leaveApplication.get().getFromLeaveDate(), leaveApplication.get().getToLeaveDate(),sessionId,isSaturdayWorking);
         return workingDays;
     }
 
-    private Long workingDays(LocalDate fromDate, LocalDate toDate, Long sessionId, boolean isSaturdayWorking)
+    private Long workingDays(LocalDate fromDate, LocalDate toDate, Long sessionId, Boolean isSaturdayWorking)
         throws WitcurveException {
         Optional<AcademicSession> academicSession = academicSessionRepository.findById(sessionId);
         if(!academicSession.isPresent()) {
@@ -189,40 +190,27 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             throw new WitcurveException("from date cannot be after to date.");
         }
         if (fromDate.isAfter(startDate) && toDate.isBefore(endDate)) {
-            LocalDateConverter lcon = new LocalDateConverter();
-            Date startVal= lcon.convertToDatabaseColumn(fromDate);
-            Date endVal= lcon.convertToDatabaseColumn(toDate);
-            Calendar startCal = Calendar.getInstance();
-            startCal.setTime(startVal);
-            Calendar endCal= Calendar.getInstance();
-            endCal.setTime(endVal);
+             toDate= toDate.plusDays(1);
             if (isSaturdayWorking == false) {
-                do {
-                    startCal.add(Calendar.DAY_OF_MONTH, 1);
-                    if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                for(LocalDate date=fromDate ; date.isBefore(toDate); date= date.plusDays(1)){
+                    if (date.getDayOfWeek() != DayOfWeek.SUNDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY) {
                         workingDays++;
                     }
-
-                } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis());
-            }
-            else
-            {
-                do {
-                    startCal.add(Calendar.DAY_OF_MONTH, 1);
-                    if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+                }
+            } else {
+                for(LocalDate date=fromDate ; date.isBefore(toDate); fromDate.plusDays(1)){
+                    if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
                         workingDays++;
                     }
-
-                } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis());
+                }
             }
             // to remove the holidays
             Long holidays = eventRepository.findHolidayInSession(sessionId);
-            workingDays = workingDays - holidays;
-
+           // workingDays = workingDays - holidays;
         }
         else
         {
-            throw new WitcurveException("start date and end date are out of academic session");
+            throw new WitcurveException("start date or end date are out of academic session");
         }
         return workingDays;
     }
