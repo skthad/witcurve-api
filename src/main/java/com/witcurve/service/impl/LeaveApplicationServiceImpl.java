@@ -206,7 +206,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             }
             // to remove the holidays
             Long holidays = eventRepository.findHolidayInSession(sessionId);
-           // workingDays = workingDays - holidays;
+            workingDays = workingDays - holidays;
         }
         else
         {
