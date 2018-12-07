@@ -93,7 +93,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "e.staff is not null and e.staff.id in ?1 and e.date = ?2")
     List<Long> findAbsentTeacherList(List<Long> teacherIds, LocalDate date);
 
-    @Query("Select count(e) from Event e where e.academicSession.id = ?1 and e.type = 'HOLIDAY'")
-    Long findHolidayInSession(Long SessionId);
+    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY'")
+    Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate);
 }
 

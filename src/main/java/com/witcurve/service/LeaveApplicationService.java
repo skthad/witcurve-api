@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LeaveApplicationService {
 
-    List<LeaveApplicationDTO> saveOrUpdate(List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException;
+    LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException;
 
     LeaveApplicationDTO getLeaveApplicationById(Long leaveApplicationId) throws WitcurveException;
 
