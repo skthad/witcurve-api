@@ -35,16 +35,15 @@ public class LeaveApplicationResource {
      */
     @PostMapping("/leave-application")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> createLeaveApplication(@RequestBody @Valid List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<LeaveApplicationDTO> createLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Leave Application",leaveApplicationDTOs);
-        for(LeaveApplicationDTO leaveApplicationDTO: leaveApplicationDTOs)
-        {
-            if (leaveApplicationDTO.getId() != null) {
-                throw new WitcurveException("New leave application can't already have an id");
+            if (leaveApplicationDTOs.getId() == null) {
+                LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
+                return ResponseEntity.ok(result);
                 }
-        }
-            List<LeaveApplicationDTO> result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
-            return ResponseEntity.ok(result);
+            else {
+                throw new WitcurveException("New leave application can't already have an id");
+            }
     }
     /**
      * get leave-application by id
@@ -63,21 +62,19 @@ public class LeaveApplicationResource {
 
     /**
      * update the given leave-applications
-     * @param leaveApplicationDTOs
+     * @param leaveApplicationDTO
      * @return
      * @throws WitcurveException
      */
 
     @PutMapping("/leave-application")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> updateLeaveApplication(@RequestBody @Valid List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException {
+    public ResponseEntity<LeaveApplicationDTO> updateLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTO) throws WitcurveException {
         log.debug("Request to update leave application");
-        for (LeaveApplicationDTO leaveApplicationDTO : leaveApplicationDTOs) {
             if (leaveApplicationDTO.getId() == null) {
                 throw new WitcurveException("Id is required for update request");
             }
-        }
-            List<LeaveApplicationDTO> result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
+            LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTO);
             return ResponseEntity.ok().body(result);
     }
 

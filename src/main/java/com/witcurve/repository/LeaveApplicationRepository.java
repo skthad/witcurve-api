@@ -21,10 +21,10 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     List<LeaveApplication> findLeaveAppicationsForStudentsInASession(Long sessionId,List<Long> studentIds);
 
     @Query("Select la from LeaveApplication la where la.session.id =?1 and la.approved = true and la.appliedStudent.id in ?2 order by la.fromLeaveDate")
-    List<LeaveApplication> findApprovedLeaveAppicationsForStudentsInASession(Long sessionId,List<Long> studentIds);
+    List<LeaveApplication> findApprovedLeaveApplicationsForStudentsInASession(Long sessionId, List<Long> studentIds);
 
     @Query("Select la from LeaveApplication la where la.session.id =?1 and la.approved = false and la.appliedStudent.id in ?2 order by la.fromLeaveDate")
-    List<LeaveApplication> findUnApprovedLeaveAppicationsForStudentsInASession(Long sessionId,List<Long> studentIds);
+    List<LeaveApplication> findUnApprovedLeaveApplicationsForStudentsInASession(Long sessionId, List<Long> studentIds);
 
     List<LeaveApplication> findBySessionIdAndAppliedStaffIdOrderByFromLeaveDate(Long sessionId,Long appliedStaffId);
 
