@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Long> {
 
-    List<LeaveApplication> findBySessionIdAndAppliedStudentIdOrderByFromLeaveDate(Long sessionId,Long appliedStudentId);
+    List<LeaveApplication> findBySessionIdAndAppliedStudentIdOrderByCreatedDate(Long sessionId, Long appliedStudentId);
 
-    List<LeaveApplication> findBySessionIdAndAppliedStudentIdAndApprovedTrueOrderByFromLeaveDate(Long sessionId,Long appliedStudentId);
+    List<LeaveApplication> findBySessionIdAndAppliedStudentIdAndApprovedTrueOrderByCreatedDate(Long sessionId, Long appliedStudentId);
 
-    List<LeaveApplication> findBySessionIdAndAppliedStudentIdAndApprovedFalseOrderByFromLeaveDate(Long sessionId,Long appliedStudentId);
+    List<LeaveApplication> findBySessionIdAndAppliedStudentIdAndApprovedFalseOrderByCreatedDate(Long sessionId, Long appliedStudentId);
 
     @Query("Select la from LeaveApplication la where la.session.id =?1 and la.appliedStudent.id in ?2 order by la.fromLeaveDate")
     List<LeaveApplication> findLeaveAppicationsForStudentsInASession(Long sessionId,List<Long> studentIds);
@@ -36,7 +36,10 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
 
     List<LeaveApplication> findByAppliedStaffIdAndFromLeaveDate(Long appliedStaffId, LocalDate fromLeaveDate);
 
-//    @Query("Select la from LeaveApplication la where la.session.id =?1 and la.appliedStudent.id in ?2 and la.fromLeaveDate =?3 and la.toDate = ?4")
-//    List<LeaveApplication> findUnApprovedLeaveApplicationsForStudentsInASession(Long sessionId, Long studentIds, LocalDate fromDate, LocalDate toDate);
+    @Query("Select la from LeaveApplication la where la.session.id =?1 and la.appliedStudent.id = ?2 and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4)")
+    List<LeaveApplication> findLeaveApplicationsForStudentInADateRange(Long sessionId, Long studentId, LocalDate fromDate, LocalDate toDate);
+
+    @Query("Select la from LeaveApplication la where la.session.id =?1 and la.appliedStaff.id = ?2 and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4)")
+    List<LeaveApplication> findLeaveApplicationsForStaffInADateRange(Long sessionId, Long staffId, LocalDate fromDate, LocalDate toDate);
 
 }

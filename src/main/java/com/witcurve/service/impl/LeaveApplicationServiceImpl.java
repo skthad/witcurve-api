@@ -107,12 +107,12 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         log.debug("Get list of leaveApplication with  student id : {} and session id : {}",sessionId);
         List<LeaveApplication> leaveApplications = new ArrayList<>();
         if(approved == null) {
-            leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdOrderByFromLeaveDate(sessionId,studentId);
+            leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdOrderByCreatedDate(sessionId,studentId);
         } else {
             if(approved) {
-                leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdAndApprovedTrueOrderByFromLeaveDate(sessionId, studentId);
+                leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdAndApprovedTrueOrderByCreatedDate(sessionId, studentId);
             } else {
-                leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdAndApprovedFalseOrderByFromLeaveDate(sessionId, studentId);
+                leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdAndApprovedFalseOrderByCreatedDate(sessionId, studentId);
             }
         }
 
@@ -210,36 +210,14 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     private void isLeaveApplicationValid(LeaveApplicationDTO leaveApplicationDTO) throws WitcurveException {
         log.debug("Request to check valid leaveApplications in list : {}",leaveApplicationDTO);
-        LeaveApplication leaveApplications = leaveApplicationMapper.toEntity(leaveApplicationDTO);
             if (leaveApplicationDTO.getType().equals(LeaveApplyor.STUDENT)) {
                 if (leaveApplicationDTO.getAppliedStudentId() == null || leaveApplicationDTO.getAppliedGuardianId() == null) {
                     log.error("There either applied student id or applied guardian id is null for student leave application : {}", leaveApplicationDTO);
                     throw new WitcurveException("Invalid Request Body");
                 }
-                workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getSessionId(),false);
-                  List<LeaveApplication> existingLeaveApplicationsForOneStudent = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdAndApprovedTrueOrderByFromLeaveDate(leaveApplicationDTO.getSessionId() ,leaveApplicationDTO.getAppliedStudentId());
-                  for(LeaveApplication leaveApplication:existingLeaveApplicationsForOneStudent){
-                                    if(leaveApplications.getFromLeaveDate().isAfter(leaveApplication.getFromLeaveDate())
-                                    && leaveApplications.getFromLeaveDate().isBefore(leaveApplication.getToLeaveDate())) {
-                                        throw new WitcurveException("Leave Application already exists with id "+ leaveApplication.getId()
-                                        +"from date :"+ leaveApplication.getFromLeaveDate()+"end date"+ leaveApplication.getToLeaveDate());
-                                    }
-                                    if(leaveApplications.getToLeaveDate().isAfter(leaveApplication.getFromLeaveDate())
-                                        && leaveApplications.getToLeaveDate().isBefore(leaveApplication.getToLeaveDate())){
-                                        throw new WitcurveException("Leave Application already exists for student id :"+leaveApplicationDTO.getAppliedStudentId()+ "with id "+ leaveApplication.getId()
-                                            +"from date :"+ leaveApplication.getFromLeaveDate()+"end date"+ leaveApplication.getToLeaveDate());
-                                    }
-                                    if(leaveApplications.getFromLeaveDate().isEqual(leaveApplication.getFromLeaveDate()) ||
-                                        leaveApplications.getFromLeaveDate().isEqual(leaveApplication.getToLeaveDate())){
-                                        throw new WitcurveException("Leave Application already exists for student id :"+leaveApplicationDTO.getAppliedStudentId()+ "with id "+ leaveApplication.getId()
-                                            +"from date :"+ leaveApplication.getFromLeaveDate()+"end date"+ leaveApplication.getToLeaveDate());
-                                    }
-                                    if(leaveApplications.getToLeaveDate().isEqual(leaveApplication.getFromLeaveDate()) ||
-                                         leaveApplications.getToLeaveDate().isEqual(leaveApplication.getToLeaveDate())){
-                                         throw new WitcurveException("Leave Application already exists for student id :"+leaveApplicationDTO.getAppliedStudentId()+ " with id "+ leaveApplication.getId()
-                                            +"from date :"+ leaveApplication.getFromLeaveDate()+"end date"+ leaveApplication.getToLeaveDate());
-                      }
-
+                workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate(),leaveApplicationDTO.getSessionId(),false);
+                  if(leaveApplicationRepository.findLeaveApplicationsForStudentInADateRange(leaveApplicationDTO.getSessionId() ,leaveApplicationDTO.getAppliedStudentId(),leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate()).size()!=0){
+                      throw new WitcurveException("The Leave application for this student already exists in the date range !! ");
                   }
             }
             if (leaveApplicationDTO.getType().equals(LeaveApplyor.STAFF)) {
@@ -247,29 +225,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                     log.error("Staff id is null for student leave application : {}", leaveApplicationDTO);
                     throw new WitcurveException("Invalid Request Body");
                 }
-                workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getSessionId(),false);
-                List<LeaveApplication> existingLeaveApplicationsForOneStaff = leaveApplicationRepository.findBySessionIdAndAppliedStaffIdAndApprovedTrueOrderByFromLeaveDate(leaveApplicationDTO.getSessionId() ,leaveApplicationDTO.getAppliedStudentId());
-                for(LeaveApplication leaveApplication:existingLeaveApplicationsForOneStaff) {
-                    if (leaveApplications.getFromLeaveDate().isAfter(leaveApplication.getFromLeaveDate())
-                        && leaveApplications.getFromLeaveDate().isBefore(leaveApplication.getToLeaveDate())) {
-                        throw new WitcurveException("Leave Application already exists for staff id :" + leaveApplicationDTO.getAppliedStaffId() + "with id " + leaveApplication.getId()
-                            + "from date :" + leaveApplication.getFromLeaveDate() + "end date" + leaveApplication.getToLeaveDate());
-                    }
-                    if (leaveApplications.getToLeaveDate().isAfter(leaveApplication.getFromLeaveDate())
-                        && leaveApplications.getToLeaveDate().isBefore(leaveApplication.getToLeaveDate())) {
-                        throw new WitcurveException("Leave Application already exists for staff id :" + leaveApplicationDTO.getAppliedStaffId() + "with id " + leaveApplication.getId()
-                            + "from date :" + leaveApplication.getFromLeaveDate() + "end date" + leaveApplication.getToLeaveDate());
-                    }
-                    if (leaveApplications.getFromLeaveDate().isEqual(leaveApplication.getFromLeaveDate()) ||
-                        leaveApplications.getFromLeaveDate().isEqual(leaveApplication.getToLeaveDate())) {
-                        throw new WitcurveException("Leave Application already exists for staff id :" + leaveApplicationDTO.getAppliedStaffId() + "with id " + leaveApplication.getId()
-                            + "from date :" + leaveApplication.getFromLeaveDate() + "end date" + leaveApplication.getToLeaveDate());
-                    }
-                    if (leaveApplications.getToLeaveDate().isEqual(leaveApplication.getFromLeaveDate()) ||
-                        leaveApplications.getToLeaveDate().isEqual(leaveApplication.getToLeaveDate())) {
-                        throw new WitcurveException("Leave Application already exists for staff id :" + leaveApplicationDTO.getAppliedStaffId() + " with application id " + leaveApplication.getId()
-                            + "from date :" + leaveApplication.getFromLeaveDate() + "end date" + leaveApplication.getToLeaveDate());
-                    }
+                workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate(),leaveApplicationDTO.getSessionId(),false);
+                if(leaveApplicationRepository.findLeaveApplicationsForStaffInADateRange(leaveApplicationDTO.getSessionId() ,leaveApplicationDTO.getAppliedStaffId(),leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate()).size()!=0){
+                    throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");
                 }
             }
     }
