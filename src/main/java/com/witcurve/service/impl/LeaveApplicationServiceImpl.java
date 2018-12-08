@@ -52,11 +52,11 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
 
     @Override
-    public LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException {
-        log.debug("Request to save or update leave applications : {}", leaveApplicationDTOs.toString());
+    public LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTO) throws WitcurveException {
+        log.debug("Request to save or update leave applications : {}", leaveApplicationDTO.toString());
 
-        isLeaveApplicationValid(leaveApplicationDTOs);
-        LeaveApplication leaveApplications = leaveApplicationMapper.toEntity(leaveApplicationDTOs);
+        isLeaveApplicationValid(leaveApplicationDTO);
+        LeaveApplication leaveApplications = leaveApplicationMapper.toEntity(leaveApplicationDTO);
         leaveApplications = leaveApplicationRepository.save(leaveApplications);
         return  leaveApplicationMapper.toDto(leaveApplications);
         }

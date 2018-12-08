@@ -1,15 +1,20 @@
 package com.witcurve.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gag.annotation.remark.OhNoYouDidnt;
 import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.domain.enumeration.Reason;
 import com.witcurve.service.util.LocalDateConverter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="leave_application")
@@ -67,6 +72,14 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     @Column
     private String bindingId;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "event_leave_application",
+        joinColumns = {@JoinColumn(name = "leave_application_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")})
+    private Set<Event> events = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -178,6 +191,14 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     public void setBindingId(String bindingId) {
         this.bindingId = bindingId;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 
     @Override
