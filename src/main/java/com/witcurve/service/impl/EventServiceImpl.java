@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -11,6 +12,10 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +46,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
+
+    @Autowired
+    StaffRepository staffRepository;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.EXAM, EventType.TEST));
@@ -326,6 +334,45 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDto(attendance);
     }
 
+    @Override
+    public Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
+        Optional<Term> term = termRepository.findById(termId);
+        if(!term.isPresent()) {
+            throw new WitcurveException("No term exists for id : "+termId);
+        }
+        Long sessionId = term.get().getSession().getId();
+        Page<Event> result = null;
+        if(studentId != null) {
+            List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+            if(studentStandards.size() !=1) {
+                throw new WitcurveException("There should be an active student standard with given student id : "+studentId);
+            }
+            Long standardId = studentStandards.get(0).getStandard().getId();
+            Grade grade = studentStandards.get(0).getStandard().getGrade();
+            result = eventRepository.findStudentNotices(standardId, grade ,sessionId, pageable);
+        }
+        if (staffId != null) {
+            Optional<Staff> staff = staffRepository.findById(staffId);
+            if(!staff.isPresent()) {
+                throw new WitcurveException("No staff exists for id : "+ staffId);
+            }
+            if(staff.get().getType().equals(StaffType.TEACHING)) {
+                Standard standard = standardRepository.findByClassTeacherIdAndTermId(staffId, termId);
+                if(standard != null) {
+                   result = eventRepository.findClassTeacherNotices(standard.getId(),
+                       standard.getGrade(), sessionId, pageable);
+                } else {
+                    result = eventRepository.findTeacherNotices(sessionId, pageable);
+                }
+            }
+            if(staff.get().getType().equals(StaffType.ADMIN)) {
+                result = eventRepository.findAdminNotices(sessionId, pageable);
+            }
+        }
+
+        return result.map(eventMapper::toDto);
+    }
+
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {
             if (eventDTO.getScd() != null && eventDTO.getCourseTeacher() != null) {
@@ -363,7 +410,7 @@ public class EventServiceImpl implements EventService {
                 }
             } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
                 if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : academicSessionId, standardId");
+                    log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : academicSessionId, standardId");
                     throw new WitcurveException("Invalid request body");
                 }
                 Long sessionId = eventDTO.getAcademicSessionId();
@@ -406,6 +453,25 @@ public class EventServiceImpl implements EventService {
                 if(events.size() !=0) {
                     log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT or LEAVE");
                     throw new WitcurveException("Invalid request body");
+                }
+            } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
+                if(eventDTO.getType().equals(EventType.NOTICE)) {
+                    if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
+                        log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : academicSessionId, standardId");
+                        throw new WitcurveException("Invalid request body");
+                    }
+                    Long sessionId = eventDTO.getAcademicSessionId();
+                    if(sessionId == null) {
+                        Standard standard = standardRepository.findById(eventDTO.getStandardId()).get();
+                        if(standard == null) {
+                            throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
+                        }
+                    }
+                } else {
+                    if(eventDTO.getAcademicSessionId() ==null) {
+                        log.error("Event of type : "+eventDTO.getType()+"should have the fields : academicSessionId");
+                        throw new WitcurveException("Invalid request body");
+                    }
                 }
             }
         }

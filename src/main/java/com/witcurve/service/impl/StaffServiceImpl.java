@@ -41,9 +41,9 @@ public class StaffServiceImpl implements StaffService {
             throw new WitcurveException("No staff exists with given id");
         }
         StaffDTO staffDTO = staffMapper.toDto(staff);
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(staff.getUser().getId());
-        staffDTO.setUser(userDTO);
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(staff.getUser().getId());
+//        staffDTO.setUser(userDTO);
         return staffDTO;
     }
 

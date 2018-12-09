@@ -211,7 +211,7 @@ public class WitcurveResource {
         staff1.setLastName("Kumar");
         staff1.setPrimaryPhone("9876543210");
         staff1.setSchool(school1);
-        staff1.setType("Teaching");
+        staff1.setType(StaffType.TEACHING);
         staff1.setStaffId("STAFF_01");
 
         staff1 = staffRepository.save(staff1);
@@ -222,7 +222,7 @@ public class WitcurveResource {
         staff2.setLastName("Kumar");
         staff2.setPrimaryPhone("9876543210");
         staff2.setSchool(school1);
-        staff2.setType("Teaching");
+        staff2.setType(StaffType.TEACHING);
         staff2.setStaffId("STAFF_02");
 
         staff2 = staffRepository.save(staff2);
@@ -233,7 +233,7 @@ public class WitcurveResource {
         staff3.setLastName("Tad");
         staff3.setPrimaryPhone("9876543210");
         staff3.setSchool(school1);
-        staff3.setType("Teaching");
+        staff3.setType(StaffType.TEACHING);
         staff3.setStaffId("STAFF_03");
 
         staff3 = staffRepository.save(staff3);
@@ -244,7 +244,7 @@ public class WitcurveResource {
         staff4.setLastName("SVR");
         staff4.setPrimaryPhone("9876543210");
         staff4.setSchool(school1);
-        staff4.setType("Teaching");
+        staff4.setType(StaffType.TEACHING);
         staff4.setStaffId("STAFF_04");
 
         staff4 = staffRepository.save(staff4);
@@ -255,7 +255,7 @@ public class WitcurveResource {
         staff5.setLastName("No Idea");
         staff5.setPrimaryPhone("9876543210");
         staff5.setSchool(school1);
-        staff5.setType("Teaching");
+        staff5.setType(StaffType.TEACHING);
         staff5.setStaffId("STAFF_05");
 
         staff5 = staffRepository.save(staff5);
@@ -266,7 +266,7 @@ public class WitcurveResource {
         staff6.setLastName("No Idea");
         staff6.setPrimaryPhone("9876543210");
         staff6.setSchool(school1);
-        staff6.setType("Teaching");
+        staff6.setType(StaffType.TEACHING);
         staff6.setStaffId("STAFF_06");
 
         staff6 = staffRepository.save(staff6);
@@ -278,7 +278,7 @@ public class WitcurveResource {
         staff7.setLastName("Gandivasala");
         staff7.setPrimaryPhone("9876543210");
         staff7.setSchool(school1);
-        staff7.setType("Teaching");
+        staff7.setType(StaffType.TEACHING);
         staff7.setStaffId("STAFF_07");
 
         staff7 = staffRepository.save(staff7);
@@ -289,7 +289,7 @@ public class WitcurveResource {
         staff8.setLastName("Naik");
         staff8.setPrimaryPhone("9876543210");
         staff8.setSchool(school1);
-        staff8.setType("Teaching");
+        staff8.setType(StaffType.TEACHING);
         staff8.setStaffId("STAFF_08");
 
         staff8 = staffRepository.save(staff8);
@@ -1782,7 +1782,7 @@ public class WitcurveResource {
         staff1.setLastName("Kumar");
         staff1.setPrimaryPhone("9876543210");
         staff1.setSchool(school1);
-        staff1.setType("Teaching");
+        staff1.setType(StaffType.TEACHING);
         staff1.setStaffId("STAFF_01");
 
         staff1 = staffRepository.save(staff1);
@@ -1793,7 +1793,7 @@ public class WitcurveResource {
         staff2.setLastName("Kumar");
         staff2.setPrimaryPhone("9876543210");
         staff2.setSchool(school1);
-        staff2.setType("Teaching");
+        staff2.setType(StaffType.TEACHING);
         staff2.setStaffId("STAFF_02");
 
         staff2 = staffRepository.save(staff2);
@@ -1804,7 +1804,7 @@ public class WitcurveResource {
         staff3.setLastName("Tad");
         staff3.setPrimaryPhone("9876543210");
         staff3.setSchool(school1);
-        staff3.setType("Teaching");
+        staff3.setType(StaffType.TEACHING);
         staff3.setStaffId("STAFF_03");
 
         staff3 = staffRepository.save(staff3);
@@ -1815,7 +1815,7 @@ public class WitcurveResource {
         staff4.setLastName("SVR");
         staff4.setPrimaryPhone("9876543210");
         staff4.setSchool(school1);
-        staff4.setType("Teaching");
+        staff4.setType(StaffType.TEACHING);
         staff4.setStaffId("STAFF_04");
 
         staff4 = staffRepository.save(staff4);
@@ -1826,7 +1826,7 @@ public class WitcurveResource {
         staff5.setLastName("No Idea");
         staff5.setPrimaryPhone("9876543210");
         staff5.setSchool(school1);
-        staff5.setType("Teaching");
+        staff5.setType(StaffType.TEACHING);
         staff5.setStaffId("STAFF_05");
 
         staff5 = staffRepository.save(staff5);
@@ -1837,7 +1837,7 @@ public class WitcurveResource {
         staff6.setLastName("No Idea");
         staff6.setPrimaryPhone("9876543210");
         staff6.setSchool(school1);
-        staff6.setType("Teaching");
+        staff6.setType(StaffType.TEACHING);
         staff6.setStaffId("STAFF_06");
 
         staff6 = staffRepository.save(staff6);
@@ -1849,7 +1849,7 @@ public class WitcurveResource {
         staff7.setLastName("Gandivasala");
         staff7.setPrimaryPhone("9876543210");
         staff7.setSchool(school1);
-        staff7.setType("Teaching");
+        staff7.setType(StaffType.TEACHING);
         staff7.setStaffId("STAFF_07");
 
         staff7 = staffRepository.save(staff7);
@@ -1860,7 +1860,7 @@ public class WitcurveResource {
         staff8.setLastName("Naik");
         staff8.setPrimaryPhone("9876543210");
         staff8.setSchool(school1);
-        staff8.setType("Teaching");
+        staff8.setType(StaffType.TEACHING);
         staff8.setStaffId("STAFF_08");
 
         staff8 = staffRepository.save(staff8);

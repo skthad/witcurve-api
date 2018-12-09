@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
@@ -46,7 +47,8 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private StaffType type;
 
     @Column
     private  String address1;
@@ -151,11 +153,11 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
         this.school = school;
     }
 
-    public String getType() {
+    public StaffType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(StaffType type) {
         this.type = type;
     }
 

@@ -1,7 +1,9 @@
 package com.witcurve.web.rest.errors;
 
+import com.google.gson.JsonObject;
 import com.witcurve.web.rest.util.HeaderUtil;
 
+import org.json.JSONObject;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,9 @@ import org.zalando.problem.spring.web.advice.validation.ConstraintViolationProbl
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -113,6 +117,8 @@ public class ExceptionTranslator implements ProblemHandling {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public String processIccWebappException(WitcurveException ex) {
-        return ex.getMessage();
+        JSONObject errorMessage = new JSONObject();
+        errorMessage.put("Error Message", ex.getMessage());
+        return errorMessage.toString();
     }
 }

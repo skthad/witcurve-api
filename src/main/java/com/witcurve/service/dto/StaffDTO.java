@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.StaffType;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -23,13 +24,13 @@ public class StaffDTO extends AbstractAuditingDTO {
     @NotNull
     private String lastName;
 
-    private UserDTO user;
+    private Long userId;
 
     @NotNull
     private Long schoolId;
 
     @NotNull
-    private String type;
+    private StaffType type;
 
     private String address1;
 
@@ -105,12 +106,12 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.lastName = lastName;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getSchoolId() {
@@ -121,11 +122,11 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.schoolId = schoolId;
     }
 
-    public String getType() {
+    public StaffType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(StaffType type) {
         this.type = type;
     }
 
@@ -263,9 +264,9 @@ public class StaffDTO extends AbstractAuditingDTO {
             ", firstName='" + firstName + '\'' +
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
-            ", user=" + user +
+            ", userId=" + userId +
             ", schoolId=" + schoolId +
-            ", type='" + type + '\'' +
+            ", type=" + type +
             ", address1='" + address1 + '\'' +
             ", address2='" + address2 + '\'' +
             ", city='" + city + '\'' +
@@ -277,6 +278,9 @@ public class StaffDTO extends AbstractAuditingDTO {
             ", dateOfBirth=" + dateOfBirth +
             ", primaryPhone='" + primaryPhone + '\'' +
             ", secondaryPhone='" + secondaryPhone + '\'' +
+            ", accountName='" + accountName + '\'' +
+            ", accountNumber='" + accountNumber + '\'' +
+            ", ifscCode='" + ifscCode + '\'' +
             '}';
     }
 }
