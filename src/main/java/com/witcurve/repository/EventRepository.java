@@ -96,23 +96,23 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Long> findAbsentTeacherList(List<Long> teacherIds, LocalDate date);
 
     @Query("Select e from Event e where " +
-        "(e.type ='NOTICE' or e.type ='STAFF_NOTICE') and (e.standard.term.session.id=?1 or e.academicSession.id=?1) " +
+        "(e.type ='NOTICE' or e.type ='STAFF_NOTICE') and (e.academicSession.id=?1 or e.standard.term.session.id=?1) " +
         "order by e.date desc")
     Page<Event> findAdminNotices(Long sessionId, Pageable pageable);
 
     @Query("Select e from Event e where e.type = 'NOTICE' and " +
-        "e.standard.id =?1 or " +
-        "(e.grade is null and e.academicSession.id=?3) or (e.grade = ?2 and e.academicSession.id=?3)  " +
+        "(e.standard.id =?1 or " +
+        "(e.grade is null and e.academicSession.id=?3) or (e.grade = ?2 and e.academicSession.id=?3)) " +
         "order by e.date desc")
     Page<Event> findStudentNotices(Long standardId, Grade grade, Long sessionId, Pageable pageable);
 
-    @Query("Select e from Event e where e.type = 'NOTICE' or e.type = 'STAFF_NOTICE' and " +
-        "e.standard.id =?1 or " +
-        "(e.grade is null and e.academicSession.id=?3) or (e.grade = ?2 and e.academicSession.id=?3)  " +
+    @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
+        "(e.standard.id =?1 or " +
+        "(e.grade is null and e.academicSession.id=?3) or (e.grade = ?2 and e.academicSession.id=?3)) " +
         "order by e.date desc")
     Page<Event> findClassTeacherNotices(Long standardId, Grade grade, Long sessionId, Pageable pageable);
 
-    @Query("Select e from Event e where e.type = 'NOTICE' or e.type = 'STAFF_NOTICE' and " +
+    @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "e.grade is null and e.academicSession.id=?1 " +
         "order by e.date desc")
     Page<Event> findTeacherNotices(Long sessionId, Pageable pageable);
