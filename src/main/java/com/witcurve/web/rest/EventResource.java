@@ -6,9 +6,12 @@ import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -236,6 +239,32 @@ public class EventResource {
         if(type.equals(ViewType.LEAVE)) {
             result = eventService.getAllLeavesForStandard(eventDate == null ? null : getLocalDate(eventDate), standardId);
         }
+
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param termId
+     * @param studentId
+     * @param staffId
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/event/term/{termId}")
+    @Timed
+    public ResponseEntity<Page<EventDTO>> getNoticesForTerm(@ApiParam Pageable pageable,
+                                                            @PathVariable Long termId,
+                                                            @RequestParam(required = false) Long studentId,
+                                                            @RequestParam(required = false) Long staffId) throws WitcurveException, URISyntaxException {
+        if(staffId != null) {
+            log.debug("Request to get staff notices events on given for term id : {} and staff id : {}", termId, staffId);
+        } else if (studentId != null){
+            log.debug("Request to get student notices events on given for term id : {} and studentId : {}", termId, studentId);
+        } else {
+            throw new WitcurveException("Invalid request, there should be one student id or staff id but not both");
+        }
+        Page<EventDTO> result = eventService.getNotices(termId, studentId, staffId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }

@@ -26,7 +26,7 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String middleName;
 
-    private UserDTO user;
+    private Long userId;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
@@ -130,12 +130,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.middleName = middleName;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public LocalDate getDateOfBirth() {
@@ -376,7 +376,7 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", middleName='" + middleName + '\'' +
-            ", user=" + user +
+            ", userId=" + userId +
             ", dateOfBirth=" + dateOfBirth +
             ", bloodGroup='" + bloodGroup + '\'' +
             ", nationality='" + nationality + '\'' +
@@ -399,6 +399,7 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", previousSchoolName='" + previousSchoolName + '\'' +
             ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
             ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
+            ", schoolInfo=" + schoolInfo +
             ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
             ", alternateMobileNumbers=" + alternateMobileNumbers +
             ", gender=" + gender +

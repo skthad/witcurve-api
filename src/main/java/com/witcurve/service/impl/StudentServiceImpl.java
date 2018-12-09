@@ -50,10 +50,10 @@ public class StudentServiceImpl implements StudentService {
         if (student ==  null) {
             throw new WitcurveException("No student with given id");
         }
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(student.getUser().getId());
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setId(student.getUser().getId());
         StudentDTO studentDTO = studentMapperLite.toDto(student);
-        studentDTO.setUser(userDTO);
+//        studentDTO.setUser(userDTO);
         return studentDTO;
     }
 

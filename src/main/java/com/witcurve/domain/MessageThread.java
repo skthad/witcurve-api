@@ -158,6 +158,10 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         return messages;
     }
 
+    public void addMessage(Message message) {
+        this.messages.add(message);
+    }
+
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
     }

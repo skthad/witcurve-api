@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StandardRepository extends JpaRepository<Standard,Long> {
 
+    Standard findByClassTeacherIdAndTermId(Long classTeacherId, Long termId);
+
 }

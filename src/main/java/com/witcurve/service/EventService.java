@@ -2,6 +2,8 @@ package com.witcurve.service;
 
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,4 +35,6 @@ public interface EventService {
     List<EventDTO> getAllLeavesForStandard(LocalDate date, Long standardId) throws WitcurveException;
 
     List<EventDTO> getAttendance(LocalDate date, Long studentId, Long standardId) throws WitcurveException;
+
+    Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException;
 }

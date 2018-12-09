@@ -3,6 +3,7 @@ package com.witcurve.service.mapper;
 import com.witcurve.domain.School;
 import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Student;
+import com.witcurve.domain.User;
 import com.witcurve.service.dto.SchoolDTO;
 import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.service.dto.StudentDTO;
@@ -12,10 +13,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface StudentMapperLite extends EntityMapper<StudentDTO, Student>{
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "userId", source = "user.id")
     StudentDTO toDto(Student student);
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "user.id", source = "userId")
     Student toEntity(StudentDTO studentDTO);
 
     default Student fromId(Long id) {
@@ -47,5 +48,14 @@ public interface StudentMapperLite extends EntityMapper<StudentDTO, Student>{
         schoolInfoDTO.setSchool(school);
 
         return schoolInfoDTO;
+    }
+
+    default User fromUserId(Long id) {
+        if(id == null) {
+            return null;
+        }
+        User user = new User();
+        user.setId(id);
+        return  user;
     }
 }
