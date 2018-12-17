@@ -94,13 +94,4 @@ public class StaffResource {
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("A staff is deleted with identifier " + staffId,
             staffId.toString())).build();
     }
-
-    @GetMapping("/staff/school/{schoolId}")
-    @Timed
-    public ResponseEntity<StaffDTO> getStaffBySchoolAndEmployeeId(@PathVariable("schoolId") Long schoolId,
-                                                                       @RequestParam("staffId") String staffId) throws WitcurveException {
-        log.debug("Request to get student by schoolId and staffId");
-        StaffDTO result = staffService.getStaffBySchoolIdAndStaffId(schoolId, staffId);
-        return ResponseEntity.ok(result);
-    }
 }
