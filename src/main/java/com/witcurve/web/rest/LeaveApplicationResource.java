@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.impl.ExamServiceImpl;
@@ -25,6 +26,9 @@ public class LeaveApplicationResource {
 
     @Autowired
     LeaveApplicationService leaveApplicationService;
+
+    @Autowired
+    EventService eventService;
 
     /**
      * creates a leave-applications

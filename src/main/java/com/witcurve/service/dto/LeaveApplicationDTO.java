@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -41,6 +42,8 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     @NotNull
     private LocalDate toLeaveDate;
+
+    private Set<String> events;
 
     private String bindingId;
 
@@ -148,6 +151,14 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.toLeaveDate = toLeaveDate;
     }
 
+    public Set<String> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<String> events) {
+        this.events = events;
+    }
+
     public String getBindingId() {
         return bindingId;
     }
@@ -185,6 +196,7 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", appliedGuardianId=" + appliedGuardianId +
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
+            ", events=" + events +
             ", bindingId='" + bindingId + '\'' +
             '}';
     }
