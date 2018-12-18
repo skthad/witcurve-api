@@ -107,10 +107,23 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "e.staff is not null and e.staff.id in ?1 and e.date = ?2")
     List<Long> findAbsentTeacherList(List<Long> teacherIds, LocalDate date);
 
+    @Query("Select e from Event e where ((" +
+        "(e.academicSession is not null and e.academicSession.id=?1) " +
+        "or " +
+        "(e.standard is not null and e.standard.term.session.id=?1)" +
+        ") and (e.type='NOTICE' or e.type='STAFF_NOTICE' " +
+        ")) order by e.date desc")
+    List<Event> findAdminNotices(Long sessionId, Pageable pageable);
+
     @Query("Select e from Event e where " +
-        "(e.type ='NOTICE' or e.type ='STAFF_NOTICE') and (e.academicSession.id=?1 or e.standard.term.session.id=?1) " +
+        "(e.academicSession.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
         "order by e.date desc")
-    Page<Event> findAdminNotices(Long sessionId, Pageable pageable);
+    List<Event> findAdminNoticesBySession(Long sessionId);
+
+    @Query("Select e from Event e where " +
+        "(e.standard.term.session.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
+        "order by e.date desc")
+    List<Event> findAdminNoticesByStandardInSession(Long sessionId);
 
     @Query("Select e from Event e where e.type = 'NOTICE' and " +
         "(e.standard.id =?1 or " +

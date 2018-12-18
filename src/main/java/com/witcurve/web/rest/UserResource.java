@@ -1,13 +1,16 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.config.Constants;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.MailService;
+import com.witcurve.service.StaffService;
+import com.witcurve.service.StudentService;
 import com.witcurve.service.UserService;
+import com.witcurve.service.dto.StaffDTO;
+import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.BadRequestAlertException;
 import com.witcurve.web.rest.errors.EmailAlreadyUsedException;
@@ -18,6 +21,7 @@ import com.witcurve.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -68,11 +72,35 @@ public class UserResource {
 
     private final MailService mailService;
 
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private StaffService staffService;
+
     public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
 
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+    }
+
+    @GetMapping("/students/school/{schoolId}")
+    @Timed
+    public ResponseEntity<StudentDTO> getStudentBySchoolAndAdmissionId(@PathVariable("schoolId") Long schoolId,
+                                                                       @RequestParam("admissionId") String admissionId) throws WitcurveException {
+        log.debug("Request to get student by schoolId and admissionId");
+        StudentDTO result = studentService.getStudentBySchoolIdAndAdmissionId(schoolId, admissionId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/staff/school/{schoolId}")
+    @Timed
+    public ResponseEntity<StaffDTO> getStaffBySchoolAndEmployeeId(@PathVariable("schoolId") Long schoolId,
+                                                                  @RequestParam("staffId") String staffId) throws WitcurveException {
+        log.debug("Request to get student by schoolId and staffId");
+        StaffDTO result = staffService.getStaffBySchoolIdAndStaffId(schoolId, staffId);
+        return ResponseEntity.ok(result);
     }
 
     /**
