@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.impl.ExamServiceImpl;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 @RestController
 @RequestMapping("/api")
@@ -26,6 +28,9 @@ public class LeaveApplicationResource {
     @Autowired
     LeaveApplicationService leaveApplicationService;
 
+    @Autowired
+    EventService eventService;
+
     /**
      * creates a leave-applications
      * @param leaveApplicationDTOs
@@ -35,16 +40,15 @@ public class LeaveApplicationResource {
      */
     @PostMapping("/leave-application")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> createLeaveApplication(@RequestBody @Valid List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<LeaveApplicationDTO> createLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Leave Application",leaveApplicationDTOs);
-        for(LeaveApplicationDTO leaveApplicationDTO: leaveApplicationDTOs)
-        {
-            if (leaveApplicationDTO.getId() != null) {
-                throw new WitcurveException("New leave application can't already have an id");
+            if (leaveApplicationDTOs.getId() == null) {
+                LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs, false);
+                return ResponseEntity.ok(result);
                 }
-        }
-            List<LeaveApplicationDTO> result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
-            return ResponseEntity.ok(result);
+            else {
+                throw new WitcurveException("New leave application can't already have an id");
+            }
     }
     /**
      * get leave-application by id
@@ -63,21 +67,19 @@ public class LeaveApplicationResource {
 
     /**
      * update the given leave-applications
-     * @param leaveApplicationDTOs
+     * @param leaveApplicationDTO
      * @return
      * @throws WitcurveException
      */
 
     @PutMapping("/leave-application")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> updateLeaveApplication(@RequestBody @Valid List<LeaveApplicationDTO> leaveApplicationDTOs) throws WitcurveException {
+    public ResponseEntity<LeaveApplicationDTO> updateLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTO) throws WitcurveException {
         log.debug("Request to update leave application");
-        for (LeaveApplicationDTO leaveApplicationDTO : leaveApplicationDTOs) {
             if (leaveApplicationDTO.getId() == null) {
                 throw new WitcurveException("Id is required for update request");
             }
-        }
-            List<LeaveApplicationDTO> result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
+            LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTO, true);
             return ResponseEntity.ok().body(result);
     }
 
@@ -156,4 +158,18 @@ public class LeaveApplicationResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * get leave-application count
+     * @param fromDate
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/leave-application/leave-count")
+    @Timed
+    public ResponseEntity<Long> getLeaveCount(@RequestParam(name="fromDate") LocalDate fromDate, @RequestParam(name="toDate") LocalDate toDate,@RequestParam(required = false) Long sessionId, @RequestParam Boolean isSaturdayWorking) throws WitcurveException {
+        log.debug("Request to get number of leaves from date : {}", fromDate," to date :",toDate);
+        Long workingDays= leaveApplicationService.workingDays(fromDate,toDate,sessionId,isSaturdayWorking);
+        return new ResponseEntity<>(workingDays, HttpStatus.OK);
+    }
 }

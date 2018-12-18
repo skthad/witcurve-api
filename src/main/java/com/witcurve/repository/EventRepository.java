@@ -83,6 +83,18 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "and e.type = 'ATTENDANCE'")
     List<Event> findLeaveForStudent(LocalDate date, Long studentId);
 
+    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
+        "and e.type = 'ATTENDANCE'")
+    List<Event> findLeaveForStaff(LocalDate date, Long staffId);
+
+    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
+        "and e.type = 'ATTENDANCE'")
+    Event findEventForStudent(LocalDate date, Long studentId);
+
+    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
+        "and e.type = 'ATTENDANCE'")
+    Event findEventForStaff(LocalDate date, Long staffId);
+
     @Query("Select e from Event e where e.date = ?1 and e.standard.id = ?2 " +
         "and e.type = 'ATTENDANCE'")
     List<Event> findAttendanceForStandard(LocalDate date, Long standardId);
@@ -129,6 +141,10 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "e.grade is null and e.academicSession.id=?1 " +
         "order by e.date desc")
     Page<Event> findTeacherNotices(Long sessionId, Pageable pageable);
+
+    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY' and e.academicSession.id=?3")
+    Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long sessionId);
+
 
 }
 

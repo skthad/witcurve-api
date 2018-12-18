@@ -30,6 +30,9 @@
     <include file="config/liquibase/changelog/20181129122446_added_unique_constraint_on_scd.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181201114750_substitution_changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181208062820_change_type_values_Staff.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181204163957_changed_leave_date_columns_in_leave_application.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181208075735_changelog_for_multiple_events_relations_Validations_for_leaves.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20181218172025_deleted_bindingId_and_removed_single_event_relation.xml"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

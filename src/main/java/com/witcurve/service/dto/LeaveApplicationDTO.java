@@ -6,7 +6,9 @@ import com.witcurve.domain.enumeration.Reason;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -25,8 +27,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     private Long approvedById;
 
-    private Long eventId;
-
     @NotNull
     private Long sessionId;
 
@@ -37,9 +37,12 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     private Long appliedGuardianId;
 
     @NotNull
-    private LocalDate leaveDate;
+    private LocalDate fromLeaveDate;
 
-    private String bindingId;
+    @NotNull
+    private LocalDate toLeaveDate;
+
+    private List<Long> eventIds;
 
     public Long getId() {
         return id;
@@ -89,14 +92,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.approvedById = approvedById;
     }
 
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
-
     public Long getSessionId() {
         return sessionId;
     }
@@ -129,20 +124,28 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.appliedGuardianId = appliedGuardianId;
     }
 
-    public LocalDate getLeaveDate() {
-        return leaveDate;
+    public List<Long> getEventIds() {
+        return eventIds;
     }
 
-    public void setLeaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public void setEventIds(List<Long> eventIds) {
+        this.eventIds = eventIds;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public LocalDate getFromLeaveDate() {
+        return fromLeaveDate;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setFromLeaveDate(LocalDate fromLeaveDate) {
+        this.fromLeaveDate = fromLeaveDate;
+    }
+
+    public LocalDate getToLeaveDate() {
+        return toLeaveDate;
+    }
+
+    public void setToLeaveDate(LocalDate toLeaveDate) {
+        this.toLeaveDate = toLeaveDate;
     }
 
     @Override
@@ -154,27 +157,21 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     }
 
     @Override
-    public int hashCode() {
-
-        return Objects.hash(id);
-    }
-
-    @Override
     public String toString() {
         return "LeaveApplicationDTO{" +
             "id=" + id +
             ", reason=" + reason +
             ", description='" + description + '\'' +
-            ", type='" + type + '\'' +
+            ", type=" + type +
             ", approved=" + approved +
             ", approvedById=" + approvedById +
-            ", eventId=" + eventId +
             ", sessionId=" + sessionId +
             ", appliedStaffId=" + appliedStaffId +
             ", appliedStudentId=" + appliedStudentId +
             ", appliedGuardianId=" + appliedGuardianId +
-            ", leaveDate=" + leaveDate +
-            ", bindingId='" + bindingId + '\'' +
+            ", fromLeaveDate=" + fromLeaveDate +
+            ", toLeaveDate=" + toLeaveDate +
+            ", eventIds=" + eventIds +
             '}';
     }
 }

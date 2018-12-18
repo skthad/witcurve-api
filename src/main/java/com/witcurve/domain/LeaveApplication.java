@@ -1,15 +1,20 @@
 package com.witcurve.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gag.annotation.remark.OhNoYouDidnt;
 import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.domain.enumeration.Reason;
 import com.witcurve.service.util.LocalDateConverter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="leave_application")
@@ -43,9 +48,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     @ManyToOne
     private AcademicSession session;
 
-    @OneToOne
-    private Event event;
-
     @ManyToOne
     private Staff appliedStaff;
 
@@ -56,12 +58,22 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     private Guardian appliedGuardian;
 
     @NotNull
-    @Column(name = "leave_date", nullable = false)
+    @Column(name = "from_leave_date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate leaveDate;
+    private LocalDate fromLeaveDate;
 
-    @Column
-    private String bindingId;
+    @NotNull
+    @Column(name = "to_leave_date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate toLeaveDate;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "event_leave_application",
+        joinColumns = {@JoinColumn(name = "leave_application_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")})
+    private Set<Event> events = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -119,14 +131,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.session = session;
     }
 
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
     public Staff getAppliedStaff() {
         return appliedStaff;
     }
@@ -151,20 +155,35 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.appliedGuardian = appliedGuardian;
     }
 
-    public LocalDate getLeaveDate() {
-        return leaveDate;
+    public LocalDate getFromLeaveDate() {
+        return fromLeaveDate;
     }
 
-    public void setLeaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public void setFromLeaveDate(LocalDate fromLeaveDate) {
+        this.fromLeaveDate = fromLeaveDate;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public LocalDate getToLeaveDate() {
+        return toLeaveDate;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setToLeaveDate(LocalDate toLeaveDate) {
+        this.toLeaveDate = toLeaveDate;
+    }
+
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
+    }
+
+    public void addEvents(Event e) {
+        if(this.events == null) {
+            this.events = new HashSet();
+        }
+        this.events.add(e);
     }
 
     @Override
@@ -172,12 +191,12 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LeaveApplication that = (LeaveApplication) o;
-        return Objects.equals(bindingId, that.bindingId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bindingId);
+        return Objects.hash(id);
     }
 
     @Override
@@ -190,12 +209,11 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
             ", approved=" + approved +
             ", approvedBy=" + approvedBy +
             ", session=" + session +
-            ", event=" + event +
             ", appliedStaff=" + appliedStaff +
             ", appliedStudent=" + appliedStudent +
             ", appliedGuardian=" + appliedGuardian +
-            ", leaveDate=" + leaveDate +
-            ", bindingId='" + bindingId + '\'' +
+            ", fromLeaveDate=" + fromLeaveDate +
+            ", toLeaveDate=" + toLeaveDate +
             '}';
     }
 }

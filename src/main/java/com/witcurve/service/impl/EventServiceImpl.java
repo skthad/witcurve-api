@@ -49,6 +49,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     StaffRepository staffRepository;
 
+    @Autowired
+    LeaveApplicationRepository leaveApplicationRepository;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.EXAM, EventType.TEST));
 
@@ -87,6 +90,19 @@ public class EventServiceImpl implements EventService {
         }
         List<Event> events = eventMapper.toEntity(eventDTOs);
         events = eventRepository.saveAll(events);
+        for(int i=0;i<events.size();i++){
+            if(events.get(i).getType().equals(EventType.ATTENDANCE)) {
+                LocalDate date = events.get(i).getDate();
+                LeaveApplication la = leaveApplicationRepository.findLeaveForStudentOnDate(events.get(i).getStudent().getId(), date);
+                if (la != null) {
+                    la.addEvents(events.get(i));
+                    events.get(i).setName("LEAVE-"+la.getReason().toString());
+                    events.get(i).setDescription(la.getDescription());
+                }
+//                leaveApplicationRepository.save(la);
+
+            }
+        }
         return eventMapper.toDto(events);
     }
 
