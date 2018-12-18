@@ -3,11 +3,12 @@ package com.witcurve.service;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface LeaveApplicationService {
 
-    LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException;
+    LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTOs, Boolean update) throws WitcurveException;
 
     LeaveApplicationDTO getLeaveApplicationById(Long leaveApplicationId) throws WitcurveException;
 
@@ -21,10 +22,6 @@ public interface LeaveApplicationService {
 
     List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, Boolean approved) throws WitcurveException;
 
-    Long getLeaveCount(Long leaveApplicationId,Long sessionId, Boolean isSaturdayWorking) throws WitcurveException;
-
-    List<LeaveApplicationDTO> getLeaveApplicationsForAStudent(Long studentId, Long sessionId) throws WitcurveException;
-
-    List<LeaveApplicationDTO> getLeaveApplicationsForAStaff(Long staffId, Long sessionId) throws WitcurveException;
+    Long workingDays(LocalDate fromDate,LocalDate toDate, Long sessionId, Boolean isSaturdayWorking) throws WitcurveException;
 
 }

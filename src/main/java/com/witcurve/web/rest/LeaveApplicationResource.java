@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 @RestController
 @RequestMapping("/api")
@@ -42,7 +43,7 @@ public class LeaveApplicationResource {
     public ResponseEntity<LeaveApplicationDTO> createLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Leave Application",leaveApplicationDTOs);
             if (leaveApplicationDTOs.getId() == null) {
-                LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs);
+                LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs, false);
                 return ResponseEntity.ok(result);
                 }
             else {
@@ -78,7 +79,7 @@ public class LeaveApplicationResource {
             if (leaveApplicationDTO.getId() == null) {
                 throw new WitcurveException("Id is required for update request");
             }
-            LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTO);
+            LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTO, true);
             return ResponseEntity.ok().body(result);
     }
 
@@ -159,16 +160,16 @@ public class LeaveApplicationResource {
 
     /**
      * get leave-application count
-     * @param applicationId
+     * @param fromDate
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/leave-application/leave-count/{leaveApplicationId}")
+    @GetMapping("/leave-application/leave-count")
     @Timed
-    public ResponseEntity<Long> getLeaveCount(@PathVariable(name="leaveApplicationId") Long applicationId, @RequestParam(required = false) Long sessionId, @RequestParam Boolean isSaturdayWorking) throws WitcurveException {
-        log.debug("Request to get number of leaves with application id : {}", applicationId);
-        Long workingDays= leaveApplicationService.getLeaveCount(applicationId,sessionId,isSaturdayWorking);
+    public ResponseEntity<Long> getLeaveCount(@RequestParam(name="fromDate") LocalDate fromDate, @RequestParam(name="toDate") LocalDate toDate,@RequestParam(required = false) Long sessionId, @RequestParam Boolean isSaturdayWorking) throws WitcurveException {
+        log.debug("Request to get number of leaves from date : {}", fromDate," to date :",toDate);
+        Long workingDays= leaveApplicationService.workingDays(fromDate,toDate,sessionId,isSaturdayWorking);
         return new ResponseEntity<>(workingDays, HttpStatus.OK);
     }
 }

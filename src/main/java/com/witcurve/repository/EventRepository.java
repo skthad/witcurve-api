@@ -129,7 +129,9 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "order by e.date desc")
     Page<Event> findTeacherNotices(Long sessionId, Pageable pageable);
 
-    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY'")
-    Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate);
+    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY' and e.academicSession.id=?3")
+    Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long sessionId);
+
+
 }
 

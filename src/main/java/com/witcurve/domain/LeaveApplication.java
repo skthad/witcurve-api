@@ -48,9 +48,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     @ManyToOne
     private AcademicSession session;
 
-    @OneToOne
-    private Event event;
-
     @ManyToOne
     private Staff appliedStaff;
 
@@ -69,9 +66,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     @Column(name = "to_leave_date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
     private LocalDate toLeaveDate;
-
-    @Column
-    private String bindingId;
 
     @JsonIgnore
     @ManyToMany
@@ -137,14 +131,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.session = session;
     }
 
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
     public Staff getAppliedStaff() {
         return appliedStaff;
     }
@@ -185,20 +171,19 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.toLeaveDate = toLeaveDate;
     }
 
-    public String getBindingId() {
-        return bindingId;
-    }
-
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
-    }
-
     public Set<Event> getEvents() {
         return events;
     }
 
     public void setEvents(Set<Event> events) {
         this.events = events;
+    }
+
+    public void addEvents(Event e) {
+        if(this.events == null) {
+            this.events = new HashSet();
+        }
+        this.events.add(e);
     }
 
     @Override
@@ -224,13 +209,11 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
             ", approved=" + approved +
             ", approvedBy=" + approvedBy +
             ", session=" + session +
-            ", event=" + event +
             ", appliedStaff=" + appliedStaff +
             ", appliedStudent=" + appliedStudent +
             ", appliedGuardian=" + appliedGuardian +
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
-            ", bindingId='" + bindingId + '\'' +
             '}';
     }
 }

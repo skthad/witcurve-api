@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="pratraj (generated)" id="1545153650570-1">
+        <dropForeignKeyConstraint baseTableName="leave_application" constraintName="FKfuhylwntug6txv7yxg7n73xmw"/>
+    </changeSet>
+    <changeSet author="pratraj (generated)" id="1545153650570-2">
+        <dropColumn columnName="binding_id" tableName="leave_application"/>
+    </changeSet>
+    <changeSet author="pratraj (generated)" id="1545153650570-3">
+        <dropColumn columnName="event_id" tableName="leave_application"/>
+    </changeSet>
+</databaseChangeLog>

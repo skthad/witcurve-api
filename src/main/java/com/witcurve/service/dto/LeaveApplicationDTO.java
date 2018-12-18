@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.Reason;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,8 +27,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     private Long approvedById;
 
-    private Long eventId;
-
     @NotNull
     private Long sessionId;
 
@@ -43,9 +42,7 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private LocalDate toLeaveDate;
 
-    private Set<String> events;
-
-    private String bindingId;
+    private List<Long> eventIds;
 
     public Long getId() {
         return id;
@@ -95,14 +92,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.approvedById = approvedById;
     }
 
-    public Long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
-
     public Long getSessionId() {
         return sessionId;
     }
@@ -135,6 +124,14 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.appliedGuardianId = appliedGuardianId;
     }
 
+    public List<Long> getEventIds() {
+        return eventIds;
+    }
+
+    public void setEventIds(List<Long> eventIds) {
+        this.eventIds = eventIds;
+    }
+
     public LocalDate getFromLeaveDate() {
         return fromLeaveDate;
     }
@@ -151,33 +148,12 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.toLeaveDate = toLeaveDate;
     }
 
-    public Set<String> getEvents() {
-        return events;
-    }
-
-    public void setEvents(Set<String> events) {
-        this.events = events;
-    }
-
-    public String getBindingId() {
-        return bindingId;
-    }
-
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LeaveApplicationDTO that = (LeaveApplicationDTO) o;
         return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
@@ -189,15 +165,13 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", type=" + type +
             ", approved=" + approved +
             ", approvedById=" + approvedById +
-            ", eventId=" + eventId +
             ", sessionId=" + sessionId +
             ", appliedStaffId=" + appliedStaffId +
             ", appliedStudentId=" + appliedStudentId +
             ", appliedGuardianId=" + appliedGuardianId +
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
-            ", events=" + events +
-            ", bindingId='" + bindingId + '\'' +
+            ", eventIds=" + eventIds +
             '}';
     }
 }

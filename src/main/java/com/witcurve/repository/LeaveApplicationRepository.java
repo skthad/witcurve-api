@@ -48,4 +48,7 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     @Query("Select la from LeaveApplication la where la.session.id =?1 and la.appliedStaff.id = ?2 and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
     List<LeaveApplication> findLeaveApplicationsForStaffInADateRange(Long sessionId, Long staffId, LocalDate fromDate, LocalDate toDate);
 
+    @Query("Select la from LeaveApplication la where la.appliedStudent.id = ?1 and (la.fromLeaveDate <= ?2) and (la.toLeaveDate >= ?2)")
+    LeaveApplication findLeaveForStudentOnDate(Long studentId, LocalDate date);
+
 }
