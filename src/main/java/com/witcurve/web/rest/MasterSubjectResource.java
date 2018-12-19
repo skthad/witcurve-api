@@ -35,9 +35,6 @@ public class MasterSubjectResource {
     @Timed
     public ResponseEntity<MasterSubject> createMasterSubject(@RequestBody @Valid MasterSubject masterSubject) throws WitcurveException, URISyntaxException {
         log.debug("Request Save MasterSubject");
-        if (masterSubject.getName() != null) {
-            throw new WitcurveException("New MasterSubject can't already have a name");
-        }
         MasterSubject result = masterSubjectService.saveOrUpdate(masterSubject);
         return ResponseEntity.created(new URI("/api/master-subject/" + result.getName()))
             .headers(HeaderUtil.createEntityCreationAlert("masterSubject", result.getName().toString()))

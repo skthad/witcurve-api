@@ -5,6 +5,7 @@ import com.witcurve.repository.SlotCourseDetailsRepository;
 import com.witcurve.service.SlotCourseDetailsService;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
 import com.witcurve.service.mapper.SlotCourseDetailsMapper;
+import com.witcurve.service.mapper.SlotCourseDetailsMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +25,17 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     private SlotCourseDetailsMapper slotCourseDetailsMapper;
 
     @Autowired
+    private SlotCourseDetailsMapperLite slotCourseDetailsMapperLite;
+
+    @Autowired
     private SlotCourseDetailsRepository slotCourseDetailsRepository;
 
     @Override
     public SlotCourseDetailsDTO saveOrUpdate(SlotCourseDetailsDTO slotCourseDetailsDTO) {
         log.debug("Request to save or update slotCourseDetails : {}", slotCourseDetailsDTO);
-        SlotCourseDetails slotCourseDetails = slotCourseDetailsMapper.toEntity(slotCourseDetailsDTO);
+        SlotCourseDetails slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTO);
         slotCourseDetails = slotCourseDetailsRepository.save(slotCourseDetails);
-        return slotCourseDetailsMapper.toDto(slotCourseDetails);
+        return slotCourseDetailsMapperLite.toDto(slotCourseDetails);
     }
 
     @Override

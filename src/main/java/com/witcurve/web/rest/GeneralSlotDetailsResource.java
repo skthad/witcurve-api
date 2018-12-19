@@ -128,7 +128,7 @@ public class GeneralSlotDetailsResource {
     @GetMapping("/general-slot-details/standard/{standardId}")
     @Timed
     public ResponseEntity<List<GeneralSlotDetailsDTO>> getGeneralSlotDetailsByStandardId(@PathVariable("standardId") Long standardId,
-                                                                                         @RequestParam("status") GSDStatus status) throws WitcurveException {
+                                                                                         @RequestParam(value = "status", required = false) GSDStatus status) throws WitcurveException {
         log.debug("Request to get GeneralSlotDetails with standard id {}", standardId);
         List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getGeneralSlotDetailsByStandardIdAndStatus(standardId, status);
         return new ResponseEntity<>(result, HttpStatus.OK);

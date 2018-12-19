@@ -12,6 +12,10 @@ import java.util.Set;
 public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotDetails, Long> {
 
     @Query("select gsd from GeneralSlotDetails gsd where gsd.standard.id = ?1 " +
+        "and gsd.exam.id is null order by bindingId, start")
+    List<GeneralSlotDetails> findByStandardId(Long standardId);
+
+    @Query("select gsd from GeneralSlotDetails gsd where gsd.standard.id = ?1 " +
         "and gsd.exam.id is null and status = ?2 order by bindingId, start")
     List<GeneralSlotDetails> findByStandardIdAndStatus(Long standardId, GSDStatus status);
 
