@@ -482,7 +482,6 @@ public class WitcurveResource {
         //exam data
         Exam exam1 = new Exam();
         exam1.setAcademicSession(academicSession1);
-        exam1.setExamType("Quarterly Examination");
         exam1.setName("Quarterly Examination 2018-2019");
         exam1.setStartDate(LocalDate.of(2018, 8 , 6));
         exam1.setEndDate(LocalDate.of(2018,8,11));
@@ -2053,7 +2052,6 @@ public class WitcurveResource {
         //exam data
         Exam exam1 = new Exam();
         exam1.setAcademicSession(academicSession1);
-        exam1.setExamType("Quarterly Examination");
         exam1.setName("Quarterly Examination 2018-2019");
         exam1.setStartDate(LocalDate.of(2018, 8 , 6));
         exam1.setEndDate(LocalDate.of(2018,8,11));

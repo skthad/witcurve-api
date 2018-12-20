@@ -33,7 +33,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     private StandardRepository standardRepository;
 
     @Override
-    public List<GeneralSlotDetailsDTO> create(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) {
+    public List<GeneralSlotDetailsDTO> create(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs, Boolean exam) {
         log.debug("Request to create generalSlotDetails");
         Map<Long, String> standardIdBindingValueMap = new HashMap<>();
         for (GeneralSlotDetailsDTO gsd : generalSlotDetailsDTOs) {
@@ -44,7 +44,11 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             }
             gsd.setBindingId(standardIdBindingValueMap.get(standardId));
         }
-        generalSlotDetailsRepository.deactivateSlotDetailsForStandards(standardIdBindingValueMap.keySet());
+        if (Boolean.TRUE.equals(exam)) {
+            generalSlotDetailsRepository.deactivateExamSlotsForStandards(standardIdBindingValueMap.keySet());
+        } else {
+            generalSlotDetailsRepository.deactivateSlotDetailsForStandards(standardIdBindingValueMap.keySet());
+        }
 
         List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
         List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));
@@ -67,16 +71,26 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public void deactivate(List<Long> standardIds) {
-        generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(standardIds));
+    public void deactivate(List<Long> standardIds, Boolean exam) {
+
+        if (Boolean.TRUE.equals(exam)) {
+            generalSlotDetailsRepository.deactivateExamSlotsForStandards(new HashSet<>(standardIds));
+        } else {
+            generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(standardIds));
+        }
     }
 
     @Override
-    public void clone(Long sourceStandardId, List<Long> destinationStandardIds) {
+    public void clone(Long sourceStandardId, List<Long> destinationStandardIds, Boolean exam) {
         log.debug("Request to clone generalSlotDetails ");
         List<GeneralSlotDetails> existingSlots = generalSlotDetailsRepository.findByStandardIdAndStatus(sourceStandardId, GSDStatus.ACTIVE);
 
+        if (Boolean.TRUE.equals(exam)) {
             generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(destinationStandardIds));
+        } else {
+            generalSlotDetailsRepository.deactivateExamSlotsForStandards(new HashSet<>(destinationStandardIds));
+        }
+
         List<GeneralSlotDetailsDTO> slotsToCreate = new ArrayList<>();
         for (Long destinationStandardId : destinationStandardIds) {
             String bindingId = UUID.randomUUID().toString();
@@ -102,11 +116,13 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardIdAndStatus(Long standardId, GSDStatus status) throws WitcurveException {
+    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId, GSDStatus status, Long examId) throws WitcurveException {
         log.debug("Request to get generalSlotDetails by standard id : {}", standardId);
         List<GeneralSlotDetails> gsdList;
 
-        if (status == null) {
+        if (examId != null) {
+            gsdList = generalSlotDetailsRepository.findByStandardIdAndExamId(standardId, examId);
+        } else if (status == null) {
             gsdList = generalSlotDetailsRepository.findByStandardId(standardId);
         } else {
             gsdList = generalSlotDetailsRepository.findByStandardIdAndStatus(standardId, status);

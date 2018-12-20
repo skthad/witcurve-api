@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface GeneralSlotDetailsService {
 
-    List<GeneralSlotDetailsDTO> create(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
+    List<GeneralSlotDetailsDTO> create(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs, Boolean exam);
 
     List<GeneralSlotDetailsDTO> update(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
 
-    void clone(Long sourceStandardId, List<Long> destinationStandardIds);
+    void clone(Long sourceStandardId, List<Long> destinationStandardIds, Boolean exam);
 
-    void deactivate(List<Long> standardIds);
+    void deactivate(List<Long> standardIds, Boolean exam);
 
     void activate(Long standardId, String bindingId);
 
     GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
 
-    List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardIdAndStatus(Long standardId, GSDStatus status) throws WitcurveException;
+    List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId, GSDStatus status, Long ExamId) throws WitcurveException;
 
     void deleteByBindingId(String bindingId) throws WitcurveException;
 }

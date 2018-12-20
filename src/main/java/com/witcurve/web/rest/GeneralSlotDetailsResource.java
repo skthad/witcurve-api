@@ -36,9 +36,10 @@ public class GeneralSlotDetailsResource {
      */
     @PostMapping("/general-slot-details")
     @Timed
-    public ResponseEntity<List<GeneralSlotDetailsDTO>> createGeneralSlotDetails(@RequestBody @Valid List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> createGeneralSlotDetails(@RequestParam(required = false, defaultValue = "false") Boolean exam,
+                                                                                @RequestBody @Valid List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save generalSlotDetails");
-        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.create(generalSlotDetailsDTOs);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.create(generalSlotDetailsDTOs, exam);
         return ResponseEntity.created(new URI("/api/general-slot-details/"))
             .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
             .body(result);
@@ -95,9 +96,10 @@ public class GeneralSlotDetailsResource {
 
     @PutMapping("/general-slot-details/deactivate")
     @Timed
-    public ResponseEntity<Void> deactivateGeneralSlotDetails(@RequestParam("standardIds") List<Long> standardIds) throws WitcurveException {
+    public ResponseEntity<Void> deactivateGeneralSlotDetails(@RequestParam("standardIds") List<Long> standardIds,
+                                                             @RequestParam(required = false, defaultValue = "false") Boolean exam) throws WitcurveException {
         log.debug("Request to deactivate generalSlotDetails");
-        generalSlotDetailsService.deactivate(standardIds);
+        generalSlotDetailsService.deactivate(standardIds, exam);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert( "General slot details deactivated", null)).build();
     }
 
@@ -111,9 +113,10 @@ public class GeneralSlotDetailsResource {
     @PutMapping("/general-slot-details/clone")
     @Timed
     public ResponseEntity<Void> cloneGeneralSlotDetails(@RequestParam("sourceStandardId") Long sourceStandardId,
-                                                        @RequestParam("destinationStandardIds") List<Long> destinationStandardIds) throws WitcurveException {
+                                                        @RequestParam("destinationStandardIds") List<Long> destinationStandardIds,
+                                                        @RequestParam(required = false, defaultValue = "false") Boolean exam) throws WitcurveException {
         log.debug("Request to clone generalSlotDetails");
-        generalSlotDetailsService.clone(sourceStandardId, destinationStandardIds);
+        generalSlotDetailsService.clone(sourceStandardId, destinationStandardIds, exam);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "General slot details cloned", null)).build();
     }
 
@@ -128,9 +131,10 @@ public class GeneralSlotDetailsResource {
     @GetMapping("/general-slot-details/standard/{standardId}")
     @Timed
     public ResponseEntity<List<GeneralSlotDetailsDTO>> getGeneralSlotDetailsByStandardId(@PathVariable("standardId") Long standardId,
-                                                                                         @RequestParam(value = "status", required = false) GSDStatus status) throws WitcurveException {
+                                                                                         @RequestParam(value = "status", required = false) GSDStatus status,
+                                                                                         @RequestParam(value = "examId", required = false) Long examId) throws WitcurveException {
         log.debug("Request to get GeneralSlotDetails with standard id {}", standardId);
-        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getGeneralSlotDetailsByStandardIdAndStatus(standardId, status);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getGeneralSlotDetailsByStandardId(standardId, status, examId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -142,7 +146,7 @@ public class GeneralSlotDetailsResource {
      */
     @DeleteMapping("/general-slot-details")
     @Timed
-    public ResponseEntity<Void> deleteStaff(@RequestParam String bindingId) throws WitcurveException {
+    public ResponseEntity<Void> deleteSlots(@RequestParam String bindingId) throws WitcurveException {
         log.debug("REST request to delete GeneralSlotDetails for bindingId: {}", bindingId);
         generalSlotDetailsService.deleteByBindingId(bindingId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("GSD was deleted with binding Id " + bindingId,

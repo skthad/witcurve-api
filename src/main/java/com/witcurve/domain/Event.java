@@ -2,6 +2,7 @@ package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -81,6 +83,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Boolean present;
 
     private Integer marks;
+
+    @Column
+    @Convert(converter = ListToStringConverter.class)
+    private List<@Pattern(regexp="^[6-9]\\d{9}$")Keyword> keywords;
 
     public Long getId() {
         return id;
@@ -224,6 +230,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setMarks(Integer marks) {
         this.marks = marks;
+    }
+
+    public List<Keyword> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<Keyword> keywords) {
+        this.keywords = keywords;
     }
 
     @Override
