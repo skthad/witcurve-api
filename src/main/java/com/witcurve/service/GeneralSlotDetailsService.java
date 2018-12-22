@@ -1,6 +1,7 @@
 package com.witcurve.service;
 
 import com.witcurve.domain.enumeration.GSDStatus;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.GeneralSlotDetailsDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -8,19 +9,27 @@ import java.util.List;
 
 public interface GeneralSlotDetailsService {
 
-    List<GeneralSlotDetailsDTO> create(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
+    List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException;
+
+    List<GeneralSlotDetailsDTO> createExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException;
 
     List<GeneralSlotDetailsDTO> update(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
 
-    void clone(Long sourceStandardId, List<Long> destinationStandardIds);
+    void cloneGSDs(Long sourceStandardId, List<Long> destinationStandardIds) throws WitcurveException;
 
-    void deactivate(List<Long> standardIds);
+    void cloneExamSlots(Grade sourceGrade, List<Grade> destinationGrades, Long examId) throws WitcurveException;
 
-    void activate(Long standardId, String bindingId);
+    void deactivateGSDsForStandards(List<Long> standardIds);
+
+    void activateGSDsForStandard(Long standardId, String bindingId);
 
     GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException;
 
-    List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardIdAndStatus(Long standardId, GSDStatus status) throws WitcurveException;
+    List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId, GSDStatus status) throws WitcurveException;
 
-    void deleteByBindingId(String bindingId) throws WitcurveException;
+    List<GeneralSlotDetailsDTO> getExamSlotsByGrade(Grade grade, Long examId) throws WitcurveException;
+
+    void deleteGSDsByBindingId(String bindingId) throws WitcurveException;
+
+    void deleteExamSlotsByGradeAndExamId(Grade grade, Long examId) throws WitcurveException;
 }

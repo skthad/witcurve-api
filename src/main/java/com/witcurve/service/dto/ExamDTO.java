@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -25,10 +26,10 @@ public class ExamDTO extends AbstractAuditingDTO {
     private LocalDate endDate;
 
     @NotNull
-    private String examType;
+    private Long academicSessionId;
 
     @NotNull
-    private Long academicSessionId;
+    private Grade grade;
 
     public Long getId() {
         return id;
@@ -62,20 +63,20 @@ public class ExamDTO extends AbstractAuditingDTO {
         this.endDate = endDate;
     }
 
-    public String getExamType() {
-        return examType;
-    }
-
-    public void setExamType(String examType) {
-        this.examType = examType;
-    }
-
     public Long getAcademicSessionId() {
         return academicSessionId;
     }
 
     public void setAcademicSessionId(Long academicSessionId) {
         this.academicSessionId = academicSessionId;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     @Override
@@ -99,7 +100,6 @@ public class ExamDTO extends AbstractAuditingDTO {
             ", name='" + name + '\'' +
             ", startDate=" + startDate +
             ", endDate=" + endDate +
-            ", examType=" + examType +
             ", academicSessionId=" + academicSessionId +
             '}';
     }

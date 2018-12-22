@@ -1,11 +1,13 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.Keyword;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class EventDTO extends AbstractAuditingDTO {
@@ -50,6 +52,8 @@ public class EventDTO extends AbstractAuditingDTO {
     private Boolean present;
 
     private Integer marks;
+
+    private List<Keyword> keywords;
 
     public Long getId() {
         return id;
@@ -193,6 +197,14 @@ public class EventDTO extends AbstractAuditingDTO {
 
     public void setMarks(Integer marks) {
         this.marks = marks;
+    }
+
+    public List<Keyword> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<Keyword> keywords) {
+        this.keywords = keywords;
     }
 
     @Override

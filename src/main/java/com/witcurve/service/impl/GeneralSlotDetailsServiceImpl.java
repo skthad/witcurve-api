@@ -2,6 +2,7 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.GeneralSlotDetails;
 import com.witcurve.domain.enumeration.GSDStatus;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.GeneralSlotDetailsService;
@@ -33,11 +34,14 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     private StandardRepository standardRepository;
 
     @Override
-    public List<GeneralSlotDetailsDTO> create(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) {
+    public List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
         log.debug("Request to create generalSlotDetails");
         Map<Long, String> standardIdBindingValueMap = new HashMap<>();
         for (GeneralSlotDetailsDTO gsd : generalSlotDetailsDTOs) {
             Long standardId = gsd.getStandard().getId();
+            if (standardId == null) {
+                throw new WitcurveException("Standard ID must be provided to create GSDs");
+            }
             if (standardIdBindingValueMap.get(standardId) == null) {
                 String bindingId = UUID.randomUUID().toString();
                 standardIdBindingValueMap.put(standardId, bindingId);
@@ -45,6 +49,30 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             gsd.setBindingId(standardIdBindingValueMap.get(standardId));
         }
         generalSlotDetailsRepository.deactivateSlotDetailsForStandards(standardIdBindingValueMap.keySet());
+
+        List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
+        List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));
+        return slots;
+    }
+
+    @Override
+    public List<GeneralSlotDetailsDTO> createExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
+        log.debug("Request to create exam slots");
+
+        //TODO: logic for overlap
+        Map<Grade, String> gradeBindingValueMap = new HashMap<>();
+        for (GeneralSlotDetailsDTO gsd : generalSlotDetailsDTOs) {
+            Grade grade = gsd.getGrade();
+            Long examId = gsd.getExamId();
+            if (grade == null || examId == null) {
+                throw new WitcurveException("Grade and examId must be provided to create exam slots");
+            }
+            if (gradeBindingValueMap.get(grade) == null) {
+                String bindingId = UUID.randomUUID().toString();
+                gradeBindingValueMap.put(grade, bindingId);
+            }
+            gsd.setBindingId(gradeBindingValueMap.get(grade));
+        }
 
         List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
         List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));
@@ -60,23 +88,28 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public void activate(Long standardId, String bindingId) {
+    public void activateGSDsForStandard(Long standardId, String bindingId) {
 
         generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(Arrays.asList(standardId)));
         generalSlotDetailsRepository.activateSlotDetailsForStandard(standardId, bindingId);
     }
 
     @Override
-    public void deactivate(List<Long> standardIds) {
+    public void deactivateGSDsForStandards(List<Long> standardIds) {
+
         generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(standardIds));
     }
 
     @Override
-    public void clone(Long sourceStandardId, List<Long> destinationStandardIds) {
+    public void cloneGSDs(Long sourceStandardId, List<Long> destinationStandardIds) throws WitcurveException {
         log.debug("Request to clone generalSlotDetails ");
-        List<GeneralSlotDetails> existingSlots = generalSlotDetailsRepository.findByStandardIdAndStatus(sourceStandardId, GSDStatus.ACTIVE);
+        List<GeneralSlotDetails> existingSlots = generalSlotDetailsRepository.findGSDsByStandardIdAndStatus(sourceStandardId, GSDStatus.ACTIVE);
 
-            generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(destinationStandardIds));
+        if (existingSlots.size() == 0) {
+            throw new WitcurveException("No ACTIVE exam slots found for standard ID: "  + sourceStandardId);
+        }
+        generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(destinationStandardIds));
+
         List<GeneralSlotDetailsDTO> slotsToCreate = new ArrayList<>();
         for (Long destinationStandardId : destinationStandardIds) {
             String bindingId = UUID.randomUUID().toString();
@@ -92,6 +125,29 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
+    public void cloneExamSlots(Grade sourceGrade, List<Grade> destinationGrades, Long examId) throws WitcurveException {
+        log.debug("Request to clone generalSlotDetails ");
+        List<GeneralSlotDetails> existingSlots = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(sourceGrade, examId);
+
+        if (existingSlots.size() == 0) {
+            throw new WitcurveException("No exam slots found for grade: "  + sourceGrade + " with exam ID: " + examId);
+        }
+
+        List<GeneralSlotDetailsDTO> slotsToCreate = new ArrayList<>();
+        for (Grade destinationGrade : destinationGrades) {
+            //TODO: logic for overlap
+            String bindingId = UUID.randomUUID().toString();
+            for (GeneralSlotDetailsDTO slot : generalSlotDetailsMapper.toDto(existingSlots)) {
+                slot.setId(null);
+                slot.setGrade(destinationGrade);
+                slot.setBindingId(bindingId);
+                slotsToCreate.add(slot);
+            }
+        }
+        generalSlotDetailsRepository.saveAll(generalSlotDetailsMapper.toEntity(slotsToCreate));
+    }
+
+    @Override
     public GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException {
         log.debug("Request to get generalSlotDetail by id : {}", generalSlotDetailsId);
         GeneralSlotDetails generalSlotDetails = generalSlotDetailsRepository.findById(generalSlotDetailsId).get();
@@ -102,21 +158,39 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardIdAndStatus(Long standardId, GSDStatus status) throws WitcurveException {
+    public List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId, GSDStatus status) throws WitcurveException {
         log.debug("Request to get generalSlotDetails by standard id : {}", standardId);
         List<GeneralSlotDetails> gsdList;
 
         if (status == null) {
-            gsdList = generalSlotDetailsRepository.findByStandardId(standardId);
+            gsdList = generalSlotDetailsRepository.findGSDsByStandardId(standardId);
         } else {
-            gsdList = generalSlotDetailsRepository.findByStandardIdAndStatus(standardId, status);
+            gsdList = generalSlotDetailsRepository.findGSDsByStandardIdAndStatus(standardId, status);
         }
         return generalSlotDetailsMapper.toDto(gsdList);
     }
 
     @Override
-    public void deleteByBindingId(String bindingId) throws WitcurveException {
+    public List<GeneralSlotDetailsDTO> getExamSlotsByGrade(Grade grade, Long examId) throws WitcurveException {
+        log.debug("Request to get generalSlotDetails by grade : {}", grade);
+        List<GeneralSlotDetails> gsdList;
+
+        if (examId == null) {
+            gsdList = generalSlotDetailsRepository.findExamSlotsByGrade(grade);
+        } else {
+            gsdList = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(grade, examId);
+        }
+        return generalSlotDetailsMapper.toDto(gsdList);
+    }
+
+    @Override
+    public void deleteGSDsByBindingId(String bindingId) throws WitcurveException {
         generalSlotDetailsRepository.deleteByBindingId(bindingId);
+    }
+
+    @Override
+    public void deleteExamSlotsByGradeAndExamId(Grade grade, Long examId) throws WitcurveException {
+        generalSlotDetailsRepository.deleteByGradeAndExamId(grade, examId);
     }
 
 

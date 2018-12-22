@@ -31,10 +31,10 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     private SlotCourseDetailsRepository slotCourseDetailsRepository;
 
     @Override
-    public SlotCourseDetailsDTO saveOrUpdate(SlotCourseDetailsDTO slotCourseDetailsDTO) {
-        log.debug("Request to save or update slotCourseDetails : {}", slotCourseDetailsDTO);
-        SlotCourseDetails slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTO);
-        slotCourseDetails = slotCourseDetailsRepository.save(slotCourseDetails);
+    public List<SlotCourseDetailsDTO> saveOrUpdate(List<SlotCourseDetailsDTO> slotCourseDetailsDTOs) {
+        log.debug("Request to save or update slotCourseDetails");
+        List<SlotCourseDetails> slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTOs);
+        slotCourseDetails = slotCourseDetailsRepository.saveAll(slotCourseDetails);
         return slotCourseDetailsMapperLite.toDto(slotCourseDetails);
     }
 

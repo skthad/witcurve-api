@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SlotCourseDetailsService {
 
-    SlotCourseDetailsDTO saveOrUpdate(SlotCourseDetailsDTO slotCourseDetailsDTO);
+    List<SlotCourseDetailsDTO> saveOrUpdate(List<SlotCourseDetailsDTO> slotCourseDetailsDTO);
 
     SlotCourseDetailsDTO getSlotCourseDetailsById(Long slotCourseDetailsId) throws WitcurveException;
 
