@@ -236,7 +236,6 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     private Event createEvent(LeaveApplicationDTO leaveApplicationDTO,LocalDate date){
-        //List<EventDTO> eventDTO = new ArrayList<>();
         LeaveApplication leaveApplications = leaveApplicationMapper.toEntity(leaveApplicationDTO);
         Event event = new Event();
         event.setName("Leave - "+leaveApplications.getReason());
@@ -257,8 +256,13 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private void isLeaveApplicationValid(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException {
         log.debug("Request to check valid leaveApplications in list : {}",leaveApplicationDTO);
             if (leaveApplicationDTO.getType().equals(LeaveApplyor.STUDENT)) {
-                if (leaveApplicationDTO.getAppliedStudentId() == null || leaveApplicationDTO.getAppliedGuardianId() == null) {
-                    log.error("There either applied student id or applied guardian id is null for student leave application : {}", leaveApplicationDTO);
+                // add the condition for guardian id later when date is there
+//                if (leaveApplicationDTO.getAppliedStudentId() == null || leaveApplicationDTO.getAppliedGuardianId() == null) {
+//                    log.error("There either applied student id or applied guardian id is null for student leave application : {}", leaveApplicationDTO);
+//                    throw new WitcurveException("Invalid Request Body");
+//                }
+                if (leaveApplicationDTO.getAppliedStudentId() == null) {
+                    log.error("There either applied student id  for student leave application : {}", leaveApplicationDTO);
                     throw new WitcurveException("Invalid Request Body");
                 }
                 Long workingDays = workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate(),leaveApplicationDTO.getSessionId(),false);
