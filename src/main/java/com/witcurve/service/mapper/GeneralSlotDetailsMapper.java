@@ -27,12 +27,18 @@ public interface GeneralSlotDetailsMapper extends EntityMapper<GeneralSlotDetail
     }
 
     default Standard toStandard(StandardDTO standardDTO) {
+        if (standardDTO == null) {
+            return null;
+        }
         Standard standard = new Standard();
         standard.setId(standardDTO.getId());
         return standard;
     }
 
     default StandardDTO toStandardDTO(Standard standard) {
+        if (standard == null) {
+            return null;
+        }
         StandardDTO standardDTO = new StandardDTO();
         standardDTO.setId(standard.getId());
         return standardDTO;

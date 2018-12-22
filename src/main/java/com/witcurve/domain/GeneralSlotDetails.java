@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.GSDStatus;
+import com.witcurve.domain.enumeration.Grade;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -32,10 +33,13 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @Column(name = "is_recess", nullable = false)
     private Boolean recess = false;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(name = "standard_id", nullable = false)
+    @JoinColumn(name = "standard_id")
     private Standard standard;
+
+    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @NotNull
     @Column(nullable = false, length = 50)
@@ -89,6 +93,14 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
         this.standard = standard;
     }
 
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
     public GSDStatus getStatus() {
         return status;
     }
@@ -134,8 +146,9 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
             ", start='" + start + '\'' +
             ", duration=" + duration +
             ", recess=" + recess +
-            ", standard=" + standard +
-            ", exam=" + exam +
+            (exam == null ? (", standard=" + standard) : "") +
+            (exam != null ? (", grade=" + grade) : "") +
+            (exam != null ? (", exam=" + exam) : "") +
             '}';
     }
 }

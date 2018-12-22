@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.GSDStatus;
+import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -21,8 +22,9 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     @NotNull
     private Boolean recess;
 
-    @NotNull
     private StandardDTO standard;
+
+    private Grade grade;
 
     @NotNull
     private GSDStatus status;
@@ -74,6 +76,14 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.standard = standard;
     }
 
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
     public GSDStatus getStatus() {
         return status;
     }
@@ -118,8 +128,9 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
             ", start='" + start + '\'' +
             ", duration=" + duration +
             ", recess=" + recess +
-            ", standard=" + standard +
-            ", examId=" + examId +
+            (examId == null ? (", standard=" + standard) : "") +
+            (examId != null ? (", grade=" + grade) : "") +
+            (examId != null ? (", examId=" + examId) : "") +
             '}';
     }
 }

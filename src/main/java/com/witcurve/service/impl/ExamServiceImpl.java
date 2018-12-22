@@ -2,9 +2,9 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Exam;
 import com.witcurve.repository.ExamRepository;
+import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.service.ExamService;
 import com.witcurve.service.dto.ExamDTO;
-import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.mapper.ExamMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -24,6 +22,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     ExamRepository examRepository;
+
+    @Autowired
+    GeneralSlotDetailsRepository generalSlotDetailsRepository;
 
     @Autowired
     ExamMapper examMapper;
@@ -55,6 +56,7 @@ public class ExamServiceImpl implements ExamService {
         if (exam == null){
             throw new WitcurveException("No exam with given Id");
         }
+        generalSlotDetailsRepository.deleteByExamId(examId);
         examRepository.delete(exam);
     }
 }
