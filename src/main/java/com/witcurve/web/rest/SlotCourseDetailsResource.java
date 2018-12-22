@@ -3,7 +3,6 @@ package com.witcurve.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.service.SlotCourseDetailsService;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
-import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,21 +29,18 @@ public class SlotCourseDetailsResource {
     /**
      * creates a slotCourseDetails
      *
-     * @param slotCourseDetailsDTO
+     * @param slotCourseDetailsDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/slot-course-details")
     @Timed
-    public ResponseEntity<SlotCourseDetailsDTO> createSlotCourseDetails(@RequestBody @Valid SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<SlotCourseDetailsDTO>> createSlotCourseDetails(@RequestBody @Valid List<SlotCourseDetailsDTO> slotCourseDetailsDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save slotCourseDetails");
-        if (slotCourseDetailsDTO.getId() != null) {
-            throw new WitcurveException("New slotCourseDetails can't already have an id");
-        }
-        SlotCourseDetailsDTO result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTO);
-        return ResponseEntity.created(new URI("/api/slot-course-details/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("slotCourseDetails", result.getId().toString()))
+        List<SlotCourseDetailsDTO> result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTOs);
+        return ResponseEntity.created(new URI("/api/slot-course-details/"))
+            .headers(HeaderUtil.createEntityUpdateAlert("slotCourseDetails", ""))
             .body(result);
     }
 
@@ -63,27 +58,6 @@ public class SlotCourseDetailsResource {
         log.debug("Request to get SlotCourseDetails with id {}", slotCourseDetailsId);
         SlotCourseDetailsDTO result = slotCourseDetailsService.getSlotCourseDetailsById(slotCourseDetailsId);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * update the given slotCourseDetails
-     *
-     * @param slotCourseDetailsDTO
-     * @return
-     * @throws WitcurveException
-     */
-
-    @PutMapping("/slot-course-details")
-    @Timed
-    public ResponseEntity<SlotCourseDetailsDTO> updateSlotCourseDetails(@RequestBody @Valid SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException {
-        log.debug("Request to update slotCourseDetails");
-        if (slotCourseDetailsDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        SlotCourseDetailsDTO result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("slotCourseDetails", slotCourseDetailsDTO.getId().toString()))
-            .body(result);
     }
 
     /**
