@@ -17,7 +17,11 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Long fromUserId;
 
+    private String fromUserName;
+
     private Long toUserId;
+
+    private String toUserName;
 
     private Long messageThreadId;
 
@@ -56,12 +60,28 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
         this.fromUserId = fromUserId;
     }
 
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
     public Long getToUserId() {
         return toUserId;
     }
 
     public void setToUserId(Long toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
     }
 
     public Long getMessageThreadId() {
@@ -101,7 +121,9 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
             ", subject='" + subject + '\'' +
             ", body='" + body + '\'' +
             ", fromUserId=" + fromUserId +
+            ", fromUserName=" + fromUserName +
             ", toUserId=" + toUserId +
+            ", toUserName=" + toUserName +
             ", messageThreadId=" + messageThreadId +
             ", read=" + read +
             '}';
