@@ -31,6 +31,12 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     private Float incomeTax = 0f;
 
+    private Float lateEntryDeductions = 0f;
+
+    private Float miscEarnings = 0f;
+
+    private Float miscDeductions = 0f;
+
     public PayrollDetailsDTO() {
     }
 
@@ -128,6 +134,30 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     public void setIncomeTax(Float incomeTax) {
         this.incomeTax = incomeTax;
+    }
+
+    public Float getLateEntryDeductions() {
+        return lateEntryDeductions;
+    }
+
+    public void setLateEntryDeductions(Float lateEntryDeductions) {
+        this.lateEntryDeductions = lateEntryDeductions;
+    }
+
+    public Float getMiscEarnings() {
+        return miscEarnings;
+    }
+
+    public void setMiscEarnings(Float miscEarnings) {
+        this.miscEarnings = miscEarnings;
+    }
+
+    public Float getMiscDeductions() {
+        return miscDeductions;
+    }
+
+    public void setMiscDeductions(Float miscDeductions) {
+        this.miscDeductions = miscDeductions;
     }
 
     @Override
