@@ -218,7 +218,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                     }
                 }
             } else {
-                for(LocalDate date=fromDate ; date.isBefore(toDate) || date.equals(toDate) ; fromDate.plusDays(1)){
+                for(LocalDate date=fromDate ; date.isBefore(toDate) || date.equals(toDate) ; date=date.plusDays(1)){
                     if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
                         workingDays++;
                     }
