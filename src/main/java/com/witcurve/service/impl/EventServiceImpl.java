@@ -12,10 +12,9 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -382,7 +381,35 @@ public class EventServiceImpl implements EventService {
                 }
             }
             if(staff.get().getType().equals(StaffType.ADMIN)) {
-                result = eventRepository.findAdminNotices(sessionId, pageable);
+                List<Event> results = eventRepository.findAdminNoticesBySession(sessionId);
+                results.addAll(eventRepository.findAdminNoticesByStandardInSession(sessionId));
+                Collections.sort(results, new Comparator<Event>() {
+                    @Override
+                    public int compare(Event o1, Event o2) {
+                        return o1.getDate().isAfter(o2.getDate()) ? -1 : 0;
+                    }
+                });
+
+                Integer resultSize = results.size();
+                // offset  2, size 10
+                // from = 20, to = 30
+                // resultSize = 24, 30, 34
+                // to========== 24, 30, 30
+                // from======== 20, 20, 20
+                Integer offset = Integer.parseInt(String.valueOf(pageable.getOffset()));
+                Integer size = Integer.parseInt(String.valueOf(pageable.getPageSize()));
+                Integer from =  offset * size;
+                Integer to = from + size;
+
+                if (from >= resultSize) {
+                    results = results.subList(0, 0);
+                } else if (resultSize >= to) {
+                    results = results.subList(from, to);
+                } else {
+                    results.subList(from, resultSize);
+                }
+
+                return new PageImpl<>(eventMapper.toDto(results));
             }
         }
 

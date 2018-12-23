@@ -5,7 +5,6 @@ import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.dto.StudentDTO;
-import com.witcurve.service.dto.UserDTO;
 import com.witcurve.service.mapper.StudentMapper;
 import com.witcurve.service.mapper.StudentMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -75,5 +74,15 @@ public class StudentServiceImpl implements StudentService {
             throw  new WitcurveException("No student with given id");
         }
         studentRepository.delete(student);
+    }
+
+    @Override
+    public StudentDTO getStudentBySchoolIdAndAdmissionId(Long schoolId, String admissionId) throws WitcurveException {
+        log.debug("Request to get student with school id : {} and admission id : {}", schoolId, admissionId);
+        Student student = studentRepository.findBySchoolIdAndAdmissionId(schoolId, admissionId);
+        if (student == null){
+            throw  new WitcurveException("No student with given admission id in the give school id");
+        }
+        return studentMapper.toDto(student);
     }
 }

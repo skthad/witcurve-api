@@ -28,6 +28,8 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private Long userId;
 
+    private String userName;
+
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
@@ -136,6 +138,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public LocalDate getDateOfBirth() {
