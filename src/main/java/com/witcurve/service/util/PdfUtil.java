@@ -28,7 +28,7 @@ public class PdfUtil {
 
         createFooter(stream, mediaBox);
 
-
+        stream.close();
         doc.save("testPDF.pdf");
 
     }
@@ -65,19 +65,18 @@ public class PdfUtil {
         float startX = (mediaBox.getWidth() - titleWidth) / 2;
         float startY = mediaBox.getHeight() - marginTop - titleHeight;
 
-        stream.beginText();
-        stream.setFont(font, fontSize);
-        stream.newLineAtOffset(startX, startY);
-        stream.showText(text);
-        stream.endText();
+        writeToStream(stream, font, fontSize, startX, startY, text);
     }
 
     private static void createFooter(PDPageContentStream stream, PDRectangle mediaBox) throws IOException {
 
-        String text = "Powered by WitCurve";
+        String text = "Powered by WitCurve" + String.valueOf(Character.toChars(169));
         PDFont font = PDType1Font.COURIER;
         int marginBottom = 30;
         int fontSize = 12;
+
+        stream.addRect(0, 40, mediaBox.getWidth(), 1);
+        stream.fill();
 
         float titleWidth = font.getStringWidth(text) / 1000 * fontSize;
         float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
@@ -85,10 +84,14 @@ public class PdfUtil {
         float startX = (mediaBox.getWidth() - titleWidth) / 2;
         float startY = marginBottom - titleHeight;
 
+        writeToStream(stream, font, fontSize, startX, startY, text);
+    }
+
+    private static void writeToStream(PDPageContentStream stream, PDFont font, int fontSize, float startX, float startY, String text) throws IOException {
         stream.beginText();
         stream.setFont(font, fontSize);
         stream.newLineAtOffset(startX, startY);
         stream.showText(text);
-        stream.close();
+        stream.endText();
     }
 }
