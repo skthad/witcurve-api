@@ -40,9 +40,12 @@ public interface MessageMapper extends EntityMapper<MessageDTO, Message> {
     }
 
     default String getName(User user) {
-        if(user == null && user.getFirstName()==null && user.getLastName() == null) {
+        if(user == null) {
             return null;
         } else {
+            if(user.getFirstName()==null && user.getLastName() == null) {
+                return null;
+            }
             return user.getFirstName()+" "+user.getLastName();
         }
     }
