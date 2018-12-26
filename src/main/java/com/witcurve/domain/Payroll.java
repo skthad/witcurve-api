@@ -68,6 +68,16 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private Integer year;
 
     @NotNull
+    @Column(nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate cycleStart;
+
+    @NotNull
+    @Column(nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate cycleEnd;
+
+    @NotNull
     @Column(name = "staff_id", nullable = false)
     private Long staffId;
 
@@ -157,6 +167,22 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public LocalDate getCycleStart() {
+        return cycleStart;
+    }
+
+    public void setCycleStart(LocalDate cycleStart) {
+        this.cycleStart = cycleStart;
+    }
+
+    public LocalDate getCycleEnd() {
+        return cycleEnd;
+    }
+
+    public void setCycleEnd(LocalDate cycleEnd) {
+        this.cycleEnd = cycleEnd;
     }
 
     public Long getStaffId() {

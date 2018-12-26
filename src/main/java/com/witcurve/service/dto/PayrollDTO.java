@@ -45,6 +45,14 @@ public class PayrollDTO extends AbstractAuditingDTO {
     private Integer year;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate cycleStart;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate cycleEnd;
+
+    @NotNull
     private Long staffId;
 
     public PayrollDTO() {
@@ -136,6 +144,22 @@ public class PayrollDTO extends AbstractAuditingDTO {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public LocalDate getCycleStart() {
+        return cycleStart;
+    }
+
+    public void setCycleStart(LocalDate cycleStart) {
+        this.cycleStart = cycleStart;
+    }
+
+    public LocalDate getCycleEnd() {
+        return cycleEnd;
+    }
+
+    public void setCycleEnd(LocalDate cycleEnd) {
+        this.cycleEnd = cycleEnd;
     }
 
     public Long getStaffId() {

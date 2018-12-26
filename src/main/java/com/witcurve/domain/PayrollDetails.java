@@ -55,6 +55,15 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     @Column
     private Float incomeTax;
 
+    @Column
+    private Float lateEntryDeductions;
+
+    @Column
+    private Float miscEarnings;
+
+    @Column
+    private Float miscDeductions;
+
     public Long getId() {
         return id;
     }
@@ -149,6 +158,30 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
 
     public void setIncomeTax(Float incomeTax) {
         this.incomeTax = incomeTax;
+    }
+
+    public Float getLateEntryDeductions() {
+        return lateEntryDeductions;
+    }
+
+    public void setLateEntryDeductions(Float lateEntryDeductions) {
+        this.lateEntryDeductions = lateEntryDeductions;
+    }
+
+    public Float getMiscEarnings() {
+        return miscEarnings;
+    }
+
+    public void setMiscEarnings(Float miscEarnings) {
+        this.miscEarnings = miscEarnings;
+    }
+
+    public Float getMiscDeductions() {
+        return miscDeductions;
+    }
+
+    public void setMiscDeductions(Float miscDeductions) {
+        this.miscDeductions = miscDeductions;
     }
 
     @Override
