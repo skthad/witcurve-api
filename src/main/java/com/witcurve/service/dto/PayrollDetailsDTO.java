@@ -13,6 +13,13 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     private Instant deactivationDate;
 
+    @NotNull
+    private Integer paidDays = 0;
+
+    @NotNull
+    private Integer totalDays = 0;
+
+    @NotNull
     private Float basicSalary = 0f;
 
     private Float houseRentAllowance = 0f;
@@ -32,6 +39,8 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
     private Float incomeTax = 0f;
 
     private Float lateEntryDeductions = 0f;
+
+    private Float bonus = 0f;
 
     private Float miscEarnings = 0f;
 
@@ -62,6 +71,22 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     public void setDeactivationDate(Instant deactivationDate) {
         this.deactivationDate = deactivationDate;
+    }
+
+    public Integer getPaidDays() {
+        return paidDays;
+    }
+
+    public void setPaidDays(Integer paidDays) {
+        this.paidDays = paidDays;
+    }
+
+    public Integer getTotalDays() {
+        return totalDays;
+    }
+
+    public void setTotalDays(Integer totalDays) {
+        this.totalDays = totalDays;
     }
 
     public Float getBasicSalary() {
@@ -142,6 +167,13 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     public void setLateEntryDeductions(Float lateEntryDeductions) {
         this.lateEntryDeductions = lateEntryDeductions;
+    }
+    public Float getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Float bonus) {
+        this.bonus = bonus;
     }
 
     public Float getMiscEarnings() {

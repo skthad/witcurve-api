@@ -19,12 +19,6 @@ public class PayrollDTO extends AbstractAuditingDTO {
     @NotNull
     private PayrollDetailsDTO payrollDetails;
 
-    private Float bonus = 0f;
-
-    private Float lossOfPay = 0f;
-
-    private String reasonForLoss;
-
     private Integer checkNumber;
 
     @NotNull
@@ -72,30 +66,6 @@ public class PayrollDTO extends AbstractAuditingDTO {
 
     public void setPayrollDetails(PayrollDetailsDTO payrollDetails) {
         this.payrollDetails = payrollDetails;
-    }
-
-    public Float getBonus() {
-        return bonus;
-    }
-
-    public void setBonus(Float bonus) {
-        this.bonus = bonus;
-    }
-
-    public Float getLossOfPay() {
-        return lossOfPay;
-    }
-
-    public void setLossOfPay(Float lossOfPay) {
-        this.lossOfPay = lossOfPay;
-    }
-
-    public String getReasonForLoss() {
-        return reasonForLoss;
-    }
-
-    public void setReasonForLoss(String reasonForLoss) {
-        this.reasonForLoss = reasonForLoss;
     }
 
     public Integer getCheckNumber() {

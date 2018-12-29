@@ -32,15 +32,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private PayrollDetails payrollDetails;
 
     @Column
-    private Float bonus;
-    
-    @Column
-    private Float lossOfPay;
-    
-    @Column
-    private String reasonForLoss;
-
-    @Column
     private Integer checkNumber;
 
     @NotNull
@@ -95,30 +86,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     public void setPayrollDetails(PayrollDetails payrollDetails) {
         this.payrollDetails = payrollDetails;
-    }
-
-    public Float getBonus() {
-        return bonus;
-    }
-
-    public void setBonus(Float bonus) {
-        this.bonus = bonus;
-    }
-
-    public Float getLossOfPay() {
-        return lossOfPay;
-    }
-
-    public void setLossOfPay(Float lossOfPay) {
-        this.lossOfPay = lossOfPay;
-    }
-
-    public String getReasonForLoss() {
-        return reasonForLoss;
-    }
-
-    public void setReasonForLoss(String reasonForLoss) {
-        this.reasonForLoss = reasonForLoss;
     }
 
     public Integer getCheckNumber() {

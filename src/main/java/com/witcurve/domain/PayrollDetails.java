@@ -28,8 +28,17 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     @Convert(converter = InstantTimeConverter.class)
     private Instant deactivationDate;
 
-    @Column
-    private Float basicSalary;
+    @NotNull
+    @Column(nullable = false)
+    private Integer paidDays = 0;
+
+    @NotNull
+    @Column(nullable = false)
+    private Integer totalDays = 0;
+
+    @NotNull
+    @Column(nullable = false)
+    private Float basicSalary = 0f;
     
     @Column
     private Float houseRentAllowance;
@@ -59,6 +68,9 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     private Float lateEntryDeductions;
 
     @Column
+    private Float bonus;
+
+    @Column
     private Float miscEarnings;
 
     @Column
@@ -86,6 +98,22 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
 
     public void setDeactivationDate(Instant deactivationDate) {
         this.deactivationDate = deactivationDate;
+    }
+
+    public Integer getPaidDays() {
+        return paidDays;
+    }
+
+    public void setPaidDays(Integer paidDays) {
+        this.paidDays = paidDays;
+    }
+
+    public Integer getTotalDays() {
+        return totalDays;
+    }
+
+    public void setTotalDays(Integer totalDays) {
+        this.totalDays = totalDays;
     }
 
     public Float getBasicSalary() {
@@ -166,6 +194,14 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
 
     public void setLateEntryDeductions(Float lateEntryDeductions) {
         this.lateEntryDeductions = lateEntryDeductions;
+    }
+
+    public Float getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Float bonus) {
+        this.bonus = bonus;
     }
 
     public Float getMiscEarnings() {
