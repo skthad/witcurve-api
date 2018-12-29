@@ -15,12 +15,22 @@ import java.io.IOException;
 
 public class PdfUtil {
 
+    private static float cursorX_LEFT = 20f;
+    private static float cursorX_RIGHT = 25f;
+    private static float cursorY_TOP = 25f;
+    private static float cursorY_BOTTOM = 15f;
+    private static float cursor_CENTER = 0f;
+    private static PDFont font = PDType1Font.HELVETICA_BOLD;
+    private static int fontSize = 12;
+
     public static void main(String[] args) throws IOException {
 
         // input parameter
         SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
 
         PayrollDetailsDTO payrollDetailsDTO = new PayrollDetailsDTO();
+        payrollDetailsDTO.setPaidDays(21);
+        payrollDetailsDTO.setTotalDays(22);
         payrollDetailsDTO.setBasicSalary(12000f);
         payrollDetailsDTO.setHouseRentAllowance(6000f);
         payrollDetailsDTO.setConveyanceAllowance(1000f);
@@ -32,10 +42,10 @@ public class PdfUtil {
         payrollDetailsDTO.setProfessionalTax(1300f);
         payrollDetailsDTO.setIncomeTax(2200f);
         payrollDetailsDTO.setLateEntryDeductions(0.0f);
+        payrollDetailsDTO.setBonus(11000f);
 
         PayrollDTO payrollDTO = new PayrollDTO();
         payrollDTO.setPayrollDetails(payrollDetailsDTO);
-        payrollDTO.setBonus(11000f);
 
         createPDF(schoolInfo, payrollDTO);
     }
@@ -43,15 +53,20 @@ public class PdfUtil {
     public static void createPDF(SchoolInfoDTO schoolInfo, PayrollDTO payrollDTO) throws IOException {
         final PDDocument doc = new PDDocument();
         PDPage page = new PDPage(PDRectangle.A4);
-        PDRectangle mediaBox = page.getMediaBox();
         doc.addPage(page);
+
+        PDRectangle mediaBox = page.getMediaBox();
+        cursorX_RIGHT = mediaBox.getWidth() - cursorX_RIGHT;
+        cursorY_TOP = mediaBox.getHeight() - cursorY_TOP;
+        cursor_CENTER = (cursorX_LEFT + cursorX_RIGHT) / 2;
 
         PDPageContentStream stream = new PDPageContentStream(doc, page);
 
         // createGrid(stream, mediaBox);
         createHeader(stream, mediaBox, doc, schoolInfo);
-        createContent(stream, mediaBox, payrollDTO);
         createFooter(stream, mediaBox);
+        createContent(stream, payrollDTO);
+        createNote(stream);
 
         stream.close();
         doc.save("testPDF.pdf");
@@ -59,283 +74,292 @@ public class PdfUtil {
     }
 
     private static void createHeader(PDPageContentStream stream, PDRectangle mediaBox, PDDocument doc, SchoolInfoDTO schoolInfo) throws IOException {
-        stream.drawImage(PDImageXObject.createFromFile("dpis.jpg", doc), mediaBox.getWidth() - 75, mediaBox.getHeight() - 75, 50, 50);
-        createSchoolInfo(stream, mediaBox, schoolInfo);
+
+        createSchoolInfo(stream, schoolInfo);
+
+        float imageSize = 50f;
+        stream.drawImage(PDImageXObject.createFromFile("dpis.jpg", doc), cursorX_RIGHT - imageSize, cursorY_TOP, imageSize, imageSize);
+
         createTitle(stream, mediaBox);
-    }
-
-    private static void createContent(PDPageContentStream stream, PDRectangle mediaBox, PayrollDTO payrollDTO) throws IOException {
-
-        int totalDays = 22;
-        int paidDays = 21;
-
-        PDType1Font font = PDType1Font.HELVETICA_BOLD;
-        int fontSize = 12;
-
-        createEmployeeInfoLeft(stream, mediaBox);
-        createEmployeeInfoRight(stream, mediaBox);
-
-        float totalEarnings = createEarnings(stream, mediaBox, payrollDTO);
-        float totalDeductions = createDeductions(stream, mediaBox, payrollDTO);
-
-        stream.addRect(60, mediaBox.getHeight() - 600, 400, 1);
-        stream.fill();
-
-        double earnings = ((double) paidDays / totalDays) * totalEarnings;
-        double netSalary = earnings - totalDeductions;
-        writeToStream(stream, font, fontSize, 80, mediaBox.getHeight() - 625, "Net Salary: ");
-        writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2 + 50, mediaBox.getHeight() - 625,
-            "    Rs. " + Math.round(netSalary * 100.0)/100.0);
     }
 
     private static void createFooter(PDPageContentStream stream, PDRectangle mediaBox) throws IOException {
 
+        int fSize = fontSize;
         String text = "Powered by WitCurve" + String.valueOf(Character.toChars(169));
         PDFont font = PDType1Font.COURIER;
-        int marginBottom = 30;
-        int fontSize = 12;
 
-        stream.addRect(0, 40, mediaBox.getWidth(), 1);
+        float titleWidth = font.getStringWidth(text) / 1000 * fSize;
+
+        writeToStream(stream, font, fSize, cursor_CENTER - titleWidth / 2, cursorY_BOTTOM, text);
+        cursorY_BOTTOM += 20;
+
+        stream.addRect(0, cursorY_BOTTOM, mediaBox.getWidth(), 2);
         stream.fill();
-
-        float titleWidth = font.getStringWidth(text) / 1000 * fontSize;
-        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
-
-        float startX = (mediaBox.getWidth() - titleWidth) / 2;
-        float startY = marginBottom - titleHeight;
-
-        writeToStream(stream, font, fontSize, startX, startY, text);
     }
 
-    private static void createSchoolInfo(PDPageContentStream stream, PDRectangle mediaBox, SchoolInfoDTO schoolInfo) throws IOException {
+    private static void createContent(PDPageContentStream stream, PayrollDTO payrollDTO) throws IOException {
+
+        int fSize = fontSize;
+
+        cursorX_LEFT += 30;
+        cursorY_TOP -= 20;
+        createEmployeeInfoRight(stream, payrollDTO);
+        createEmployeeInfoLeft(stream);
+
+        cursorX_LEFT += 20;
+
+        cursorY_TOP -= 20;
+        float totalEarnings = createEarnings(stream, payrollDTO);
+
+        cursorY_TOP -= 20;
+        float totalDeductions = createDeductions(stream, payrollDTO);
+
+        stream.addRect(cursorX_LEFT - 15, cursorY_TOP - 10, 400, 1);
+        stream.fill();
+
+        double earnings = ((double) payrollDTO.getPayrollDetails().getPaidDays() / payrollDTO.getPayrollDetails().getTotalDays()) * totalEarnings;
+        double netSalary = earnings - totalDeductions;
+
+        cursorY_TOP -= 30;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Net Salary: ");
+        writeToStream(stream, font, fSize, cursor_CENTER + 50, cursorY_TOP,
+            "    Rs. " + Math.round(netSalary * 100.0)/100.0);
+    }
+
+    private static void createNote(PDPageContentStream stream) throws IOException {
+        int fSize = fontSize - 3;
+        cursorY_TOP -= 150;
+        cursorY_BOTTOM += 20;
+        cursorX_LEFT += 20;
+
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_BOTTOM, "3. Only non-zero figures are shown above. ");
+        cursorY_BOTTOM += 15;
+
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_BOTTOM, "2. You can get the excel version... ");
+        cursorY_BOTTOM += 15;
+
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_BOTTOM, "1. Net Salary is calculated as ... ");
+        cursorY_BOTTOM += 15;
+
+        cursorX_LEFT -= 20;
+
+        stream.addRect(cursorX_LEFT - 5, cursorY_BOTTOM, 75, 1);
+        stream.fill();
+
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_BOTTOM + 5, "PLEASE NOTE: ");
+        cursorY_BOTTOM += 15;
+    }
+
+    private static void createSchoolInfo(PDPageContentStream stream, SchoolInfoDTO schoolInfo) throws IOException {
         String text = "Delhi Public International School"; //schoolInfo.getSchool().getName();
-        PDFont font = PDType1Font.HELVETICA_BOLD;
-        int margin = 18;
-        int fontSize = 20;
+        int fSize = fontSize + 8;
 
         float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
 
-        float startX = margin;
-        float startY = mediaBox.getHeight() - margin - titleHeight;
+        cursorY_TOP = cursorY_TOP - titleHeight;
 
-        writeToStream(stream, font, fontSize, startX, startY, text);
-        fontSize = 9;
-        titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
-        startY = startY - titleHeight - 5;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, text);
+        fSize = fontSize - 3;
+        titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
+        cursorY_TOP = cursorY_TOP - titleHeight - 5;
 
-        writeToStream(stream, font, fontSize, startX, startY, "Address 1, (Address 2)");
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Address 1, (Address 2)");
 
-        startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "City, State, Zip etc.");
+        cursorY_TOP = cursorY_TOP - titleHeight - 5;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "City, State, Zip etc.");
     }
 
     private static void createTitle(PDPageContentStream stream, PDRectangle mediaBox) throws IOException {
+
+        cursorY_TOP = cursorY_TOP - 15;
+
         String text = "Salary Slip - December 2018";
-        PDFont font = PDType1Font.HELVETICA_BOLD;
-        int marginTop = 100;
-        int fontSize = 16;
+        int fSize = fontSize + 4;
 
-        float titleWidth = font.getStringWidth(text) / 1000 * fontSize;
-        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
+        float titleWidth = font.getStringWidth(text) / 1000 * fSize;
+        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        float startX = (mediaBox.getWidth() - titleWidth) / 2;
-        float startY = mediaBox.getHeight() - marginTop;
-
-        stream.addRect(0, startY + 10, mediaBox.getWidth(), 2);
+        stream.addRect(0, cursorY_TOP, mediaBox.getWidth(), 2);
         stream.fill();
 
-        startY -= titleHeight;
+        cursorY_TOP -= 10 + titleHeight;
 
-        writeToStream(stream, font, fontSize, startX, startY, text);
+        writeToStream(stream, font, fSize, cursor_CENTER - titleWidth/2, cursorY_TOP, text);
     }
 
-    private static void createEmployeeInfoLeft(PDPageContentStream stream, PDRectangle mediaBox) throws IOException {
-        PDFont font = PDType1Font.HELVETICA_BOLD;
-        int margin = 50;
-        int fontSize = 10;
+    private static void createEmployeeInfoRight(PDPageContentStream stream, PayrollDTO payrollDTO) throws IOException {
+        int fSize = fontSize - 2;
 
-        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
+        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        float startX = margin;
-        float startY = mediaBox.getHeight() - 150;
+        float startY = cursorY_TOP - titleHeight;
 
-        writeToStream(stream, font, fontSize, startX, startY, "Employee ID: XXXXXXXXX");
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Joined On: XX/XX/XXXX");
 
         startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "Name: XX XXXXX XXX");
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Location: XX, XXXXXX XXXX");
 
         startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "Designation: XXXXX");
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Total Days: " + payrollDTO.getPayrollDetails().getTotalDays());
 
         startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "D.O.B.: XX/XX/XXXX");
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Paid Days: " + payrollDTO.getPayrollDetails().getPaidDays());
+
     }
 
-    private static void createEmployeeInfoRight(PDPageContentStream stream, PDRectangle mediaBox) throws IOException {
-        PDFont font = PDType1Font.HELVETICA_BOLD;
-        int fontSize = 10;
+    private static void createEmployeeInfoLeft(PDPageContentStream stream) throws IOException {
+        int fSize = fontSize - 2;
 
-        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
+        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        float startX = mediaBox.getWidth() / 2;
-        float startY = mediaBox.getHeight() - 150;
+        cursorY_TOP -= titleHeight;
 
-        writeToStream(stream, font, fontSize, startX, startY, "Joined On: XX/XX/XXXX");
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Employee ID: XXXXXXXXX");
 
-        startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "Location: XX, XXXXXX XXXX");
+        cursorY_TOP -= titleHeight + 5;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Name: XX XXXXX XXX");
 
-        startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "Total Days: XXX");
+        cursorY_TOP -= titleHeight + 5;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Designation: XXXXX");
 
-        startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fontSize, startX, startY, "Paid Days: XX");
+        cursorY_TOP -= titleHeight + 5;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "D.O.B.: XX/XX/XXXX");
     }
 
-    private static float createEarnings(PDPageContentStream stream, PDRectangle mediaBox, PayrollDTO payrollDTO) throws IOException {
+    private static float createEarnings(PDPageContentStream stream, PayrollDTO payrollDTO) throws IOException {
 
         float totalEarnings = 0.0f;
+        int fSize = fontSize;
+        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        PDFont font = PDType1Font.HELVETICA_BOLD;
-        int margin = 80;
-        int fontSize = 12;
+        cursorY_TOP -= titleHeight;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "EARNINGS");
 
-        float startX = margin;
-        float startY = mediaBox.getHeight() - 250;
+        cursorX_LEFT += 20;
+        fSize = fontSize - 2;
+        titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        writeToStream(stream, font, fontSize, startX, startY, "EARNINGS");
+        cursorY_TOP -= titleHeight + 5;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Basic Salary: ");
+        writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getBasicSalary());
+        totalEarnings += payrollDTO.getPayrollDetails().getBasicSalary();
 
-        startX = startX + 20;
-        fontSize = 10;
-        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
-
-        if (payrollDTO.getPayrollDetails().getBasicSalary() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Basic Salary: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getBasicSalary());
-            totalEarnings += payrollDTO.getPayrollDetails().getBasicSalary();
-        }
-
-        if (payrollDTO.getPayrollDetails().getHouseRentAllowance() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "House Rent Allowance: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getHouseRentAllowance());
+        if (payrollDTO.getPayrollDetails().getHouseRentAllowance() != null && payrollDTO.getPayrollDetails().getHouseRentAllowance() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "House Rent Allowance: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getHouseRentAllowance());
             totalEarnings += payrollDTO.getPayrollDetails().getHouseRentAllowance();
         }
 
-        if (payrollDTO.getPayrollDetails().getConveyanceAllowance() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Conveyance Allowance: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getConveyanceAllowance());
+        if (payrollDTO.getPayrollDetails().getConveyanceAllowance() != null && payrollDTO.getPayrollDetails().getConveyanceAllowance() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Conveyance Allowance: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getConveyanceAllowance());
             totalEarnings += payrollDTO.getPayrollDetails().getConveyanceAllowance();
         }
 
-        if (payrollDTO.getPayrollDetails().getMedicalAllowance() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Medical Allowance: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getMedicalAllowance());
+        if (payrollDTO.getPayrollDetails().getMedicalAllowance() != null && payrollDTO.getPayrollDetails().getMedicalAllowance() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Medical Allowance: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getMedicalAllowance());
             totalEarnings += payrollDTO.getPayrollDetails().getMedicalAllowance();
         }
 
-        if (payrollDTO.getPayrollDetails().getManagerialAllowance() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Basic Salary: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getManagerialAllowance());
+        if (payrollDTO.getPayrollDetails().getManagerialAllowance() != null && payrollDTO.getPayrollDetails().getManagerialAllowance() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Basic Salary: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getManagerialAllowance());
             totalEarnings += payrollDTO.getPayrollDetails().getManagerialAllowance();
         }
 
-        if (payrollDTO.getPayrollDetails().getLeaveTravelAllowance() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Leave Travel Allowance: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getLeaveTravelAllowance());
+        if (payrollDTO.getPayrollDetails().getLeaveTravelAllowance() != null && payrollDTO.getPayrollDetails().getLeaveTravelAllowance() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Leave Travel Allowance: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getLeaveTravelAllowance());
             totalEarnings += payrollDTO.getPayrollDetails().getLeaveTravelAllowance();
         }
 
-        if (payrollDTO.getBonus() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Bonus: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getBonus() );
-            totalEarnings += payrollDTO.getBonus();
+        if (payrollDTO.getPayrollDetails().getBonus() != null && payrollDTO.getPayrollDetails().getBonus() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Bonus: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getBonus() );
+            totalEarnings += payrollDTO.getPayrollDetails().getBonus();
         }
 
-        if (payrollDTO.getPayrollDetails().getMiscEarnings() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Misc. Earnings: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getMiscEarnings());
+        if (payrollDTO.getPayrollDetails().getMiscEarnings() != null && payrollDTO.getPayrollDetails().getMiscEarnings() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Misc. Earnings: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getMiscEarnings());
             totalEarnings += payrollDTO.getPayrollDetails().getMiscEarnings();
         }
 
-        startY = startY - titleHeight - 15;
-        writeToStream(stream, font, fontSize + 1, startX, startY, "Total Earnings: ");
-        writeToStream(stream, font, fontSize + 1, mediaBox.getWidth() / 2 + 50, startY, "(+) Rs. " + totalEarnings);
+        fSize += 1;
+        cursorY_TOP -= titleHeight + 15;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Total Earnings: ");
+        writeToStream(stream, font, fSize, cursor_CENTER + 50, cursorY_TOP, "(+) Rs. " + totalEarnings);
+
+        cursorX_LEFT -= 20;
 
         return totalEarnings;
     }
 
-    private static float createDeductions(PDPageContentStream stream, PDRectangle mediaBox, PayrollDTO payrollDTO) throws IOException {
+    private static float createDeductions(PDPageContentStream stream, PayrollDTO payrollDTO) throws IOException {
 
         float totalDeductions = 0.0f;
+        int fSize = fontSize;
+        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        PDFont font = PDType1Font.HELVETICA_BOLD;
-        int margin = 80;
-        int fontSize = 12;
+        cursorY_TOP -= titleHeight;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "DEDUCTIONS");
 
-        float startX = margin;
-        float startY = mediaBox.getHeight() - 450;
+        cursorX_LEFT += 20;
+        fSize = fontSize - 2;
+        titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fSize;
 
-        writeToStream(stream, font, fontSize, startX, startY, "DEDUCTIONS");
-
-        startX = startX + 20;
-        fontSize = 10;
-        float titleHeight = font.getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * fontSize;
-
-        if (payrollDTO.getPayrollDetails().getProvidentFund() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Provident Fund: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getProvidentFund());
+        if (payrollDTO.getPayrollDetails().getProvidentFund() != null && payrollDTO.getPayrollDetails().getProvidentFund() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Provident Fund: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getProvidentFund());
             totalDeductions += payrollDTO.getPayrollDetails().getProvidentFund();
         }
 
-        if (payrollDTO.getPayrollDetails().getProfessionalTax() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Professional Tax: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getProfessionalTax());
+        if (payrollDTO.getPayrollDetails().getProfessionalTax() != null && payrollDTO.getPayrollDetails().getProfessionalTax() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Professional Tax: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getProfessionalTax());
             totalDeductions += payrollDTO.getPayrollDetails().getProfessionalTax();
         }
 
-        if (payrollDTO.getPayrollDetails().getIncomeTax() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Income Tax: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getIncomeTax());
+        if (payrollDTO.getPayrollDetails().getIncomeTax() != null && payrollDTO.getPayrollDetails().getIncomeTax() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Income Tax: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getIncomeTax());
             totalDeductions += payrollDTO.getPayrollDetails().getIncomeTax();
         }
 
-        if (payrollDTO.getPayrollDetails().getLateEntryDeductions() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Late Entry Deductions: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getLateEntryDeductions());
+        if (payrollDTO.getPayrollDetails().getLateEntryDeductions() != null && payrollDTO.getPayrollDetails().getLateEntryDeductions() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Late Entry Deductions: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getLateEntryDeductions());
             totalDeductions += payrollDTO.getPayrollDetails().getLateEntryDeductions();
         }
 
-        if (payrollDTO.getLossOfPay() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Loss of Pay: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getLossOfPay());
-            totalDeductions += payrollDTO.getLossOfPay();
-        }
-
-        if (payrollDTO.getPayrollDetails().getMiscDeductions() != null) {
-            startY = startY - titleHeight - 5;
-            writeToStream(stream, font, fontSize, startX, startY, "Misc. Deductions: ");
-            writeToStream(stream, font, fontSize, mediaBox.getWidth() / 2, startY, "Rs. " + payrollDTO.getPayrollDetails().getMiscDeductions());
+        if (payrollDTO.getPayrollDetails().getMiscDeductions() != null && payrollDTO.getPayrollDetails().getMiscDeductions() > 0) {
+            cursorY_TOP -= titleHeight + 5;
+            writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Misc. Deductions: ");
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getMiscDeductions());
             totalDeductions += payrollDTO.getPayrollDetails().getMiscDeductions();
         }
 
-        startY = startY - titleHeight - 15;
-        writeToStream(stream, font, fontSize + 1, startX, startY, "Total Deductions: ");
-        writeToStream(stream, font, fontSize + 1, mediaBox.getWidth() / 2 + 50, startY, "(-) Rs. " + totalDeductions);
+        fSize += 1;
+        cursorY_TOP -= titleHeight + 15;
+        writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Total Deductions: ");
+        writeToStream(stream, font, fSize, cursor_CENTER + 50, cursorY_TOP, "(-) Rs. " + totalDeductions);
 
+        cursorX_LEFT -= 20;
         return totalDeductions;
+
     }
 
     private static void writeToStream(PDPageContentStream stream, PDFont font, int fontSize, float startX, float startY, String text) throws IOException {

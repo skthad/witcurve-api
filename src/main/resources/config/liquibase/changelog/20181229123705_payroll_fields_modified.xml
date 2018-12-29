@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1546087035055-1">
+        <addColumn tableName="payroll_details">
+            <column name="bonus" type="float4"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546087035055-2">
+        <addColumn tableName="payroll_details">
+            <column name="paid_days" type="int4" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546087035055-3">
+        <addColumn tableName="payroll_details">
+            <column name="total_days" type="int4" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546087035055-4">
+        <dropColumn columnName="bonus" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546087035055-5">
+        <dropColumn columnName="loss_of_pay" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546087035055-6">
+        <dropColumn columnName="reason_for_loss" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546087035055-7">
+        <addNotNullConstraint columnDataType="float4" columnName="basic_salary" tableName="payroll_details"/>
+    </changeSet>
+</databaseChangeLog>
