@@ -203,7 +203,6 @@ public class EventResource {
                 throw new WitcurveException("There should be eventDate param for ASSIGNMENT view");
             }
             result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,termId,eventDate,ViewType.ASSIGNMENT);
-            result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId, termId);
         } else if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
