@@ -179,7 +179,7 @@ public class EventResource {
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "type") ViewType type,
-        @RequestParam(value = "termId") Long termId,
+        @RequestParam(value = "termId", required = false) Long termId,
         @PathVariable Long staffId) throws WitcurveException, URISyntaxException{
         log.debug("Request to get events on given date : {} for staff with id : {} fro term with id : {}", eventDate, staffId, termId);
 
@@ -203,6 +203,12 @@ public class EventResource {
                 throw new WitcurveException("There should be eventDate param for ASSIGNMENT view");
             }
             result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,termId,eventDate,ViewType.ASSIGNMENT);
+            result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId, termId);
+        } else if(type.equals(ViewType.UPCOMING_EVENTS)) {
+            if (eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
+            }
+            result = eventService.findEventsByDateRangeForStaffInUpcomingEvents(eventDate, staffId);
         }
 //        if(type.equals(ViewType.MONTH)) {
 //            if(month == null || year ==null) {
@@ -216,13 +222,6 @@ public class EventResource {
 //            }
 //            LocalDate date = getLocalDate(eventDate);
 //            result = eventService.findAllEventsForDiary(date, studentId);
-//        }
-//        if(type.equals(ViewType.UPCOMING_EVENTS)) {
-//            if (eventDate == null) {
-//                throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
-//            }
-//            LocalDate date = getLocalDate(eventDate);
-//            result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(date, studentId);
 //        }
 //        if(type.equals(ViewType.LEAVE)) {
 //            result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);

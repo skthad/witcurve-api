@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,6 +50,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     StaffRepository staffRepository;
+
+    @Autowired
+    AcademicSessionRepository academicSessionRepository;
 
     @Autowired
     LeaveApplicationRepository leaveApplicationRepository;
@@ -82,7 +86,6 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
-        List<Event> eventList = new ArrayList<>();
         if (eventDTOs.size() > 1) {
             String bindingId = UUID.randomUUID().toString();
             for(EventDTO eventDTO : eventDTOs) {
@@ -268,6 +271,45 @@ public class EventServiceImpl implements EventService {
                 }
             }
         }
+        Collections.sort(events, new EventDateDescComparator());
+        return eventMapper.toDto(events);
+
+    }
+
+    @Override
+    public List<EventDTO> findEventsByDateRangeForStaffInUpcomingEvents(LocalDate date, Long staffId) throws WitcurveException {
+        log.debug("Find events for announcements for a duration of week from date : {} and for staff with id : {}", date, staffId);
+        LocalDate endDate = date.plusDays(6);
+
+        Staff staff = staffRepository.getOne(staffId);
+        School school = staff.getSchool();
+
+        List<Long> sessionIds = academicSessionRepository.getActiveSessionIds(school.getId());
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+
+        Set<Long> standardIds = courseTeachers
+            .stream()
+            .map(CourseTeacher::getStandard)
+            .map(s -> s.getId())
+            .collect(Collectors.toSet());
+
+        Set<Grade> grades = courseTeachers
+            .stream()
+            .map(CourseTeacher::getStandard)
+            .map(s -> s.getGrade())
+            .collect(Collectors.toSet());
+
+        List<Event> events = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, standardIds, grades, sessionIds, LIST_FOR_UPCOMING_EVENTS);
+        /*if (events.size() > 0) {
+            String lastBindingId = events.get(events.size()-1).getBindingId();
+            if(lastBindingId != null) {
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
+                if(remainingList.size() != 0) {
+                    events.addAll(remainingList);
+                    events = new ArrayList<>(new HashSet<>(events));
+                }
+            }
+        }*/
         Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
 
