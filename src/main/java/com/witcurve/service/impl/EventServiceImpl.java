@@ -4,6 +4,7 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.StaffType;
+import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -415,6 +416,20 @@ public class EventServiceImpl implements EventService {
 
         return result.map(eventMapper::toDto);
     }
+
+    public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, Long termId, LocalDate eventDate, ViewType type) throws WitcurveException {
+        LocalDate sDate= eventDate.minusDays(7);
+        if(ViewType.ASSIGNMENT.equals(type)){
+            return eventMapper.toDto(eventRepository.findAssignmentsByTeacherInDateRange(staffId,termId,sDate,eventDate));
+        }
+        else if(ViewType.TEST.equals(type)){
+            return eventMapper.toDto(eventRepository.findTestsByTeacherInDateRange(staffId,termId,sDate,eventDate));
+        }
+        else {
+            throw new WitcurveException("Event type should be only test and Assignment");
+        }
+    }
+
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {

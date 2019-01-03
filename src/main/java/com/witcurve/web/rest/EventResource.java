@@ -175,7 +175,7 @@ public class EventResource {
     @GetMapping("/event/staff/{staffId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForTeacher(
-        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "type") ViewType type,
@@ -189,8 +189,20 @@ public class EventResource {
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for DAY view");
             }
-            LocalDate date = getLocalDate(eventDate);
-            result = eventService.findAllEventsOnGivenDateForStaff(date, staffId, termId);
+            //LocalDate date = getLocalDate(eventDate);
+            result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId, termId);
+        }
+        if(ViewType.TEST.equals(type)){
+            if(eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for TEST view");
+            }
+            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,termId,eventDate,ViewType.TEST);
+        }
+        if(ViewType.ASSIGNMENT.equals(type)){
+            if(eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for ASSIGNMENT view");
+            }
+            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,termId,eventDate,ViewType.ASSIGNMENT);
         }
 //        if(type.equals(ViewType.MONTH)) {
 //            if(month == null || year ==null) {
@@ -218,6 +230,7 @@ public class EventResource {
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
+
 
     /**
      *

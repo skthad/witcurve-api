@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.springframework.data.domain.Page;
@@ -37,4 +38,6 @@ public interface EventService {
     List<EventDTO> getAttendance(LocalDate date, Long studentId, Long standardId) throws WitcurveException;
 
     Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException;
+
+    List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, Long termId, LocalDate date, ViewType type) throws WitcurveException;
 }
