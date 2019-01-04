@@ -62,7 +62,7 @@ public class WeekViewResource {
             //throw error
         }
         StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
-        Long standardId = studentStandardDTO.getStandardId();
+        Long standardId = studentStandardDTO.getStandard().getId();
         result.setGsdList(generalSlotDetailsService.getGeneralSlotDetailsByStandardId(standardId, GSDStatus.ACTIVE));
         result.setScdList(slotCourseDetailsService.getSlotCourseDetailsByStandardId(standardId));
         result.setEventList(eventService.findAllEventsOnGivenWeekForStudent(getLocalDate(weekDate), year, studentId));

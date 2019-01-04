@@ -8,6 +8,8 @@ public class UserContextDTO {
 
     private UserDTO currentUser;
 
+    private StudentStandardDTO studentStandardDTO;
+
     private List<AcademicSession> currentSessions;
 
     private Integer numberOfWorkingDays;
@@ -18,6 +20,14 @@ public class UserContextDTO {
 
     public void setCurrentUser(UserDTO currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public StudentStandardDTO getStudentStandardDTO() {
+        return studentStandardDTO;
+    }
+
+    public void setStudentStandardDTO(StudentStandardDTO studentStandardDTO) {
+        this.studentStandardDTO = studentStandardDTO;
     }
 
     public List<AcademicSession> getCurrentSessions() {

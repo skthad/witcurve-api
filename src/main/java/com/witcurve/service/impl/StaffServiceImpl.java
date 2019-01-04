@@ -47,6 +47,16 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public StaffDTO getStaffByUserId(Long userId) throws WitcurveException {
+        log.debug("Request to get staff with user id : {}", userId);
+        Staff staff = staffRepository.getStaffByUserId(userId);
+        if (staff == null) {
+            throw new WitcurveException("No staff exists with given id");
+        }
+        return staffMapper.toDto(staff);
+    }
+
+    @Override
     public void deleteStaffById(Long staffId) throws WitcurveException {
         log.debug("Request to delete staff with id : {}", staffId);
         Staff staff = staffRepository.findById(staffId).get();

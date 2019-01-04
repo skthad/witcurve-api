@@ -1,8 +1,11 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
-import com.witcurve.service.UserContextService;
-import com.witcurve.service.UserService;
+import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.StudentRepository;
+import com.witcurve.service.*;
+import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.service.dto.UserContextDTO;
 import com.witcurve.service.mapper.UserMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -25,12 +28,32 @@ public class UserContextServiceImpl implements UserContextService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    StudentService studentService;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    StaffService staffService;
+
+    @Autowired
+    StudentStandardService studentStandardService;
+
     @Override
     public UserContextDTO getCurrentUserContext() throws WitcurveException {
-        User currentUser = userService.getUserWithAuthoritiesByLogin((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).get();
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userService.getUserWithAuthoritiesByLogin(user.getUsername()).get();
+
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
-
-        return  null;
+        if (UserType.STAFF.equals(contextDTO.getCurrentUser().getType())) {
+            StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
+            contextDTO.getCurrentUser().setStaffDTO(staffDTO);
+        } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
+            Student student = studentRepository.getStudentByUserId(currentUser.getId());
+            contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(student.getId()));
+        }
+        return contextDTO;
     }
 }

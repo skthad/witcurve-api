@@ -11,6 +11,8 @@ public interface StudentService {
 
     StudentDTO getStudentById(Long studentId) throws WitcurveException;
 
+    StudentDTO getStudentByUserId(Long userId) throws WitcurveException;
+
     List<StudentDTO> getStudentsByStandardId(Long standardId) throws WitcurveException;
 
     void deleteStudent(Long studentId) throws WitcurveException;
