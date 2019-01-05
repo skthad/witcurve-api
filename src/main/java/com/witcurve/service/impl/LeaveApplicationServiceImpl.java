@@ -89,7 +89,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         }
             leaveApplication.setEvents(events);
             leaveApplication = leaveApplicationRepository.save(leaveApplication);
-        return  leaveApplicationMapper.toDto(leaveApplication);
+        LeaveApplicationDTO leaveApplicationDTO1= leaveApplicationMapper.toDto(leaveApplication);
+        leaveApplicationDTO1.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate()
+            , leaveApplicationDTO.getSessionId(),false));
+        return  leaveApplicationDTO1;
         }
 
     @Override
@@ -101,7 +104,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         if (!leaveApplication.isPresent()) {
             throw new WitcurveException("No leave application with given id");
         }
-        return leaveApplicationMapper.toDto(leaveApplication.get());
+        LeaveApplicationDTO leaveApplicationDTO= leaveApplicationMapper.toDto(leaveApplication.get());
+        leaveApplicationDTO.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSessionId(),false));
+        return leaveApplicationDTO;
     }
 
     @Override
@@ -131,11 +136,13 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         toBeApprovedLeave.setApprovedBy(staff.get());
         toBeApprovedLeave = leaveApplicationRepository.save(toBeApprovedLeave);
 
-        return leaveApplicationMapper.toDto(toBeApprovedLeave);
+        LeaveApplicationDTO leaveApplicationDTO= leaveApplicationMapper.toDto(toBeApprovedLeave);
+        leaveApplicationDTO.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(),leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSessionId(),false));
+        return leaveApplicationDTO;
     }
 
     @Override
-    public List<LeaveApplicationDTO> getLeaveApplicationsForStudent(Long studentId, Long sessionId, Boolean approved) {
+    public List<LeaveApplicationDTO> getLeaveApplicationsForStudent(Long studentId, Long sessionId, Boolean approved) throws WitcurveException {
         log.debug("Get list of leaveApplication with  student id : {} and session id : {}",sessionId);
         List<LeaveApplication> leaveApplications = new ArrayList<>();
         if(approved == null) {
@@ -148,7 +155,14 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             }
         }
 
-        return leaveApplicationMapper.toDto(leaveApplications);
+        List<LeaveApplicationDTO> leaveApplicationDTOs= leaveApplicationMapper.toDto(leaveApplications);
+        if(leaveApplicationDTOs.size()!= 0){
+            for(int i=0;i<leaveApplicationDTOs.size();i++){
+                leaveApplicationDTOs.get(i).setNumLeaveDays(workingDays(leaveApplicationDTOs.get(i).getFromLeaveDate(), leaveApplicationDTOs.get(i).getToLeaveDate()
+                    , leaveApplicationDTOs.get(i).getSessionId(),false));
+            }
+        }
+            return leaveApplicationDTOs;
     }
 
     @Override
@@ -164,7 +178,18 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStaffIdAndApprovedFalseOrderByFromLeaveDate(sessionId, staffId);
             }
         }
-        return leaveApplicationMapper.toDto(leaveApplications);
+        List<LeaveApplicationDTO> leaveApplicationDTOs= leaveApplicationMapper.toDto(leaveApplications);
+        if(leaveApplicationDTOs.size()!= 0){
+            for(int i=0;i<leaveApplicationDTOs.size();i++){
+                try {
+                    leaveApplicationDTOs.get(i).setNumLeaveDays(workingDays(leaveApplicationDTOs.get(i).getFromLeaveDate(), leaveApplicationDTOs.get(i).getToLeaveDate()
+                        , leaveApplicationDTOs.get(i).getSessionId(),false));
+                } catch (WitcurveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return leaveApplicationDTOs;
     }
 
     public List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, Boolean approved) throws WitcurveException {
@@ -186,10 +211,28 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 }
             }
         }
-
-        return leaveApplicationMapper.toDto(leaveApplications);
+        List<LeaveApplicationDTO> leaveApplicationDTOS= leaveApplicationMapper.toDto(leaveApplications);
+        return insertLeaveDays(leaveApplicationDTOS);
     }
 
+    private List<LeaveApplicationDTO> insertLeaveDays(List<LeaveApplicationDTO> leaveApplicationDTOS) throws WitcurveException {
+        if(leaveApplicationDTOS.size()!= 0) {
+            if (leaveApplicationDTOS == null) {
+                throw new WitcurveException("DTO is null");
+            }
+            for (int i = 0; i < leaveApplicationDTOS.size(); i++) {
+                try {
+                    leaveApplicationDTOS.get(i).setNumLeaveDays(workingDays(leaveApplicationDTOS.get(i).getFromLeaveDate(), leaveApplicationDTOS.get(i).getToLeaveDate()                        , leaveApplicationDTOS.get(i).getSessionId(), false));
+                } catch (WitcurveException e) {
+                    e.printStackTrace();
+                }
+            }
+            return leaveApplicationDTOS;
+        }
+        else {
+            throw new WitcurveException("Size of leave application list is 0 !!");
+        }
+    }
     private Boolean isHoliday(LocalDate date, Long sessionId) throws WitcurveException {
 
         if(eventRepository.findHolidaysBetweenFromDateAndToDate(date,date, sessionId)==1)
