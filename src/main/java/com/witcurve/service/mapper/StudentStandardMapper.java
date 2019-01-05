@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses={StudentMapper.class, StandardMapper.class})
 public interface StudentStandardMapper extends EntityMapper<StudentStandardDTO, StudentStandard>{
 
-    StudentStandardDTO toDto(StudentStandard student);
+    StudentStandardDTO toDto(StudentStandard studentStandard);
 
     StudentStandard toEntity(StudentStandardDTO studentStandardDTO);
 

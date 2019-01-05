@@ -271,7 +271,7 @@ public class EventServiceImpl implements EventService {
                 }
             }
         }
-        Collections.sort(events, new EventDateDescComparator());
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
@@ -310,7 +310,7 @@ public class EventServiceImpl implements EventService {
                 }
             }
         }*/
-        Collections.sort(events, new EventDateDescComparator());
+        Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
@@ -461,15 +461,18 @@ public class EventServiceImpl implements EventService {
 
     public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, Long termId, LocalDate eventDate, ViewType type) throws WitcurveException {
         LocalDate sDate= eventDate.minusDays(7);
+        List<Event> events = new ArrayList<>();
         if(ViewType.ASSIGNMENT.equals(type)){
-            return eventMapper.toDto(eventRepository.findAssignmentsByTeacherInDateRange(staffId,termId,sDate,eventDate));
+            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,termId,sDate,eventDate);
         }
         else if(ViewType.TEST.equals(type)){
-            return eventMapper.toDto(eventRepository.findTestsByTeacherInDateRange(staffId,termId,sDate,eventDate));
+            events = eventRepository.findTestsByTeacherInDateRange(staffId,termId,sDate,eventDate);
         }
         else {
             throw new WitcurveException("Event type should be only test and Assignment");
         }
+        Collections.sort(events, new EventDateDescComparator());
+        return eventMapper.toDto(events);
     }
 
 
