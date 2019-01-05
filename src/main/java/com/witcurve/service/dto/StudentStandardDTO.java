@@ -34,7 +34,7 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
         return standard;
     }
 
-    public void setStandard(StandardDTO standardId) {
+    public void setStandard(StandardDTO standard) {
         this.standard = standard;
     }
 
