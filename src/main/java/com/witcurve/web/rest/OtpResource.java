@@ -6,6 +6,7 @@ import com.witcurve.repository.UserRepository;
 import com.witcurve.service.MailService;
 import com.witcurve.service.OtpService;
 import com.witcurve.service.SmsService;
+import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import com.witcurve.web.rest.vm.LoginVM;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class OtpResource {
 
     @PostMapping("/generate-otp")
     @Timed
-    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber) {
+    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber) throws WitcurveException {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
@@ -56,7 +57,7 @@ public class OtpResource {
                 // mailService.sendOtpMail(user);
             }
         } else {
-            return ResponseEntity.badRequest().build();
+            throw new WitcurveException("User doesn't exist with given login id");
         }
 
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("OTP sent successfully" + username, username)).build();
