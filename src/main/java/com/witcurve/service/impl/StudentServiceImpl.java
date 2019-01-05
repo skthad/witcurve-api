@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
@@ -57,6 +58,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentDTO getStudentByUserId(Long userId) throws WitcurveException {
+        log.debug("Request to get students with user id : {}", userId);
+        Student student = studentRepository.getStudentByUserId(userId);
+        return studentMapper.toDto(student);
+    }
+
+    @Override
     public List<StudentDTO> getStudentsByStandardId(Long standardId) throws WitcurveException {
         log.debug("Request to get students with standard id : {}", standardId);
         List<Student> students = studentStandardRepository.getStudentsByStandardId(standardId);
@@ -83,6 +91,12 @@ public class StudentServiceImpl implements StudentService {
         if (student == null){
             throw  new WitcurveException("No student with given admission id in the give school id");
         }
-        return studentMapper.toDto(student);
+        StudentDTO result = studentMapper.toDto(student);
+        if (Strings.isNullOrEmpty(student.getUser().getPassword())) {
+            result.setHasPassword(Boolean.FALSE);
+        } else {
+            result.setHasPassword(Boolean.TRUE);
+        }
+        return result;
     }
 }

@@ -1,5 +1,6 @@
 package com.witcurve.service.mapper;
 
+import com.google.common.base.Strings;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.User;
 import com.witcurve.service.dto.UserDTO;

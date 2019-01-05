@@ -38,6 +38,7 @@
     <include file="config/liquibase/changelog/20181222125646_added_exam_course_details.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181223123955_payroll_fields_added.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20181229123705_payroll_fields_modified.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190105095639_user_changes.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

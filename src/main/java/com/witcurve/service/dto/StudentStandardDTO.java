@@ -1,7 +1,5 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.StudentStandard;
-
 import java.util.Objects;
 
 public class StudentStandardDTO extends AbstractAuditingDTO {
@@ -10,7 +8,7 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
 
     private StudentDTO student;
 
-    private Long standardId;
+    private StandardDTO standard;
 
     private String rollNo;
 
@@ -32,12 +30,12 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
         this.student = student;
     }
 
-    public Long getStandardId() {
-        return standardId;
+    public StandardDTO getStandard() {
+        return standard;
     }
 
-    public void setStandardId(Long standardId) {
-        this.standardId = standardId;
+    public void setStandard(StandardDTO standard) {
+        this.standard = standard;
     }
 
     public String getRollNo() {
@@ -75,7 +73,7 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
         return "StudentStandard{" +
             "id=" + id +
             ", studentId=" + student.getId() +
-            ", standardId=" + standardId +
+            (standard != null ? (", standardId=" + standard.getId()) : "") +
             ", rollNo=" + rollNo +
             ", active='" + active + '\'' +
             '}';

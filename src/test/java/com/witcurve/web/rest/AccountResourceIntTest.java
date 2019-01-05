@@ -1,21 +1,19 @@
 package com.witcurve.web.rest;
 
-import com.witcurve.config.Constants;
 import com.witcurve.WitcurveApp;
+import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.User;
 import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.MailService;
-import com.witcurve.service.dto.UserDTO;
-import com.witcurve.service.dto.PasswordChangeDTO;
-import com.witcurve.web.rest.errors.ExceptionTranslator;
-import com.witcurve.web.rest.vm.KeyAndPasswordVM;
-import com.witcurve.web.rest.vm.ManagedUserVM;
 import com.witcurve.service.UserService;
+import com.witcurve.service.dto.PasswordChangeDTO;
+import com.witcurve.service.dto.UserDTO;
+import com.witcurve.web.rest.errors.ExceptionTranslator;
+import com.witcurve.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.RandomStringUtils;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,15 +29,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.Instant;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -425,33 +426,6 @@ public class AccountResourceIntTest {
 
     @Test
     @Transactional
-    public void testActivateAccount() throws Exception {
-        final String activationKey = "some activation key";
-        User user = new User();
-        user.setLogin("activate-account");
-        user.setEmail("activate-account@example.com");
-        user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(false);
-        user.setActivationKey(activationKey);
-
-        userRepository.saveAndFlush(user);
-
-        restMvc.perform(get("/api/activate?key={activationKey}", activationKey))
-            .andExpect(status().isOk());
-
-        user = userRepository.findOneByLogin(user.getLogin()).orElse(null);
-        assertThat(user.getActivated()).isTrue();
-    }
-
-    @Test
-    @Transactional
-    public void testActivateAccountWithWrongKey() throws Exception {
-        restMvc.perform(get("/api/activate?key=wrongActivationKey"))
-            .andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    @Transactional
     @WithMockUser("save-account")
     public void testSaveAccount() throws Exception {
         User user = new User();
@@ -684,108 +658,5 @@ public class AccountResourceIntTest {
 
         User updatedUser = userRepository.findOneByLogin("change-password-empty").orElse(null);
         assertThat(updatedUser.getPassword()).isEqualTo(user.getPassword());
-    }
-
-    @Test
-    @Transactional
-    public void testRequestPasswordReset() throws Exception {
-        User user = new User();
-        user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(true);
-        user.setLogin("password-reset");
-        user.setEmail("password-reset@example.com");
-        userRepository.saveAndFlush(user);
-
-        restMvc.perform(post("/api/account/reset-password/init")
-            .content("password-reset@example.com"))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    @Transactional
-    public void testRequestPasswordResetUpperCaseEmail() throws Exception {
-        User user = new User();
-        user.setPassword(RandomStringUtils.random(60));
-        user.setActivated(true);
-        user.setLogin("password-reset");
-        user.setEmail("password-reset@example.com");
-        userRepository.saveAndFlush(user);
-
-        restMvc.perform(post("/api/account/reset-password/init")
-            .content("password-reset@EXAMPLE.COM"))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testRequestPasswordResetWrongEmail() throws Exception {
-        restMvc.perform(
-            post("/api/account/reset-password/init")
-                .content("password-reset-wrong-email@example.com"))
-            .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @Transactional
-    public void testFinishPasswordReset() throws Exception {
-        User user = new User();
-        user.setPassword(RandomStringUtils.random(60));
-        user.setLogin("finish-password-reset");
-        user.setEmail("finish-password-reset@example.com");
-        user.setResetDate(Instant.now().plusSeconds(60));
-        user.setResetKey("reset key");
-        userRepository.saveAndFlush(user);
-
-        KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey(user.getResetKey());
-        keyAndPassword.setNewPassword("new password");
-
-        restMvc.perform(
-            post("/api/account/reset-password/finish")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(keyAndPassword)))
-            .andExpect(status().isOk());
-
-        User updatedUser = userRepository.findOneByLogin(user.getLogin()).orElse(null);
-        assertThat(passwordEncoder.matches(keyAndPassword.getNewPassword(), updatedUser.getPassword())).isTrue();
-    }
-
-    @Test
-    @Transactional
-    public void testFinishPasswordResetTooSmall() throws Exception {
-        User user = new User();
-        user.setPassword(RandomStringUtils.random(60));
-        user.setLogin("finish-password-reset-too-small");
-        user.setEmail("finish-password-reset-too-small@example.com");
-        user.setResetDate(Instant.now().plusSeconds(60));
-        user.setResetKey("reset key too small");
-        userRepository.saveAndFlush(user);
-
-        KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey(user.getResetKey());
-        keyAndPassword.setNewPassword("foo");
-
-        restMvc.perform(
-            post("/api/account/reset-password/finish")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(keyAndPassword)))
-            .andExpect(status().isBadRequest());
-
-        User updatedUser = userRepository.findOneByLogin(user.getLogin()).orElse(null);
-        assertThat(passwordEncoder.matches(keyAndPassword.getNewPassword(), updatedUser.getPassword())).isFalse();
-    }
-
-
-    @Test
-    @Transactional
-    public void testFinishPasswordResetWrongKey() throws Exception {
-        KeyAndPasswordVM keyAndPassword = new KeyAndPasswordVM();
-        keyAndPassword.setKey("wrong reset key");
-        keyAndPassword.setNewPassword("new password");
-
-        restMvc.perform(
-            post("/api/account/reset-password/finish")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(keyAndPassword)))
-            .andExpect(status().isInternalServerError());
     }
 }

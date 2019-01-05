@@ -14,6 +14,7 @@ import org.mapstruct.Mapping;
 public interface StudentMapperLite extends EntityMapper<StudentDTO, Student>{
 
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "userName", source = "user.login")
     StudentDTO toDto(Student student);
 
     @Mapping(target = "user.id", source = "userId")

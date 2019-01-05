@@ -21,8 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.witcurve.service.util.WitcurveUtil.getLocalDate;
-
 @RestController
 @RequestMapping("/api")
 public class EventResource {
@@ -122,7 +120,7 @@ public class EventResource {
     @GetMapping("/event/student/{studentId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForStudent(
-        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "type") ViewType type,
@@ -135,8 +133,7 @@ public class EventResource {
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for DAY view");
             }
-            LocalDate date = getLocalDate(eventDate);
-            result = eventService.findAllEventsOnGivenDateForStudent(date, studentId);
+            result = eventService.findAllEventsOnGivenDateForStudent(eventDate, studentId);
         }
         if(type.equals(ViewType.MONTH)) {
             if(month == null || year ==null) {
@@ -148,18 +145,16 @@ public class EventResource {
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for DIARY view");
             }
-            LocalDate date = getLocalDate(eventDate);
-            result = eventService.findAllEventsForDiary(date, studentId);
+            result = eventService.findAllEventsForDiary(eventDate, studentId);
         }
         if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
             }
-            LocalDate date = getLocalDate(eventDate);
-            result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(date, studentId);
+            result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(eventDate, studentId);
         }
         if(type.equals(ViewType.LEAVE)) {
-            result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);
+            result = eventService.getAllLeavesForStudent(eventDate, studentId);
         }
 
             return new ResponseEntity<>(result,  HttpStatus.OK);
@@ -239,7 +234,7 @@ public class EventResource {
     @GetMapping("/event/standard/{standardId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
-        @RequestParam(value = "eventDate", required = false) String eventDate,
+        @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
         @RequestParam(value = "type") ViewType type,
         @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
         log.debug("Request to get events on given date : {} for standard id : {}", eventDate, standardId);
@@ -248,7 +243,7 @@ public class EventResource {
         List<EventDTO> result = new ArrayList<>();
 
         if(type.equals(ViewType.LEAVE)) {
-            result = eventService.getAllLeavesForStandard(eventDate == null ? null : getLocalDate(eventDate), standardId);
+            result = eventService.getAllLeavesForStandard(eventDate, standardId);
         }
 
         return new ResponseEntity<>(result,  HttpStatus.OK);

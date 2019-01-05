@@ -63,12 +63,15 @@ public class UserDTO {
 
     private StaffDTO staffDTO;
 
+    private String password;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
 
     public UserDTO(User user) {
         this.id = user.getId();
+        this.type = user.getType();
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
@@ -227,6 +230,14 @@ public class UserDTO {
 
     public void setStaffDTO(StaffDTO staffDTO) {
         this.staffDTO = staffDTO;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
