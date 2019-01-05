@@ -30,6 +30,8 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String userName;
 
+    private Boolean hasPassword;
+
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
@@ -146,6 +148,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Boolean getHasPassword() {
+        return hasPassword;
+    }
+
+    public void setHasPassword(Boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 
     public LocalDate getDateOfBirth() {

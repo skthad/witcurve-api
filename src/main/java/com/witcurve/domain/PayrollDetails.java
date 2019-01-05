@@ -29,15 +29,15 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     private Instant deactivationDate;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "int default 0")
     private Integer paidDays = 0;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "int default 0")
     private Integer totalDays = 0;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "int default 0")
     private Float basicSalary = 0f;
     
     @Column

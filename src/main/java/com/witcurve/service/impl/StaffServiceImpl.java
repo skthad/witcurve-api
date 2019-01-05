@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.google.common.base.Strings;
 import com.witcurve.domain.Staff;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.service.StaffService;
@@ -73,6 +74,12 @@ public class StaffServiceImpl implements StaffService {
         if (staff == null){
             throw  new WitcurveException("No staff with given staff id in the give school id");
         }
-        return staffMapper.toDto(staff);
+        StaffDTO result = staffMapper.toDto(staff);
+        if (Strings.isNullOrEmpty(staff.getUser().getPassword())) {
+            result.setHasPassword(Boolean.FALSE);
+        } else {
+            result.setHasPassword(Boolean.TRUE);
+        }
+        return result;
     }
 }

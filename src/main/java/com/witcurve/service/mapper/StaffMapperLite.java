@@ -11,6 +11,7 @@ public interface StaffMapperLite extends EntityMapper<StaffDTO, Staff> {
 
     @Mapping(target = "schoolId", source = "school.id")
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "userName", source = "user.login")
     StaffDTO toDto(Staff staff);
 
     @Mapping(target = "school.id", source = "schoolId")
@@ -34,5 +35,6 @@ public interface StaffMapperLite extends EntityMapper<StaffDTO, Staff> {
         user.setId(id);
         return  user;
     }
+
 }
 

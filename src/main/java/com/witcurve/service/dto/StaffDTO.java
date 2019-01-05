@@ -28,6 +28,8 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     private String userName;
 
+    private Boolean hasPassword;
+
     @NotNull
     private Long schoolId;
 
@@ -122,6 +124,14 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Boolean getHasPassword() {
+        return hasPassword;
+    }
+
+    public void setHasPassword(Boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 
     public Long getSchoolId() {

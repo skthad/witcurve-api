@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
@@ -49,10 +50,20 @@ public class UserContextServiceImpl implements UserContextService {
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
         if (UserType.STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
+            if (Strings.isNullOrEmpty(currentUser.getPassword())) {
+                staffDTO.setHasPassword(Boolean.FALSE);
+            } else {
+                staffDTO.setHasPassword(Boolean.TRUE);
+            }
             contextDTO.getCurrentUser().setStaffDTO(staffDTO);
         } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
             Student student = studentRepository.getStudentByUserId(currentUser.getId());
             contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(student.getId()));
+            if (Strings.isNullOrEmpty(currentUser.getPassword())) {
+                contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.FALSE);
+            } else {
+                contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.TRUE);
+            }
         }
         return contextDTO;
     }

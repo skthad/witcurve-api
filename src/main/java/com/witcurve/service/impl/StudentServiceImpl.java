@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
@@ -90,6 +91,12 @@ public class StudentServiceImpl implements StudentService {
         if (student == null){
             throw  new WitcurveException("No student with given admission id in the give school id");
         }
-        return studentMapper.toDto(student);
+        StudentDTO result = studentMapper.toDto(student);
+        if (Strings.isNullOrEmpty(student.getUser().getPassword())) {
+            result.setHasPassword(Boolean.FALSE);
+        } else {
+            result.setHasPassword(Boolean.TRUE);
+        }
+        return result;
     }
 }
