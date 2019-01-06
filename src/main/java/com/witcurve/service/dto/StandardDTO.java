@@ -63,15 +63,14 @@ public class StandardDTO extends AbstractAuditingDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof StandardDTO)) return false;
-        StandardDTO standardDTO = (StandardDTO) o;
-        return Objects.equals(getId(), standardDTO.getId());
+        if (o == null || getClass() != o.getClass()) return false;
+        StandardDTO that = (StandardDTO) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getId());
+        return Objects.hash(id);
     }
 
     @Override

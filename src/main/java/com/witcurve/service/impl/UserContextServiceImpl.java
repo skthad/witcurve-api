@@ -6,8 +6,7 @@ import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.service.*;
-import com.witcurve.service.dto.StaffDTO;
-import com.witcurve.service.dto.UserContextDTO;
+import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.UserMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -16,6 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,7 +34,7 @@ public class UserContextServiceImpl implements UserContextService {
     UserMapper userMapper;
 
     @Autowired
-    StudentService studentService;
+    CourseTeacherService courseTeacherService;
 
     @Autowired
     StudentRepository studentRepository;
@@ -50,6 +54,22 @@ public class UserContextServiceImpl implements UserContextService {
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
         if (UserType.STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
+            List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherIdAndTermId(staffDTO.getId(), null);
+            List<StandardDTO> staffStandards = null;
+            Map<Long, List<CourseDTO>> standardCourseMap = null;
+            for (CourseTeacherDTO courseTeacherDTO : courseTeachers) {
+                if (standardCourseMap == null) {
+                    staffStandards = new ArrayList<>();
+                    standardCourseMap = new HashMap<>();
+                }
+                if (standardCourseMap.get(courseTeacherDTO.getStandard().getId()) == null) {
+                    staffStandards.add(courseTeacherDTO.getStandard());
+                    standardCourseMap.put(courseTeacherDTO.getStandard().getId(), new ArrayList<>());
+                }
+                standardCourseMap.get(courseTeacherDTO.getStandard().getId()).add(courseTeacherDTO.getCourse());
+            }
+            contextDTO.setStaffStandards(staffStandards);
+            contextDTO.setStandardCourseMap(standardCourseMap);
             if (Strings.isNullOrEmpty(currentUser.getPassword())) {
                 staffDTO.setHasPassword(Boolean.FALSE);
             } else {
@@ -59,6 +79,8 @@ public class UserContextServiceImpl implements UserContextService {
         } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
             Student student = studentRepository.getStudentByUserId(currentUser.getId());
             contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(student.getId()));
+            List<CourseTeacherDTO> studentCourses = courseTeacherService.getCourseTeachersByStudentId(student.getId());
+            contextDTO.setStudentCourses(studentCourses);
             if (Strings.isNullOrEmpty(currentUser.getPassword())) {
                 contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.FALSE);
             } else {

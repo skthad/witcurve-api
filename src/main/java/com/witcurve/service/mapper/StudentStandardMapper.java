@@ -4,7 +4,7 @@ import com.witcurve.domain.StudentStandard;
 import com.witcurve.service.dto.StudentStandardDTO;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses={StudentMapper.class, StandardMapper.class})
+@Mapper(componentModel = "spring", uses={StudentMapperLite.class, StandardMapper.class})
 public interface StudentStandardMapper extends EntityMapper<StudentStandardDTO, StudentStandard>{
 
     StudentStandardDTO toDto(StudentStandard studentStandard);

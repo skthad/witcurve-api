@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 /**
  * A DTO representing a user, with his authorities.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private Long id;

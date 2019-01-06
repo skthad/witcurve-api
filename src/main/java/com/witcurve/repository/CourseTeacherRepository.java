@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Long> {
 
-    @Query("select ct from CourseTeacher ct where ct.teacher.id = ?1")
+    @Query("select ct from CourseTeacher ct where ct.teacher.id = ?1 and ct.standard.term.session.active = true")
     List<CourseTeacher> findByTeacherId(Long teacherId);
 
     @Query("select ct from CourseTeacher ct where ct.teacher.id = ?1 and ct.standard.term.id = ?2")
