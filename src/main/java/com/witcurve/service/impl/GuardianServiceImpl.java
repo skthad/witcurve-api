@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class GuardianServiceImpl  implements GuardianService {
@@ -36,22 +39,29 @@ public class GuardianServiceImpl  implements GuardianService {
     @Override
     public GuardianDTO getGuardianById(Long guardianId) throws WitcurveException {
         log.debug("Request to get guardian with id : {}", guardianId);
-        Guardian guardian = guardianRepository.findById(guardianId).get();
+        Optional<Guardian> guardian = guardianRepository.findById(guardianId);
 
-        if (guardian ==  null) {
+        if (!guardian.isPresent()) {
             throw new WitcurveException("No guardian exists with given id");
         }
-        return guardianMapper.toDto(guardian);
+        return guardianMapper.toDto(guardian.get());
+    }
+
+    @Override
+    public List<GuardianDTO> getGuardiansByStudentId(Long studentId) {
+        log.debug("Request to get guardian for student with id : {}", studentId);
+        List<Guardian> guardians = guardianRepository.findByStudentId(studentId);
+        return guardianMapper.toDto(guardians);
     }
 
     @Override
     public void deleteGuardian(Long guardianId) throws WitcurveException {
         log.debug("Request to delete guardian with id : {}", guardianId);
-        Guardian guardian = guardianRepository.findById(guardianId).get();
+        Optional<Guardian> guardian = guardianRepository.findById(guardianId);
 
-        if (guardian ==  null) {
+        if (!guardian.isPresent()) {
             throw new WitcurveException("No guardian exists with given id");
         }
-        guardianRepository.delete(guardian);
+        guardianRepository.delete(guardian.get());
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -57,6 +58,21 @@ public class GuardianResource {
     public ResponseEntity<GuardianDTO> getGuardianById(@PathVariable("guardianId") Long guardianId) throws WitcurveException {
         log.debug("Request to get guardian with id {}", guardianId);
         GuardianDTO result = guardianService.getGuardianById(guardianId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get guardian by student id
+     * @param studentId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/guardian/student/{studentId}")
+    @Timed
+    public ResponseEntity<List<GuardianDTO>> getGuardiansByStudentId(@PathVariable("studentId") Long studentId) {
+        log.debug("Request to get guardians for student with id {}", studentId);
+        List<GuardianDTO> result = guardianService.getGuardiansByStudentId(studentId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

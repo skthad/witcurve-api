@@ -169,7 +169,8 @@ public class UserResource {
      *
      * @return the ResponseEntity with status 200 (OK) and with body all users
      */
-    @GetMapping("/users/contact-numbers/{username}")
+    // not using as of now
+    //@GetMapping("/users/contact-numbers/{username}")
     @Timed
     public ResponseEntity<List<String>> getContactNumbersOfUser(@PathVariable (name = "username") String username, @RequestParam(name = "type") UserType type) throws WitcurveException {
         final List<String> contactNumbers = userService.getContactNumbersOfUser(username, type);

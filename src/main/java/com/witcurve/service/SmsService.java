@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ public class SmsService {
     // route=4 is transactional
     private static final String route="4";
     private static final String messageTemplate = "Hello User, Your OTP for logging in to Witcurve is ";
-    public static boolean sendSms(String mobileNumber,String otp)
-    {
+
+    public static void sendSms(String mobileNumber,String otp) throws WitcurveException {
 
         URLConnection myURLConnection;
         URL myURL;
@@ -47,16 +48,14 @@ public class SmsService {
             reader= new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
             String response;
             while ((response = reader.readLine()) != null)
-                System.out.println(response);
+                System.out.println("Sms request response :"+response);
 
             reader.close();
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             log.error("Error while sending otp as sms"+ e.getMessage());
-            return false;
-
+            throw new WitcurveException("Error while sending otp as sms"+ e.getMessage());
         }
-        return true;
+        log.info("Sms sent successfully");
     }
 }
