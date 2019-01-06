@@ -154,15 +154,8 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStudentIdAndApprovedFalseOrderByCreatedDate(sessionId, studentId);
             }
         }
-
-        List<LeaveApplicationDTO> leaveApplicationDTOs= leaveApplicationMapper.toDto(leaveApplications);
-        if(leaveApplicationDTOs.size()!= 0){
-            for(int i=0;i<leaveApplicationDTOs.size();i++){
-                leaveApplicationDTOs.get(i).setNumLeaveDays(workingDays(leaveApplicationDTOs.get(i).getFromLeaveDate(), leaveApplicationDTOs.get(i).getToLeaveDate()
-                    , leaveApplicationDTOs.get(i).getSessionId(),false));
-            }
-        }
-            return leaveApplicationDTOs;
+        List<LeaveApplicationDTO> leaveApplicationDTOS= leaveApplicationMapper.toDto(leaveApplications);
+        return insertLeaveDays(leaveApplicationDTOS);
     }
 
     @Override
@@ -178,18 +171,13 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 leaveApplications = leaveApplicationRepository.findBySessionIdAndAppliedStaffIdAndApprovedFalseOrderByFromLeaveDate(sessionId, staffId);
             }
         }
-        List<LeaveApplicationDTO> leaveApplicationDTOs= leaveApplicationMapper.toDto(leaveApplications);
-        if(leaveApplicationDTOs.size()!= 0){
-            for(int i=0;i<leaveApplicationDTOs.size();i++){
-                try {
-                    leaveApplicationDTOs.get(i).setNumLeaveDays(workingDays(leaveApplicationDTOs.get(i).getFromLeaveDate(), leaveApplicationDTOs.get(i).getToLeaveDate()
-                        , leaveApplicationDTOs.get(i).getSessionId(),false));
-                } catch (WitcurveException e) {
-                    e.printStackTrace();
-                }
-            }
+        List<LeaveApplicationDTO> leaveApplicationDTOS= leaveApplicationMapper.toDto(leaveApplications);
+        try {
+            return insertLeaveDays(leaveApplicationDTOS);
+        } catch (WitcurveException e) {
+            e.printStackTrace();
         }
-        return leaveApplicationDTOs;
+        return null;
     }
 
     public List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, Boolean approved) throws WitcurveException {

@@ -3,7 +3,10 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.StudentMarks;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.repository.StudentMarksRepository;
+import com.witcurve.service.EventService;
+import com.witcurve.service.ExamCourseDetailsService;
 import com.witcurve.service.StudentMarksService;
+import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.service.mapper.StudentMarksMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -28,6 +31,13 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     @Autowired
     StudentMarksRepository studentMarksRepository;
+
+    @Autowired
+    EventService eventService;
+
+    @Autowired
+    ExamCourseDetailsService examCourseDetailsService;
+
 
     @Override
     public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) {
@@ -58,16 +68,31 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getListStudentMarksByCourseTeacher(Long courseTeacherId, EventType eventType) throws WitcurveException {
+    public List<StudentMarksDTO> getListStudentMarksByCourseTeacher(Long courseTeacherId, Long eventId) throws WitcurveException {
         log.debug("Request to get student Marks List with event type exam or test and course teacher id : {}", courseTeacherId);
         List<StudentMarks> studentMarks= new ArrayList<>();
-        if(EventType.TEST.equals(eventType) || EventType.EXAM.equals(eventType)){
-            studentMarks= studentMarksRepository.getByCourseTeacherIdAndEventType(courseTeacherId,eventType) ;
-        } else if(EventType.ASSIGNMENT.equals(eventType)){
-            studentMarks= studentMarksRepository.getByCourseTeacherIdAndEventTypeForAssignment(courseTeacherId,eventType) ;
+        EventDTO eventDTO= eventService.getEventById(eventId);
+        if(EventType.TEST.equals(eventDTO.getType())){
+            studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForTest(courseTeacherId,eventId);
+        }
+        if(EventType.ASSIGNMENT.equals(eventDTO.getType())){
+            studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForAssignment(courseTeacherId,eventId);
         }
           else  {
-            throw new WitcurveException("Event type entered is neither Exam nor Test !!");
+            throw new WitcurveException("Event id entered is neither Assignment nor Test !!");
+        }
+        return studentMarksMapper.toDto(studentMarks);
+    }
+
+    @Override
+    public List<StudentMarksDTO> getListStudentMarksForExamByCourseTeacher(Long courseTeacherId, Long examCourseDetailsId) throws WitcurveException {
+        log.debug("Request to get student Marks List with event type exam or test and course teacher id : {}", courseTeacherId);
+        List<StudentMarks> studentMarks= new ArrayList<>();
+        if(examCourseDetailsService.getExamCourseDetailsById(examCourseDetailsId)!=null){
+            studentMarks=studentMarksRepository.getByCourseTeacherIdAndEcdIdForExam(courseTeacherId,examCourseDetailsId) ;
+    }
+        else  {
+            throw new WitcurveException("ExamCourseDetails id entered is not EXAM type !!");
         }
         return studentMarksMapper.toDto(studentMarks);
     }

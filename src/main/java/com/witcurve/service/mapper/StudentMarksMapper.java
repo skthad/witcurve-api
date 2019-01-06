@@ -5,15 +5,17 @@ import com.witcurve.service.dto.StudentMarksDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses={StudentMapperLite.class, EventMapper.class})
+@Mapper(componentModel = "spring", uses={StudentMapperLite.class, EventMapper.class, ExamCourseDetailsMapper.class})
 public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, StudentMarks>{
 
     @Mapping(target = "studentId", source = "student.id")
-    @Mapping(target = "testId", source = "test.id")
+    @Mapping(target = "eventId", source = "event.id")
+    @Mapping(target= "examCourseDetailsId",source= "examCourseDetails.id")
     StudentMarksDTO toDto(StudentMarks student);
 
     @Mapping(source = "studentId", target = "student.id")
-    @Mapping(source = "testId", target = "test.id")
+    @Mapping(source = "eventId", target = "event.id")
+    @Mapping(source="examCourseDetailsId", target="examCourseDetails.id")
     StudentMarks toEntity(StudentMarksDTO studentMarksDTO);
 
     default StudentMarks fromId(Long id) {

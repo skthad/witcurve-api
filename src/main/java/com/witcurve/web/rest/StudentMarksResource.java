@@ -85,16 +85,30 @@ public class StudentMarksResource {
     }
 
     /**
-      * get student marks by course Teacher id
+      * get student marks by course Teacher id and event id for test and assignment
       * @param courseTeacherId
       * @return
       * @throws WitcurveException
      */
-    @GetMapping("/student-marks/course-type/{courseTeacherId}")
+    @GetMapping("/student-marks/course-event/{courseTeacherId}")
     @Timed
-    public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacher(@PathVariable("courseTeacherId")  Long courseTeacherId, @RequestParam EventType eventType) throws WitcurveException {
-        log.debug("Request to get list of Student marks by course teaher id and event type -exam or test .");
-        List<StudentMarksDTO> result = studentMarksService.getListStudentMarksByCourseTeacher(courseTeacherId,eventType);
+    public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacher(@PathVariable("courseTeacherId")  Long courseTeacherId, @RequestParam Long eventId) throws WitcurveException {
+        log.debug("Request to get list of Student marks by course teacher id and event Id for test and assignment only .");
+        List<StudentMarksDTO> result = studentMarksService.getListStudentMarksByCourseTeacher(courseTeacherId,eventId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get student marks by course Teacher id and examCourseDetails id for exam only
+     * @param courseTeacherId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/student-marks/course-ecd/{courseTeacherId}")
+    @Timed
+    public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacherAndEcd(@PathVariable("courseTeacherId")  Long courseTeacherId, @RequestParam Long examCourseDetailsId) throws WitcurveException {
+        log.debug("Request to get list of Student marks by course teacher id and ecd id for EXAM only .");
+        List<StudentMarksDTO> result = studentMarksService.getListStudentMarksForExamByCourseTeacher(courseTeacherId,examCourseDetailsId);
         return ResponseEntity.ok(result);
     }
 

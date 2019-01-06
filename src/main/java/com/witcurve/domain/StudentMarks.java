@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 @Table(name="student_marks", uniqueConstraints = {
     @UniqueConstraint(name = "student_marks_unique_key-UK",
-        columnNames = {"student_id", "test_id"})
+        columnNames = {"student_id", "event_id"})
 })
 public class StudentMarks extends AbstractAuditingEntity implements Serializable {
 
@@ -24,12 +24,16 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @JoinColumn(nullable = false)
     private Student student;
 
-    @NotNull
+
     @ManyToOne
-    @JoinColumn(name = "test_id", nullable = false)
-    private Event test;
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     private Integer marks;
+
+    @ManyToOne
+    @JoinColumn(name="examCourseDetails_id")
+    private ExamCourseDetails examCourseDetails;
 
     public Long getId() {
         return id;
@@ -47,12 +51,20 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
         this.student = student;
     }
 
-    public Event getTest() {
-        return test;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setTest(Event test) {
-        this.test = test;
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public ExamCourseDetails getExamCourseDetails() {
+        return examCourseDetails;
+    }
+
+    public void setExamCourseDetails(ExamCourseDetails examCourseDetails) {
+        this.examCourseDetails = examCourseDetails;
     }
 
     public Integer getMarks() {
@@ -81,9 +93,10 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     public String toString() {
         return "StudentMarks{" +
             "id=" + id +
-            ", studentId='" + student.getId()+ '\'' +
-            ", testId='" + test.getId()+ '\'' +
-            ", marks='" + marks+ '\'' +
+            ", student=" + student +
+            ", event=" + event +
+            ", marks=" + marks +
+            ", examCourseDetails=" + examCourseDetails +
             '}';
     }
 }
