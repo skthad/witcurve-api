@@ -7,8 +7,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="course", uniqueConstraints = {
-    @UniqueConstraint( name= "course_name_school_id_UK",
-        columnNames = {"course_name", "school_id"})
+    @UniqueConstraint( name= "course_name_school_info_id_UK",
+        columnNames = {"course_name", "school_info_id"})
 })
 public class Course extends AbstractAuditingEntity implements Serializable {
 
@@ -37,7 +37,7 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private School school;
+    private SchoolInfo schoolInfo;
 
     private String subject;
 
@@ -81,12 +81,12 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.masterSubject = masterSubject;
     }
 
-    public School getSchool() {
-        return school;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public String getSubject() {
@@ -113,7 +113,7 @@ public class Course extends AbstractAuditingEntity implements Serializable {
             ", description='" + description + '\'' +
             ", eligibleForSubstitute=" + eligibleForSubstitute +
             ", masterSubject=" + masterSubject +
-            ", school=" + school +
+            ", schoolInfo=" + schoolInfo +
             ", subject=" + subject +
             '}';
     }

@@ -72,7 +72,7 @@ public class StaffServiceImpl implements StaffService {
         log.debug("Request to get student with school id : {} and staff id : {}", schoolId, staffId);
         Staff staff = staffRepository.findBySchoolIdAndStaffId(schoolId, staffId);
         if (staff == null){
-            throw  new WitcurveException("No staff with given staff id in the give school id");
+            throw  new WitcurveException("No staff with given staff id in the give school info id");
         }
         StaffDTO result = staffMapper.toDto(staff);
         if (Strings.isNullOrEmpty(staff.getUser().getPassword())) {

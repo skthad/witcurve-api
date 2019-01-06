@@ -61,7 +61,7 @@ public class SubstitutionServiceImpl implements SubstitutionService {
         Standard standard = courseTeacher.getStandard();
         Grade grade = standard.getGrade();
         MasterSubject masterSubject = courseTeacher.getCourse().getMasterSubject();
-        Long schoolId = scd.getCourseTeacher().getTeacher().getSchool().getId();
+        Long schoolId = scd.getCourseTeacher().getTeacher().getSchoolInfo().getSchool().getId();
         // look for a staff who teaches given master subject in the given grade
         List<Long> availableStaff = staffEligibilityRepository.findStaffByGradeAndSubject(
             grade, masterSubject, schoolId, teacherId);

@@ -43,7 +43,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private School school;
+    private SchoolInfo schoolInfo;
 
     @NotNull
     @Column(nullable = false)
@@ -145,12 +145,12 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
         this.user = user;
     }
 
-    public School getSchool() {
-        return school;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public StaffType getType() {
@@ -296,7 +296,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", user=" + user +
-            ", school=" + school +
+            ", schoolInfo=" + schoolInfo +
             ", type='" + type + '\'' +
             ", address1='" + address1 + '\'' +
             ", address2='" + address2 + '\'' +

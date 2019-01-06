@@ -1,7 +1,5 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.AcademicSession;
-
 import java.util.List;
 
 public class UserContextDTO {
@@ -10,7 +8,7 @@ public class UserContextDTO {
 
     private StudentStandardDTO studentStandardDTO;
 
-    private List<AcademicSession> currentSessions;
+    private List<StandardDTO> staffStandardDTOs;
 
     private Integer numberOfWorkingDays;
 
@@ -30,12 +28,12 @@ public class UserContextDTO {
         this.studentStandardDTO = studentStandardDTO;
     }
 
-    public List<AcademicSession> getCurrentSessions() {
-        return currentSessions;
+    public List<StandardDTO> getStaffStandardDTOs() {
+        return staffStandardDTOs;
     }
 
-    public void setCurrentSessions(List<AcademicSession> currentSessions) {
-        this.currentSessions = currentSessions;
+    public void setStaffStandardDTOs(List<StandardDTO> staffStandardDTOs) {
+        this.staffStandardDTOs = staffStandardDTOs;
     }
 
     public Integer getNumberOfWorkingDays() {

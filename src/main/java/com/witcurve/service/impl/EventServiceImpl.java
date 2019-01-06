@@ -282,7 +282,7 @@ public class EventServiceImpl implements EventService {
         LocalDate endDate = date.plusDays(6);
 
         Staff staff = staffRepository.getOne(staffId);
-        School school = staff.getSchool();
+        School school = staff.getSchoolInfo().getSchool();
 
         List<Long> sessionIds = academicSessionRepository.getActiveSessionIds(school.getId());
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);

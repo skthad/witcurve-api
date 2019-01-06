@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1546777257546-1">
+        <addColumn tableName="course">
+            <column name="school_info_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-2">
+        <addColumn tableName="staff">
+            <column name="school_info_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-3">
+        <dropUniqueConstraint constraintName="course_name_school_id_UK" tableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-4">
+        <addUniqueConstraint columnNames="course_name, school_info_id" constraintName="course_name_school_info_id_UK" tableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-5">
+        <dropForeignKeyConstraint baseTableName="course" constraintName="FKqv2rlwmnu9rsh1siurb2f6923"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-6">
+        <dropForeignKeyConstraint baseTableName="staff" constraintName="FKo1sjk2xvwinvmn2gmof38cwjm"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-7">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="course" constraintName="FKegxywtkptju795vsy3f18glo2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-8">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="staff" constraintName="FKruxs9808bivxikwn2hydnoemd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-9">
+        <sql>update course set school_info_id = (case when school_id = 1 then 1 else 3 end)</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-10">
+        <sql>update staff set school_info_id = (case when school_id = 1 then 1 else 3 end)</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-11">
+        <addNotNullConstraint columnDataType="bigint" columnName="school_info_id" tableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-12">
+        <addNotNullConstraint columnDataType="bigint" columnName="school_info_id" tableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-13">
+        <dropColumn columnName="school_id" tableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1546777257546-14">
+        <dropColumn columnName="school_id" tableName="staff"/>
+    </changeSet>
+</databaseChangeLog>

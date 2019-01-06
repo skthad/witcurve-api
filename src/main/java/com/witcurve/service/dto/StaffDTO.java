@@ -31,7 +31,7 @@ public class StaffDTO extends AbstractAuditingDTO {
     private Boolean hasPassword;
 
     @NotNull
-    private Long schoolId;
+    private SchoolInfoDTO schoolInfo;
 
     @NotNull
     private StaffType type;
@@ -134,12 +134,12 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.hasPassword = hasPassword;
     }
 
-    public Long getSchoolId() {
-        return schoolId;
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setSchoolId(Long schoolId) {
-        this.schoolId = schoolId;
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public StaffType getType() {
@@ -285,7 +285,7 @@ public class StaffDTO extends AbstractAuditingDTO {
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", userId=" + userId +
-            ", schoolId=" + schoolId +
+            ", schoolInfo=" + schoolInfo +
             ", type=" + type +
             ", address1='" + address1 + '\'' +
             ", address2='" + address2 + '\'' +
