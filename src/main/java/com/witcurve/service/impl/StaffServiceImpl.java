@@ -70,7 +70,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffDTO getStaffBySchoolIdAndStaffId(Long schoolId, String staffId) throws WitcurveException {
         log.debug("Request to get student with school id : {} and staff id : {}", schoolId, staffId);
-        Staff staff = staffRepository.findBySchoolIdAndStaffId(schoolId, staffId);
+        Staff staff = staffRepository.findBySchoolIdAndStaffId(schoolId, staffId.toLowerCase());
         if (staff == null){
             throw  new WitcurveException("No staff with given staff id in the give school info id");
         }
