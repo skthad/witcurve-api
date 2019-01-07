@@ -6,10 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name="student_marks", uniqueConstraints = {
-    @UniqueConstraint(name = "student_marks_unique_key-UK",
-        columnNames = {"student_id", "event_id"})
-})
+@Table(name="student_marks")
 public class StudentMarks extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -30,11 +30,11 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
         this.studentId = studentId;
     }
 
-    public Long getTestId() {
+    public Long getEventId() {
         return eventId;
     }
 
-    public void setTestId(Long eventId) {
+    public void setEventId(Long eventId) {
         this.eventId = eventId;
     }
 
