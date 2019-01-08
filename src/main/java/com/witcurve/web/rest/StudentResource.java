@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,21 @@ public class StudentResource {
         log.debug("Request to get student by id");
         StudentDTO result = studentService.getStudentById(studentId);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get Student by school id
+     * @param schoolId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/student/schools/{schoolId}")
+    @Timed
+    public ResponseEntity<List<StudentDTO>> getStudentBySchoolId(@PathVariable("schoolId") Long schoolId) throws WitcurveException {
+        log.debug("Request to get students with school id {}", schoolId);
+        List<StudentDTO> result = studentService.getStudentsBySchoolId(schoolId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/students/standard/{standardId}")

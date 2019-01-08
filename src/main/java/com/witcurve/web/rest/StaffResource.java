@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -57,6 +58,21 @@ public class StaffResource {
     public ResponseEntity<StaffDTO> getStaff(@PathVariable("staffId") Long staffId) throws WitcurveException {
         log.debug("Request to get Staff with id {}", staffId);
         StaffDTO result = staffService.getStaffById(staffId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get Staff by school id
+     * @param schoolId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/staff/schools/{schoolId}")
+    @Timed
+    public ResponseEntity<List<StaffDTO>> getStaffBySchoolId(@PathVariable("schoolId") Long schoolId) throws WitcurveException {
+        log.debug("Request to get Staff with school id {}", schoolId);
+        List<StaffDTO> result = staffService.getStaffBySchoolId(schoolId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

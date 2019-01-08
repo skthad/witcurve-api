@@ -50,11 +50,16 @@ public class StudentServiceImpl implements StudentService {
         if (student ==  null) {
             throw new WitcurveException("No student with given id");
         }
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setId(student.getUser().getId());
         StudentDTO studentDTO = studentMapperLite.toDto(student);
-//        studentDTO.setUser(userDTO);
         return studentDTO;
+    }
+
+    @Override
+    public List<StudentDTO> getStudentsBySchoolId(Long schoolId) {
+        log.debug("Request to get students with school id : {} ", schoolId);
+        List<Student> studentList = studentRepository.findBySchoolId(schoolId);
+        List<StudentDTO> result = studentMapper.toDto(studentList);
+        return result;
     }
 
     @Override

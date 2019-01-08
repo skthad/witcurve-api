@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class StaffServiceImpl implements StaffService {
@@ -69,7 +71,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO getStaffBySchoolIdAndStaffId(Long schoolId, String staffId) throws WitcurveException {
-        log.debug("Request to get student with school id : {} and staff id : {}", schoolId, staffId);
+        log.debug("Request to get staff with school id : {} and staff id : {}", schoolId, staffId);
         Staff staff = staffRepository.findBySchoolIdAndStaffId(schoolId, staffId.toLowerCase());
         if (staff == null){
             throw  new WitcurveException("No staff with given staff id in the give school info id");
@@ -80,6 +82,14 @@ public class StaffServiceImpl implements StaffService {
         } else {
             result.setHasPassword(Boolean.TRUE);
         }
+        return result;
+    }
+
+    @Override
+    public List<StaffDTO> getStaffBySchoolId(Long schoolId) {
+        log.debug("Request to get staff with school id : {} ", schoolId);
+        List<Staff> staffList = staffRepository.findBySchoolId(schoolId);
+        List<StaffDTO> result = staffMapper.toDto(staffList);
         return result;
     }
 }
