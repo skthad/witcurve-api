@@ -18,10 +18,10 @@
         <sql>delete from guardian where student_id in (select id from student where user_id is null)</sql>
         <sql>delete from student where user_id is null</sql>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1547014058097-6">
+   <!-- <changeSet author="WitCurve (generated)" id="1547014058097-6">
         <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="staff"/>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1547014058097-7">
         <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="student"/>
-    </changeSet>
+    </changeSet>-->
 </databaseChangeLog>
