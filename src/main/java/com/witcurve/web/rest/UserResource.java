@@ -85,21 +85,19 @@ public class UserResource {
         this.mailService = mailService;
     }
 
-    @GetMapping("/students/school/{schoolId}")
+    @GetMapping("/students/username/{username}")
     @Timed
-    public ResponseEntity<StudentDTO> getStudentBySchoolAndAdmissionId(@PathVariable("schoolId") Long schoolId,
-                                                                       @RequestParam("admissionId") String admissionId) throws WitcurveException {
-        log.debug("Request to get student by schoolId and admissionId");
-        StudentDTO result = studentService.getStudentBySchoolIdAndAdmissionId(schoolId, admissionId);
+    public ResponseEntity<StudentDTO> getStudentByUsername(@PathVariable("username") String username) throws WitcurveException {
+        log.debug("Request to get student by username {}", username);
+        StudentDTO result = studentService.getStudentByUsername(username);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/staff/school/{schoolId}")
+    @GetMapping("/staff/username/{username}")
     @Timed
-    public ResponseEntity<StaffDTO> getStaffBySchoolAndEmployeeId(@PathVariable("schoolId") Long schoolId,
-                                                                  @RequestParam("staffId") String staffId) throws WitcurveException {
-        log.debug("Request to get student by schoolId and staffId");
-        StaffDTO result = staffService.getStaffBySchoolIdAndStaffId(schoolId, staffId);
+    public ResponseEntity<StaffDTO> getStaffByUsername(@PathVariable("username") String username) throws WitcurveException {
+        log.debug("Request to get staff by username {}", username);
+        StaffDTO result = staffService.getStaffByUsername(username);
         return ResponseEntity.ok(result);
     }
 

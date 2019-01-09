@@ -17,7 +17,7 @@ public interface StaffService {
 
     void deleteStaffById(Long staffId) throws WitcurveException;
 
-    StaffDTO getStaffBySchoolIdAndStaffId(Long schoolId, String staffId) throws WitcurveException;
-
     List<StaffDTO> getStaffBySchoolId(Long schoolId);
+
+    StaffDTO getStaffByUsername(String username) throws WitcurveException;
 }

@@ -19,7 +19,7 @@ public interface StudentService {
 
     void deleteStudent(Long studentId) throws WitcurveException;
 
-    StudentDTO getStudentBySchoolIdAndAdmissionId(Long schoolId, String admissionId) throws WitcurveException;
-
     List<StudentDTO> getStudentsBySchoolId(Long schoolId);
+
+    StudentDTO getStudentByUsername(String username) throws WitcurveException;
 }

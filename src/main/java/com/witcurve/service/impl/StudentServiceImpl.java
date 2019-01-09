@@ -112,9 +112,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDTO getStudentBySchoolIdAndAdmissionId(Long schoolId, String admissionId) throws WitcurveException {
-        log.debug("Request to get student with school id : {} and admission id : {}", schoolId, admissionId);
-        Student student = studentRepository.findBySchoolIdAndAdmissionId(schoolId, admissionId.toLowerCase());
+    public StudentDTO getStudentByUsername(String username) throws WitcurveException {
+        log.debug("Request to get student with username: {}", username);
+        int index = username.indexOf("-");
+        Long schoolInfoId = Long.parseLong(username.substring(0, index));
+        String admissionId = username.substring(index + 1);
+        Student student = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, admissionId.toLowerCase());
         if (student == null){
             throw  new WitcurveException("No student with given admission id in the give school id");
         }

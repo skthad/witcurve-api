@@ -93,9 +93,12 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO getStaffBySchoolIdAndStaffId(Long schoolId, String staffId) throws WitcurveException {
-        log.debug("Request to get staff with school id : {} and staff id : {}", schoolId, staffId);
-        Staff staff = staffRepository.findBySchoolIdAndStaffId(schoolId, staffId.toLowerCase());
+    public StaffDTO getStaffByUsername(String username) throws WitcurveException {
+        log.debug("Request to get staff with username {}", username);
+        int index = username.indexOf("-");
+        Long schoolInfoId = Long.parseLong(username.substring(0, index));
+        String staffId = username.substring(index + 1);
+        Staff staff = staffRepository.findBySchoolInfoIdAndStaffId(schoolInfoId, staffId.toLowerCase());
         if (staff == null){
             throw  new WitcurveException("No staff with given staff id in the give school info id");
         }
