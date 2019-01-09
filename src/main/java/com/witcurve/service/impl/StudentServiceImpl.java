@@ -2,8 +2,11 @@ package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
+import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.repository.UserRepository;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.mapper.StudentMapper;
@@ -35,9 +38,28 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     StudentMapperLite studentMapperLite;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
-    public StudentDTO saveOrUpdate(StudentDTO studentDTO) {
-        log.debug("Request to save or update student : {}", studentDTO);
+    public StudentDTO create(StudentDTO studentDTO) {
+        log.debug("Request to create student : {}", studentDTO);
+        User user = new User();
+        user.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId());
+        user.setFirstName(studentDTO.getFirstName());
+        user.setLastName(studentDTO.getLastName());
+        user.setType(UserType.PARENT);
+        user.setActivated(false);
+        user = userRepository.save(user);
+        Student student = studentMapper.toEntity(studentDTO);
+        student.setUser(user);
+        student = studentRepository.save(student);
+        return studentMapperLite.toDto(student);
+    }
+
+    @Override
+    public StudentDTO update(StudentDTO studentDTO) {
+        log.debug("Request to update student : {}", studentDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
         return studentMapperLite.toDto(student);

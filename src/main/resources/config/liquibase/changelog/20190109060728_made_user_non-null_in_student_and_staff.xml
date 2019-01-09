@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1547014058097-1">
+        <dropUniqueConstraint constraintName="uc_staffstaff_id_col" tableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-2">
+        <dropUniqueConstraint constraintName="uc_studentadmission_id_col" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-3">
+        <addUniqueConstraint columnNames="admission_id, school_info_id" constraintName="admission_school_info_id_UK" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-4">
+        <addUniqueConstraint columnNames="staff_id, school_info_id" constraintName="staff_school_info_id_UK" tableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-5">
+        <sql>delete from event where student_id in (select id from student where user_id is null)</sql>
+        <sql>delete from student_standard where student_id in (select id from student where user_id is null)</sql>
+        <sql>delete from guardian where student_id in (select id from student where user_id is null)</sql>
+        <sql>delete from student where user_id is null</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-6">
+        <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-7">
+        <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="student"/>
+    </changeSet>
+</databaseChangeLog>

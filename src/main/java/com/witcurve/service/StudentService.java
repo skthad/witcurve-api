@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface StudentService {
 
-    StudentDTO saveOrUpdate(StudentDTO studentDTO);
+    StudentDTO create(StudentDTO studentDTO);
+
+    StudentDTO update(StudentDTO studentDTO);
 
     StudentDTO getStudentById(Long studentId) throws WitcurveException;
 

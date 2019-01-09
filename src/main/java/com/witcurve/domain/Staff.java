@@ -11,7 +11,10 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name="staff")
+@Table(name="staff", uniqueConstraints = {
+    @UniqueConstraint(name = "staff_school_info_id_UK",
+        columnNames = {"staff_id", "school_info_id"})
+})
 public class Staff extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,7 +25,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(name = "staff_id", nullable = false)
     private String staffId;
 
     @NotNull
@@ -36,8 +39,9 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
-    //@NotNull
+    @NotNull
     @OneToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @NotNull

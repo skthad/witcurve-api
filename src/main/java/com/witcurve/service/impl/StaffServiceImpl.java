@@ -2,7 +2,10 @@ package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
 import com.witcurve.domain.Staff;
+import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StaffRepository;
+import com.witcurve.repository.UserRepository;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.service.mapper.StaffMapper;
@@ -27,9 +30,29 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     StaffMapper staffMapper;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
-    public StaffDTO saveOrUpdate(StaffDTO staffDTO) {
-        log.debug("Request to save or update staff : {}", staffDTO);
+    public StaffDTO create(StaffDTO staffDTO) {
+        log.debug("Request to create staff : {}", staffDTO);
+
+        User user = new User();
+        user.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        user.setFirstName(staffDTO.getFirstName());
+        user.setLastName(staffDTO.getLastName());
+        user.setType(UserType.STAFF);
+        user.setActivated(false);
+        user = userRepository.save(user);
+        Staff staff = staffMapper.toEntity(staffDTO);
+        staff.setUser(user);
+        staff = staffRepository.save(staff);
+        return staffMapper.toDto(staff);
+    }
+
+    @Override
+    public StaffDTO update(StaffDTO staffDTO) {
+        log.debug("Request to update staff : {}", staffDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff = staffRepository.save(staff);
         return staffMapper.toDto(staff);

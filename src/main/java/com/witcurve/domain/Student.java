@@ -13,18 +13,21 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "student")
+@Table(name="student", uniqueConstraints = {
+    @UniqueConstraint(name = "admission_school_info_id_UK",
+        columnNames = {"admission_id", "school_info_id"})
+})
 public class Student extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studentIdSeq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "studentIdSeq")
     @SequenceGenerator(name = "studentIdSeq", sequenceName="student_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(name = "admission_id", nullable = false)
     private String admissionId;
 
     @NotNull
@@ -38,8 +41,9 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    //@NotNull
+    @NotNull
     @OneToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @NotNull

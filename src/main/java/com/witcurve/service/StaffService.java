@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface StaffService {
 
-    StaffDTO saveOrUpdate(StaffDTO staffDTO);
+    StaffDTO create(StaffDTO staffDTO);
+
+    StaffDTO update(StaffDTO staffDTO);
 
     StaffDTO getStaffById(Long staffId) throws WitcurveException;
 

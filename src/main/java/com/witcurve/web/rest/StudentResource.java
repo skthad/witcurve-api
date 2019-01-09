@@ -30,9 +30,9 @@ public class StudentResource {
     public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO studentDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request create student");
         if (studentDTO.getId() != null) {
-            throw new WitcurveException("New Standard can't already have an id");
+            throw new WitcurveException("New student can't already have an id");
         }
-        StudentDTO result = studentService.saveOrUpdate(studentDTO);
+        StudentDTO result = studentService.create(studentDTO);
         return ResponseEntity.created(new URI("/api/student/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("student", result.getId().toString()))
             .body(result);
@@ -44,7 +44,7 @@ public class StudentResource {
         if (studentDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        StudentDTO result = studentService.saveOrUpdate(studentDTO);
+        StudentDTO result = studentService.update(studentDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("student", result.getId().toString()))
             .body(result);

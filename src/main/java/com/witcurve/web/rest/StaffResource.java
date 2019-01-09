@@ -40,7 +40,7 @@ public class StaffResource {
         if (staffDTO.getId() != null) {
             throw new WitcurveException("New Staff can't already have an id");
         }
-        StaffDTO result = staffService.saveOrUpdate(staffDTO);
+        StaffDTO result = staffService.create(staffDTO);
         return ResponseEntity.created(new URI("/api/staff/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
             .body(result);
@@ -90,7 +90,7 @@ public class StaffResource {
         if (staffDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        StaffDTO result = staffService.saveOrUpdate(staffDTO);
+        StaffDTO result = staffService.update(staffDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
             .body(result);
