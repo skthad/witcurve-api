@@ -6,6 +6,7 @@ import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.StandardService;
 import com.witcurve.service.dto.StandardDTO;
 import com.witcurve.service.mapper.StandardMapper;
+import com.witcurve.service.mapper.StandardMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class StandardServiceImpl implements StandardService {
     @Autowired
     StandardMapper standardMapper;
 
+    @Autowired
+    StandardMapperLite standardMapperLite;
+
     @Override
     public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) {
         log.debug("Request to save or update Standard: {}", standardDTO);
@@ -45,21 +49,21 @@ public class StandardServiceImpl implements StandardService {
         if (standard == null) {
             throw new WitcurveException("No standard exits with given id");
         }
-        return standardMapper.toDto(standard);
+        return standardMapperLite.toDto(standard);
     }
 
     @Override
     public List<StandardDTO> getStandardsBySchoolInfoId(Long schoolInfoId) {
         log.debug("Request to get standards with school info id : {}", schoolInfoId);
         List<Standard> standards = standardRepository.findBySchoolInfoId(schoolInfoId);
-        return standardMapper.toDto(standards);
+        return standardMapperLite.toDto(standards);
     }
 
     @Override
     public List<StandardDTO> getStandardsByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException {
         log.debug("Request to get all standards by by teacher id : {}", teacherId);
         List<Standard> result = courseTeacherRepository.findStandardsByTeacherIdAndTermId(teacherId, termId);
-        return standardMapper.toDto(result);
+        return standardMapperLite.toDto(result);
     }
 
     @Override

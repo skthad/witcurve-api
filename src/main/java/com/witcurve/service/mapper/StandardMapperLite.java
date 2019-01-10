@@ -3,14 +3,16 @@ package com.witcurve.service.mapper;
 import com.witcurve.domain.School;
 import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Standard;
+import com.witcurve.domain.Term;
 import com.witcurve.service.dto.SchoolDTO;
 import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.service.dto.StandardDTO;
+import com.witcurve.service.dto.TermDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {StaffMapper.class, TermMapper.class})
-public interface StandardMapper extends EntityMapper<StandardDTO, Standard> {
+@Mapper(componentModel = "spring", uses = {StaffMapper.class})
+public interface StandardMapperLite extends EntityMapper<StandardDTO, Standard> {
 
     @Mapping(target = "classTeacherId", source = "classTeacher.id")
     StandardDTO toDto(Standard standard);
@@ -54,6 +56,24 @@ public interface StandardMapper extends EntityMapper<StandardDTO, Standard> {
         schoolInfoDTO.setSchool(school);
 
         return schoolInfoDTO;
+    }
+
+    default Term toTerm(TermDTO termDTO) {
+        if (termDTO == null) {
+            return null;
+        }
+        Term term = new Term();
+        term.setId(termDTO.getId());
+        return term;
+    }
+
+    default TermDTO toTermDTO(Term term) {
+        if (term == null) {
+            return null;
+        }
+        TermDTO termDTO = new TermDTO();
+        termDTO.setId(term.getId());
+        return termDTO;
     }
 
 }
