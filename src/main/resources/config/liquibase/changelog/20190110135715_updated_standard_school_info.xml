@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1547128645020-1">
+        <addColumn tableName="standard">
+            <column name="school_info_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547128645020-2">
+        <sql>update standard set term_id = 3 where section in ('Alpha', 'Beta')</sql>
+        <sql>update standard set school_info_id = term_id</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547128645020-3">
+        <addNotNullConstraint columnDataType="bigint" columnName="school_info_id" tableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547128645020-4">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="standard" constraintName="FK3wxoja42l83bnj2vu00vi93fr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+</databaseChangeLog>

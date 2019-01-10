@@ -20,6 +20,9 @@ public class StandardDTO extends AbstractAuditingDTO {
     @NotNull
     private TermDTO term;
 
+    @NotNull
+    private SchoolInfoDTO schoolInfo;
+
     public Long getId() {
         return id;
     }
@@ -60,6 +63,14 @@ public class StandardDTO extends AbstractAuditingDTO {
         this.term = term;
     }
 
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,6 +92,7 @@ public class StandardDTO extends AbstractAuditingDTO {
             ", section='" + section + '\'' +
             ", classTeacherId=" + classTeacherId +
             ", term=" + term +
+            ", schoolInfo=" + schoolInfo +
             '}';
     }
 }

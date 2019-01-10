@@ -1,11 +1,7 @@
 package com.witcurve.service.mapper;
 
-import com.witcurve.domain.School;
-import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.User;
-import com.witcurve.service.dto.SchoolDTO;
-import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.service.dto.StaffDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -37,28 +33,5 @@ public interface StaffMapperLite extends EntityMapper<StaffDTO, Staff> {
         user.setId(id);
         return  user;
     }
-
-    default SchoolInfo toSchoolInfo(SchoolInfoDTO schoolInfoDTO) {
-        SchoolInfo schoolInfo = new SchoolInfo();
-        schoolInfo.setId(schoolInfoDTO.getId());
-
-        School school = new School();
-        school.setId(schoolInfoDTO.getSchool().getId());
-        schoolInfo.setSchool(school);
-
-        return schoolInfo;
-    }
-
-    default SchoolInfoDTO toSchoolInfoDTO(SchoolInfo schoolInfo) {
-        SchoolInfoDTO schoolInfoDTO = new SchoolInfoDTO();
-        schoolInfoDTO.setId(schoolInfo.getId());
-
-        SchoolDTO school = new SchoolDTO();
-        school.setId(schoolInfo.getSchool().getId());
-        schoolInfoDTO.setSchool(school);
-
-        return schoolInfoDTO;
-    }
-
 }
 

@@ -30,13 +30,12 @@ public class StandardServiceImpl implements StandardService {
     @Autowired
     StandardMapper standardMapper;
 
-
     @Override
     public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) {
         log.debug("Request to save or update Standard: {}", standardDTO);
-        Standard aStandard = standardMapper.toEntity(standardDTO);
-        aStandard = standardRepository.save(aStandard);
-        return standardMapper.toDto(aStandard);
+        Standard standard = standardMapper.toEntity(standardDTO);
+        standard = standardRepository.save(standard);
+        return standardMapper.toDto(standard);
     }
 
     @Override
@@ -47,6 +46,13 @@ public class StandardServiceImpl implements StandardService {
             throw new WitcurveException("No standard exits with given id");
         }
         return standardMapper.toDto(standard);
+    }
+
+    @Override
+    public List<StandardDTO> getStandardsBySchoolInfoId(Long schoolInfoId) {
+        log.debug("Request to get standards with school info id : {}", schoolInfoId);
+        List<Standard> standards = standardRepository.findBySchoolInfoId(schoolInfoId);
+        return standardMapper.toDto(standards);
     }
 
     @Override

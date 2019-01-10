@@ -60,7 +60,7 @@ public class StandardResource {
     }
 
     /**
-     * get academic session by id
+     * get standard by id
      * @param standardId
      * @return
      * @throws WitcurveException
@@ -70,6 +70,20 @@ public class StandardResource {
     public ResponseEntity<StandardDTO> getStandardById(@PathVariable("standardId") Long standardId) throws WitcurveException {
         log.debug("Request to get standard by id");
         StandardDTO result = standardService.getStandardById(standardId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get standards by school info id
+     * @param schoolInfoId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/standard/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<List<StandardDTO>> getStandardsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get standards by school info id: {}", schoolInfoId);
+        List<StandardDTO> result = standardService.getStandardsBySchoolInfoId(schoolInfoId);
         return ResponseEntity.ok(result);
     }
 
