@@ -18,10 +18,27 @@
         <sql>delete from guardian where student_id in (select id from student where user_id is null)</sql>
         <sql>delete from student where user_id is null</sql>
     </changeSet>
-   <!-- <changeSet author="WitCurve (generated)" id="1547014058097-6">
-        <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="staff"/>
+    <changeSet author="WitCurve (generated)" id="1547014058097-6">
+        <sql>delete from message where message_thread_id in
+            (select id from message_thread where course_teacher_id in
+            (select id from course_teacher where teacher_id in
+            (select id from staff where user_id is null)))</sql>
+        <sql>delete from message_thread where course_teacher_id in
+            (select id from course_teacher where teacher_id in
+            (select id from staff where user_id is null))</sql>
+        <sql>delete from course_teacher where teacher_id in
+            (select id from staff where user_id is null)</sql>
+        <sql>delete from general_slot_details where standard_id in
+            (select id from standard where class_teacher_id in
+            (select id from staff where user_id is null))</sql>
+        <sql>delete from standard where class_teacher_id in
+            (select id from staff where user_id is null)</sql>
+        <sql>delete from staff where user_id is null</sql>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1547014058097-7">
+        <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547014058097-8">
         <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="student"/>
-    </changeSet>-->
+    </changeSet>
 </databaseChangeLog>
