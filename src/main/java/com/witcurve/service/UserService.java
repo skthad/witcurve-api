@@ -14,6 +14,7 @@ import com.witcurve.repository.UserRepository;
 import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.InvalidPasswordException;
+import com.witcurve.web.rest.errors.PasswordAlreadySetException;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,6 +170,20 @@ public class UserService {
                 user.setPassword(encryptedPassword);
                 this.clearUserCaches(user);
                 log.debug("Changed password for User: {}", user);
+            });
+    }
+
+    public void setPassword(String newPassword) {
+        SecurityUtils.getCurrentUserLogin()
+            .flatMap(userRepository::findOneByLogin)
+            .ifPresent(user -> {
+                if (!Strings.isNullOrEmpty(user.getPassword())) {
+                    throw new PasswordAlreadySetException();
+                }
+                String encryptedPassword = passwordEncoder.encode(newPassword);
+                user.setPassword(encryptedPassword);
+                this.clearUserCaches(user);
+                log.debug("Set password for User: {}", user);
             });
     }
 

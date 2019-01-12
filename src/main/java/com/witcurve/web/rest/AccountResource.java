@@ -108,6 +108,21 @@ public class AccountResource {
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
    }
 
+    /**
+     * POST  /account/set-password : sets the current user's password
+     *
+     * @param passwordChangeDto new password
+     * @throws InvalidPasswordException 400 (Bad Request) if the new password is incorrect
+     */
+    @PostMapping(path = "/account/set-password")
+    @Timed
+    public void setPassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
+        if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
+            throw new InvalidPasswordException();
+        }
+        userService.setPassword(passwordChangeDto.getNewPassword());
+    }
+
     private static boolean checkPasswordLength(String password) {
         return !StringUtils.isEmpty(password) &&
             password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
