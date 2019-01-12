@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
@@ -15,7 +16,7 @@ public interface MessageThreadService {
 
     MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException;
 
-    void approveMessageThread(Long threadId, Long staffId) throws WitcurveException;
+    void approveOrRejectMessageThread(Long threadId, Long staffId, ApprovalStatus status) throws WitcurveException;
 
     MessageThreadDTO replyMessage(MessageDTO messageDTO) throws WitcurveException;
 
@@ -24,7 +25,7 @@ public interface MessageThreadService {
     Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
                                                           Long userId,
                                                           MessageType messageType,
-                                                          Boolean approved,
+                                                          ApprovalStatus status,
                                                           Boolean read) throws WitcurveException;
 
     Map<MessageType, Integer> unReadCount(Long userId) throws WitcurveException;
@@ -32,5 +33,5 @@ public interface MessageThreadService {
     Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
                                                            Long userId,
                                                            MessageType messageType,
-                                                           Boolean approved) throws WitcurveException;
+                                                           ApprovalStatus status) throws WitcurveException;
 }

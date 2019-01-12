@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.repository.MessageRepository;
 import com.witcurve.repository.MessageThreadRepository;
@@ -89,8 +90,8 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     }
 
 
-    public void approveMessageThread(Long threadId, Long staffId) throws WitcurveException {
-        log.debug("Approval for meeting request with id {}", threadId);
+    public  void approveOrRejectMessageThread(Long threadId, Long staffId, ApprovalStatus status) throws WitcurveException {
+        log.debug("Change statu of meeting request with id : {} of status : {}", threadId, status);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
         if (!messageThread.isPresent()) {
             throw new WitcurveException("No message thread with given id");
@@ -98,13 +99,15 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         MessageThread toBeApproved = messageThread.get();
         if(messageThread.get().getMessageType().equals(MessageType.MEETING_REQUEST) || messageThread.get().getMessageType().equals(MessageType.LEAVE) )
         {
-            toBeApproved.setApproved(true);
+            toBeApproved.setStatus(status);
             if(messageThread.get().getMessageType().equals(MessageType.LEAVE)) {
-                LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
-                leaveApplication.setApproved(true);
-                Staff staff = new Staff();
-                staff.setId(staffId);
-                leaveApplication.setApprovedBy(staff);
+                if(ApprovalStatus.APPROVED.equals(status)) {
+                    LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
+                    leaveApplication.setApproved(true);
+                    Staff staff = new Staff();
+                    staff.setId(staffId);
+                    leaveApplication.setApprovedBy(staff);
+                }
             }
         } else
         {
@@ -135,10 +138,10 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     public Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
                                                                  Long userId,
                                                                  MessageType messageType,
-                                                                 Boolean approved,
+                                                                 ApprovalStatus status,
                                                                  Boolean read) throws WitcurveException{
         log.debug("Get inbox list of inbox message threads for user with id : {} of " +
-            "type : {} with approved : {} and read : {}", userId, messageType, approved, read);
+            "type : {} with status : {} and read : {}", userId, messageType, status, read);
         Page<MessageThread> messageThreads = null;
         if(messageType.equals(MessageType.SUBJECT_NOTE)) {
             Student student = studentRepository.getStudentByUserId(userId);
@@ -153,30 +156,30 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
             }
             Long standardId = studentStandards.get(0).getStandard().getId();
-            if(approved == null && read==null) {
+            if(status == null && read==null) {
                 messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
-            } else if(approved != null && read == null) {
+            } else if(status != null && read == null) {
                 messageThreads = messageThreadRepository.
-                    findInboxMessageThreadsOfSubjectNoteWithApproved(standardId, messageType, approved, pageable);
-            } else if(approved == null && read != null) {
+                    findInboxMessageThreadsOfSubjectNoteWithStatus(standardId, messageType, status, pageable);
+            } else if(status == null && read != null) {
                 messageThreads = messageThreadRepository.
                     findInboxMessageThreadsOfSubjectNoteWithRead(standardId, messageType, read, pageable);
             } else {
                 messageThreads = messageThreadRepository.
-                    findOtherInboxMessageThreadsWithApprovedAndRead(standardId, messageType, approved, read, pageable);
+                    findInboxMessageThreadsOfSubjectNoteWithStatusAndRead(standardId, messageType, status, read, pageable);
             }
         } else {
-            if(approved == null && read==null) {
+            if(status == null && read==null) {
                 messageThreads = messageThreadRepository.findOtherInboxMessageThreads(userId, messageType, pageable);
-            } else if(approved != null && read == null) {
+            } else if(status != null && read == null) {
                 messageThreads = messageThreadRepository.
-                    findOtherInboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
-            } else if(approved == null && read != null) {
+                    findOtherInboxMessageThreadsWithStatus(userId, messageType, status, pageable);
+            } else if(status == null && read != null) {
                 messageThreads = messageThreadRepository.
                     findOtherInboxMessageThreadsWithRead(userId, messageType, read, pageable);
             } else {
                 messageThreads = messageThreadRepository.
-                    findOtherInboxMessageThreadsWithApprovedAndRead(userId, messageType, approved, read, pageable);
+                    findOtherInboxMessageThreadsWithStatusAndRead(userId, messageType, status, read, pageable);
             }
         }
         return messageThreads.map(messageThreadMapper::toDto);
@@ -214,9 +217,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     public Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
                                                                   Long userId,
                                                                   MessageType messageType,
-                                                                  Boolean approved) throws WitcurveException {
+                                                                  ApprovalStatus status) throws WitcurveException {
         log.debug("Get inbox list of inbox message threads for user with id : {} of " +
-            "type : {} with approved : {}", userId, messageType, approved);
+            "type : {} with status : {}", userId, messageType, status);
         Page<MessageThread> messageThreads = null;
         if(messageType.equals(MessageType.SUBJECT_NOTE)) {
             Student student = studentRepository.getStudentByUserId(userId);
@@ -224,10 +227,10 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 throw new WitcurveException("Subject Note doesn't exist for student user ");
             }
         }
-        if(approved == null) {
+        if(status == null) {
             messageThreads = messageThreadRepository.findOutboxMessageThreads(userId, messageType, pageable);
         } else {
-            messageThreads = messageThreadRepository.findOutboxMessageThreadsWithApproved(userId, messageType, approved, pageable);
+            messageThreads = messageThreadRepository.findOutboxMessageThreadsWithStatus(userId, messageType, status, pageable);
         }
         return messageThreads.map(messageThreadMapper::toDto);
     }
