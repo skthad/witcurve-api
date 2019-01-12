@@ -369,7 +369,7 @@ public class EventServiceImpl implements EventService {
             //TODO change the implementation to have only those events associated with leave application
             events = eventRepository.findLeavesForStandard(standardId, sessionId);
         } else { // get attendance data for a day
-            events = eventRepository.findAttendanceForStandard(date, standardId);
+            events = eventRepository.findAttendanceForStandard(date, date, standardId);
         }
 
         Collections.sort(events, new EventDateDescComparator());
@@ -378,15 +378,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> getAttendance(LocalDate date, Long studentId, Long standardId) throws WitcurveException {
+    public List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId, Long standardId) throws WitcurveException {
         if (studentId == null && standardId == null) {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
         List<Event> attendance = null;
         if (studentId != null) {
-            attendance = eventRepository.findAttendanceForStudent(date, studentId);
+            attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
         } else {
-            attendance =eventRepository.findAttendanceForStandard(date, standardId);
+            attendance =eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
         }
 
         return eventMapper.toDto(attendance);

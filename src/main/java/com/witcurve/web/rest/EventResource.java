@@ -67,11 +67,12 @@ public class EventResource {
 
     @GetMapping("/event/attendance")
     @Timed
-    public ResponseEntity<List<EventDTO>> getAttendance(@RequestParam(value = "date") LocalDate date,
+    public ResponseEntity<List<EventDTO>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
+                                                        @RequestParam(value = "toDate") LocalDate toDate,
                                                   @RequestParam(value = "studentId", required = false) Long studentId,
                                                   @RequestParam(value = "standardId", required = false) Long standardId) throws WitcurveException {
         log.debug("Request to get attendance");
-        List<EventDTO> result = eventService.getAttendance(date, studentId, standardId);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
