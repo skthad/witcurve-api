@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -53,16 +54,15 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String meetingTime;
 
-    @NotNull
-    @Column(nullable = false)
-    private Boolean approved = false;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus status;
 
     @NotNull
     @Column(nullable = false)
     private Boolean read = false;
 
-    @OneToMany(
-    orphanRemoval = true, fetch=FetchType.EAGER)
+    @OneToMany(orphanRemoval = true, fetch=FetchType.EAGER)
     @JoinColumn(name="message_thread_id")
     private Set<Message> messages;
 
@@ -138,12 +138,12 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.meetingTime = meetingTime;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public ApprovalStatus getStatus() {
+        return status;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
     }
 
     public Boolean getRead() {
@@ -192,7 +192,7 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
             ", toUser=" + toUser +
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
-            ", approved=" + approved +
+            ", status=" + status +
             ", read=" + read +
             ", messages=" + messages +
             '}';

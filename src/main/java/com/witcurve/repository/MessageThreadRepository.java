@@ -1,6 +1,7 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.MessageThread;
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +20,10 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
     Page<MessageThread> findInboxMessageThreadsOfSubjectNote(Long standardId, MessageType messageType, Pageable pageable);
 
     @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.approved=?3 and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
+        "and m.messageThread.status=?3 and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithApproved(Long standardId, MessageType messageType, Boolean approved, Pageable pageable);
+    Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithStatus(Long standardId, MessageType messageType, ApprovalStatus status, Pageable pageable);
 
 
     @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
@@ -37,10 +38,10 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
     Integer findUnReadInboxMessageThreadsOfSubjectNoteCount(Long standardId, MessageType messageType);
 
     @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.read=?4 and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
+        "and m.messageThread.read=?4 and m.messageThread.messageType=?2 and m.messageThread.status=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findReadInboxMessageThreadsOfSubjectNoteWithApprovedAndRead(Long standardId, MessageType messageType, Boolean approved, Boolean read, Pageable pageable);
+    Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithStatusAndRead(Long standardId, MessageType messageType, ApprovalStatus status, Boolean read, Pageable pageable);
 
 
     // list of inbox message for user for type other than subject note
@@ -51,10 +52,10 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
     Page<MessageThread> findOtherInboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
+        "and m.messageThread.messageType=?2 and m.messageThread.status=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findOtherInboxMessageThreadsWithApproved(Long userId, MessageType messageType, Boolean approved, Pageable pageable);
+    Page<MessageThread> findOtherInboxMessageThreadsWithStatus(Long userId, MessageType messageType, ApprovalStatus status, Pageable pageable);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
         "and m.messageThread.read=?3 and m.messageThread.messageType=?2 and m.lastModifiedDate= " +
@@ -68,10 +69,10 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
     Integer findUnReadOtherInboxMessageThreadsCount(Long userId, MessageType messageType);
 
     @Query("select m.messageThread from Message m where m.messageThread.toUser.id=?1 " +
-        "and m.messageThread.read=?4 and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
+        "and m.messageThread.read=?4 and m.messageThread.messageType=?2 and m.messageThread.status=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findOtherInboxMessageThreadsWithApprovedAndRead(Long userId, MessageType messageType, Boolean approved, Boolean read, Pageable pageable);
+    Page<MessageThread> findOtherInboxMessageThreadsWithStatusAndRead(Long userId, MessageType messageType, ApprovalStatus status, Boolean read, Pageable pageable);
 
     //outbox for a user
 
@@ -82,9 +83,9 @@ public interface MessageThreadRepository extends JpaRepository<MessageThread, Lo
     Page<MessageThread> findOutboxMessageThreads(Long userId, MessageType messageType, Pageable pageable);
 
     @Query("select m.messageThread from Message m where m.messageThread.fromUser.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.messageThread.approved=?3 and m.lastModifiedDate= " +
+        "and m.messageThread.messageType=?2 and m.messageThread.status=?3 and m.lastModifiedDate= " +
         "(select max(m1.lastModifiedDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findOutboxMessageThreadsWithApproved(Long userId, MessageType messageType, Boolean approved, Pageable pageable);
+    Page<MessageThread> findOutboxMessageThreadsWithStatus(Long userId, MessageType messageType, ApprovalStatus status, Pageable pageable);
 
 }
