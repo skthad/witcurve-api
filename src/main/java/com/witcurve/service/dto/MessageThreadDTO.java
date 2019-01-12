@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.Message;
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 
 import javax.validation.constraints.NotNull;
@@ -33,8 +34,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String meetingTime;
 
-    @NotNull
-    private Boolean approved = false;
+    private ApprovalStatus status;
 
     @NotNull
     private List<MessageDTO> messageDTOs;
@@ -113,12 +113,12 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
         this.meetingTime = meetingTime;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public ApprovalStatus getStatus() {
+        return status;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
     }
 
     public List<MessageDTO> getMessageDTOs() {
@@ -173,7 +173,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
             ", toUserId=" + toUserId +
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
-            ", approved=" + approved +
+            ", status=" + status +
             ", messageDTOs=" + messageDTOs +
             ", read=" + read +
             '}';

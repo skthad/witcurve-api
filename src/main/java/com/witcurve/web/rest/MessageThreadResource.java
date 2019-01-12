@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.service.MessageThreadService;
 import com.witcurve.service.dto.MessageDTO;
@@ -108,9 +109,9 @@ public class MessageThreadResource {
      */
     @PatchMapping("/message-thread/thread-approval/{messageThreadId}")
     @Timed
-    public ResponseEntity<Void> meetingApproval(@PathVariable("messageThreadId") Long threadId, @RequestParam(value = "staffId", required = false) Long staffId) throws WitcurveException,URISyntaxException {
+    public ResponseEntity<Void> approveOrRejectStatus(@PathVariable("messageThreadId") Long threadId, @RequestParam(value = "staffId", required = false) Long staffId, @RequestParam(value = "status") ApprovalStatus status) throws WitcurveException,URISyntaxException {
         log.debug("Request to approve thread with id : {}" + threadId);
-        messageThreadService.approveMessageThread(threadId, staffId);
+        messageThreadService.approveOrRejectMessageThread(threadId, staffId, status);
         return ResponseEntity.ok(null);
     }
 
@@ -141,10 +142,10 @@ public class MessageThreadResource {
     public ResponseEntity<Page<MessageThreadDTO>> getInboxMessagesForUser(@ApiParam Pageable pageable,
                                                                           @PathVariable("userId") Long userId,
                                                                           @RequestParam MessageType type,
-                                                                          @RequestParam(required = false)Boolean approved,
+                                                                          @RequestParam(required = false)ApprovalStatus status,
                                                                           @RequestParam(required = false)Boolean read) throws WitcurveException {
-        log.debug("Request to get MessageThreads for user with id {} of type : {} with approved : {} and read : {}", userId, type, approved, read);
-        Page<MessageThreadDTO> result = messageThreadService.getInboxMessageThreadsByUserId(pageable, userId, type, approved, read);
+        log.debug("Request to get MessageThreads for user with id {} of type : {} with status : {} and read : {}", userId, type, status, read);
+        Page<MessageThreadDTO> result = messageThreadService.getInboxMessageThreadsByUserId(pageable, userId, type, status, read);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -173,9 +174,9 @@ public class MessageThreadResource {
     public ResponseEntity<Page<MessageThreadDTO>> getOutboxMessagesForUser(@ApiParam Pageable pageable,
                                                                            @PathVariable("userId") Long userId,
                                                                           @RequestParam MessageType type,
-                                                                          @RequestParam(required = false)Boolean approved) throws WitcurveException {
-        log.debug("Request to get MessageThreads for user with id {} of type : {} with approved : {}", userId, type, approved);
-        Page<MessageThreadDTO> result = messageThreadService.getOutboxMessageThreadsByUserId(pageable, userId, type, approved);
+                                                                          @RequestParam(required = false)ApprovalStatus status) throws WitcurveException {
+        log.debug("Request to get MessageThreads for user with id {} of type : {} with status : {}", userId, type, status);
+        Page<MessageThreadDTO> result = messageThreadService.getOutboxMessageThreadsByUserId(pageable, userId, type, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
