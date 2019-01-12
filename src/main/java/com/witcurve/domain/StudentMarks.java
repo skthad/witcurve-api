@@ -28,7 +28,7 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
 
     private Integer marks;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="examCourseDetails_id")
     private ExamCourseDetails examCourseDetails;
 

@@ -39,6 +39,7 @@ public class StudentMarksResource {
             throw new WitcurveException("New student marks relation can't already have an id");
         }
         List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTO);
+
         return ResponseEntity.ok()
             .body(result);
     }
