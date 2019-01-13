@@ -8,9 +8,11 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     private Long studentId;
 
-    private Long testId;
+    private EventDTO eventDTO;
 
     private Integer marks;
+
+    private ExamCourseDetailsDTO examCourseDetailsDTO;
 
     public Long getId() {
         return id;
@@ -28,12 +30,12 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
         this.studentId = studentId;
     }
 
-    public Long getTestId() {
-        return testId;
+    public EventDTO getEventDTO() {
+        return eventDTO;
     }
 
-    public void setTestId(Long testId) {
-        this.testId = testId;
+    public void setEventDTO(EventDTO eventDTO) {
+        this.eventDTO = eventDTO;
     }
 
     public Integer getMarks() {
@@ -42,6 +44,14 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     public void setMarks(Integer marks) {
         this.marks = marks;
+    }
+
+    public ExamCourseDetailsDTO getExamCourseDetailsDTO() {
+        return examCourseDetailsDTO;
+    }
+
+    public void setExamCourseDetailsDTO(ExamCourseDetailsDTO examCourseDetailsDTO) {
+        this.examCourseDetailsDTO = examCourseDetailsDTO;
     }
 
     @Override
@@ -60,11 +70,12 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     @Override
     public String toString() {
-        return "StudentStandard{" +
+        return "StudentMarksDTO{" +
             "id=" + id +
             ", studentId=" + studentId +
-            ", testId=" + testId +
-            ", marks='" + marks+ '\'' +
+            ", eventDTO=" + eventDTO +
+            ", marks=" + marks +
+            ", examCourseDetailsDTO=" + examCourseDetailsDTO +
             '}';
     }
 }

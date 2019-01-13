@@ -44,6 +44,8 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     private List<Long> eventIds;
 
+    private Long numLeaveDays;
+
     public Long getId() {
         return id;
     }
@@ -148,6 +150,14 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.toLeaveDate = toLeaveDate;
     }
 
+    public Long getNumLeaveDays() {
+        return numLeaveDays;
+    }
+
+    public void setNumLeaveDays(Long numLeaveDays) {
+        this.numLeaveDays = numLeaveDays;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -172,6 +182,7 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
             ", eventIds=" + eventIds +
+            ", numLeaveDays=" + numLeaveDays +
             '}';
     }
 }
