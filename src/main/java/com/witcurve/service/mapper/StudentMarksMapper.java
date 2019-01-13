@@ -9,13 +9,13 @@ import org.mapstruct.Mapping;
 public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, StudentMarks>{
 
     @Mapping(target = "studentId", source = "student.id")
-    @Mapping(target = "eventId", source = "event.id")
-    @Mapping(target= "examCourseDetailsId",source= "examCourseDetails.id")
+    @Mapping(target = "eventDTO", source = "event")
+    @Mapping(target= "examCourseDetailsDTO",source= "examCourseDetails")
     StudentMarksDTO toDto(StudentMarks studentMarks);
 
     @Mapping(source = "studentId", target = "student")
-    @Mapping(source = "eventId", target = "event")
-    @Mapping(source="examCourseDetailsId", target="examCourseDetails")
+    @Mapping(source = "eventDTO", target = "event")
+    @Mapping(source="examCourseDetailsDTO", target="examCourseDetails")
     StudentMarks toEntity(StudentMarksDTO studentMarksDTO);
 
     default StudentMarks fromId(Long id) {

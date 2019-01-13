@@ -91,7 +91,7 @@ public class StudentMarksResource {
       * @return
       * @throws WitcurveException
      */
-    @GetMapping("/student-marks/course-teacher-all-marks/{eventId}")
+    @GetMapping("/student-marks/event/{eventId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacher(@PathVariable("eventId")  Long eventId) throws WitcurveException {
         log.debug("Request to get list of Student marks by course teacher id and event Id for test and assignment only .");
@@ -105,7 +105,7 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/student-marks/course-teacher-exam-marks-list/{examCourseDetailsId}")
+    @GetMapping("/student-marks/exam-course-details/{examCourseDetailsId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacherAndEcd(@PathVariable("examCourseDetailsId") Long examCourseDetailsId) throws WitcurveException {
         log.debug("Request to get list of Student marks in course teacher id by ecd id for EXAM only .");
