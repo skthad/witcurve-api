@@ -75,8 +75,8 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if(EventType.TEST.equals(eventDTO.getType())){
             studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForTest(courseTeacherId,eventId);
         }
-        if(EventType.ASSIGNMENT.equals(eventDTO.getType())){
-            studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForAssignment(courseTeacherId,eventId);
+        else if(EventType.ASSIGNMENT.equals(eventDTO.getType())){
+              studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForAssignment(courseTeacherId,eventId);
         }
           else  {
             throw new WitcurveException("Event id entered is neither Assignment nor Test !!");

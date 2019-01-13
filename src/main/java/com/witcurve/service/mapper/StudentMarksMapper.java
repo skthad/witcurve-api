@@ -11,11 +11,11 @@ public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, Studen
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "eventId", source = "event.id")
     @Mapping(target= "examCourseDetailsId",source= "examCourseDetails.id")
-    StudentMarksDTO toDto(StudentMarks student);
+    StudentMarksDTO toDto(StudentMarks studentMarks);
 
-    @Mapping(source = "studentId", target = "student.id")
-    @Mapping(source = "eventId", target = "event.id")
-    @Mapping(source="examCourseDetailsId", target="examCourseDetails.id")
+    @Mapping(source = "studentId", target = "student")
+    @Mapping(source = "eventId", target = "event")
+    @Mapping(source="examCourseDetailsId", target="examCourseDetails")
     StudentMarks toEntity(StudentMarksDTO studentMarksDTO);
 
     default StudentMarks fromId(Long id) {

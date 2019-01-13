@@ -241,7 +241,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         if (fromDate.isAfter(toDate)) {
             throw new WitcurveException("from date cannot be after to date.");
         }
-        if (fromDate.isAfter(startDate) && toDate.isBefore(endDate)) {
+        if (fromDate.isAfter(startDate.minusDays(1)) && toDate.isBefore(endDate)) {
             if (isSaturdayWorking == false) {
                 for(LocalDate date=fromDate ; date.isBefore(toDate) || date.equals(toDate); date= date.plusDays(1)){
                     if (date.getDayOfWeek() != DayOfWeek.SUNDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY) {
