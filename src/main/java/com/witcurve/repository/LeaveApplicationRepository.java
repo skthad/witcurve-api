@@ -51,4 +51,7 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     @Query("Select la from LeaveApplication la where la.appliedStudent.id = ?1 and (la.fromLeaveDate <= ?2) and (la.toLeaveDate >= ?2)")
     LeaveApplication findLeaveForStudentOnDate(Long studentId, LocalDate date);
 
+    @Query("Select la from LeaveApplication la where la.appliedStaff.id = ?1 and (la.fromLeaveDate <= ?2) and (la.toLeaveDate >= ?2)")
+    LeaveApplication findLeaveForStaffOnDate(Long staffId, LocalDate date);
+
 }

@@ -96,15 +96,25 @@ public class EventServiceImpl implements EventService {
         events = eventRepository.saveAll(events);
         for(int i=0;i<events.size();i++){
             if(events.get(i).getType().equals(EventType.ATTENDANCE)) {
-                LocalDate date = events.get(i).getDate();
-                LeaveApplication la = leaveApplicationRepository.findLeaveForStudentOnDate(events.get(i).getStudent().getId(), date);
-                if (la != null) {
-                    la.addEvents(events.get(i));
-                    events.get(i).setName("LEAVE-"+la.getReason().toString());
-                    events.get(i).setDescription(la.getDescription());
-                }
+                if(events.get(i).getStudent() != null) {
+                    LocalDate date = events.get(i).getDate();
+                    LeaveApplication la = leaveApplicationRepository.findLeaveForStudentOnDate(events.get(i).getStudent().getId(), date);
+                    if (la != null) {
+                        la.addEvents(events.get(i));
+                        events.get(i).setName("LEAVE-"+la.getReason().toString());
+                        events.get(i).setDescription(la.getDescription());
+                    }
 //                leaveApplicationRepository.save(la);
-
+                }
+                if(events.get(i).getStaff() != null) {
+                    LocalDate date = events.get(i).getDate();
+                    LeaveApplication la = leaveApplicationRepository.findLeaveForStaffOnDate(events.get(i).getStaff().getId(), date);
+                    if (la != null) {
+                        la.addEvents(events.get(i));
+                        events.get(i).setName("LEAVE-"+la.getReason().toString());
+                        events.get(i).setDescription(la.getDescription());
+                    }
+                }
             }
         }
         return eventMapper.toDto(events);
@@ -378,15 +388,17 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId, Long standardId) throws WitcurveException {
-        if (studentId == null && standardId == null) {
+    public List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId, Long standardId, Long staffId) throws WitcurveException {
+        if (studentId == null && standardId == null && staffId == null) {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
         List<Event> attendance = null;
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
-        } else {
+        } else if(standardId != null) {
             attendance =eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
+        } else {
+            attendance =eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
         }
 
         return eventMapper.toDto(attendance);

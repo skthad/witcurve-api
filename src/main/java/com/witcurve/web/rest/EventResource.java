@@ -70,9 +70,10 @@ public class EventResource {
     public ResponseEntity<List<EventDTO>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
                                                         @RequestParam(value = "toDate") LocalDate toDate,
                                                   @RequestParam(value = "studentId", required = false) Long studentId,
-                                                  @RequestParam(value = "standardId", required = false) Long standardId) throws WitcurveException {
+                                                  @RequestParam(value = "standardId", required = false) Long standardId,
+                                                  @RequestParam(value = "staffId", required = false) Long staffId) throws WitcurveException {
         log.debug("Request to get attendance");
-        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
