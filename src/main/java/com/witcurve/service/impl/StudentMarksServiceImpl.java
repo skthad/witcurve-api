@@ -40,11 +40,26 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
 
     @Override
-    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) {
+    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) throws WitcurveException {
         log.debug("Request to save or update Student Marks: {}", studentMarksDTO);
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTO);
-        studentMarks = studentMarksRepository.saveAll(studentMarks);
-        return studentMarksMapper.toDto(studentMarks);
+        if(studentMarksDTO.size() !=0) {
+            for (int i = 0; i < studentMarksDTO.size(); i++) {
+                if (studentMarksDTO.get(i).getEventId() != null) {
+                    if (studentMarksRepository.getByStudentAndTestId(studentMarksDTO.get(i).getStudentId(), studentMarksDTO.get(i).getEventId()).size() != 0) {
+                        throw new WitcurveException("Student id and event id combination already exists with marks !!");
+                    }
+                } else if (studentMarksDTO.get(i).getExamCourseDetailsId() != null) {
+                    if (studentMarksRepository.getByStudentIdAndExamCourseDetailsId(studentMarksDTO.get(i).getStudentId(), studentMarksDTO.get(i).getExamCourseDetailsId()).size() != 0) {
+                        throw new WitcurveException("Student id and exam course details id combination already exists with marks !!");
+                    }
+                }
+            }
+            studentMarks = studentMarksRepository.saveAll(studentMarks);
+            return studentMarksMapper.toDto(studentMarks);
+        } else{
+            throw new WitcurveException("student marks DTO is null !! ");
+        }
     }
 
     @Override
@@ -68,15 +83,15 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getListStudentMarksByCourseTeacher(Long courseTeacherId, Long eventId) throws WitcurveException {
-        log.debug("Request to get student Marks List with event type exam or test and course teacher id : {}", courseTeacherId);
+    public List<StudentMarksDTO> getListStudentMarksInACourseTeacherByEventId(Long eventId) throws WitcurveException {
+        log.debug("Request to get student Marks List with event type exam or test and event id : {}", eventId);
         List<StudentMarks> studentMarks= new ArrayList<>();
         EventDTO eventDTO= eventService.getEventById(eventId);
         if(EventType.TEST.equals(eventDTO.getType())){
-            studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForTest(courseTeacherId,eventId);
+            studentMarks=studentMarksRepository.getAllStudentsForTestOrAssignmentForACourseTeacher(eventId);
         }
         else if(EventType.ASSIGNMENT.equals(eventDTO.getType())){
-              studentMarks=studentMarksRepository.getByCourseTeacherIdAndEventTypeForAssignment(courseTeacherId,eventId);
+              studentMarks=studentMarksRepository.getAllStudentsForTestOrAssignmentForACourseTeacher(eventId);
         }
           else  {
             throw new WitcurveException("Event id entered is neither Assignment nor Test !!");
@@ -85,11 +100,11 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getListStudentMarksForExamByCourseTeacher(Long courseTeacherId, Long examCourseDetailsId) throws WitcurveException {
-        log.debug("Request to get student Marks List with event type exam or test and course teacher id : {}", courseTeacherId);
+    public List<StudentMarksDTO> getListStudentMarksForExamInACourseTeacher(Long examCourseDetailsId) throws WitcurveException {
+        log.debug("Request to get student Marks List with event type exam or test and ecd id : {}", examCourseDetailsId);
         List<StudentMarks> studentMarks= new ArrayList<>();
         if(examCourseDetailsService.getExamCourseDetailsById(examCourseDetailsId)!=null){
-            studentMarks=studentMarksRepository.getByCourseTeacherIdAndEcdIdForExam(courseTeacherId,examCourseDetailsId) ;
+            studentMarks=studentMarksRepository.getStudentMarksForCourseTeacherIdByEcdIdForExam(examCourseDetailsId) ;
     }
         else  {
             throw new WitcurveException("ExamCourseDetails id entered is not EXAM type !!");
@@ -103,7 +118,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         Map<EventType,List<StudentMarksDTO>> mapMarksEventType= new HashMap<>();
         mapMarksEventType.put(EventType.TEST,studentMarksMapper.toDto(studentMarksRepository.getByCourseTeacherIdAndEventTypeAndStudentId(courseTeacherId,EventType.TEST,studentId)));
         mapMarksEventType.put(EventType.ASSIGNMENT,studentMarksMapper.toDto(studentMarksRepository.getByCourseTeacherIdAndEventTypeAndStudentIdForAssignment(courseTeacherId,EventType.ASSIGNMENT,studentId)));
-        mapMarksEventType.put(EventType.EXAM,studentMarksMapper.toDto(studentMarksRepository.getByCourseTeacherIdAndEventTypeAndStudentId(courseTeacherId,EventType.EXAM,studentId)));
+        mapMarksEventType.put(EventType.EXAM,studentMarksMapper.toDto(studentMarksRepository.getStudentMarksForExamByStudentIdAndCourseTeacherId(courseTeacherId,studentId)));
         return mapMarksEventType;
     }
 }

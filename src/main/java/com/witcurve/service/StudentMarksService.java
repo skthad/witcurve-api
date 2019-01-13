@@ -15,9 +15,9 @@ public interface StudentMarksService {
 
     void deleteStudentMarks(Long studentMarksId) throws WitcurveException;
 
-    List<StudentMarksDTO> getListStudentMarksByCourseTeacher(Long courseTeacherId, Long eventId) throws WitcurveException;
+    List<StudentMarksDTO> getListStudentMarksInACourseTeacherByEventId(Long eventId) throws WitcurveException;
 
-    List<StudentMarksDTO> getListStudentMarksForExamByCourseTeacher(Long courseTeacherId, Long examCourseDetailsId) throws WitcurveException;
+    List<StudentMarksDTO> getListStudentMarksForExamInACourseTeacher(Long examCourseDetailsId) throws WitcurveException;
 
     Map<EventType,List<StudentMarksDTO>> getAllMarksForStudent(Long courseTeacherId,Long studentId) throws WitcurveException;
 
