@@ -12,6 +12,7 @@ public interface GeneralSlotDetailsMapper extends EntityMapper<GeneralSlotDetail
 
 
     @Mapping(source = "exam.id", target = "examId")
+    @Mapping(source = "exam.name", target = "examName")
     GeneralSlotDetailsDTO toDto(GeneralSlotDetails generalSlotDetails);
 
     @Mapping(target = "exam", source = "examId")

@@ -33,6 +33,8 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     private Long examId;
 
+    private String examName;
+
     public Long getId() {
         return id;
     }
@@ -106,6 +108,14 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     public void setExamId(Long examId) {
         this.examId = examId;
+    }
+
+    public String getExamName() {
+        return examName;
+    }
+
+    public void setExamName(String examName) {
+        this.examName = examName;
     }
 
     @Override
