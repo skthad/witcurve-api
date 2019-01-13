@@ -119,7 +119,7 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/student-marks/student-course-teacher-type/{courseTeacherId}")
+    @GetMapping("/student-marks/course-teacher/{courseTeacherId}")
     @Timed
     public ResponseEntity<Map<EventType,List<StudentMarksDTO>>> getListMarksForStudentInACourseTeacher(@PathVariable("courseTeacherId")  Long courseTeacherId, @RequestParam Long studentId) throws WitcurveException {
         log.debug("Request to get list of Student marks by course teacher id and event type and student id");
