@@ -2,6 +2,7 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Message;
 import com.witcurve.domain.MessageThread;
+import com.witcurve.domain.User;
 import com.witcurve.service.dto.MessageThreadDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,6 +19,8 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
     @Mapping(source = "courseTeacher", target = "courseTeacherDTO")
     @Mapping(source = "leaveApplication", target = "leaveApplicationDTO")
     @Mapping(source = "guardian.id", target = "guardianId")
+    @Mapping(target = "fromUserName", expression = "java(getUserName(messageThread.getFromUser()))")
+    @Mapping(target = "toUserName", expression = "java(getUserName(messageThread.getToUser()))")
     MessageThreadDTO toDto(MessageThread messageThread);
 
     @Mapping(source = "messageDTOs", target = "messages")
@@ -35,5 +38,23 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
         MessageThread messageThread = new MessageThread();
         messageThread.setId(id);
         return messageThread;
+    }
+
+    default String getUserName(User user) {
+        if(user == null) {
+            return null;
+        } else {
+            String firstName = user.getFirstName();
+            String lastName = user.getLastName();
+            if(firstName == null && lastName == null) {
+                return  null;
+            } else if(firstName != null && lastName == null) {
+                return firstName;
+            } else if(firstName == null && lastName != null) {
+                return  lastName;
+            } else {
+                return firstName + " "+ lastName;
+            }
+        }
     }
 }

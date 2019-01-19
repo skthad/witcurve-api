@@ -13,6 +13,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,19 +97,33 @@ public class StaffServiceImpl implements StaffService {
     public StaffDTO getStaffByUsername(String username) throws WitcurveException {
         log.debug("Request to get staff with username {}", username);
         int index = username.indexOf("-");
-        Long schoolInfoId = Long.parseLong(username.substring(0, index));
-        String staffId = username.substring(index + 1);
-        Staff staff = staffRepository.findBySchoolInfoIdAndStaffId(schoolInfoId, staffId.toLowerCase());
-        if (staff == null){
-            throw  new WitcurveException("No staff with given staff id in the give school info id");
-        }
-        StaffDTO result = staffMapper.toDto(staff);
-        if (Strings.isNullOrEmpty(staff.getUser().getPassword())) {
-            result.setHasPassword(Boolean.FALSE);
+        log.debug("Index value : {} ",index);
+        if(index >  0 ) {
+            Long schoolInfoId = null;
+            try {
+                schoolInfoId =Long.parseLong(username.substring(0, index));
+            } catch (NumberFormatException e) {
+                log.error("Entered school info id in user name is wrong : {}", username);
+                throw new WitcurveException("Invalid username, please enter the correct username");
+            }
+            String staffId = username.substring(index + 1);
+            Staff staff = staffRepository.findBySchoolInfoIdAndStaffId(schoolInfoId, staffId.toLowerCase());
+            if (staff == null){
+                log.error("No staff with given staff id : {} in the give school info id : {}", staffId, schoolInfoId);
+                throw  new WitcurveException("No staff exists with given username ");
+            }
+            StaffDTO result = staffMapper.toDto(staff);
+            if (Strings.isNullOrEmpty(staff.getUser().getPassword())) {
+                result.setHasPassword(Boolean.FALSE);
+            } else {
+                result.setHasPassword(Boolean.TRUE);
+            }
+            return result;
         } else {
-            result.setHasPassword(Boolean.TRUE);
+            log.error("Entered user name is not in format of schoolInfoId-StaffId for username : {}", username);
+            throw new WitcurveException("Invalid username, please enter the correct username");
         }
-        return result;
+
     }
 
     @Override

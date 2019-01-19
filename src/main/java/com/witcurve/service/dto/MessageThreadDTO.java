@@ -27,7 +27,11 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     private Long fromUserId;
 
+    private String fromUserName;
+
     private Long toUserId;
+
+    private String toUserName;
 
     private LocalDate meetingDate;
 
@@ -89,12 +93,28 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
         this.fromUserId = fromUserId;
     }
 
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
     public Long getToUserId() {
         return toUserId;
     }
 
     public void setToUserId(Long toUserId) {
         this.toUserId = toUserId;
+    }
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
     }
 
     public LocalDate getMeetingDate() {
@@ -170,7 +190,9 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
             ", leaveApplicationDTO=" + leaveApplicationDTO +
             ", guardianId=" + guardianId +
             ", fromUserId=" + fromUserId +
+            ", fromUserName=" + fromUserName +
             ", toUserId=" + toUserId +
+            ", toUserName=" + toUserName +
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
             ", status=" + status +
