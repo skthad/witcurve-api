@@ -102,4 +102,13 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
         }
         academicSessionRepository.delete(academicSession);
     }
+
+    @Override
+    public AcademicSessionDTO getCurrentSessionByDate(Long schoolInfoId, LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        AcademicSession currentSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, date);
+        return academicSessionMapper.toDto(currentSession);
+    }
 }

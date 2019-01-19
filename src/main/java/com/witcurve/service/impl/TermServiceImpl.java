@@ -39,7 +39,7 @@ public class TermServiceImpl implements TermService {
     @Override
     public TermDTO createTerm(Long schoolInfoId, LocalDate termStartDate) throws WitcurveException {
         AcademicSession nearestSessionToTerm = academicSessionRepository
-            .nearestSessionToTerm(schoolInfoId, termStartDate);
+            .nearestSessionToDate(schoolInfoId, termStartDate);
         if (nearestSessionToTerm == null) {
             throw new WitcurveException("No academic session found to link the term start date");
         }
@@ -66,7 +66,7 @@ public class TermServiceImpl implements TermService {
     @Override
     public TermDTO updateTerm(TermDTO termDTO) throws WitcurveException {
         AcademicSession nearestSessionToTerm = academicSessionRepository
-            .nearestSessionToTerm(termDTO.getSession().getSchoolInfo().getId(), termDTO.getStartDate());
+            .nearestSessionToDate(termDTO.getSession().getSchoolInfo().getId(), termDTO.getStartDate());
         if (nearestSessionToTerm == null || !nearestSessionToTerm.getId().equals(termDTO.getSession().getId())) {
             throw new WitcurveException("Term start date out of boundary values with provided session.");
         }

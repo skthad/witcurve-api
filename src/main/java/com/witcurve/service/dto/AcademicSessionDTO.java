@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
@@ -21,6 +22,8 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
 
     @NotNull
     private Boolean active = true;
+
+    private List<TermDTO> termsInSession;
 
     public Long getId() {
         return id;
@@ -52,6 +55,14 @@ public class AcademicSessionDTO extends AbstractAuditingDTO {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public List<TermDTO> getTermsInSession() {
+        return termsInSession;
+    }
+
+    public void setTermsInSession(List<TermDTO> termsInSession) {
+        this.termsInSession = termsInSession;
     }
 
     @Override

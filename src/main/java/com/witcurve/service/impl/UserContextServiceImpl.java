@@ -1,10 +1,8 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
-import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.StudentRepository;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.UserMapper;
@@ -16,10 +14,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,13 +38,19 @@ public class UserContextServiceImpl implements UserContextService {
     CourseTeacherService courseTeacherService;
 
     @Autowired
-    StudentRepository studentRepository;
+    StudentService studentService;
 
     @Autowired
     StaffService staffService;
 
     @Autowired
     StudentStandardService studentStandardService;
+
+    @Autowired
+    TermService termService;
+
+    @Autowired
+    AcademicSessionService academicSessionService;
 
     @Override
     public UserContextDTO getCurrentUserContext() throws WitcurveException {
@@ -52,6 +59,8 @@ public class UserContextServiceImpl implements UserContextService {
 
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
+
+        Long schoolInfoId = null;
         if (UserType.STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
             List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
@@ -76,17 +85,57 @@ public class UserContextServiceImpl implements UserContextService {
                 staffDTO.setHasPassword(Boolean.TRUE);
             }
             contextDTO.getCurrentUser().setStaffDTO(staffDTO);
+            schoolInfoId = staffDTO.getSchoolInfo().getId();
         } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
-            Student student = studentRepository.getStudentByUserId(currentUser.getId());
-            contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(student.getId()));
-            List<CourseTeacherDTO> studentCourses = courseTeacherService.getCourseTeachersByStudentId(student.getId());
+            StudentDTO studentDTO = studentService.getStudentByUserId(currentUser.getId());
+            contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(studentDTO.getId()));
+            List<CourseTeacherDTO> studentCourses = courseTeacherService.getCourseTeachersByStudentId(studentDTO.getId());
             contextDTO.setStudentCourses(studentCourses);
             if (Strings.isNullOrEmpty(currentUser.getPassword())) {
                 contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.FALSE);
             } else {
                 contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.TRUE);
             }
+            schoolInfoId = studentDTO.getSchoolInfo().getId();
         }
+
+        if (schoolInfoId == null) {
+            throw new WitcurveException("No schoolInfoId could be found for the current user");
+        }
+
+        LocalDate currentDate = LocalDate.now();
+
+        AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, currentDate);
+        contextDTO.setCurrentAcademicSession(currentSession);
+
+        if (currentSession != null) {
+
+            contextDTO.setNumberOfCalendarDaysInSession(DAYS.between(currentSession.getStartDate(), currentDate) + 1);
+            //TODO: calculate numberOfWorkingDaysInSession
+
+            List<TermDTO> termsInSession = termService.getTermsByAcademicSessionId(currentSession.getId());
+            currentSession.setTermsInSession(termsInSession);
+
+            TermDTO currentTerm = null;
+            for (TermDTO termDTO : termsInSession) {
+                if (!currentDate.isBefore(termDTO.getStartDate())) {
+                    currentTerm = termDTO;
+                } else {
+                    continue;
+                }
+            }
+            if (currentTerm != null) {
+                contextDTO.setCurrentTerm(currentTerm);
+                contextDTO.setNumberOfCalendarDaysInTerm(DAYS.between(currentTerm.getStartDate(), currentDate) + 1);
+                //TODO: calculate numberOfWorkingDaysInTerm
+
+            }
+
+            contextDTO.setNumberOfCalendarDaysInMonth(currentDate.getDayOfMonth());
+            //TODO: calculate numberOfWorkingDaysInMonth
+
+        }
+
         return contextDTO;
     }
 }
