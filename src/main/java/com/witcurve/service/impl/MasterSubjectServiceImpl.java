@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class MasterSubjectServiceImpl implements MasterSubjectService {
@@ -23,6 +25,13 @@ public class MasterSubjectServiceImpl implements MasterSubjectService {
     public MasterSubject saveOrUpdate(MasterSubject masterSubject) {
         log.debug("Request to save or update master subject : {}", masterSubject);
         return masterSubjectRepository.save(masterSubject);
+    }
+
+    @Override
+    public List<MasterSubject> search(String like) {
+        log.debug("Request to search masterSubject matching {}", like);
+        List<MasterSubject> result = masterSubjectRepository.search(like.toLowerCase());
+        return result;
     }
 
     @Override

@@ -8,7 +8,7 @@ public class CourseDTO extends AbstractAuditingDTO {
     private Long id;
 
     @NotNull
-    private String courseName;
+    private String courseCode;
 
     private String description;
 
@@ -20,8 +20,6 @@ public class CourseDTO extends AbstractAuditingDTO {
     @NotNull
     private Long schoolInfoId;
 
-    private String subject;
-
     public Long getId() {
         return id;
     }
@@ -30,12 +28,12 @@ public class CourseDTO extends AbstractAuditingDTO {
         this.id = id;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getDescription() {
@@ -70,14 +68,6 @@ public class CourseDTO extends AbstractAuditingDTO {
         this.schoolInfoId = schoolInfoId;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,12 +86,11 @@ public class CourseDTO extends AbstractAuditingDTO {
     public String toString() {
         return "CourseDTO{" +
             "id=" + id +
-            ", courseName='" + courseName + '\'' +
+            ", courseCode='" + courseCode + '\'' +
             ", description='" + description + '\'' +
             ", eligibleForSubstitute=" + eligibleForSubstitute +
             ", masterSubject=" + masterSubject +
             ", schoolInfoId=" + schoolInfoId +
-            ", subject=" + subject +
             '}';
     }
 }

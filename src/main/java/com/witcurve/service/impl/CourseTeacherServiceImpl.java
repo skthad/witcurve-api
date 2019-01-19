@@ -1,13 +1,10 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.CourseTeacher;
-import com.witcurve.repository.CourseTeacherRepository;
-import com.witcurve.repository.StaffEligibilityRepository;
-import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.domain.*;
+import com.witcurve.repository.*;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
 import com.witcurve.service.mapper.CourseTeacherMapper;
-import com.witcurve.service.mapper.StudentStandardMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,18 +30,29 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     StudentStandardRepository studentStandardRepository;
 
     @Autowired
-    StudentStandardMapper studentStandardMapper;
+    CourseRepository courseRepository;
+
+    @Autowired
+    StandardRepository standardRepository;
 
     @Autowired
     StaffEligibilityRepository staffEligibilityRepository;
 
     @Override
-    public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) {
+    public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
         log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
 
-        //TODO: check staff eligibility
-        //StaffEligibility se = staffEligibilityRepository.findStaffByGradeAndSubject(courseTeacherDTO.getStandard().getGrade(), courseTeacherDTO.getCourse().getMasterSubject(), courseTeacherDTO.getStandard().getSchoolInfo().getId(), courseTeacherDTO.getTeacher().getId());
+        if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
+            Course course = courseRepository.getOne(courseTeacherDTO.getCourse().getId());
+            Standard standard = standardRepository.getOne(courseTeacherDTO.getStandard().getId());
+            List<StaffEligibility> se = staffEligibilityRepository
+                .findByStaffAndSubjectAndGrade(courseTeacherDTO.getTeacher().getId(),
+                    course.getMasterSubject(), standard.getGrade());
+            if (se.size() == 0) {
+                throw new WitcurveException("Staff does not meet the eligibility criteria");
+            }
 
+        }
         CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
         courseTeacher = courseTeacherRepository.save(courseTeacher);
 

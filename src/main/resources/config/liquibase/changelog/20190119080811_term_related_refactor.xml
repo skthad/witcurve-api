@@ -7,4 +7,27 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547885305511-2">
+        <addColumn tableName="staff_eligibility">
+            <column name="grade" type="varchar(50)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547885305511-3">
+        <dropForeignKeyConstraint baseTableName="staff_eligibility" constraintName="FKqecwbr0tge02seg00ud2yhw0s"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547885305511-4">
+        <dropColumn columnName="standard_id" tableName="staff_eligibility"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547885305511-5">
+        <sql>delete from staff_eligibility</sql>
+        <sql>
+            insert into staff_eligibility(id, master_subject_name, staff_id, grade, created_by)
+            select ct.id + 500,	crs.master_subject_name,  ct.teacher_id, std.grade, 'system'
+            from course_teacher ct left join course crs on crs.id = ct.course_id
+            left join standard std on std.id = ct.standard_id
+        </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547885305511-6">
+        <addNotNullConstraint columnDataType="varchar(50)" columnName="grade" tableName="staff_eligibility"/>
+    </changeSet>
 </databaseChangeLog>

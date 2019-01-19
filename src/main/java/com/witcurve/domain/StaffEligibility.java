@@ -1,12 +1,17 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.Grade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name="staff_eligibility")
+@Table(name="staff_eligibility", uniqueConstraints = {
+    @UniqueConstraint(name = "staff_eligibility_grade_UK",
+        columnNames = {"master_subject_name", "staff_id", "grade"})
+})
 public class StaffEligibility extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,9 +27,9 @@ public class StaffEligibility extends AbstractAuditingEntity implements Serializ
     private Staff staff;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Standard standard;
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @NotNull
     @ManyToOne
@@ -47,12 +52,12 @@ public class StaffEligibility extends AbstractAuditingEntity implements Serializ
         this.staff = staff;
     }
 
-    public Standard getStandard() {
-        return standard;
+    public Grade getGrade() {
+        return grade;
     }
 
-    public void setStandard(Standard standard) {
-        this.standard = standard;
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public MasterSubject getMasterSubject() {
@@ -82,7 +87,7 @@ public class StaffEligibility extends AbstractAuditingEntity implements Serializ
         return "StaffEligibility{" +
             "id=" + id +
             ", staffId='" + staff.getId()+ '\'' +
-            ", standardId='" + standard.getId()+ '\'' +
+            ", grade='" + grade+ '\'' +
             ", masterSubjectt='" + masterSubject.getName()+ '\'' +
             '}';
     }

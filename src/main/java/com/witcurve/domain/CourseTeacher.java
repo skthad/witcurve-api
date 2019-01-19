@@ -31,11 +31,11 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "standard_id",nullable = false)
+    @JoinColumn(name = "standard_id", nullable = false)
     private Standard standard;
 
     @NotNull
-    @Column(name = "active", nullable = false)
+    @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
 
     public Long getId() {

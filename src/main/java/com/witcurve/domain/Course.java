@@ -7,8 +7,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="course", uniqueConstraints = {
-    @UniqueConstraint( name= "course_name_school_info_id_UK",
-        columnNames = {"course_name", "school_info_id"})
+    @UniqueConstraint( name= "course_code_school_info_id_UK",
+        columnNames = {"course_code", "school_info_id"})
 })
 public class Course extends AbstractAuditingEntity implements Serializable {
 
@@ -20,8 +20,8 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(nullable = false, length = 50, name = "course_name")
-    private String courseName;
+    @Column(nullable = false, length = 50, name = "course_code")
+    private String courseCode;
 
     @Column
     private String description;
@@ -39,8 +39,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private SchoolInfo schoolInfo;
 
-    private String subject;
-
     public Long getId() {
         return id;
     }
@@ -49,12 +47,12 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getDescription() {
@@ -89,14 +87,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.schoolInfo = schoolInfo;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,12 +99,11 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Course{" +
             "id=" + id +
-            ", courseName='" + courseName + '\'' +
+            ", courseCode='" + courseCode + '\'' +
             ", description='" + description + '\'' +
             ", eligibleForSubstitute=" + eligibleForSubstitute +
             ", masterSubject=" + masterSubject +
             ", schoolInfo=" + schoolInfo +
-            ", subject=" + subject +
             '}';
     }
 

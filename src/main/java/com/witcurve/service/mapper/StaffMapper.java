@@ -5,7 +5,7 @@ import com.witcurve.service.dto.StaffDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class, StudentMapper.class})
+@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class})
 public interface StaffMapper extends EntityMapper<StaffDTO, Staff> {
 
     @Mapping(target = "userId", source = "user.id")

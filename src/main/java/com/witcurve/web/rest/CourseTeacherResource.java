@@ -9,6 +9,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,10 +43,14 @@ public class CourseTeacherResource {
         if (courseTeacherDTO.getId() != null) {
             throw new WitcurveException("New courseTeacher can't already have an id");
         }
-        CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
-        return ResponseEntity.created(new URI("/api/course-teacher/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("courseTeacher", result.getId().toString()))
-            .body(result);
+        try {
+            CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
+            return ResponseEntity.created(new URI("/api/course-teacher/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("courseTeacher", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
+        }
     }
 
     /**
@@ -62,10 +67,14 @@ public class CourseTeacherResource {
         if (courseTeacherDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
-            .body(result);
+        try {
+            CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
+        }
     }
 
     /**
@@ -111,7 +120,6 @@ public class CourseTeacherResource {
         @PathVariable(value = "teacherId") Long teacherId) {
         log.debug("Request to get CourseTeacher with teacher id {}", teacherId);
 
-        //TODO: not using term id anymore, so removed from request param as well
         List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByTeacherId(teacherId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

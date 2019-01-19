@@ -310,7 +310,7 @@ public class WitcurveResource {
         masterSubject1 = masterSubjectRepository.save(masterSubject1);
 
         Course course1 = new Course();
-        course1.setCourseName("Telugu1");
+        course1.setCourseCode("Telugu1");
         course1.setMasterSubject(masterSubject1);
         course1.setDescription("Telugu1");
         course1.setSchoolInfo(schoolInfo);
@@ -321,7 +321,7 @@ public class WitcurveResource {
         masterSubject2 = masterSubjectRepository.save(masterSubject1);
 
         Course course2 = new Course();
-        course2.setCourseName("Hindi1");
+        course2.setCourseCode("Hindi1");
         course2.setMasterSubject(masterSubject2);
         course2.setDescription("Hindi1");
         course2.setSchoolInfo(schoolInfo);
@@ -332,7 +332,7 @@ public class WitcurveResource {
         masterSubject3 = masterSubjectRepository.save(masterSubject3);
 
         Course course3 = new Course();
-        course3.setCourseName("English1");
+        course3.setCourseCode("English1");
         course3.setMasterSubject(masterSubject3);
         course3.setDescription("English1");
         course3.setSchoolInfo(schoolInfo);
@@ -343,7 +343,7 @@ public class WitcurveResource {
         masterSubject4 = masterSubjectRepository.save(masterSubject4);
 
         Course course4 = new Course();
-        course4.setCourseName("Maths1");
+        course4.setCourseCode("Maths1");
         course4.setMasterSubject(masterSubject4);
         course4.setDescription("Maths1");
         course4.setSchoolInfo(schoolInfo);
@@ -354,7 +354,7 @@ public class WitcurveResource {
         masterSubject5 = masterSubjectRepository.save(masterSubject5);
 
         Course course5 = new Course();
-        course5.setCourseName("Science1");
+        course5.setCourseCode("Science1");
         course5.setMasterSubject(masterSubject5);
         course5.setDescription("Science1");
         course5.setSchoolInfo(schoolInfo);
@@ -365,7 +365,7 @@ public class WitcurveResource {
         masterSubject6 = masterSubjectRepository.save(masterSubject6);
 
         Course course6 = new Course();
-        course6.setCourseName("Social Studies1");
+        course6.setCourseCode("Social Studies1");
         course6.setMasterSubject(masterSubject6);
         course6.setDescription("Social Studies1");
         course6.setSchoolInfo(schoolInfo);
@@ -376,7 +376,7 @@ public class WitcurveResource {
         masterSubject7 = masterSubjectRepository.save(masterSubject7);
 
         Course course7 = new Course();
-        course7.setCourseName("Drawing1");
+        course7.setCourseCode("Drawing1");
         course7.setMasterSubject(masterSubject7);
         course7.setDescription("Drawing1");
         course7.setSchoolInfo(schoolInfo);
@@ -388,7 +388,7 @@ public class WitcurveResource {
         masterSubject8 = masterSubjectRepository.save(masterSubject8);
 
         Course course8 = new Course();
-        course8.setCourseName("P.T.");
+        course8.setCourseCode("P.T.");
         course8.setMasterSubject(masterSubject8);
         course8.setDescription("Physical Training");
         course8.setSchoolInfo(schoolInfo);
@@ -1880,7 +1880,7 @@ public class WitcurveResource {
         masterSubject1 = masterSubjectRepository.save(masterSubject1);
 
         Course course1 = new Course();
-        course1.setCourseName("Telugu1");
+        course1.setCourseCode("Telugu1");
         course1.setMasterSubject(masterSubject1);
         course1.setDescription("Telugu1");
         course1.setSchoolInfo(schoolInfo);
@@ -1891,7 +1891,7 @@ public class WitcurveResource {
         masterSubject2 = masterSubjectRepository.save(masterSubject1);
 
         Course course2 = new Course();
-        course2.setCourseName("Hindi1");
+        course2.setCourseCode("Hindi1");
         course2.setMasterSubject(masterSubject2);
         course2.setDescription("Hindi1");
         course2.setSchoolInfo(schoolInfo);
@@ -1902,7 +1902,7 @@ public class WitcurveResource {
         masterSubject3 = masterSubjectRepository.save(masterSubject3);
 
         Course course3 = new Course();
-        course3.setCourseName("English1");
+        course3.setCourseCode("English1");
         course3.setMasterSubject(masterSubject3);
         course3.setDescription("English1");
         course3.setSchoolInfo(schoolInfo);
@@ -1913,7 +1913,7 @@ public class WitcurveResource {
         masterSubject4 = masterSubjectRepository.save(masterSubject4);
 
         Course course4 = new Course();
-        course4.setCourseName("Maths1");
+        course4.setCourseCode("Maths1");
         course4.setMasterSubject(masterSubject4);
         course4.setDescription("Maths1");
         course4.setSchoolInfo(schoolInfo);
@@ -1924,7 +1924,7 @@ public class WitcurveResource {
         masterSubject5 = masterSubjectRepository.save(masterSubject5);
 
         Course course5 = new Course();
-        course5.setCourseName("Science1");
+        course5.setCourseCode("Science1");
         course5.setMasterSubject(masterSubject5);
         course5.setDescription("Science1");
         course5.setSchoolInfo(schoolInfo);
@@ -1935,7 +1935,7 @@ public class WitcurveResource {
         masterSubject6 = masterSubjectRepository.save(masterSubject6);
 
         Course course6 = new Course();
-        course6.setCourseName("Social Studies1");
+        course6.setCourseCode("Social Studies1");
         course6.setMasterSubject(masterSubject6);
         course6.setDescription("Social Studies1");
         course6.setSchoolInfo(schoolInfo);
@@ -1946,7 +1946,7 @@ public class WitcurveResource {
         masterSubject7 = masterSubjectRepository.save(masterSubject7);
 
         Course course7 = new Course();
-        course7.setCourseName("Drawing1");
+        course7.setCourseCode("Drawing1");
         course7.setMasterSubject(masterSubject7);
         course7.setDescription("Drawing1");
         course7.setSchoolInfo(schoolInfo);
@@ -1958,7 +1958,7 @@ public class WitcurveResource {
         masterSubject8 = masterSubjectRepository.save(masterSubject8);
 
         Course course8 = new Course();
-        course8.setCourseName("P.T.");
+        course8.setCourseCode("P.T.");
         course8.setMasterSubject(masterSubject8);
         course8.setDescription("Physical Training");
         course8.setSchoolInfo(schoolInfo);
