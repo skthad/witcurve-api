@@ -49,21 +49,6 @@ public class CourseTeacherResource {
     }
 
     /**
-     * get courseTeacher by id
-     * @param courseTeacherId
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/course-teacher/{courseTeacherId}")
-    @Timed
-    public ResponseEntity<CourseTeacherDTO> getCourseTeacherById(@PathVariable("courseTeacherId") Long courseTeacherId) throws WitcurveException {
-        log.debug("Request to get CourseTeacher with id {}", courseTeacherId);
-        CourseTeacherDTO result = courseTeacherService.getCourseTeacherById(courseTeacherId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
      * update the given courseTeacher
      * @param courseTeacherDTO
      * @return
@@ -81,6 +66,21 @@ public class CourseTeacherResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * get courseTeacher by id
+     * @param courseTeacherId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course-teacher/{courseTeacherId}")
+    @Timed
+    public ResponseEntity<CourseTeacherDTO> getCourseTeacherById(@PathVariable("courseTeacherId") Long courseTeacherId) throws WitcurveException {
+        log.debug("Request to get CourseTeacher with id {}", courseTeacherId);
+        CourseTeacherDTO result = courseTeacherService.getCourseTeacherById(courseTeacherId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -107,11 +107,12 @@ public class CourseTeacherResource {
 
     @GetMapping("/course-teacher/teacher/{teacherId}")
     @Timed
-    public ResponseEntity<List<CourseTeacherDTO>> getCoursesByTeacherIdAndTermId(
-        @PathVariable(value = "teacherId") Long teacherId,
-        @RequestParam(value = "termId", required = false) Long termId) throws WitcurveException {
+    public ResponseEntity<List<CourseTeacherDTO>> getCoursesByTeacherId(
+        @PathVariable(value = "teacherId") Long teacherId) {
         log.debug("Request to get CourseTeacher with teacher id {}", teacherId);
-        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByTeacherIdAndTermId(teacherId, termId);
+
+        //TODO: not using term id anymore, so removed from request param as well
+        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByTeacherId(teacherId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

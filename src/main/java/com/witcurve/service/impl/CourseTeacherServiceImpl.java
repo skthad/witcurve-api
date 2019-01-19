@@ -1,13 +1,11 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.CourseTeacher;
-import com.witcurve.domain.StudentStandard;
 import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.StaffEligibilityRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.CourseTeacherService;
-import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.CourseTeacherDTO;
-import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.CourseTeacherMapper;
 import com.witcurve.service.mapper.StudentStandardMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -37,10 +35,15 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Autowired
     StudentStandardMapper studentStandardMapper;
 
+    @Autowired
+    StaffEligibilityRepository staffEligibilityRepository;
 
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) {
         log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
+
+        //TODO: check staff eligibility
+        //StaffEligibility se = staffEligibilityRepository.findStaffByGradeAndSubject(courseTeacherDTO.getStandard().getGrade(), courseTeacherDTO.getCourse().getMasterSubject(), courseTeacherDTO.getStandard().getSchoolInfo().getId(), courseTeacherDTO.getTeacher().getId());
 
         CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
         courseTeacher = courseTeacherRepository.save(courseTeacher);
@@ -70,14 +73,10 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     }
 
     @Override
-    public List<CourseTeacherDTO> getCourseTeachersByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException {
+    public List<CourseTeacherDTO> getCourseTeachersByTeacherId(Long teacherId) {
         log.debug("Request to get all course teachers by teacher id : {}", teacherId);
-        List<CourseTeacher> result;
-        if (termId == null) {
-            result = courseTeacherRepository.findByTeacherId(teacherId);
-        } else {
-            result = courseTeacherRepository.findByTeacherIdAndTermId(teacherId, termId);
-        }
+
+        List<CourseTeacher> result = courseTeacherRepository.findByTeacherId(teacherId);
         return courseTeacherMapper.toDto(result);
     }
 

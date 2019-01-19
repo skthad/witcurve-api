@@ -45,6 +45,7 @@
     <include file="config/liquibase/changelog/20190110135715_updated_standard_school_info.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190112112556_removed_approved_added_status_to_MessageThread.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190107174027_changelog_for_Student_marks_rename_event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190119080811_term_related_refactor.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

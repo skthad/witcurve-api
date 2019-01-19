@@ -1,7 +1,6 @@
 package com.witcurve.service;
 
 import com.witcurve.service.dto.CourseTeacherDTO;
-import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public interface CourseTeacherService {
 
     void deleteCourseTeacher(Long courseTeacherId) throws WitcurveException;
 
-    List<CourseTeacherDTO> getCourseTeachersByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException;
+    List<CourseTeacherDTO> getCourseTeachersByTeacherId(Long teacherId);
 
     List<CourseTeacherDTO> getCoursesByStandardId(Long standardId);
 

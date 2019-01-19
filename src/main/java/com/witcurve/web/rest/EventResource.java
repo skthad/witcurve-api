@@ -176,9 +176,8 @@ public class EventResource {
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "type") ViewType type,
-        @RequestParam(value = "termId", required = false) Long termId,
         @PathVariable Long staffId) throws WitcurveException, URISyntaxException{
-        log.debug("Request to get events on given date : {} for staff with id : {} fro term with id : {}", eventDate, staffId, termId);
+        log.debug("Request to get events for type : {} for staff with id : {}", type, staffId);
 
         //add null checks later and change log statement
         List<EventDTO> result = new ArrayList<>();
@@ -187,19 +186,21 @@ public class EventResource {
                 throw new WitcurveException("There should be eventDate param for DAY view");
             }
             //LocalDate date = getLocalDate(eventDate);
-            result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId, termId);
+
+            //TODO: no need to send termId anymore, since it is based on date
+            result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId);
         }
         if(ViewType.TEST.equals(type)){
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for TEST view");
             }
-            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,termId,eventDate,ViewType.TEST);
+            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,eventDate,ViewType.TEST);
         }
         if(ViewType.ASSIGNMENT.equals(type)){
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ASSIGNMENT view");
             }
-            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,termId,eventDate,ViewType.ASSIGNMENT);
+            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,eventDate,ViewType.ASSIGNMENT);
         } else if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");

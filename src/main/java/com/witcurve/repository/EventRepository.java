@@ -29,9 +29,9 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.staff.id = ?2 and e.type = 'ATTENDANCE') or " +
         "(e.scd.courseTeacher.teacher.id=?2 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT')) or " +
         "(e.standard.id in ?3 and e.type='SCHOOL_EVENT') or " +
-        "((e.grade is null or (e.grade is not null and e.grade in ?4)) and e.academicSession.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "((e.grade is null or (e.grade is not null and e.grade in ?4)) and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-    List<Event> findEventsByDateForStaff(LocalDate date, Long staffId, Set<Long> standardIds, Set<Grade> grades, Long sessionId);
+    List<Event> findEventsByDateForStaff(LocalDate date, Long staffId, Set<Long> standardIds, Set<Grade> grades);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and" +
         "(" +
@@ -158,11 +158,11 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY' and e.academicSession.id=?3")
     Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long sessionId);
 
-    @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.teacher.id=?1 and e.date between ?3 and ?4 and e.standard.term.id =?2")
-    List<Event> findAssignmentsByTeacherInDateRange(Long staffId, Long termId, LocalDate sdate, LocalDate eDate);
+    @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3")
+    List<Event> findAssignmentsByTeacherInDateRange(Long staffId, LocalDate sdate, LocalDate eDate);
 
-    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.teacher.id=?1 and e.date between ?3 and ?4 and e.standard.term.id =?2")
-    List<Event> findTestsByTeacherInDateRange(Long staffId, Long termId, LocalDate sdate, LocalDate eDate);
+    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3")
+    List<Event> findTestsByTeacherInDateRange(Long staffId, LocalDate sdate, LocalDate eDate);
 
 
 

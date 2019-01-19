@@ -158,22 +158,20 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId, Long termId) throws WitcurveException {
-        log.debug("Request to get tests with eventDate : {} for staff with id : {} for term with id : {}", eventDate, staffId, termId);
+    public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) {
+        log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
 
-        Optional<Term> termOptional = termRepository.findById(termId);
-        if(!termOptional.isPresent()) {
-            throw new WitcurveException("Term doesn't exist with given term id : "+termId);
-        }
-        Long sessionId = termOptional.get().getSession().getId();
-        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherIdAndTermId(staffId, termId);
+        //TODO: input eventDate may not be in the current term. So we should bring even inactive ones.
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
         Set<Long> standardIds = new HashSet<>();
         Set<Grade> grades = new HashSet<>();
         for(CourseTeacher courseTeacher : courseTeachers) {
             standardIds.add(courseTeacher.getStandard().getId());
             grades.add(courseTeacher.getStandard().getGrade());
         }
-        List<Event> events = eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades, sessionId);
+
+        //TODO: not sending session id anymore, as the query is driven by a date.
+        List<Event> events = eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades);
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
@@ -292,9 +290,9 @@ public class EventServiceImpl implements EventService {
         LocalDate endDate = date.plusDays(6);
 
         Staff staff = staffRepository.getOne(staffId);
-        School school = staff.getSchoolInfo().getSchool();
+        SchoolInfo schoolInfo = staff.getSchoolInfo();
 
-        List<Long> sessionIds = academicSessionRepository.getActiveSessionIds(school.getId());
+        List<Long> sessionIds = academicSessionRepository.getActiveSessionIds(schoolInfo.getId());
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
 
         Set<Long> standardIds = courseTeachers
@@ -471,14 +469,14 @@ public class EventServiceImpl implements EventService {
         return result.map(eventMapper::toDto);
     }
 
-    public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, Long termId, LocalDate eventDate, ViewType type) throws WitcurveException {
+    public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate eventDate, ViewType type) throws WitcurveException {
         LocalDate sDate= eventDate.minusDays(7);
-        List<Event> events = new ArrayList<>();
+        List<Event> events;
         if(ViewType.ASSIGNMENT.equals(type)){
-            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,termId,sDate,eventDate);
+            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,sDate,eventDate);
         }
         else if(ViewType.TEST.equals(type)){
-            events = eventRepository.findTestsByTeacherInDateRange(staffId,termId,sDate,eventDate);
+            events = eventRepository.findTestsByTeacherInDateRange(staffId,sDate,eventDate);
         }
         else {
             throw new WitcurveException("Event type should be only test and Assignment");

@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,25 +40,16 @@ public class AcademicSessionResource {
         if (academicSessionDTO.getId() != null) {
             throw new WitcurveException("New Academic Session can't already have an id");
         }
-        AcademicSessionDTO result = academicSessionService.saveOrUpdate(academicSessionDTO);
-        return ResponseEntity.created(new URI("/api/academic-session/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("academicSession", result.getId().toString()))
-            .body(result);
-    }
 
-    /**
-     * get academic session by id
-     * @param academicSessionId
-     * @return
-     * @throws WitcurveException
-     */
+        try {
+            AcademicSessionDTO result = academicSessionService.saveOrUpdate(academicSessionDTO);
+            return ResponseEntity.created(new URI("/api/academic-session/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("academicSession", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
+        }
 
-    @GetMapping("/academic-session/{academicSessionId}")
-    @Timed
-    public ResponseEntity<AcademicSessionDTO> getAcademicSessionById(@PathVariable("academicSessionId") Long academicSessionId) throws WitcurveException {
-        log.debug("Request to get Academic Session with id {}", academicSessionId);
-        AcademicSessionDTO result = academicSessionService.getAcademicSessionById(academicSessionId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -74,10 +66,31 @@ public class AcademicSessionResource {
         if (academicSessionDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        AcademicSessionDTO result = academicSessionService.saveOrUpdate(academicSessionDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("academicSession", academicSessionDTO.getId().toString()))
-            .body(result);
+
+        try {
+            AcademicSessionDTO result = academicSessionService.saveOrUpdate(academicSessionDTO);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("academicSession", academicSessionDTO.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
+        }
+
+    }
+
+    /**
+     * get academic session by id
+     * @param academicSessionId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/academic-session/{academicSessionId}")
+    @Timed
+    public ResponseEntity<AcademicSessionDTO> getAcademicSessionById(@PathVariable("academicSessionId") Long academicSessionId) throws WitcurveException {
+        log.debug("Request to get Academic Session with id {}", academicSessionId);
+        AcademicSessionDTO result = academicSessionService.getAcademicSessionById(academicSessionId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**

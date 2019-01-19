@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,20 +29,50 @@ public class TermResource {
     TermService termService;
 
     /**
-     * creates terms
-     * @param termDTOs
+     * creates term
+     * @param termStartDate
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/terms")
+    @PostMapping("/terms/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<TermDTO>> saveOrUpdate(@RequestBody @Valid List<TermDTO> termDTOs) throws WitcurveException, URISyntaxException {
-        log.debug("Request to save Terms");
-        List<TermDTO> result = termService.saveOrUpdate(termDTOs);
-        return ResponseEntity.created(new URI("/api/terms/"))
-            .headers(HeaderUtil.createEntityCreationAlert("terms", null))
-            .body(result);
+    public ResponseEntity<TermDTO> create(@PathVariable Long schoolInfoId,
+                                                @RequestParam LocalDate termStartDate) throws WitcurveException, URISyntaxException {
+        log.debug("Request to create Term for schoolInfoId: {} with start date: {}", schoolInfoId, termStartDate);
+
+        try {
+            TermDTO result = termService.createTerm(schoolInfoId, termStartDate);
+            return ResponseEntity.created(new URI("/api/terms"))
+                .headers(HeaderUtil.createEntityCreationAlert("terms", null))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
+        }
+
+    }
+
+    /**
+     * updates term
+     * @param termDTO
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PutMapping("/terms")
+    @Timed
+    public ResponseEntity<TermDTO> update(@RequestBody @Valid TermDTO termDTO) throws WitcurveException, URISyntaxException {
+        log.debug("Request to update Term with id {}", termDTO.getId());
+
+        try {
+            TermDTO result = termService.updateTerm(termDTO);
+            return ResponseEntity.created(new URI("/api/terms"))
+                .headers(HeaderUtil.createEntityUpdateAlert("terms", null))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
+        }
+
     }
 
     /**
@@ -50,11 +82,26 @@ public class TermResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/term/{termId}")
+    @GetMapping("/terms/{termId}")
     @Timed
     public ResponseEntity<TermDTO> getTermById(@PathVariable("termId") Long termId) throws WitcurveException {
         log.debug("Request to get Term with id {}", termId);
         TermDTO result = termService.getTermById(termId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get terms by session id
+     * @param sessionId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/terms/academic-session/{sessionId}")
+    @Timed
+    public ResponseEntity<List<TermDTO>> getTermsByAcademicSessionId(@PathVariable("sessionId") Long sessionId) throws WitcurveException {
+        log.debug("Request to get Terms with academic session id {}", sessionId);
+        List<TermDTO> result = termService.getTermsByAcademicSessionId(sessionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -64,7 +111,7 @@ public class TermResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/term/{termId}")
+    @DeleteMapping("/terms/{termId}")
     @Timed
     public ResponseEntity<Void> deleteTerm(@PathVariable Long termId) throws WitcurveException {
         log.debug("REST request to delete Term: {}", termId);

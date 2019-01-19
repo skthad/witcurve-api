@@ -5,7 +5,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 
 public interface AcademicSessionService {
 
-    AcademicSessionDTO saveOrUpdate(AcademicSessionDTO academicSessionDTO);
+    AcademicSessionDTO saveOrUpdate(AcademicSessionDTO academicSessionDTO) throws WitcurveException;
 
     AcademicSessionDTO getAcademicSessionById(Long academicSessionId) throws WitcurveException;
 

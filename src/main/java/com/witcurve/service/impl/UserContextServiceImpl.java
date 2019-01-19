@@ -54,7 +54,7 @@ public class UserContextServiceImpl implements UserContextService {
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
         if (UserType.STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
-            List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherIdAndTermId(staffDTO.getId(), null);
+            List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
             List<StandardDTO> staffStandards = null;
             Map<Long, List<CourseDTO>> standardCourseMap = null;
             for (CourseTeacherDTO courseTeacherDTO : courseTeachers) {

@@ -13,6 +13,8 @@ public class CourseTeacherDTO extends AbstractAuditingDTO implements Serializabl
 
     private StandardDTO standard;
 
+    private Boolean active = true;
+
     public Long getId() {
         return id;
     }
@@ -43,6 +45,14 @@ public class CourseTeacherDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setStandard(StandardDTO standard) {
         this.standard = standard;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override

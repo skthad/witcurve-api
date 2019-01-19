@@ -61,27 +61,27 @@ public class SubstitutionServiceImpl implements SubstitutionService {
         Standard standard = courseTeacher.getStandard();
         Grade grade = standard.getGrade();
         MasterSubject masterSubject = courseTeacher.getCourse().getMasterSubject();
-        Long schoolId = scd.getCourseTeacher().getTeacher().getSchoolInfo().getSchool().getId();
+        Long schoolInfoId = scd.getCourseTeacher().getTeacher().getSchoolInfo().getId();
         // look for a staff who teaches given master subject in the given grade
         List<Long> availableStaff = staffEligibilityRepository.findStaffByGradeAndSubject(
-            grade, masterSubject, schoolId, teacherId);
+            grade, masterSubject, schoolInfoId, teacherId);
 
         if (availableStaff.size() == 0) {
             //look for a teacher who teaches any course in the given standard
             availableStaff = staffEligibilityRepository.findStaffByStandard(
-                standard.getId(), schoolId, teacherId);
+                standard.getId(), schoolInfoId, teacherId);
         }
         if (availableStaff.size() == 0) {
             //look for a teacher who teaches any course in the given grade
             availableStaff = staffEligibilityRepository.findStaffByGrade(
-                grade, schoolId, teacherId);
+                grade, schoolInfoId, teacherId);
         }
 
         if (availableStaff.size() == 0) {
 
             // look for a teacher who teaches a course with eligibleForSubstitute = true in the whole school
-            availableStaff = courseTeacherRepository.findEligibleForSubstituteBySchoolId(
-                teacherId, schoolId);
+            availableStaff = courseTeacherRepository.findEligibleForSubstituteBySchoolInfoId(
+                teacherId, schoolInfoId);
         }
 
         // should not be in substitution table already

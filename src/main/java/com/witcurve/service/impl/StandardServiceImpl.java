@@ -62,7 +62,7 @@ public class StandardServiceImpl implements StandardService {
     @Override
     public List<StandardDTO> getStandardsByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException {
         log.debug("Request to get all standards by by teacher id : {}", teacherId);
-        List<Standard> result = courseTeacherRepository.findStandardsByTeacherIdAndTermId(teacherId, termId);
+        List<Standard> result = courseTeacherRepository.findStandardsByTeacherId(teacherId);
         return standardMapperLite.toDto(result);
     }
 

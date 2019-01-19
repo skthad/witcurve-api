@@ -7,9 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = {CourseTeacherMapper.class, GeneralSlotDetailsMapper.class})
 public interface ExamCourseDetailsMapper extends EntityMapper<ExamCourseDetailsDTO, ExamCourseDetails> {
 
-
     ExamCourseDetails toEntity(ExamCourseDetailsDTO examCourseDetailsDTO);
-
 
     ExamCourseDetailsDTO toDto(ExamCourseDetails examCourseDetails);
 

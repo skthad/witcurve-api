@@ -34,6 +34,10 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
     @JoinColumn(name = "standard_id",nullable = false)
     private Standard standard;
 
+    @NotNull
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
     public Long getId() {
         return id;
     }
@@ -64,6 +68,14 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
 
     public void setStandard(Standard standard) {
         this.standard = standard;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override
