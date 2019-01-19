@@ -47,7 +47,11 @@ public class TermResource {
                 .headers(HeaderUtil.createEntityCreationAlert("terms", null))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("term_start_date_session_id_UK")) {
+                throw new WitcurveException("Unique constraint (start_date, session_id) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
 
     }
@@ -70,7 +74,11 @@ public class TermResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("terms", null))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("term_start_date_session_id_UK")) {
+                throw new WitcurveException("Unique constraint (start_date, session_id) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
 
     }

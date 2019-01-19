@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="staff_eligibility", uniqueConstraints = {
-    @UniqueConstraint(name = "staff_eligibility_grade_UK",
+    @UniqueConstraint(name = "staff_eligibility_subject_staff_grade_UK",
         columnNames = {"master_subject_name", "staff_id", "grade"})
 })
 public class StaffEligibility extends AbstractAuditingEntity implements Serializable {
