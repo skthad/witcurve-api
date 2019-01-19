@@ -47,7 +47,11 @@ public class AcademicSessionResource {
                 .headers(HeaderUtil.createEntityCreationAlert("academicSession", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("session_start_date_school_info_id_UK")) {
+                throw new WitcurveException("Unique constraint (start_date, school_info_id) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
 
     }
@@ -73,7 +77,11 @@ public class AcademicSessionResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("academicSession", academicSessionDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("session_start_date_school_info_id_UK")) {
+                throw new WitcurveException("Unique constraint (start_date, school_info_id) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
 
     }
