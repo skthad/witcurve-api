@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="course_teacher", uniqueConstraints = {
-    @UniqueConstraint(name = "course_teacher_class_UK",
+    @UniqueConstraint(name = "course_teacher_standard_UK",
         columnNames = {"course_id", "teacher_id", "standard_id"})
 })
 public class CourseTeacher extends AbstractAuditingEntity implements Serializable {

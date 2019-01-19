@@ -51,7 +51,11 @@ public class StaffEligibilityResource {
                 .headers(HeaderUtil.createEntityCreationAlert("staffEligibility", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("staff_eligibility_subject_staff_grade_UK")) {
+                throw new WitcurveException("Unique constraint (master_subject, staff_id, grade) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
 
     }
@@ -77,7 +81,11 @@ public class StaffEligibilityResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("staffEligibility", staffEligibilityDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("staff_eligibility_subject_staff_grade_UK")) {
+                throw new WitcurveException("Unique constraint (master_subject, staff_id, grade) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
 
     }

@@ -10,8 +10,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="academic_session", uniqueConstraints = {
-    @UniqueConstraint(name = "start_date_school_info_id_UK",
-        columnNames = {"school_info_id", "start_date"})
+    @UniqueConstraint(name = "session_start_date_school_info_id_UK",
+        columnNames = {"start_date", "school_info_id"})
 })
 public class AcademicSession extends AbstractAuditingEntity implements Serializable {
 
