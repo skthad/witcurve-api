@@ -109,7 +109,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findAttendanceForStandard(LocalDate fromDate, LocalDate toDate, Long standardId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2  and e.staff.id = ?3 " +
-        "and e.type = 'ATTENDANCE'")
+        "and e.type = 'ATTENDANCE' order by e.date asc")
     List<Event> findAttendanceForStaff(LocalDate fromDate, LocalDate toDate, Long staffId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and e.student.id = ?3 " +
@@ -163,6 +163,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3")
     List<Event> findTestsByTeacherInDateRange(Long staffId, LocalDate sdate, LocalDate eDate);
+
+    List<Event> findByTypeAndAcademicSessionIdOrderByDateAsc(EventType eventType, Long sessionId);
 
 
 
