@@ -49,7 +49,7 @@ public class CourseTeacherResource {
                 .headers(HeaderUtil.createEntityCreationAlert("courseTeacher", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("course_teacher_class_UK")) {
+            if (e.getMessage().contains("course_teacher_standard_UK")) {
                 throw new WitcurveException("Unique constraint (course_id, teacher_id, standard_id) violated");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
@@ -78,7 +78,7 @@ public class CourseTeacherResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("course_teacher_class_UK")) {
+            if (e.getMessage().contains("course_teacher_standard_UK")) {
                 throw new WitcurveException("Unique constraint (course_id, teacher_id, standard_id) violated");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
