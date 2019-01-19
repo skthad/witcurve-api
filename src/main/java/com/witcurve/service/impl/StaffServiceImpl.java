@@ -95,7 +95,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO getStaffByUsername(String username) throws WitcurveException {
-        log.debug("Request to get staff with username {}", username);
+        log.debug("Request to get staff with username : {}", username);
         int index = username.indexOf("-");
         log.debug("Index value : {} ",index);
         if(index >  0 ) {
@@ -110,7 +110,7 @@ public class StaffServiceImpl implements StaffService {
             Staff staff = staffRepository.findBySchoolInfoIdAndStaffId(schoolInfoId, staffId.toLowerCase());
             if (staff == null){
                 log.error("No staff with given staff id : {} in the give school info id : {}", staffId, schoolInfoId);
-                throw  new WitcurveException("No staff exists with given username ");
+                throw  new WitcurveException("No staff exists with given username");
             }
             StaffDTO result = staffMapper.toDto(staff);
             if (Strings.isNullOrEmpty(staff.getUser().getPassword())) {

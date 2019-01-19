@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -298,6 +299,21 @@ public class EventResource {
         List<LocalDate> result = eventService.findAllEventDatesOnGivenMonthForStudent(month, year, studentId);
 
 
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+
+    /**
+     *
+     *
+     * @param sessionId
+     * @return
+     */
+
+    @GetMapping("/event/session/{sessionId}")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getHolidaysForSession(@PathVariable Long sessionId) throws WitcurveException, URISyntaxException{
+        List<EventDTO> result = eventService.findHolidaysInASession(sessionId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 

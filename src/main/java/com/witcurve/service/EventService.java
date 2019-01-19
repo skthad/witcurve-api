@@ -42,4 +42,6 @@ public interface EventService {
     Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException;
 
     List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate date, ViewType type) throws WitcurveException;
+
+    List<EventDTO> findHolidaysInASession(Long sessionId) throws WitcurveException;
 }

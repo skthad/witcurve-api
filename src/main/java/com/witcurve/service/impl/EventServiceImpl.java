@@ -485,6 +485,12 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDto(events);
     }
 
+    public List<EventDTO> findHolidaysInASession(Long sessionId) throws WitcurveException {
+        log.debug("List of holidays for a session with id : {}", sessionId);
+        List<Event> events = eventRepository.findByTypeAndAcademicSessionIdOrderByDateAsc(EventType.HOLIDAY, sessionId);
+        return eventMapper.toDto(events);
+    }
+
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {
