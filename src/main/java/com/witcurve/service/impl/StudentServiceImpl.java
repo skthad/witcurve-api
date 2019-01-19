@@ -115,18 +115,32 @@ public class StudentServiceImpl implements StudentService {
     public StudentDTO getStudentByUsername(String username) throws WitcurveException {
         log.debug("Request to get student with username: {}", username);
         int index = username.indexOf("-");
-        Long schoolInfoId = Long.parseLong(username.substring(0, index));
-        String admissionId = username.substring(index + 1);
-        Student student = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, admissionId.toLowerCase());
-        if (student == null){
-            throw  new WitcurveException("No student with given admission id in the give school id");
-        }
-        StudentDTO result = studentMapper.toDto(student);
-        if (Strings.isNullOrEmpty(student.getUser().getPassword())) {
-            result.setHasPassword(Boolean.FALSE);
+        log.debug("Index value : {} ",index);
+        if(index > 0) {
+            Long schoolInfoId = null;
+            try {
+                schoolInfoId = Long.parseLong(username.substring(0, index));
+            } catch (NumberFormatException e) {
+                log.error("Entered school info id in user name is wrong : {}", username);
+                throw new WitcurveException("Invalid username, please enter the correct username");
+            }
+            String admissionId = username.substring(index + 1);
+            Student student = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, admissionId.toLowerCase());
+            if (student == null){
+                log.error("No student with given admission id : {} in the give school info id : {}", student.getId(), schoolInfoId);
+                throw  new WitcurveException("No student exists with given username ");
+            }
+
+            StudentDTO result = studentMapper.toDto(student);
+            if (Strings.isNullOrEmpty(student.getUser().getPassword())) {
+                result.setHasPassword(Boolean.FALSE);
+            } else {
+                result.setHasPassword(Boolean.TRUE);
+            }
+            return result;
         } else {
-            result.setHasPassword(Boolean.TRUE);
+            log.error("Entered user name is not in format of schoolInfoId-studentId for username : {}", username);
+            throw new WitcurveException("Invalid username, please enter the correct username");
         }
-        return result;
     }
 }
