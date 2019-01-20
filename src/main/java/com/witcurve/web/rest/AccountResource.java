@@ -9,8 +9,8 @@ import com.witcurve.service.UserService;
 import com.witcurve.service.dto.PasswordChangeDTO;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.EmailAlreadyUsedException;
-import com.witcurve.web.rest.errors.InternalServerErrorException;
 import com.witcurve.web.rest.errors.InvalidPasswordException;
+import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ManagedUserVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -64,10 +64,10 @@ public class AccountResource {
      */
     @GetMapping("/account")
     @Timed
-    public UserDTO getAccount() {
+    public UserDTO getAccount() throws  WitcurveException {
         return userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new InternalServerErrorException("User could not be found"));
+            .orElseThrow(() -> new WitcurveException("User could not be found"));
     }
 
     /**
@@ -79,15 +79,16 @@ public class AccountResource {
      */
     @PostMapping("/account")
     @Timed
-    public void saveAccount(@Valid @RequestBody UserDTO userDTO) {
-        final String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
+    public void saveAccount(@Valid @RequestBody UserDTO userDTO) throws WitcurveException {
+        final String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new WitcurveException("Current user login not found"));
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userLogin))) {
-            throw new EmailAlreadyUsedException();
+            throw new WitcurveException("Email is already in use!");
+            //throw new EmailAlreadyUsedException();
         }
         Optional<User> user = userRepository.findOneByLogin(userLogin);
         if (!user.isPresent()) {
-            throw new InternalServerErrorException("User could not be found");
+            throw new WitcurveException("User could not be found");
         }
         userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
             userDTO.getLangKey(), userDTO.getImageUrl());
@@ -101,9 +102,11 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/change-password")
     @Timed
-    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
+    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
         if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
-            throw new InvalidPasswordException();
+            throw new WitcurveException("Incorrect password length, it should be between "+
+                ManagedUserVM.PASSWORD_MIN_LENGTH+" and "+ManagedUserVM.PASSWORD_MAX_LENGTH);
+//            throw new InvalidPasswordException();
         }
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
    }
@@ -116,9 +119,11 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/set-password")
     @Timed
-    public void setPassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
+    public void setPassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
         if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
-            throw new InvalidPasswordException();
+            throw new WitcurveException("Incorrect password length, it should be between "+
+                ManagedUserVM.PASSWORD_MIN_LENGTH+" and "+ManagedUserVM.PASSWORD_MAX_LENGTH);
+//            throw new InvalidPasswordException();
         }
         userService.setPassword(passwordChangeDto.getNewPassword());
     }

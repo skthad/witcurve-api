@@ -13,8 +13,6 @@ import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
-import com.witcurve.web.rest.errors.InvalidPasswordException;
-import com.witcurve.web.rest.errors.PasswordAlreadySetException;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,33 +156,48 @@ public class UserService {
         });
     }
 
-    public void changePassword(String currentClearTextPassword, String newPassword) {
-        SecurityUtils.getCurrentUserLogin()
-            .flatMap(userRepository::findOneByLogin)
-            .ifPresent(user -> {
-                String currentEncryptedPassword = user.getPassword();
+    public void changePassword(String currentClearTextPassword, String newPassword) throws WitcurveException{
+        Optional<String> userName = SecurityUtils.getCurrentUserLogin();
+        if(userName.isPresent()) {
+            Optional<User> user = userRepository.findOneByLogin(userName.get());
+            if(user.isPresent()) {
+                String currentEncryptedPassword = user.get().getPassword();
                 if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
-                    throw new InvalidPasswordException();
+                    throw new WitcurveException("Invalid Password!");
+//                    throw new InvalidPasswordException();
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
-                user.setPassword(encryptedPassword);
-                this.clearUserCaches(user);
-                log.debug("Changed password for User: {}", user);
-            });
+                user.get().setPassword(encryptedPassword);
+                this.clearUserCaches(user.get());
+                log.debug("Set password for User: {}", user.get());
+            } else {
+                throw new WitcurveException("There is no user with session user name in session!");
+            }
+        } else {
+            throw new WitcurveException("Error getting user name from session!");
+        }
     }
 
-    public void setPassword(String newPassword) {
-        SecurityUtils.getCurrentUserLogin()
-            .flatMap(userRepository::findOneByLogin)
-            .ifPresent(user -> {
-                if (!Strings.isNullOrEmpty(user.getPassword())) {
-                    throw new PasswordAlreadySetException();
+    public void setPassword(String newPassword) throws WitcurveException{
+        Optional<String> userName = SecurityUtils.getCurrentUserLogin();
+        if(userName.isPresent()) {
+            Optional<User> user = userRepository.findOneByLogin(userName.get());
+            if(user.isPresent()) {
+                if (!Strings.isNullOrEmpty(user.get().getPassword())) {
+                    throw new WitcurveException("Empty password");
+//                  throw new PasswordAlreadySetException();
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
-                user.setPassword(encryptedPassword);
-                this.clearUserCaches(user);
-                log.debug("Set password for User: {}", user);
-            });
+                user.get().setPassword(encryptedPassword);
+                this.clearUserCaches(user.get());
+                log.debug("Set password for User: {}", user.get());
+            } else {
+                throw new WitcurveException("There is no user with session user name in session!");
+            }
+        } else {
+            throw new WitcurveException("Error getting user name from session!");
+        }
+
     }
 
     @Transactional(readOnly = true)
