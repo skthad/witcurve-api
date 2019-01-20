@@ -289,8 +289,11 @@ public class EventServiceImpl implements EventService {
         log.debug("Find events for announcements for a duration of week from date : {} and for staff with id : {}", date, staffId);
         LocalDate endDate = date.plusDays(6);
 
-        Staff staff = staffRepository.getOne(staffId);
-        SchoolInfo schoolInfo = staff.getSchoolInfo();
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (!staff.isPresent()) {
+            throw new WitcurveException("Staff does not exist with id " + staffId);
+        }
+        SchoolInfo schoolInfo = staff.get().getSchoolInfo();
 
         List<Long> sessionIds = academicSessionRepository.getActiveSessionIds(schoolInfo.getId());
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);

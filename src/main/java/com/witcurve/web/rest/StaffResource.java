@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +90,8 @@ public class StaffResource {
         log.debug("Request to update Staff");
         if (staffDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
+        } else {
+            staffService.getStaffById(staffDTO.getId());
         }
         StaffDTO result = staffService.update(staffDTO);
         return ResponseEntity.ok()
@@ -106,8 +109,17 @@ public class StaffResource {
     @Timed
     public ResponseEntity<Void> deleteStaff(@PathVariable Long staffId) throws WitcurveException {
         log.debug("REST request to delete Staff: {}", staffId);
-        staffService.deleteStaffById(staffId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A staff is deleted with identifier " + staffId,
-            staffId.toString())).build();
+        try {
+            staffService.deleteStaffById(staffId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A staff is deleted with identifier " + staffId,
+                staffId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
     }
 }

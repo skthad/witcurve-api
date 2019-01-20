@@ -53,6 +53,8 @@ public class StaffEligibilityResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("staff_eligibility_subject_staff_grade_UK")) {
                 throw new WitcurveException("Unique constraint (master_subject, staff_id, grade) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
@@ -73,8 +75,9 @@ public class StaffEligibilityResource {
         log.debug("Request to update staffEligibility");
         if (staffEligibilityDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
+        } else {
+            staffEligibilityService.findById(staffEligibilityDTO.getId());
         }
-
         try {
             StaffEligibilityDTO result = staffEligibilityService.saveOrUpdate(staffEligibilityDTO);
             return ResponseEntity.ok()
@@ -83,6 +86,8 @@ public class StaffEligibilityResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("staff_eligibility_subject_staff_grade_UK")) {
                 throw new WitcurveException("Unique constraint (master_subject, staff_id, grade) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
@@ -129,8 +134,17 @@ public class StaffEligibilityResource {
     @Timed
     public ResponseEntity<Void> deleteStaffEligibility(@PathVariable Long staffEligibilityId) throws WitcurveException {
         log.debug("REST request to delete StaffEligibility: {}", staffEligibilityId);
-        staffEligibilityService.deleteStaffEligibility(staffEligibilityId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A staffEligibility is deleted with identifier " + staffEligibilityId,
-            staffEligibilityId.toString())).build();
+
+        try {
+            staffEligibilityService.deleteStaffEligibility(staffEligibilityId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A staffEligibility is deleted with identifier " + staffEligibilityId,
+                staffEligibilityId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 }

@@ -1,16 +1,17 @@
 package com.witcurve.service;
 
 import com.witcurve.service.dto.SchoolDTO;
-import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+
+import java.util.List;
 
 public interface SchoolService {
 
-    SchoolDTO saveOrUpdate(SchoolDTO schoolDTO);
+    SchoolDTO saveOrUpdate(SchoolDTO schoolDTO) throws WitcurveException;
 
     SchoolDTO getSchoolById(Long schoolId) throws WitcurveException;
 
     void deleteSchool(Long schoolId) throws WitcurveException;
 
-    SchoolInfoDTO updateSchoolInfo(Long schoolId, String board, String medium) throws WitcurveException;
+    List<SchoolDTO> getSchoolByInstituteId(Long instituteId);
 }

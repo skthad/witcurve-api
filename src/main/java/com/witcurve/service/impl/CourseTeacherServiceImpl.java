@@ -1,6 +1,9 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.*;
+import com.witcurve.domain.Course;
+import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.StaffEligibility;
+import com.witcurve.domain.Standard;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -41,13 +45,20 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
         log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
+        Optional<Course> course = courseRepository.findById(courseTeacherDTO.getCourse().getId());
+        if (!course.isPresent()) {
+            throw new WitcurveException("A valid course id must be provided");
+        }
+        Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
 
+        if (!standard.isPresent()) {
+            throw new WitcurveException("a valid standard id must be provided");
+        }
         if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
-            Course course = courseRepository.getOne(courseTeacherDTO.getCourse().getId());
-            Standard standard = standardRepository.getOne(courseTeacherDTO.getStandard().getId());
+
             List<StaffEligibility> se = staffEligibilityRepository
                 .findByStaffAndSubjectAndGrade(courseTeacherDTO.getTeacher().getId(),
-                    course.getMasterSubject(), standard.getGrade());
+                    course.get().getMasterSubject(), standard.get().getGrade());
             if (se.size() == 0) {
                 throw new WitcurveException("Staff does not meet the eligibility criteria");
             }
@@ -63,21 +74,11 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Override
     public CourseTeacherDTO getCourseTeacherById(Long id) throws WitcurveException {
         log.debug("Request to get course teacher by id : {}", id);
-        CourseTeacher courseTeacher = courseTeacherRepository.findById(id).get();
-        if (courseTeacher == null) {
-            throw new WitcurveException("No course tecaher with given id");
+        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(id);
+        if (!courseTeacher.isPresent()) {
+            throw new WitcurveException("No course tecaher with given id " + id);
         }
-        return courseTeacherMapper.toDto(courseTeacher);
-    }
-
-    @Override
-    public void deleteCourseTeacher(Long courseTeacherId) throws WitcurveException {
-        log.debug("Request to delete course teacher by id : {}", courseTeacherId);
-        CourseTeacher courseTeacher = courseTeacherRepository.findById(courseTeacherId).get();
-        if (courseTeacher == null) {
-            throw new WitcurveException("No course tecaher with given id");
-        }
-        courseTeacherRepository.delete(courseTeacher);
+        return courseTeacherMapper.toDto(courseTeacher.get());
     }
 
     @Override
@@ -103,5 +104,15 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
               throw new WitcurveException("standard repository is giving more than one rows at a time !!");
         }
         return courseTeacherMapper.toDto(result);
+    }
+
+    @Override
+    public void deleteCourseTeacher(Long courseTeacherId) throws WitcurveException {
+        log.debug("Request to delete course teacher by id : {}", courseTeacherId);
+        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(courseTeacherId);
+        if (!courseTeacher.isPresent()) {
+            throw new WitcurveException("No course teacher with given id " + courseTeacherId);
+        }
+        courseTeacherRepository.delete(courseTeacher.get());
     }
 }

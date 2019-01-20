@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -49,6 +50,8 @@ public class AcademicSessionResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("session_start_date_school_info_id_UK")) {
                 throw new WitcurveException("Unique constraint (start_date, school_info_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
@@ -69,6 +72,8 @@ public class AcademicSessionResource {
         log.debug("Request to update academicSession");
         if (academicSessionDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
+        } else {
+            academicSessionService.getAcademicSessionById(academicSessionDTO.getId());
         }
 
         try {
@@ -79,11 +84,28 @@ public class AcademicSessionResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("session_start_date_school_info_id_UK")) {
                 throw new WitcurveException("Unique constraint (start_date, school_info_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
         }
 
+    }
+
+    /**
+     * get academic sessions by school-info id
+     * @param schoolInfoId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/academic-session/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<List<AcademicSessionDTO>> getAcademicSessionsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get Academic Sessions with school-info id {}", schoolInfoId);
+        List<AcademicSessionDTO> result = academicSessionService.getAcademicSessionsBySchoolInfoId(schoolInfoId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -111,8 +133,17 @@ public class AcademicSessionResource {
     @Timed
     public ResponseEntity<Void> deleteAcademicSession(@PathVariable Long academicSessionId) throws WitcurveException {
         log.debug("REST request to delete AcademicSession: {}", academicSessionId);
-        academicSessionService.deleteAcademicSession(academicSessionId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A academicSession is deleted with identifier " + academicSessionId,
-            academicSessionId.toString())).build();
+        try {
+            academicSessionService.deleteAcademicSession(academicSessionId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("An academicSession is deleted with identifier " + academicSessionId,
+                academicSessionId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
     }
 }

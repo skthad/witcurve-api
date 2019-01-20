@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -35,7 +36,6 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
     @Override
     public AcademicSessionDTO saveOrUpdate(AcademicSessionDTO academicSessionDTO) throws WitcurveException {
         log.debug("Request to save or Update academic session {}", academicSessionDTO);
-
         LocalDate newStartDateOfSession = academicSessionDTO.getStartDate();
 
         AcademicSession previousSession = academicSessionRepository.getPreviousSession(academicSessionDTO.getSchoolInfo().getId(), academicSessionDTO.getStartDate());
@@ -81,26 +81,32 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
     @Override
     public AcademicSessionDTO getAcademicSessionById(Long academicSessionId) throws WitcurveException {
         log.debug("Request to get academic session {}", academicSessionId);
-        AcademicSession academicSession = academicSessionRepository.findById(academicSessionId).get();
-
-        if (academicSession == null) {
+        Optional<AcademicSession> academicSession = academicSessionRepository.findById(academicSessionId);
+        if (!academicSession.isPresent()) {
             throw new WitcurveException("No Academic Session with given id");
         }
 
-        return academicSessionMapper.toDto(academicSession);
+        return academicSessionMapper.toDto(academicSession.get());
+    }
+
+    @Override
+    public List<AcademicSessionDTO> getAcademicSessionsBySchoolInfoId(Long schoolInfoId) {
+        log.debug("Request to get all academic sessions in schoolInfoId " + schoolInfoId);
+        List<AcademicSession> sessions = academicSessionRepository.getAllSessionsInSchoolInfo(schoolInfoId);
+        return academicSessionMapper.toDto(sessions);
     }
 
     @Override
     public void deleteAcademicSession(Long academicSessionId) throws WitcurveException {
         log.debug("Request to delete academicSession with id {}", academicSessionId);
-        AcademicSession academicSession = academicSessionRepository.findById(academicSessionId).get();
-        if (academicSession == null){
-            throw new WitcurveException("No academicSession with given Id");
+        Optional<AcademicSession> academicSession = academicSessionRepository.findById(academicSessionId);
+        if (!academicSession.isPresent()) {
+            throw new WitcurveException("No Academic Session with given id");
         }
-        if (Boolean.TRUE.equals(academicSession.getActive())) {
+        if (Boolean.TRUE.equals(academicSession.get().getActive())) {
             throw new WitcurveException("Cannot delete an active session");
         }
-        academicSessionRepository.delete(academicSession);
+        academicSessionRepository.delete(academicSession.get());
     }
 
     @Override

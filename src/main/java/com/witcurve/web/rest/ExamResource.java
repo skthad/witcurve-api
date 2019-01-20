@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +74,8 @@ public class ExamResource {
         log.debug("Request to update exam");
         if (examDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
+        } else {
+            examService.getExamById(examDTO.getId());
         }
         ExamDTO result = examService.saveOrUpdate(examDTO);
         return ResponseEntity.ok()
@@ -90,9 +93,18 @@ public class ExamResource {
     @Timed
     public ResponseEntity<Void> deleteExam(@PathVariable Long examId) throws WitcurveException {
         log.debug("REST request to delete Exam: {}", examId);
-        examService.deleteExam(examId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A exam is deleted with identifier " + examId,
-            examId.toString())).build();
+        try {
+            examService.deleteExam(examId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A exam is deleted with identifier " + examId,
+                examId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
     }
 
 }

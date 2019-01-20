@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface GuardianService {
 
-    GuardianDTO saveOrUpdate(GuardianDTO guardianDTO);
+    GuardianDTO saveOrUpdate(GuardianDTO guardianDTO) throws WitcurveException;
 
     GuardianDTO getGuardianById(Long guardianId) throws WitcurveException;
 

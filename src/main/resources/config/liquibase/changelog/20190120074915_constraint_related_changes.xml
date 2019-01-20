@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1547970564374-1">
+        <addUniqueConstraint columnNames="board, medium, school_id" constraintName="board_medium_school_UK" tableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547970564374-2">
+        <addUniqueConstraint columnNames="name" constraintName="institute_name_UK" tableName="institute"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547970564374-3">
+        <dropUniqueConstraint constraintName="grade_section_teacher_term_UK" tableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1547970564374-4">
+        <addUniqueConstraint columnNames="grade, section, class_teacher_id" constraintName="grade_section_teacher_UK" tableName="standard"/>
+    </changeSet>
+</databaseChangeLog>

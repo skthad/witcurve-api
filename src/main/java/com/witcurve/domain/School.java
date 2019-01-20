@@ -66,7 +66,7 @@ public class School extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Institute Institute;
+    private Institute institute;
 
     public Long getId() {
         return id;
@@ -188,12 +188,12 @@ public class School extends AbstractAuditingEntity implements Serializable {
         this.fax = fax;
     }
 
-    public com.witcurve.domain.Institute getInstitute() {
-        return Institute;
+    public Institute getInstitute() {
+        return institute;
     }
 
-    public void setInstitute(com.witcurve.domain.Institute institute) {
-        Institute = institute;
+    public void setInstitute(Institute institute) {
+        this.institute = institute;
     }
 
     @Override

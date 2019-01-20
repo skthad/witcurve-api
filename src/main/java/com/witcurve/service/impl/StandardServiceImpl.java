@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -45,11 +46,11 @@ public class StandardServiceImpl implements StandardService {
     @Override
     public StandardDTO getStandardById(Long standardId) throws WitcurveException {
         log.debug("Request to get standard with id : {}", standardId);
-        Standard standard = standardRepository.findById(standardId).get();
-        if (standard == null) {
-            throw new WitcurveException("No standard exits with given id");
+        Optional<Standard> standard = standardRepository.findById(standardId);
+        if (!standard.isPresent()) {
+            throw new WitcurveException("No standard exits with given id " + standardId);
         }
-        return standardMapperLite.toDto(standard);
+        return standardMapperLite.toDto(standard.get());
     }
 
     @Override
@@ -60,7 +61,7 @@ public class StandardServiceImpl implements StandardService {
     }
 
     @Override
-    public List<StandardDTO> getStandardsByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException {
+    public List<StandardDTO> getStandardsByTeacherId(Long teacherId) {
         log.debug("Request to get all standards by by teacher id : {}", teacherId);
         List<Standard> result = courseTeacherRepository.findStandardsByTeacherId(teacherId);
         return standardMapperLite.toDto(result);
@@ -69,10 +70,10 @@ public class StandardServiceImpl implements StandardService {
     @Override
     public void deleteStandard(Long standardId) throws WitcurveException {
         log.debug("Request to delete standard with id {}", standardId);
-        Standard standard = standardRepository.findById(standardId).get();
-        if (standard == null){
-            throw new WitcurveException("No standard with given Id");
+        Optional<Standard> standard = standardRepository.findById(standardId);
+        if (!standard.isPresent()) {
+            throw new WitcurveException("No standard exits with given id " + standardId);
         }
-        standardRepository.delete(standard);
+        standardRepository.delete(standard.get());
     }
 }

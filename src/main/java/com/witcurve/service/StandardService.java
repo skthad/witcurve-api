@@ -13,7 +13,7 @@ public interface StandardService {
 
     List<StandardDTO> getStandardsBySchoolInfoId(Long schoolInfoId);
 
-    List<StandardDTO> getStandardsByTeacherIdAndTermId(Long teacherId, Long termId) throws WitcurveException;
+    List<StandardDTO> getStandardsByTeacherId(Long teacherId);
 
     void deleteStandard(Long standardId) throws WitcurveException;
 }

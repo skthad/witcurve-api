@@ -9,6 +9,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,21 +72,6 @@ public class StudentMarksResource {
     }
 
     /**
-      * delete the studentMarks
-      * @param studentMarksId
-      * @return
-      * @throws WitcurveException
-     */
-    @DeleteMapping("/student-marks/{studentMarksId}")
-    @Timed
-    public ResponseEntity<Void> deleteStudentMarks(@PathVariable Long studentMarksId) throws WitcurveException {
-        log.debug("REST request to delete student marks: {}", studentMarksId);
-        studentMarksService.deleteStudentMarks(studentMarksId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A student marks relation is deleted with identifier " + studentMarksId,
-            studentMarksId.toString())).build();
-    }
-
-    /**
       * get student marks in a course teacher by event id for test and assignment only
       * @param eventId
       * @return
@@ -125,6 +111,29 @@ public class StudentMarksResource {
         log.debug("Request to get list of Student marks by course teacher id and event type and student id");
         Map<EventType,List<StudentMarksDTO>> result = studentMarksService.getAllMarksForStudent(courseTeacherId,studentId);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * delete the studentMarks
+     * @param studentMarksId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/student-marks/{studentMarksId}")
+    @Timed
+    public ResponseEntity<Void> deleteStudentMarks(@PathVariable Long studentMarksId) throws WitcurveException {
+        log.debug("REST request to delete student marks: {}", studentMarksId);
+        try {
+            studentMarksService.deleteStudentMarks(studentMarksId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A student marks relation is deleted with identifier " + studentMarksId,
+                studentMarksId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 }
 

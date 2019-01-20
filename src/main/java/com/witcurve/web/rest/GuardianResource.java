@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +90,8 @@ public class GuardianResource {
         log.debug("Request to update guardian");
         if (guardianDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
+        } else {
+            guardianService.getGuardianById(guardianDTO.getId());
         }
         GuardianDTO result = guardianService.saveOrUpdate(guardianDTO);
         return ResponseEntity.ok()
@@ -106,8 +109,17 @@ public class GuardianResource {
     @Timed
     public ResponseEntity<Void> deleteGuardian(@PathVariable Long guardianId) throws WitcurveException {
         log.debug("REST request to delete Guardian: {}", guardianId);
-        guardianService.deleteGuardian(guardianId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A guardian is deleted with identifier " + guardianId,
-            guardianId.toString())).build();
+
+        try {
+            guardianService.deleteGuardian(guardianId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A guardian is deleted with identifier " + guardianId,
+                guardianId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 }

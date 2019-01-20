@@ -41,7 +41,7 @@ public class SchoolDTO extends AbstractAuditingDTO {
     private String secondaryEmail;
 
     @NotNull
-    private Long instituteId;
+    private InstituteDTO institute;
 
     public SchoolDTO() {
     }
@@ -166,12 +166,12 @@ public class SchoolDTO extends AbstractAuditingDTO {
         this.secondaryEmail = secondaryEmail;
     }
 
-    public Long getInstituteId() {
-        return instituteId;
+    public InstituteDTO getInstitute() {
+        return institute;
     }
 
-    public void setInstituteId(Long instituteId) {
-        this.instituteId = instituteId;
+    public void setInstitute(InstituteDTO institute) {
+        this.institute = institute;
     }
 
     @Override
@@ -206,7 +206,6 @@ public class SchoolDTO extends AbstractAuditingDTO {
             ", pincode='" + pincode + '\'' +
             ", primaryEmail='" + primaryEmail + '\'' +
             ", secondaryEmail='" + secondaryEmail + '\'' +
-            ", instituteId='" + instituteId + '\'' +
             '}';
     }
 }

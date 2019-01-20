@@ -4,18 +4,17 @@ import com.codahale.metrics.annotation.Timed;
 import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
-import com.witcurve.service.impl.ExamServiceImpl;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
@@ -93,8 +92,9 @@ public class LeaveApplicationResource {
     @Timed
     public ResponseEntity<Void> deleteLeaveApplication(@PathVariable Long leaveApplicationId) throws WitcurveException {
         log.debug("REST request to delete leave application: {}", leaveApplicationId);
+
         leaveApplicationService.deleteLeaveApplication(leaveApplicationId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A leave application is deleted with identifier " + leaveApplicationId,
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A leave application is deleted with identifier " + leaveApplicationId,
             leaveApplicationId.toString())).build();
     }
 
@@ -109,8 +109,16 @@ public class LeaveApplicationResource {
     @Timed
     public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationApproval(@PathVariable("leaveApplicationId") Long applicationId,@RequestParam Long staffId) throws WitcurveException {
         log.debug("The LeaveApplication approved by staff id {} for application with id : {}",staffId, applicationId);
-        LeaveApplicationDTO result = leaveApplicationService.getLeaveApplicationApprover(applicationId,staffId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            LeaveApplicationDTO result = leaveApplicationService.getLeaveApplicationApprover(applicationId,staffId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**

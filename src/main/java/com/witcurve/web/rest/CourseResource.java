@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,28 @@ public class CourseResource {
     }
 
     /**
+     * update the given course
+     * @param courseDTO
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PutMapping("/course")
+    @Timed
+    public ResponseEntity<CourseDTO> updateCourseUpdate(@RequestBody @Valid CourseDTO courseDTO) throws WitcurveException {
+        log.debug("Request to update course");
+        if (courseDTO.getId() == null) {
+            throw new WitcurveException("Id is required for update request");
+        } else {
+            courseService.getCourseById(courseDTO.getId());
+        }
+        CourseDTO result = courseService.saveOrUpdate(courseDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert("course", courseDTO.getId().toString()))
+            .body(result);
+    }
+
+    /**
      * get course by id
      * @param courseId
      * @return
@@ -61,26 +84,6 @@ public class CourseResource {
     }
 
     /**
-     * update the given course
-     * @param courseDTO
-     * @return
-     * @throws WitcurveException
-     */
-
-    @PutMapping("/course")
-    @Timed
-    public ResponseEntity<CourseDTO> updateCourseUpdate(@RequestBody @Valid CourseDTO courseDTO) throws WitcurveException {
-        log.debug("Request to update course");
-        if (courseDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        CourseDTO result = courseService.saveOrUpdate(courseDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("course", courseDTO.getId().toString()))
-            .body(result);
-    }
-
-    /**
      * delete the course
      * @param courseId
      * @return
@@ -90,9 +93,17 @@ public class CourseResource {
     @Timed
     public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) throws WitcurveException {
         log.debug("REST request to delete Course: {}", courseId);
-        courseService.deleteCourse(courseId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A course is deleted with identifier " + courseId,
-            courseId.toString())).build();
+        try {
+            courseService.deleteCourse(courseId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A course is deleted with identifier " + courseId,
+                courseId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
 

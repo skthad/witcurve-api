@@ -4,7 +4,6 @@ import com.witcurve.domain.Course;
 import com.witcurve.repository.CourseRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
-import com.witcurve.service.dto.CourseTeacherDTO;
 import com.witcurve.service.mapper.CourseMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -13,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,21 +37,20 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDTO getCourseById(Long courseId) throws WitcurveException {
         log.debug("Request to get course with id : {}", courseId);
-        Course course = courseRepository.findById(courseId).get();
-
-        if (course ==  null) {
-            throw new WitcurveException("No Course with given id");
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No Course with given id " + courseId);
         }
-        return courseMapper.toDto(course);
+        return courseMapper.toDto(course.get());
     }
 
     @Override
     public void deleteCourse(Long courseId) throws WitcurveException {
         log.debug("Request to delete course with id {}", courseId);
-        Course course = courseRepository.findById(courseId).get();
-        if (course == null){
-            throw new WitcurveException("No course with given Id");
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No Course with given id " + courseId);
         }
-        courseRepository.delete(course);
+        courseRepository.delete(course.get());
     }
 }

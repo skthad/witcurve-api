@@ -1,7 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -11,6 +10,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -108,9 +108,18 @@ public class EventResource {
     @Timed
     public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) throws WitcurveException {
         log.debug("REST request to delete Event: {}", eventId);
-        eventService.deleteEvent(eventId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("An event is deleted with identifier " + eventId,
-            eventId.toString())).build();
+        try {
+            eventService.deleteEvent(eventId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("An event is deleted with identifier " + eventId,
+                eventId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
     }
 
     /**

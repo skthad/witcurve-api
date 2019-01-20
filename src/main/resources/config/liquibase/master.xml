@@ -48,6 +48,7 @@
     <include file="config/liquibase/changelog/20190119080811_term_related_refactor.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190119100148_staff_eligibility_changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190119141434_refactored_constraints.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190120074915_constraint_related_changes.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

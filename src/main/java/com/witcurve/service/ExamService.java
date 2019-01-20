@@ -5,7 +5,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 
 public interface ExamService {
 
-    ExamDTO saveOrUpdate(ExamDTO examDTO);
+    ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException;
 
     ExamDTO getExamById(Long examId) throws WitcurveException;
 

@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class ExamServiceImpl implements ExamService {
@@ -40,23 +42,21 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamDTO getExamById(Long examId) throws WitcurveException {
         log.debug("Request to get exam with id {}", examId);
-        Exam exam = examRepository.findById(examId).get();
-
-        if (exam ==  null) {
-            throw  new WitcurveException("No Exam with given Id");
+        Optional<Exam> exam = examRepository.findById(examId);
+        if (!exam.isPresent()) {
+            throw  new WitcurveException("No Exam with given Id " + examId);
         }
-        return examMapper.toDto(exam);
+        return examMapper.toDto(exam.get());
     }
 
     @Override
     public void deleteExam(Long examId) throws WitcurveException {
         log.debug("Request to delete exam with id {}", examId);
-        Exam exam = examRepository.findById(examId).get();
-
-        if (exam == null){
-            throw new WitcurveException("No exam with given Id");
+        Optional<Exam> exam = examRepository.findById(examId);
+        if (!exam.isPresent()) {
+            throw  new WitcurveException("No Exam with given Id " + examId);
         }
         generalSlotDetailsRepository.deleteByExamId(examId);
-        examRepository.delete(exam);
+        examRepository.delete(exam.get());
     }
 }

@@ -40,9 +40,8 @@ public class GuardianServiceImpl  implements GuardianService {
     public GuardianDTO getGuardianById(Long guardianId) throws WitcurveException {
         log.debug("Request to get guardian with id : {}", guardianId);
         Optional<Guardian> guardian = guardianRepository.findById(guardianId);
-
         if (!guardian.isPresent()) {
-            throw new WitcurveException("No guardian exists with given id");
+            throw new WitcurveException("No guardian exists with given id " + guardianId);
         }
         return guardianMapper.toDto(guardian.get());
     }
@@ -58,9 +57,8 @@ public class GuardianServiceImpl  implements GuardianService {
     public void deleteGuardian(Long guardianId) throws WitcurveException {
         log.debug("Request to delete guardian with id : {}", guardianId);
         Optional<Guardian> guardian = guardianRepository.findById(guardianId);
-
         if (!guardian.isPresent()) {
-            throw new WitcurveException("No guardian exists with given id");
+            throw new WitcurveException("No guardian exists with given id " + guardianId);
         }
         guardianRepository.delete(guardian.get());
     }

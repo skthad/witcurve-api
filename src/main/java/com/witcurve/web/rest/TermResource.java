@@ -49,6 +49,8 @@ public class TermResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("term_start_date_session_id_UK")) {
                 throw new WitcurveException("Unique constraint (start_date, session_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
@@ -76,6 +78,8 @@ public class TermResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("term_start_date_session_id_UK")) {
                 throw new WitcurveException("Unique constraint (start_date, session_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
@@ -123,8 +127,16 @@ public class TermResource {
     @Timed
     public ResponseEntity<Void> deleteTerm(@PathVariable Long termId) throws WitcurveException {
         log.debug("REST request to delete Term: {}", termId);
-        termService.deleteTerm(termId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A term is deleted with identifier " + termId,
-            termId.toString())).build();
+        try {
+            termService.deleteTerm(termId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A term is deleted with identifier " + termId,
+                termId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 }

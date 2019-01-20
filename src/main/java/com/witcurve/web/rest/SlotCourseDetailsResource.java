@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,9 +71,17 @@ public class SlotCourseDetailsResource {
     @Timed
     public ResponseEntity<Void> deleteSlotCourseDetails(@PathVariable Long slotCourseDetailsId) throws WitcurveException {
         log.debug("REST request to delete SlotCourseDetails: {}", slotCourseDetailsId);
-        slotCourseDetailsService.deleteSlotCourseDetails(slotCourseDetailsId);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert("A slotCourseDetails is deleted with identifier " + slotCourseDetailsId,
-            slotCourseDetailsId.toString())).build();
+        try {
+            slotCourseDetailsService.deleteSlotCourseDetails(slotCourseDetailsId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A slotCourseDetails is deleted with identifier " + slotCourseDetailsId,
+                slotCourseDetailsId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**

@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface StaffEligibilityService {
 
+    StaffEligibilityDTO findById(Long staffEligibilityId) throws WitcurveException;
+
     StaffEligibilityDTO saveOrUpdate(StaffEligibilityDTO staffEligibilityDTO) throws WitcurveException;
 
     List<StaffEligibilityDTO> getStaffEligibilitysBySchoolInfo(Long schoolInfoId, String subject, Grade grade) throws WitcurveException;

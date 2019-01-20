@@ -13,11 +13,11 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -62,14 +62,11 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffDTO getStaffById(Long staffId) throws WitcurveException {
         log.debug("Request to get staff with id : {}", staffId);
-        Staff staff = staffRepository.findById(staffId).get();
-        if (staff == null) {
-            throw new WitcurveException("No staff exists with given id");
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (!staff.isPresent()) {
+            throw new WitcurveException("No staff exists with given id " + staffId);
         }
-        StaffDTO staffDTO = staffMapper.toDto(staff);
-//        UserDTO userDTO = new UserDTO();
-//        userDTO.setId(staff.getUser().getId());
-//        staffDTO.setUser(userDTO);
+        StaffDTO staffDTO = staffMapper.toDto(staff.get());
         return staffDTO;
     }
 
@@ -86,11 +83,11 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public void deleteStaffById(Long staffId) throws WitcurveException {
         log.debug("Request to delete staff with id : {}", staffId);
-        Staff staff = staffRepository.findById(staffId).get();
-        if (staff == null) {
-            throw new WitcurveException("No staff exists with given id");
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (!staff.isPresent()) {
+            throw new WitcurveException("No staff exists with given id " + staffId);
         }
-        staffRepository.delete(staff);
+        staffRepository.delete(staff.get());
     }
 
     @Override
@@ -99,9 +96,9 @@ public class StaffServiceImpl implements StaffService {
         int index = username.indexOf("-");
         log.debug("Index value : {} ",index);
         if(index >  0 ) {
-            Long schoolInfoId = null;
+            Long schoolInfoId;
             try {
-                schoolInfoId =Long.parseLong(username.substring(0, index));
+                schoolInfoId = Long.parseLong(username.substring(0, index));
             } catch (NumberFormatException e) {
                 log.error("Entered school info id in user name is wrong : {}", username);
                 throw new WitcurveException("Invalid username, please enter the correct username");

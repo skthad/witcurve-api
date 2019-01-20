@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,6 +38,16 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
 
     @Autowired
     MasterSubjectRepository masterSubjectRepository;
+
+    @Override
+    public StaffEligibilityDTO findById(Long staffEligibilityId) throws WitcurveException {
+        log.debug("Request to get staffEligibility with id: {}", staffEligibilityId);
+        Optional<StaffEligibility> staffEligibility = staffEligibilityRepository.findById(staffEligibilityId);
+        if (!staffEligibility.isPresent()){
+            throw new WitcurveException("No staffEligibility with given Id " + staffEligibilityId);
+        }
+        return staffEligibilityMapper.toDto(staffEligibility.get());
+    }
 
     @Override
     public StaffEligibilityDTO saveOrUpdate(StaffEligibilityDTO staffEligibilityDTO) throws WitcurveException {
@@ -103,17 +114,18 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
     @Override
     public void deleteStaffEligibility(Long staffEligibilityId) throws WitcurveException {
         log.debug("Request to delete staff eligibility by id : {}", staffEligibilityId);
-        StaffEligibility staffEligibility = staffEligibilityRepository.getOne(staffEligibilityId);
-        if (staffEligibility == null) {
-            throw new WitcurveException("No staff eligibility with given id");
+        Optional<StaffEligibility> staffEligibility = staffEligibilityRepository.findById(staffEligibilityId);
+        if (!staffEligibility.isPresent()){
+            throw new WitcurveException("No staffEligibility with given Id " + staffEligibilityId);
         } else {
-            List<CourseTeacher> existingCourseTeachers = courseTeacherRepository.findByStaffAndSubjectAndGrade(staffEligibility.getStaff().getId(),
-                staffEligibility.getMasterSubject(), staffEligibility.getGrade());
+            StaffEligibility se = staffEligibility.get();
+            List<CourseTeacher> existingCourseTeachers = courseTeacherRepository.findByStaffAndSubjectAndGrade(se.getStaff().getId(),
+                se.getMasterSubject(), se.getGrade());
             if (existingCourseTeachers.size() > 0) {
-                throw new WitcurveException("This staff currently teaches the subject " + staffEligibility.getMasterSubject().getName()
-                    + " in grade " + staffEligibility.getGrade());
+                throw new WitcurveException("This staff currently teaches the subject " + se.getMasterSubject().getName()
+                    + " in grade " + se.getGrade());
             }
         }
-        staffEligibilityRepository.delete(staffEligibility);
+        staffEligibilityRepository.delete(staffEligibility.get());
     }
 }
