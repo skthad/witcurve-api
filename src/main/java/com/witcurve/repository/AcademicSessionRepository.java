@@ -15,7 +15,7 @@ public interface AcademicSessionRepository extends JpaRepository<AcademicSession
     @Query("select a.id from AcademicSession a where a.active = true and a.schoolInfo.id = ?1 order by startDate")
     List<Long> getActiveSessionIds(Long schoolInfoId);
 
-    @Query("select a.id from AcademicSession a where a.schoolInfo.id = ?1 order by startDate ")
+    @Query("select a from AcademicSession a where a.schoolInfo.id = ?1 order by startDate ")
     List<AcademicSession> getAllSessionsInSchoolInfo(Long schoolInfoId);
 
     @Query("select a from AcademicSession a where a.schoolInfo.id = ?1 and a.startDate = ( " +

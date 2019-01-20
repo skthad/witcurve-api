@@ -5,6 +5,7 @@ import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.service.SchoolInfoService;
 import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.service.mapper.SchoolInfoMapper;
+import com.witcurve.service.mapper.SchoolInfoMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     @Autowired
     SchoolInfoMapper schoolInfoMapper;
+
+    @Autowired
+    SchoolInfoMapperLite schoolInfoMapperLite;
 
     @Override
     public SchoolInfoDTO saveOrUpdate(SchoolInfoDTO schoolInfoDTO) {
@@ -49,7 +53,7 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     public List<SchoolInfoDTO> getSchoolInfosBySchoolId(Long schoolId) {
         log.debug("Request to get school info list with school id: {}", schoolId);
         List<SchoolInfo> schoolInfos = schoolInfoRepository.findBySchoolId(schoolId);
-        return schoolInfoMapper.toDto(schoolInfos);
+        return schoolInfoMapperLite.toDto(schoolInfos);
     }
 
     @Override

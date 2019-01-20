@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Long> {
 
-    @Query("select si from SchoolInfo si where si.school.id = ?1")
+    @Query("select si from SchoolInfo si where si.school.id = ?1 order by si.board")
     List<SchoolInfo> findBySchoolId(Long schoolId);
 }

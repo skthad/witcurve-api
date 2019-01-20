@@ -7,6 +7,7 @@ import com.witcurve.repository.TermRepository;
 import com.witcurve.service.AcademicSessionService;
 import com.witcurve.service.dto.AcademicSessionDTO;
 import com.witcurve.service.mapper.AcademicSessionMapper;
+import com.witcurve.service.mapper.AcademicSessionMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,9 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
 
     @Autowired
     AcademicSessionMapper academicSessionMapper;
+
+    @Autowired
+    AcademicSessionMapperLite academicSessionMapperLite;
 
     @Autowired
     AcademicSessionRepository academicSessionRepository;
@@ -93,7 +97,7 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
     public List<AcademicSessionDTO> getAcademicSessionsBySchoolInfoId(Long schoolInfoId) {
         log.debug("Request to get all academic sessions in schoolInfoId " + schoolInfoId);
         List<AcademicSession> sessions = academicSessionRepository.getAllSessionsInSchoolInfo(schoolInfoId);
-        return academicSessionMapper.toDto(sessions);
+        return academicSessionMapperLite.toDto(sessions);
     }
 
     @Override

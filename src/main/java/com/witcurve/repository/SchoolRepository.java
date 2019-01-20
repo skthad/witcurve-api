@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Long> {
 
-    @Query("select s from School s where s.institute.id = ?1")
+    @Query("select s from School s where s.institute.id = ?1 order by s.name")
     List<School> findByInstituteId(Long instituteId);
 }
