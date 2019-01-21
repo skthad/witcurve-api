@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.StaffType;
 
 import javax.validation.constraints.NotNull;
@@ -55,6 +56,8 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
+
+    private BloodGroup bloodGroup;
 
     @NotNull
     private String primaryPhone;
@@ -222,6 +225,14 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
     public String getPrimaryPhone() {
         return primaryPhone;
     }
@@ -285,6 +296,8 @@ public class StaffDTO extends AbstractAuditingDTO {
             ", middleName='" + middleName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", userId=" + userId +
+            ", userName='" + userName + '\'' +
+            ", hasPassword=" + hasPassword +
             ", schoolInfo=" + schoolInfo +
             ", type=" + type +
             ", address1='" + address1 + '\'' +
@@ -296,6 +309,7 @@ public class StaffDTO extends AbstractAuditingDTO {
             ", pincode='" + pincode + '\'' +
             ", joiningDate=" + joiningDate +
             ", dateOfBirth=" + dateOfBirth +
+            ", bloodGroup='" + bloodGroup + '\'' +
             ", primaryPhone='" + primaryPhone + '\'' +
             ", secondaryPhone='" + secondaryPhone + '\'' +
             ", accountName='" + accountName + '\'' +

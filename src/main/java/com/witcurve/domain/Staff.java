@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -50,7 +51,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private SchoolInfo schoolInfo;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private StaffType type;
 
@@ -82,6 +83,10 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column
     @Convert(converter = LocalDateConverter.class)
     private LocalDate dateOfBirth;
+
+    @Column(name = "blood_group")
+    @Enumerated(EnumType.STRING)
+    private BloodGroup bloodGroup;
 
     @NotNull
     @Column(length = 50, nullable = false)
@@ -237,6 +242,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
     public String getPrimaryPhone() {
         return primaryPhone;
     }
@@ -301,7 +314,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
             ", lastName='" + lastName + '\'' +
             ", user=" + user +
             ", schoolInfo=" + schoolInfo +
-            ", type='" + type + '\'' +
+            ", type=" + type +
             ", address1='" + address1 + '\'' +
             ", address2='" + address2 + '\'' +
             ", city='" + city + '\'' +
@@ -311,8 +324,12 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
             ", country='" + country + '\'' +
             ", joiningDate=" + joiningDate +
             ", dateOfBirth=" + dateOfBirth +
+            ", bloodGroup='" + bloodGroup + '\'' +
             ", primaryPhone='" + primaryPhone + '\'' +
             ", secondaryPhone='" + secondaryPhone + '\'' +
+            ", accountName='" + accountName + '\'' +
+            ", accountNumber='" + accountNumber + '\'' +
+            ", ifscCode='" + ifscCode + '\'' +
             '}';
     }
 }
