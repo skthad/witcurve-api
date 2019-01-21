@@ -3,6 +3,8 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.domain.enumeration.Grade;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -15,6 +17,11 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     @NotNull
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String start;
+
+    @NotNull
+    @Min(0)
+    @Max(2359)
+    private Integer startTime;
 
     @NotNull
     private Integer duration;
@@ -43,13 +50,20 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.id = id;
     }
 
-    @NotNull
     public String getStart() {
         return start;
     }
 
-    public void setStart(@NotNull String start) {
+    public void setStart(String start) {
         this.start = start;
+    }
+
+    public Integer getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Integer startTime) {
+        this.startTime = startTime;
     }
 
     @NotNull
@@ -135,7 +149,7 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     public String toString() {
         return "GeneralSlotDetailsDTO{" +
             "id=" + id +
-            ", start='" + start + '\'' +
+            ", startTime='" + startTime + '\'' +
             ", duration=" + duration +
             ", recess=" + recess +
             (examId == null ? (", standard=" + standard) : "") +
