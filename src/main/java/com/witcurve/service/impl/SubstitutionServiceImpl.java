@@ -53,6 +53,9 @@ public class SubstitutionServiceImpl implements SubstitutionService {
         HashMap<Long, List<SlotCourseDetailsDTO>> staffSCDMap = new HashMap<>();
         SlotCourseDetails scd = slotCourseDetailsRepository.findByGsdAndDayOfWeek(gsdId, date.getDayOfWeek());
 
+        if (scd == null) {
+            throw new WitcurveException("No course is linked in this slot");
+        }
         if (!scd.getCourseTeacher().getTeacher().getId().equals(teacherId)) {
             throw new WitcurveException("staffId provided is not matching with teacher in gsd id");
         }
@@ -106,12 +109,16 @@ public class SubstitutionServiceImpl implements SubstitutionService {
             }
         }
 
+        Integer start = scd.getGsd().getStartTime();
+        Integer end = start + scd.getGsd().getDuration();
+
         // should not be in some other scd during same time
-        /*if (availableStaff.size() > 0) {
+        if (availableStaff.size() > 0) {
             List<Long> allocatedTeachers = slotCourseDetailsRepository.allocatedTeacherList(
-                scd.getGsd().getStart(), availableStaff, date.getDayOfWeek());
+                availableStaff, date.getDayOfWeek(), scd.getGsd().getStartTime(),
+                scd.getGsd().getStartTime() + scd.getGsd().getDuration());
             availableStaff.removeIf((Long a) -> allocatedTeachers.indexOf(a) > -1);
-        }*/
+        }
         return staffSCDMap;
     }
 

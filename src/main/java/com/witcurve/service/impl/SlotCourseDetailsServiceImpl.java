@@ -33,6 +33,8 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     @Override
     public List<SlotCourseDetailsDTO> saveOrUpdate(List<SlotCourseDetailsDTO> slotCourseDetailsDTOs) {
         log.debug("Request to save or update slotCourseDetails");
+
+        //TODO check the logic that the teacher is avialble in the time period
         List<SlotCourseDetails> slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTOs);
         slotCourseDetails = slotCourseDetailsRepository.saveAll(slotCourseDetails);
         return slotCourseDetailsMapperLite.toDto(slotCourseDetails);
@@ -61,14 +63,14 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     @Override
     public List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId) {
         log.debug("Requqest to get list of slotCourseDetails for given standard id : {}", standardId);
-        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStart(standardId);
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStartTime(standardId);
         return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 
     @Override
     public List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherIdAndTermId(Long teacherId, Long termId) {
         log.debug("Requqest to get list of slotCourseDetails for given teacher id  and term id: {}", teacherId, termId);
-        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByTeacherIdAndTermIdOrderByGsdStart(teacherId, termId);
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByTeacherIdAndTermIdOrderByGsdStartTime(teacherId, termId);
         return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 

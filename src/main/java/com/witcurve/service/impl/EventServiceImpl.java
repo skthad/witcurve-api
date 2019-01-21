@@ -609,8 +609,8 @@ public class EventServiceImpl implements EventService {
                 return -1;
             } else {
                 if(o1.getScd() != null && o2.getScd() != null) {
-                    Integer start1 = Integer.parseInt(o1.getScd().getGsd().getStart());
-                    Integer start2 = Integer.parseInt(o2.getScd().getGsd().getStart());
+                    Integer start1 = o1.getScd().getGsd().getStartTime();
+                    Integer start2 = o2.getScd().getGsd().getStartTime();
                     if(start1 > start2) {
                         return 1;
                     } else if(start1 < start2) {
@@ -636,8 +636,8 @@ public class EventServiceImpl implements EventService {
                 return 1;
             } else {
                 if(o1.getScd() != null && o2.getScd() != null) {
-                    Integer start1 = Integer.parseInt(o1.getScd().getGsd().getStart());
-                    Integer start2 = Integer.parseInt(o2.getScd().getGsd().getStart());
+                    Integer start1 = o1.getScd().getGsd().getStartTime();
+                    Integer start2 = o2.getScd().getGsd().getStartTime();
                     if(start1 > start2) {
                         return 1;
                     } else if(start1 < start2) {
