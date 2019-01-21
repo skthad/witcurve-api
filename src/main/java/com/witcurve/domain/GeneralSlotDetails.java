@@ -4,8 +4,9 @@ import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -21,9 +22,10 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     private Long id;
 
     @NotNull
-    @Column(name = "start", nullable = false)
-    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
-    private String start;
+    @Column(name = "start_time", nullable = false)
+    @Min(0)
+    @Max(2359)
+    private Integer startTime;
 
     @NotNull
     @Column(name = "duration", nullable = false)
@@ -61,12 +63,12 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
         this.id = id;
     }
 
-    public String getStart() {
-        return start;
+    public Integer getStartTime() {
+        return startTime;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setStartTime(Integer startTime) {
+        this.startTime = startTime;
     }
 
     public Integer getDuration() {
@@ -143,7 +145,7 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     public String toString() {
         return "GeneralSlotDetails{" +
             "id=" + id +
-            ", start='" + start + '\'' +
+            ", startTime='" + startTime + '\'' +
             ", duration=" + duration +
             ", recess=" + recess +
             (exam == null ? (", standard=" + standard) : "") +

@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 
 import javax.validation.constraints.NotNull;
@@ -36,7 +37,7 @@ public class StudentDTO extends AbstractAuditingDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
 
-    private String bloodGroup;
+    private BloodGroup bloodGroup;
 
     @NotNull
     private String nationality;
@@ -166,11 +167,11 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getBloodGroup() {
+    public BloodGroup getBloodGroup() {
         return bloodGroup;
     }
 
-    public void setBloodGroup(String bloodGroup) {
+    public void setBloodGroup(BloodGroup bloodGroup) {
         this.bloodGroup = bloodGroup;
     }
 

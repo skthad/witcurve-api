@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
@@ -51,8 +52,9 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Convert(converter = LocalDateConverter.class)
     private LocalDate dateOfBirth;
 
-    @Column(name = "blood_group", length = 5)
-    private String bloodGroup;
+    @Column(name = "blood_group", length = 50)
+    @Enumerated(EnumType.STRING)
+    private BloodGroup bloodGroup;
 
     @NotNull
     @Column(name = "nationality", length = 50, nullable = false)
@@ -194,11 +196,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getBloodGroup() {
+    public BloodGroup getBloodGroup() {
         return bloodGroup;
     }
 
-    public void setBloodGroup(String bloodGroup) {
+    public void setBloodGroup(BloodGroup bloodGroup) {
         this.bloodGroup = bloodGroup;
     }
 

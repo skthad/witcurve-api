@@ -70,7 +70,7 @@ public class SchoolInfoDTO extends AbstractAuditingDTO {
             "id=" + id +
             ", board='" + board + '\'' +
             ", medium='" + medium + '\'' +
-            ", school='" + school.toString() + '\'' +
+            ", school='" + school + '\'' +
             '}';
     }
 }

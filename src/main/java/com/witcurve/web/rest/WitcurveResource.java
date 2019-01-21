@@ -1,24 +1,11 @@
 package com.witcurve.web.rest;
 
-import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Util controller to load data
@@ -88,7 +75,7 @@ public class WitcurveResource {
     @Autowired
     private SchoolInfoRepository schoolInfoRepository;
 
-    @RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/load-data/parent", method = RequestMethod.POST)
     public ResponseEntity loadDataForParent() {
         loadSchoolDataForParent();
         return ResponseEntity.ok().build();
@@ -564,7 +551,7 @@ public class WitcurveResource {
 
         //SCD records
 
-        /*MONDAY*/
+        *//*MONDAY*//*
         SlotCourseDetails slotCourseDetails11 = new SlotCourseDetails();
         slotCourseDetails11.setCourseTeacher(courseTeacher1);
         slotCourseDetails11.setGsd(gsd1);
@@ -616,7 +603,7 @@ public class WitcurveResource {
         slotCourseDetails18.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails18 = slotCourseDetailsRepository.save(slotCourseDetails18);
 
-        /*TUESDAY*/
+        *//*TUESDAY*//*
         SlotCourseDetails slotCourseDetails21 = new SlotCourseDetails();
         slotCourseDetails21.setCourseTeacher(courseTeacher1);
         slotCourseDetails21.setGsd(gsd1);
@@ -669,7 +656,7 @@ public class WitcurveResource {
         slotCourseDetails28 = slotCourseDetailsRepository.save(slotCourseDetails28);
 
 
-        /*WEDNESDAY*/
+        *//*WEDNESDAY*//*
         SlotCourseDetails slotCourseDetails31 = new SlotCourseDetails();
         slotCourseDetails31.setCourseTeacher(courseTeacher1);
         slotCourseDetails31.setGsd(gsd1);
@@ -721,7 +708,7 @@ public class WitcurveResource {
         slotCourseDetails38.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails38 = slotCourseDetailsRepository.save(slotCourseDetails38);
 
-        /*THURSDAY*/
+        *//*THURSDAY*//*
         SlotCourseDetails slotCourseDetails41 = new SlotCourseDetails();
         slotCourseDetails41.setCourseTeacher(courseTeacher1);
         slotCourseDetails41.setGsd(gsd1);
@@ -773,7 +760,7 @@ public class WitcurveResource {
         slotCourseDetails48.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails48 = slotCourseDetailsRepository.save(slotCourseDetails48);
 
-        /*FRIDAY*/
+        *//*FRIDAY*//*
         SlotCourseDetails slotCourseDetails51 = new SlotCourseDetails();
         slotCourseDetails51.setCourseTeacher(courseTeacher1);
         slotCourseDetails51.setGsd(gsd1);
@@ -2134,7 +2121,7 @@ public class WitcurveResource {
 
         //SCD records
 
-        /*MONDAY*/
+        *//*MONDAY*//*
         SlotCourseDetails slotCourseDetails11 = new SlotCourseDetails();
         slotCourseDetails11.setCourseTeacher(courseTeacher1);
         slotCourseDetails11.setGsd(gsd1);
@@ -2186,7 +2173,7 @@ public class WitcurveResource {
         slotCourseDetails18.setDayOfWeek(DayOfWeek.MONDAY);
         slotCourseDetails18 = slotCourseDetailsRepository.save(slotCourseDetails18);
 
-        /*TUESDAY*/
+        *//*TUESDAY*//*
         SlotCourseDetails slotCourseDetails21 = new SlotCourseDetails();
         slotCourseDetails21.setCourseTeacher(courseTeacher1);
         slotCourseDetails21.setGsd(gsd1);
@@ -2239,7 +2226,7 @@ public class WitcurveResource {
         slotCourseDetails28 = slotCourseDetailsRepository.save(slotCourseDetails28);
 
 
-        /*WEDNESDAY*/
+        *//*WEDNESDAY*//*
         SlotCourseDetails slotCourseDetails31 = new SlotCourseDetails();
         slotCourseDetails31.setCourseTeacher(courseTeacher1);
         slotCourseDetails31.setGsd(gsd1);
@@ -2291,7 +2278,7 @@ public class WitcurveResource {
         slotCourseDetails38.setDayOfWeek(DayOfWeek.WEDNESDAY);
         slotCourseDetails38 = slotCourseDetailsRepository.save(slotCourseDetails38);
 
-        /*THURSDAY*/
+        *//*THURSDAY*//*
         SlotCourseDetails slotCourseDetails41 = new SlotCourseDetails();
         slotCourseDetails41.setCourseTeacher(courseTeacher1);
         slotCourseDetails41.setGsd(gsd1);
@@ -2343,7 +2330,7 @@ public class WitcurveResource {
         slotCourseDetails48.setDayOfWeek(DayOfWeek.THURSDAY);
         slotCourseDetails48 = slotCourseDetailsRepository.save(slotCourseDetails48);
 
-        /*FRIDAY*/
+        *//*FRIDAY*//*
         SlotCourseDetails slotCourseDetails51 = new SlotCourseDetails();
         slotCourseDetails51.setCourseTeacher(courseTeacher1);
         slotCourseDetails51.setGsd(gsd1);
@@ -2394,6 +2381,6 @@ public class WitcurveResource {
         slotCourseDetails58.setDayOfWeek(DayOfWeek.FRIDAY);
         slotCourseDetails58 = slotCourseDetailsRepository.save(slotCourseDetails58);
 
-    }
+    }*/
 
 }
