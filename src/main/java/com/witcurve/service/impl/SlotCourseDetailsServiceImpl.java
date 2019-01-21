@@ -33,6 +33,8 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     @Override
     public List<SlotCourseDetailsDTO> saveOrUpdate(List<SlotCourseDetailsDTO> slotCourseDetailsDTOs) {
         log.debug("Request to save or update slotCourseDetails");
+
+        //TODO check the logic that the teacher is avialble in the time period
         List<SlotCourseDetails> slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTOs);
         slotCourseDetails = slotCourseDetailsRepository.saveAll(slotCourseDetails);
         return slotCourseDetailsMapperLite.toDto(slotCourseDetails);
