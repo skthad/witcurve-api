@@ -51,6 +51,7 @@
     <include file="config/liquibase/changelog/20190120074915_constraint_related_changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190121053355_gsd_start_changed_to_integer.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190121152701_added_blood_group_Staff.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190122061626_added_hours_minutes_to_gsd.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

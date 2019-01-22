@@ -42,16 +42,25 @@ public class GeneralSlotDetailsResource {
                                                                                 @RequestBody @Valid List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save generalSlotDetails");
         List<GeneralSlotDetailsDTO> result;
-        if (Boolean.TRUE.equals(exam)) {
-            log.debug("Request Save exam slots");
-            result = generalSlotDetailsService.createExamSlots(generalSlotDetailsDTOs);
-        } else {
-            log.debug("Request Save generalSlotDetails");
-            result = generalSlotDetailsService.createGSDs(generalSlotDetailsDTOs);
+        try {
+            if (Boolean.TRUE.equals(exam)) {
+                log.debug("Request Save exam slots");
+                result = generalSlotDetailsService.createExamSlots(generalSlotDetailsDTOs);
+            } else {
+                log.debug("Request Save generalSlotDetails");
+                result = generalSlotDetailsService.createGSDs(generalSlotDetailsDTOs);
+            }
+            return ResponseEntity.created(new URI("/api/general-slot-details/"))
+                .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
+                .body(result);
+        } catch (Exception e) {
+            if (e.getMessage().contains("Could not commit JPA transaction")) {
+                throw new WitcurveException("Some data validation failed..." + e.getMessage());
+            } else {
+                throw new WitcurveException("Error occurred: " + e.getMessage());
+            }
+
         }
-        return ResponseEntity.created(new URI("/api/general-slot-details/"))
-            .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
-            .body(result);
     }
 
     /**

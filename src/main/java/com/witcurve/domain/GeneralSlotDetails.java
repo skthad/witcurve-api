@@ -28,6 +28,18 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     private Integer startTime;
 
     @NotNull
+    @Column(name = "hours", nullable = false)
+    @Min(0)
+    @Max(23)
+    private Integer hours = 0;
+
+    @NotNull
+    @Column(name = "minutes", nullable = false)
+    @Min(0)
+    @Max(59)
+    private Integer minutes = 0;
+
+    @NotNull
     @Column(name = "duration", nullable = false)
     private Integer duration;
 
@@ -69,6 +81,22 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     public void setStartTime(Integer startTime) {
         this.startTime = startTime;
+    }
+
+    public Integer getHours() {
+        return hours;
+    }
+
+    public void setHours(Integer hours) {
+        this.hours = hours;
+    }
+
+    public Integer getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(Integer minutes) {
+        this.minutes = minutes;
     }
 
     public Integer getDuration() {
