@@ -66,6 +66,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private AcademicSession academicSession;
 
     @ManyToOne
+    private SchoolInfo schoolInfo;
+
+    @ManyToOne
     @JoinColumn(name = "scd_id")
     private SlotCourseDetails scd;
 
@@ -184,6 +187,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.academicSession = academicSession;
     }
 
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
+    }
+
     public SlotCourseDetails getScd() {
         return scd;
     }
@@ -269,6 +280,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", staff=" + staff +
             ", grade=" + grade +
             ", academicSession=" + academicSession +
+            ", schoolInfo=" + schoolInfo +
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
