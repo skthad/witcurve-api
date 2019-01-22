@@ -10,7 +10,13 @@
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1548180783972-3">
         <sql>
-            update event e set e.school_info_id=(select as.school_info_id from academic_session as where as.id=e.academic_session_id)
+            UPDATE  event
+            SET     school_info_id =
+            (
+            SELECT school_info_id
+            FROM academic_session a
+            WHERE event.academic_session_id = a.id
+            )
         </sql>
     </changeSet>
 
