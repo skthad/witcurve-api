@@ -11,4 +11,13 @@ public interface SchoolInfoMapper extends EntityMapper<SchoolInfoDTO, SchoolInfo
 
     SchoolInfo toEntity(SchoolInfoDTO schoolInfoDTO);
 
+    default SchoolInfo fromId(Long id) {
+        if (id == null) {
+            return  null;
+        }
+        SchoolInfo schoolInfo = new SchoolInfo();
+        schoolInfo.setId(id);
+        return schoolInfo;
+    }
+
 }
