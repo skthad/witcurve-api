@@ -25,4 +25,13 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
         "and scd.dayOfWeek = ?2 and ((scd.gsd.startTime >= ?3 and scd.gsd.startTime < ?4) " +
         "or (scd.gsd.startTime + scd.gsd.duration > ?3 and scd.gsd.startTime + scd.gsd.duration <= ?4))")
     List<Long> allocatedTeacherList(List<Long> availableStaff, DayOfWeek dayOfWeek, Integer start, Integer end);
+
+    @Query("select scd from SlotCourseDetails scd where " +
+        "scd.courseTeacher.active = true and " +
+        "scd.gsd.status = 'ACTIVE' and " +
+        "((scd.gsd.startTime >= ?1 and scd.gsd.startTime < ?2) or " +
+        "(scd.gsd.startTime + scd.gsd.duration > ?1 and " +
+        "scd.gsd.startTime + scd.gsd.duration <= ?2)) and " +
+        "scd.dayOfWeek = ?3 and scd.courseTeacher.teacher.schoolInfo.id = ?4")
+    List<Long> findAllocatedTechersList(Integer startTime, Integer endTime, DayOfWeek dayOfWeek, Long schoolInfoId);
 }

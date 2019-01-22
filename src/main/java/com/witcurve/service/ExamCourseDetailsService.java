@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ExamCourseDetailsService {
 
-    List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTO);
+    ExamCourseDetailsDTO saveOrUpdate(ExamCourseDetailsDTO examCourseDetailsDTO);
 
     ExamCourseDetailsDTO getExamCourseDetailsById(Long examCourseDetailsId) throws WitcurveException;
 

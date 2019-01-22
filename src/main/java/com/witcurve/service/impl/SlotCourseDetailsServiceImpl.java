@@ -1,6 +1,10 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.GeneralSlotDetails;
 import com.witcurve.domain.SlotCourseDetails;
+import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.repository.SlotCourseDetailsRepository;
 import com.witcurve.service.SlotCourseDetailsService;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,13 +35,39 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     @Autowired
     private SlotCourseDetailsRepository slotCourseDetailsRepository;
 
+    @Autowired
+    private GeneralSlotDetailsRepository generalSlotDetailsRepository;
+
+    @Autowired
+    private CourseTeacherRepository courseTeacherRepository;
+
     @Override
-    public List<SlotCourseDetailsDTO> saveOrUpdate(List<SlotCourseDetailsDTO> slotCourseDetailsDTOs) {
+    public SlotCourseDetailsDTO saveOrUpdate(SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException {
         log.debug("Request to save or update slotCourseDetails");
 
         //TODO check the logic that the teacher is avialble in the time period
-        List<SlotCourseDetails> slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTOs);
-        slotCourseDetails = slotCourseDetailsRepository.saveAll(slotCourseDetails);
+        Optional<GeneralSlotDetails> gsd = generalSlotDetailsRepository.findById(slotCourseDetailsDTO.getGsd().getId());
+        if (!gsd.isPresent()) {
+            throw new WitcurveException("Could not find GSD with id: " + slotCourseDetailsDTO.getGsd().getId());
+        }
+
+        Optional<CourseTeacher> ct = courseTeacherRepository.findById(slotCourseDetailsDTO.getCourseTeacher().getId());
+        if (!ct.isPresent()) {
+            throw new WitcurveException("Could not find CourseTeacher with id: " + slotCourseDetailsDTO.getCourseTeacher().getId());
+        }
+
+        Integer startTime = gsd.get().getStartTime();
+        Integer endTime = startTime + gsd.get().getDuration();
+        Long teacherId = ct.get().getTeacher().getId();
+        Long schoolInfoId = ct.get().getTeacher().getSchoolInfo().getId();
+
+        List<Long> allocatedTeachers = slotCourseDetailsRepository
+            .findAllocatedTechersList(startTime, endTime, slotCourseDetailsDTO.getDayOfWeek(), schoolInfoId);
+        if (allocatedTeachers.indexOf(teacherId) > -1) {
+            throw new WitcurveException("This teacher is already allocated to during this slot window");
+        }
+        SlotCourseDetails slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTO);
+        slotCourseDetails = slotCourseDetailsRepository.save(slotCourseDetails);
         return slotCourseDetailsMapperLite.toDto(slotCourseDetails);
     }
 
@@ -64,7 +95,7 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     public List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId) {
         log.debug("Requqest to get list of slotCourseDetails for given standard id : {}", standardId);
         List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStartTime(standardId);
-        return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
+        return slotCourseDetailsMapperLite.toDto(slotCourseDetailsList);
     }
 
     @Override

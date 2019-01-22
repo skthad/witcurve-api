@@ -29,18 +29,40 @@ public class ExamCourseDetailsResource {
     ExamCourseDetailsService examCourseDetailsService;
 
     /**
-     * creates a examCourseDetails
+     * creates an examCourseDetails
      *
-     * @param examCourseDetailsDTOs
+     * @param examCourseDetailsDTO
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/exam-course-details")
     @Timed
-    public ResponseEntity<List<ExamCourseDetailsDTO>> createExamCourseDetails(@RequestBody @Valid List<ExamCourseDetailsDTO> examCourseDetailsDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<ExamCourseDetailsDTO> createExamCourseDetails(@RequestBody @Valid ExamCourseDetailsDTO examCourseDetailsDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save examCourseDetails");
-        List<ExamCourseDetailsDTO> result = examCourseDetailsService.saveOrUpdate(examCourseDetailsDTOs);
+        if (examCourseDetailsDTO.getId() != null) {
+            throw new WitcurveException("New examCourseDetailsDTO can't already have an id");
+        }
+        ExamCourseDetailsDTO result = examCourseDetailsService.saveOrUpdate(examCourseDetailsDTO);
+        return ResponseEntity.created(new URI("/api/slot-course-details/"))
+            .headers(HeaderUtil.createEntityUpdateAlert("examCourseDetails", ""))
+            .body(result);
+    }/**
+     * updates an examCourseDetails
+     *
+     * @param examCourseDetailsDTO
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PutMapping("/exam-course-details")
+    @Timed
+    public ResponseEntity<ExamCourseDetailsDTO> updateExamCourseDetails(@RequestBody @Valid ExamCourseDetailsDTO examCourseDetailsDTO) throws WitcurveException, URISyntaxException {
+        log.debug("Request Save examCourseDetails");
+        if (examCourseDetailsDTO.getId() == null) {
+            throw new WitcurveException("An update request for examCourseDetailsDTO must have an id");
+        }
+        ExamCourseDetailsDTO result = examCourseDetailsService.saveOrUpdate(examCourseDetailsDTO);
         return ResponseEntity.created(new URI("/api/slot-course-details/"))
             .headers(HeaderUtil.createEntityUpdateAlert("examCourseDetails", ""))
             .body(result);

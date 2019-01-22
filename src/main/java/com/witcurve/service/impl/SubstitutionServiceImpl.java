@@ -109,14 +109,14 @@ public class SubstitutionServiceImpl implements SubstitutionService {
             }
         }
 
-        Integer start = scd.getGsd().getStartTime();
-        Integer end = start + scd.getGsd().getDuration();
-
-        // should not be in some other scd during same time
         if (availableStaff.size() > 0) {
-            List<Long> allocatedTeachers = slotCourseDetailsRepository.allocatedTeacherList(
-                availableStaff, date.getDayOfWeek(), scd.getGsd().getStartTime(),
-                scd.getGsd().getStartTime() + scd.getGsd().getDuration());
+
+            Integer start = scd.getGsd().getStartTime();
+            Integer end = start + scd.getGsd().getDuration();
+
+            List<Long> allocatedTeachers = slotCourseDetailsRepository
+                .findAllocatedTechersList(start, end, scd.getDayOfWeek(), schoolInfoId);
+
             availableStaff.removeIf((Long a) -> allocatedTeachers.indexOf(a) > -1);
         }
         return staffSCDMap;

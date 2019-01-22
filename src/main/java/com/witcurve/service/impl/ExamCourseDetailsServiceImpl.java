@@ -32,10 +32,12 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
     private ExamCourseDetailsRepository examCourseDetailsRepository;
 
     @Override
-    public List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTOs) {
-        log.debug("Request to save or update examCourseDetails");
-        List<ExamCourseDetails> examCourseDetails = examCourseDetailsMapperLite.toEntity(examCourseDetailsDTOs);
-        examCourseDetails = examCourseDetailsRepository.saveAll(examCourseDetails);
+    public ExamCourseDetailsDTO saveOrUpdate(ExamCourseDetailsDTO examCourseDetailsDTO) {
+        log.debug("Request to save or update examCourseDetailsDTO");
+
+        //TODO: DO we need any validation like SCD?
+        ExamCourseDetails examCourseDetails = examCourseDetailsMapperLite.toEntity(examCourseDetailsDTO);
+        examCourseDetails = examCourseDetailsRepository.save(examCourseDetails);
         return examCourseDetailsMapperLite.toDto(examCourseDetails);
     }
 
