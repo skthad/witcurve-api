@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.Grade;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -13,19 +14,14 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     private Long id;
 
+    @NotNull
+    @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
+    private String start;
+
+    @NotNull
     @Min(0)
     @Max(2359)
     private Integer startTime;
-
-    @NotNull
-    @Min(0)
-    @Max(23)
-    private Integer hours = 0;
-
-    @NotNull
-    @Min(0)
-    @Max(59)
-    private Integer minutes = 0;
 
     @NotNull
     private Integer duration;
@@ -54,20 +50,12 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.id = id;
     }
 
-    public Integer getHours() {
-        return hours;
+    public String getStart() {
+        return start;
     }
 
-    public void setHours(Integer hours) {
-        this.hours = hours;
-    }
-
-    public Integer getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(Integer minutes) {
-        this.minutes = minutes;
+    public void setStart(String start) {
+        this.start = start;
     }
 
     public Integer getStartTime() {

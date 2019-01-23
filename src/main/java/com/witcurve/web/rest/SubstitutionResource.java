@@ -2,7 +2,6 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.service.SubstitutionService;
-import com.witcurve.service.dto.SlotCourseDetailsDTO;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.service.dto.SubstitutionDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -38,11 +36,11 @@ public class SubstitutionResource {
 
     @GetMapping("/substitution")
     @Timed
-    public ResponseEntity<HashMap<Long, List<SlotCourseDetailsDTO>>> getStaffListForSubstituteSuggestion(@RequestParam("gsdId") Long gsdId,
+    public ResponseEntity<List<StaffDTO>> getStaffListForSubstituteSuggestion(@RequestParam("gsdId") Long gsdId,
                                                                                                          @RequestParam("teacherId") Long teacherId,
                                                                                                          @RequestParam("date") LocalDate date) throws WitcurveException {
         log.debug("Request to get substitute teacher for {} on {}", teacherId, date);
-        HashMap<Long, List<SlotCourseDetailsDTO>> result = substitutionService.getSubstituteSuggestion(gsdId, teacherId, date);
+        List<StaffDTO> result = substitutionService.getSubstituteSuggestion(gsdId, teacherId, date);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

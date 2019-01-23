@@ -30,19 +30,65 @@ public class SlotCourseDetailsResource {
     /**
      * creates a slotCourseDetails
      *
-     * @param slotCourseDetailsDTOs
+         * @param slotCourseDetailsDTO
      * @return
-     * @throws WitcurveException
+         * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/slot-course-details")
     @Timed
-    public ResponseEntity<List<SlotCourseDetailsDTO>> createSlotCourseDetails(@RequestBody @Valid List<SlotCourseDetailsDTO> slotCourseDetailsDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<SlotCourseDetailsDTO> createSlotCourseDetails(@RequestBody @Valid SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save slotCourseDetails");
-        List<SlotCourseDetailsDTO> result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTOs);
-        return ResponseEntity.created(new URI("/api/slot-course-details/"))
-            .headers(HeaderUtil.createEntityUpdateAlert("slotCourseDetails", ""))
-            .body(result);
+        if (slotCourseDetailsDTO.getId() != null) {
+            throw new WitcurveException("New slotCourseDetails can't already have an id");
+        }
+        try {
+            SlotCourseDetailsDTO result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTO);
+            return ResponseEntity.created(new URI("/api/slot-course-details/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("slotCourseDetails", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("scd_slot_day_UK")) {
+                throw new WitcurveException("Unique constraint (gsd_id, day_of_week) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+
+        }
+    }
+
+    /**
+     * updates a slotCourseDetails
+     *
+     * @param slotCourseDetailsDTO
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PutMapping("/slot-course-details")
+    @Timed
+    public ResponseEntity<SlotCourseDetailsDTO> udpateSlotCourseDetails(@RequestBody @Valid SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException, URISyntaxException {
+        log.debug("Request Save slotCourseDetails");
+        if (slotCourseDetailsDTO.getId() == null) {
+            throw new WitcurveException("An update request for slotCourseDetails must have an id");
+        }
+        try {
+            SlotCourseDetailsDTO result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTO);
+            return ResponseEntity.created(new URI("/api/slot-course-details/" + result.getId()))
+                .headers(HeaderUtil.createEntityUpdateAlert("slotCourseDetails", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("scd_slot_day_UK")) {
+                throw new WitcurveException("Unique constraint (gsd_id, day_of_week) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+
+        }
     }
 
     /**
