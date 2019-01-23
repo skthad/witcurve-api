@@ -5,8 +5,10 @@ import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.SubstitutionService;
 import com.witcurve.service.dto.SlotCourseDetailsDTO;
+import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.service.dto.SubstitutionDTO;
 import com.witcurve.service.mapper.SlotCourseDetailsMapper;
+import com.witcurve.service.mapper.StaffMapperLite;
 import com.witcurve.service.mapper.SubstitutionMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,8 +48,14 @@ public class SubstitutionServiceImpl implements SubstitutionService {
     @Autowired
     StaffEligibilityRepository staffEligibilityRepository;
 
+    @Autowired
+    StaffRepository staffRepository;
+
+    @Autowired
+    StaffMapperLite staffMapperLite;
+
     @Override
-    public HashMap<Long, List<SlotCourseDetailsDTO>> getSubstituteSuggestion(Long gsdId, Long teacherId, LocalDate date) throws WitcurveException {
+    public List<StaffDTO> getSubstituteSuggestion(Long gsdId, Long teacherId, LocalDate date) throws WitcurveException {
 
         HashMap<Long, List<SlotCourseDetailsDTO>> staffSCDMap = new HashMap<>();
         SlotCourseDetails scd = slotCourseDetailsRepository.findByGsdAndDayOfWeek(gsdId, date.getDayOfWeek());
@@ -99,7 +106,7 @@ public class SubstitutionServiceImpl implements SubstitutionService {
             availableStaff.removeIf((Long a) -> absentTeachers.indexOf(a) > -1);
         }
 
-        if (availableStaff.size() > 0) {
+        /*if (availableStaff.size() > 0) {
             List<SlotCourseDetails> allocatedCourses = slotCourseDetailsRepository.allocatedCourses(availableStaff, date.getDayOfWeek());
             for (SlotCourseDetails allocatedScd : allocatedCourses) {
                 if (staffSCDMap.get(allocatedScd.getCourseTeacher().getTeacher().getId()) == null) {
@@ -107,19 +114,19 @@ public class SubstitutionServiceImpl implements SubstitutionService {
                 }
                 staffSCDMap.get(allocatedScd.getCourseTeacher().getTeacher().getId()).add(slotCourseDetailsMapper.toDto(allocatedScd));
             }
-        }
-
+        }*/
         if (availableStaff.size() > 0) {
 
-            Integer start = scd.getGsd().getStartTime();
+            Integer start = Integer.parseInt(scd.getGsd().getStart());
             Integer end = start + scd.getGsd().getDuration();
 
             List<Long> allocatedTeachers = slotCourseDetailsRepository
-                .findAllocatedTechersList(start, end, scd.getDayOfWeek(), schoolInfoId);
+                .findAllocatedTeachersList(start, end, scd.getDayOfWeek(), schoolInfoId);
 
             availableStaff.removeIf((Long a) -> allocatedTeachers.indexOf(a) > -1);
         }
-        return staffSCDMap;
+        List<Staff> staffList = staffRepository.findAllById(availableStaff);
+        return staffMapperLite.toDto(staffList);
     }
 
     public SubstitutionDTO substitute(SubstitutionDTO substitutionDTO) throws WitcurveException {

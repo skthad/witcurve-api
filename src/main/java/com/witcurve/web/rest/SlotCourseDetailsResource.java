@@ -63,10 +63,21 @@ public class SlotCourseDetailsResource {
         if (slotCourseDetailsDTO.getId() == null) {
             throw new WitcurveException("An update request for slotCourseDetails must have an id");
         }
-        SlotCourseDetailsDTO result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTO);
-        return ResponseEntity.created(new URI("/api/slot-course-details/" + result.getId()))
-            .headers(HeaderUtil.createEntityUpdateAlert("slotCourseDetails", result.getId().toString()))
-            .body(result);
+        try {
+            SlotCourseDetailsDTO result = slotCourseDetailsService.saveOrUpdate(slotCourseDetailsDTO);
+            return ResponseEntity.created(new URI("/api/slot-course-details/" + result.getId()))
+                .headers(HeaderUtil.createEntityUpdateAlert("slotCourseDetails", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("scd_slot_day_UK")) {
+                throw new WitcurveException("Unique constraint (gsd_id, day_of_week) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+
+        }
     }
 
     /**

@@ -42,7 +42,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             if (standardId == null) {
                 throw new WitcurveException("Standard ID must be provided to create GSDs");
             }
-            gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
+            //gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
             if (standardIdBindingValueMap.get(standardId) == null) {
                 String bindingId = UUID.randomUUID().toString();
                 standardIdBindingValueMap.put(standardId, bindingId);
@@ -68,7 +68,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             if (grade == null || examId == null) {
                 throw new WitcurveException("Grade and examId must be provided to create exam slots");
             }
-            gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
+            //gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
             if (gradeBindingValueMap.get(grade) == null) {
                 String bindingId = UUID.randomUUID().toString();
                 gradeBindingValueMap.put(grade, bindingId);
@@ -85,7 +85,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     public List<GeneralSlotDetailsDTO> update(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) {
         log.debug("Request to update generalSlotDetails");
         for (GeneralSlotDetailsDTO gsd : generalSlotDetailsDTOs) {
-            gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
+            //gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
         }
         List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
         List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));

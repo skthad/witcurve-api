@@ -56,15 +56,15 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
             throw new WitcurveException("Could not find CourseTeacher with id: " + slotCourseDetailsDTO.getCourseTeacher().getId());
         }
 
-        Integer startTime = gsd.get().getStartTime();
+        Integer startTime = Integer.parseInt(gsd.get().getStart());
         Integer endTime = startTime + gsd.get().getDuration();
         Long teacherId = ct.get().getTeacher().getId();
         Long schoolInfoId = ct.get().getTeacher().getSchoolInfo().getId();
 
         List<Long> allocatedTeachers = slotCourseDetailsRepository
-            .findAllocatedTechersList(startTime, endTime, slotCourseDetailsDTO.getDayOfWeek(), schoolInfoId);
+            .findAllocatedTeachersList(startTime, endTime, slotCourseDetailsDTO.getDayOfWeek(), schoolInfoId);
         if (allocatedTeachers.indexOf(teacherId) > -1) {
-            throw new WitcurveException("This teacher is already allocated to during this slot window");
+            throw new WitcurveException("This teacher is already allocated during this slot window");
         }
         SlotCourseDetails slotCourseDetails = slotCourseDetailsMapperLite.toEntity(slotCourseDetailsDTO);
         slotCourseDetails = slotCourseDetailsRepository.save(slotCourseDetails);

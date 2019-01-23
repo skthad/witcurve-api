@@ -13,18 +13,18 @@ import java.util.Set;
 public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotDetails, Long> {
 
     @Query("select gsd from GeneralSlotDetails gsd where gsd.standard.id = ?1 " +
-        "and gsd.exam.id is null order by bindingId, startTime")
+        "and gsd.exam.id is null order by bindingId, start")
     List<GeneralSlotDetails> findGSDsByStandardId(Long standardId);
 
     @Query("select gsd from GeneralSlotDetails gsd where gsd.standard.id = ?1 " +
-        "and gsd.exam.id is null and status = ?2 order by bindingId, startTime")
+        "and gsd.exam.id is null and status = ?2 order by bindingId, start")
     List<GeneralSlotDetails> findGSDsByStandardIdAndStatus(Long standardId, GSDStatus status);
 
-    @Query("select gsd from GeneralSlotDetails gsd where gsd.grade = ?1 order by bindingId, startTime")
+    @Query("select gsd from GeneralSlotDetails gsd where gsd.grade = ?1 order by bindingId, start")
     List<GeneralSlotDetails> findExamSlotsByGrade(Grade grade);
 
     @Query("select gsd from GeneralSlotDetails gsd where gsd.grade = ?1 " +
-        "and gsd.exam.id = ?2 order by bindingId, startTime")
+        "and gsd.exam.id = ?2 order by bindingId, start")
     List<GeneralSlotDetails> findExamSlotsByGradeAndExamId(Grade grade,Long examId);
 
     @Modifying

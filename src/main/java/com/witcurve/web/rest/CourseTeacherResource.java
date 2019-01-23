@@ -56,7 +56,6 @@ public class CourseTeacherResource {
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
-
         }
     }
 
