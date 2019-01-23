@@ -1,9 +1,6 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Course;
-import com.witcurve.domain.CourseTeacher;
-import com.witcurve.domain.StaffEligibility;
-import com.witcurve.domain.Standard;
+import com.witcurve.domain.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
@@ -15,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +39,12 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     @Autowired
     StaffEligibilityRepository staffEligibilityRepository;
+
+    @Autowired
+    SlotCourseDetailsRepository slotCourseDetailsRepository;
+
+    @Autowired
+    GeneralSlotDetailsRepository generalSlotDetailsRepository;
 
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
@@ -104,6 +108,24 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
               throw new WitcurveException("standard repository is giving more than one rows at a time !!");
         }
         return courseTeacherMapper.toDto(result);
+    }
+
+    @Override
+    public List<CourseTeacherDTO> getCourseTeacherSuggestionForSlot(Long gsdId, DayOfWeek dayOfWeek) throws WitcurveException {
+
+        Optional<GeneralSlotDetails> gsd = generalSlotDetailsRepository.findById(gsdId);
+        if (!gsd.isPresent()) {
+            throw new WitcurveException("No gsd with given id " + gsdId);
+        }
+        Integer startTime = Integer.parseInt(gsd.get().getStart());
+        Integer endTime = startTime + gsd.get().getDuration();
+
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByStandardId(gsd.get().getStandard().getId());
+        List<Long> allocatedTeachers = slotCourseDetailsRepository.findAllocatedTeachersList(startTime, endTime, dayOfWeek, gsd.get().getStandard().getSchoolInfo().getId());
+
+        courseTeachers.removeIf((CourseTeacher ct) -> allocatedTeachers.indexOf(ct.getTeacher().getId()) > -1);
+
+        return courseTeacherMapper.toDto(courseTeachers);
     }
 
     @Override

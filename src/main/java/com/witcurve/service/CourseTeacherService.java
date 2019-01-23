@@ -3,6 +3,7 @@ package com.witcurve.service;
 import com.witcurve.service.dto.CourseTeacherDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 public interface CourseTeacherService {
@@ -18,4 +19,6 @@ public interface CourseTeacherService {
     List<CourseTeacherDTO> getCoursesByStandardId(Long standardId);
 
     List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException;
+
+    List<CourseTeacherDTO> getCourseTeacherSuggestionForSlot(Long gsdId, DayOfWeek dayOfWeek) throws WitcurveException;
 }

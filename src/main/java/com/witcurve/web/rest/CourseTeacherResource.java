@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.DayOfWeek;
 import java.util.List;
 
 @RestController
@@ -89,6 +90,24 @@ public class CourseTeacherResource {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
         }
+    }
+
+    /**
+     * get courseTeacher suggestions
+     * @param gsdId
+     * @param dayOfWeek
+     *
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course-teacher/suggestion")
+    @Timed
+    public ResponseEntity<List<CourseTeacherDTO>> suggestCourseTeachers(@RequestParam("gsdId") Long gsdId,
+                                                                  @RequestParam("dayOfWeek") DayOfWeek dayOfWeek) throws WitcurveException {
+        log.debug("Request to suggest CourseTeachers for gsd id ", gsdId);
+        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeacherSuggestionForSlot(gsdId, dayOfWeek);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**

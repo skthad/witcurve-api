@@ -117,11 +117,11 @@ public class SubstitutionServiceImpl implements SubstitutionService {
         }*/
         if (availableStaff.size() > 0) {
 
-            Integer start = Integer.parseInt(scd.getGsd().getStart());
-            Integer end = start + scd.getGsd().getDuration();
+            Integer startTime = Integer.parseInt(scd.getGsd().getStart());
+            Integer endTime = startTime + scd.getGsd().getDuration();
 
             List<Long> allocatedTeachers = slotCourseDetailsRepository
-                .findAllocatedTeachersList(start, end, scd.getDayOfWeek(), schoolInfoId);
+                .findAllocatedTeachersList(startTime, endTime, scd.getDayOfWeek(), schoolInfoId);
 
             availableStaff.removeIf((Long a) -> allocatedTeachers.indexOf(a) > -1);
         }
