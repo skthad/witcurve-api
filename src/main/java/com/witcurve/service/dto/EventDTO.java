@@ -39,8 +39,6 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Grade grade;
 
-    private Long academicSessionId;
-
     private Long schoolInfoId;
 
     private SlotCourseDetailsDTO scd;
@@ -145,14 +143,6 @@ public class EventDTO extends AbstractAuditingDTO {
         this.grade = grade;
     }
 
-    public Long getAcademicSessionId() {
-        return academicSessionId;
-    }
-
-    public void setAcademicSessionId(Long academicSessionId) {
-        this.academicSessionId = academicSessionId;
-    }
-
     public Long getSchoolInfoId() {
         return schoolInfoId;
     }
@@ -244,7 +234,6 @@ public class EventDTO extends AbstractAuditingDTO {
             ", standardId=" + standardId +
             ", staffId=" + staffId +
             ", grade=" + grade +
-            ", academicSessionId=" + academicSessionId +
             ", schoolInfoId=" + schoolInfoId +
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +

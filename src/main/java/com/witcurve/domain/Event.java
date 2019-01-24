@@ -63,9 +63,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Grade grade;
 
     @ManyToOne
-    private AcademicSession academicSession;
-
-    @ManyToOne
     private SchoolInfo schoolInfo;
 
     @ManyToOne
@@ -179,14 +176,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.grade = grade;
     }
 
-    public AcademicSession getAcademicSession() {
-        return academicSession;
-    }
-
-    public void setAcademicSession(AcademicSession academicSession) {
-        this.academicSession = academicSession;
-    }
-
     public SchoolInfo getSchoolInfo() {
         return schoolInfo;
     }
@@ -279,7 +268,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", standard=" + standard +
             ", staff=" + staff +
             ", grade=" + grade +
-            ", academicSession=" + academicSession +
             ", schoolInfo=" + schoolInfo +
             ", scd=" + scd +
             ", bindingId='" + bindingId + '\'' +

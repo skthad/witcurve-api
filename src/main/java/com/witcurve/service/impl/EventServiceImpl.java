@@ -149,9 +149,9 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
 
-        List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, standardId, grade, sessionId, LIST_FOR_STUDENT);
+        List<Event> events = eventRepository.findEventsByDateForStudent(eventDate, studentId, standardId, grade, schoolInfoId, LIST_FOR_STUDENT);
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
@@ -185,10 +185,10 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId, LIST_FOR_MONTH);
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, schoolInfoId, LIST_FOR_MONTH);
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
     }
@@ -199,10 +199,10 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        List<LocalDate> eventDates = eventRepository.findEventDatesByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, sessionId, LIST_FOR_MONTH);
+        List<LocalDate> eventDates = eventRepository.findEventDatesByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, schoolInfoId, LIST_FOR_MONTH);
         return eventDates;
     }
 
@@ -227,8 +227,8 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(sunday, saturday, studentId, standardId, grade, sessionId, LIST_FOR_WEEK);
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(sunday, saturday, studentId, standardId, grade, schoolInfoId, LIST_FOR_WEEK);
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
@@ -242,12 +242,12 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(startDate, date, studentId, standardId, grade, sessionId, LIST_FOR_DIARY);
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(startDate, date, studentId, standardId, grade, schoolInfoId, LIST_FOR_DIARY);
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, schoolInfoId);
                 if(remainingList.size() != 0) {
                     events.addAll(remainingList);
                     events = new ArrayList<>(new HashSet<>(events));
@@ -267,12 +267,12 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade, sessionId, LIST_FOR_UPCOMING_EVENTS);
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade, schoolInfoId, LIST_FOR_UPCOMING_EVENTS);
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, schoolInfoId);
                 if(remainingList.size() != 0) {
                     events.addAll(remainingList);
                     events = new ArrayList<>(new HashSet<>(events));
@@ -334,13 +334,13 @@ public class EventServiceImpl implements EventService {
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
-        Long sessionId = studentStandard.getStandard().getTerm().getSession().getId();
+        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
 
         List<Event> events;
         if (date == null) { // get all leaves info for the current term
 
             //TODO change the implementation to have only those events associated with leave application
-            events = eventRepository.findAllLeavesForStudentInSession(studentId, sessionId);
+            events = eventRepository.findAllLeavesForStudentInSession(studentId, schoolInfoId);
         } else { // get leave data for a day
             events = eventRepository.findLeaveForStudent(date, studentId);
         }
@@ -348,7 +348,7 @@ public class EventServiceImpl implements EventService {
         if (events != null && events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
+                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, schoolInfoId);
                 if(remainingList.size() != 0) {
                     events.addAll(remainingList);
                     events = new ArrayList<>(new HashSet<>(events));
@@ -372,13 +372,13 @@ public class EventServiceImpl implements EventService {
 
         Standard standard = result.get();
 
-        Long sessionId = standard.getTerm().getSession().getId();
+        Long schoolInfoId = standard.getSchoolInfo().getId();
 
         List<Event> events = new ArrayList<>();
         if (date == null) { // get all leaves info for the current term
 
             //TODO change the implementation to have only those events associated with leave application
-            events = eventRepository.findLeavesForStandard(standardId, sessionId);
+            events = eventRepository.findLeavesForStandard(standardId, schoolInfoId);
         } else { // get attendance data for a day
             events = eventRepository.findAttendanceForStandard(date, date, standardId);
         }
@@ -520,39 +520,39 @@ public class EventServiceImpl implements EventService {
                     }
                 }
             } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
-                if(eventDTO.getAcademicSessionId() == null) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have the field : academicSessionId");
+                if(eventDTO.getSchoolInfoId() == null) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have the field : schoolInfoId");
                     throw new WitcurveException("Invalid request body");
                 }
 
-                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, eventDTO.getAcademicSessionId());
+                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, eventDTO.getSchoolInfoId());
                 if(events.size() !=0) {
                     log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
                     throw new WitcurveException("Invalid request body");
                 }
             } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
-                if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : academicSessionId, standardId");
+                if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : schoolInfoId, standardId");
                     throw new WitcurveException("Invalid request body");
                 }
-                Long sessionId = eventDTO.getAcademicSessionId();
-                if(sessionId == null) {
+                Long schoolInfoId = eventDTO.getSchoolInfoId();
+                if(schoolInfoId == null) {
                     Standard standard = standardRepository.findById(eventDTO.getStandardId()).get();
                     if(standard == null) {
                         throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
                     }
-                    sessionId = standard.getTerm().getSession().getId();
+                    schoolInfoId = standard.getSchoolInfo().getId();
 
                 }
-                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, sessionId);
+                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, schoolInfoId);
                 if(events.size() !=0) {
                     log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
                     throw new WitcurveException("Invalid request body");
                 }
 
             } else if(eventDTO.getType().equals(EventType.SUBJECT_NOTE)) {
-                if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : academicSessionId, standardId, studentId");
+                if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
+                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : schoolInfoId, standardId, studentId");
                     throw new WitcurveException("Invalid request body");
                 }
 
@@ -561,13 +561,13 @@ public class EventServiceImpl implements EventService {
                     log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
                     throw new WitcurveException("Invalid request body");
                 }
-                Long sessionId = null;
+                Long schoolInfoId = null;
                 List<Event> events = new ArrayList<>();
                 if(eventDTO.getStudentId() != null) {
 
                     StudentStandard studentStandard = getStudentStandardFromStudentId(eventDTO.getStudentId());
-                    sessionId = studentStandard.getStandard().getTerm().getSession().getId();
-                    events = eventRepository.eventsBlockingLeave(eventDTO.getDate(), THIRD_LIST, sessionId, eventDTO.getStudentId());
+                    schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+                    events = eventRepository.eventsBlockingLeave(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
                 } else {
                     // get session id for staff - I think it would be better to have both staff id and session id for leave.
 
@@ -578,20 +578,20 @@ public class EventServiceImpl implements EventService {
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
                 if(eventDTO.getType().equals(EventType.NOTICE)) {
-                    if(!(eventDTO.getAcademicSessionId() == null ^ eventDTO.getStandardId() == null)) {
-                        log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : academicSessionId, standardId");
+                    if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
+                        log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : schoolInfoId, standardId");
                         throw new WitcurveException("Invalid request body");
                     }
-                    Long sessionId = eventDTO.getAcademicSessionId();
-                    if(sessionId == null) {
+                    Long schoolInfoId = eventDTO.getSchoolInfoId();
+                    if(schoolInfoId == null) {
                         Standard standard = standardRepository.findById(eventDTO.getStandardId()).get();
                         if(standard == null) {
                             throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
                         }
                     }
                 } else {
-                    if(eventDTO.getAcademicSessionId() ==null) {
-                        log.error("Event of type : "+eventDTO.getType()+"should have the fields : academicSessionId");
+                    if(eventDTO.getSchoolInfoId() ==null) {
+                        log.error("Event of type : "+eventDTO.getType()+"should have the fields : schoolInfoId");
                         throw new WitcurveException("Invalid request body");
                     }
                 }

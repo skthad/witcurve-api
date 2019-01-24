@@ -10,14 +10,12 @@ import org.mapstruct.Mapping;
     CourseTeacherMapper.class, SchoolInfoMapper.class})
 public interface EventMapper extends EntityMapper<EventDTO, Event>{
 
-    @Mapping(source = "academicSessionId", target = "academicSession")
     @Mapping(source = "schoolInfoId", target = "schoolInfo")
     @Mapping(source = "standardId", target = "standard")
     @Mapping(source = "staffId", target = "staff")
     @Mapping(source = "studentId", target = "student")
     Event toEntity(EventDTO eventDTO);
 
-    @Mapping(target = "academicSessionId", source = "academicSession.id")
     @Mapping(target = "schoolInfoId", source = "schoolInfo.id")
     @Mapping(target = "standardId", source = "standard.id")
     @Mapping(target = "staffId", source = "staff.id")
