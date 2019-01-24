@@ -18,9 +18,6 @@ public class StandardDTO extends AbstractAuditingDTO {
     private Long classTeacherId;
 
     @NotNull
-    private TermDTO term;
-
-    @NotNull
     private SchoolInfoDTO schoolInfo;
 
     public Long getId() {
@@ -55,14 +52,6 @@ public class StandardDTO extends AbstractAuditingDTO {
         this.classTeacherId = classTeacherId;
     }
 
-    public TermDTO getTerm() {
-        return term;
-    }
-
-    public void setTerm(TermDTO term) {
-        this.term = term;
-    }
-
     public SchoolInfoDTO getSchoolInfo() {
         return schoolInfo;
     }
@@ -91,7 +80,6 @@ public class StandardDTO extends AbstractAuditingDTO {
             ", grade=" + grade +
             ", section='" + section + '\'' +
             ", classTeacherId=" + classTeacherId +
-            ", term=" + term +
             ", schoolInfo=" + schoolInfo +
             '}';
     }

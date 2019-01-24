@@ -37,11 +37,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Term term;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
     private SchoolInfo schoolInfo;
 
     public Long getId() {
@@ -76,14 +71,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
         this.classTeacher = classTeacher;
     }
 
-    public Term getTerm() {
-        return term;
-    }
-
-    public void setTerm(Term term) {
-        this.term = term;
-    }
-
     public SchoolInfo getSchoolInfo() {
         return schoolInfo;
     }
@@ -113,7 +100,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
             ", grade=" + grade +
             ", section='" + section + '\'' +
             ", classTeacher=" + classTeacher +
-            ", term=" + term +
             ", schoolInfo=" + schoolInfo +
             '}';
     }
