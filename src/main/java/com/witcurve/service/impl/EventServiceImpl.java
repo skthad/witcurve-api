@@ -6,7 +6,9 @@ import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
+import com.witcurve.service.AcademicSessionService;
 import com.witcurve.service.EventService;
+import com.witcurve.service.dto.AcademicSessionDTO;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -56,6 +58,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     LeaveApplicationRepository leaveApplicationRepository;
+
+    @Autowired
+    AcademicSessionService academicSessionService;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.EXAM, EventType.TEST));
@@ -408,19 +413,22 @@ public class EventServiceImpl implements EventService {
     @Override
     public Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
         Optional<Term> term = termRepository.findById(termId);
+        LocalDate date= LocalDate.now();
+        Long schoolInfoId =0L;
         if(!term.isPresent()) {
             throw new WitcurveException("No term exists for id : "+termId);
         }
-        Long sessionId = term.get().getSession().getId();
+        //Long sessionId = term.get().getSession().getId();
         Page<Event> result = null;
         if(studentId != null) {
             List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+            schoolInfoId= studentStandards.get(0).getStandard().getSchoolInfo().getId();
             if(studentStandards.size() !=1) {
                 throw new WitcurveException("There should be an active student standard with given student id : "+studentId);
             }
             Long standardId = studentStandards.get(0).getStandard().getId();
             Grade grade = studentStandards.get(0).getStandard().getGrade();
-            result = eventRepository.findStudentNotices(standardId, grade ,sessionId, pageable);
+            result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, pageable,date);
         }
         if (staffId != null) {
             Optional<Staff> staff = staffRepository.findById(staffId);
@@ -429,16 +437,17 @@ public class EventServiceImpl implements EventService {
             }
             if(staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherIdAndTermId(staffId, termId);
+                schoolInfoId= standard.getSchoolInfo().getId();
                 if(standard != null) {
                    result = eventRepository.findClassTeacherNotices(standard.getId(),
-                       standard.getGrade(), sessionId, pageable);
+                       standard.getGrade(), schoolInfoId, pageable,date);
                 } else {
-                    result = eventRepository.findTeacherNotices(sessionId, pageable);
+                    result = eventRepository.findTeacherNotices(schoolInfoId, pageable, date);
                 }
             }
             if(staff.get().getType().equals(StaffType.ADMIN)) {
-                List<Event> results = eventRepository.findAdminNoticesBySession(sessionId);
-                results.addAll(eventRepository.findAdminNoticesByStandardInSession(sessionId));
+                List<Event> results = eventRepository.findAdminNoticesBySession(schoolInfoId,date); //pr1
+                results.addAll(eventRepository.findAdminNoticesByStandardInSession(schoolInfoId,date));
                 Collections.sort(results, new Comparator<Event>() {
                     @Override
                     public int compare(Event o1, Event o2) {
@@ -488,9 +497,12 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDto(events);
     }
 
-    public List<EventDTO> findHolidaysInASession(Long sessionId) throws WitcurveException {
-        log.debug("List of holidays for a session with id : {}", sessionId);
-        List<Event> events = eventRepository.findByTypeAndAcademicSessionIdOrderByDateAsc(EventType.HOLIDAY, sessionId);
+    public List<EventDTO> findHolidaysInASession(Long schoolInfoId) throws WitcurveException {
+        log.debug("List of holidays for a schoolInfo with id : {}", schoolInfoId);
+        AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, LocalDate.now());
+        LocalDate sDate= currentSession.getStartDate();
+        LocalDate eDate= sDate.plusYears(1);
+        List<Event> events = eventRepository.findByTypeAndAcademicSessionIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId,sDate,eDate);
         return eventMapper.toDto(events);
     }
 
