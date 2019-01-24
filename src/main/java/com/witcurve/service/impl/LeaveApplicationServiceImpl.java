@@ -1,21 +1,19 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
-import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.service.mapper.LeaveApplicationMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
-import org.hibernate.query.criteria.internal.expression.function.CurrentDateFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.auditing.CurrentDateTimeProvider;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -75,13 +73,11 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             }
             for (LocalDate date=leaveApplication.getFromLeaveDate();date.isBefore((date1).plusDays(1));date=date.plusDays(1)) {
                 if (isHoliday(date, leaveApplication.getSession().getId())==false && date.getDayOfWeek() != DayOfWeek.SUNDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY) {
-                        Event e = eventRepository.findEventForStudent(date, leaveApplicationDTO.getAppliedStudentId());
-                    //e.setPresent(false);
-                    if(e != null) {
-                        e.setName("Leave - "+leaveApplication.getReason());
-                        e.setDescription(leaveApplication.getDescription());
-                        e = eventRepository.save(e);
-                        events.add(e);
+                        List<Event> attendance = eventRepository.findAttendanceForStudent(date, date, leaveApplicationDTO.getAppliedStudentId());
+                    if(attendance.size() != 0) {
+                        attendance.get(0).setName("Leave - "+leaveApplication.getReason());
+                        attendance.get(0).setDescription(leaveApplication.getDescription());
+                        events.add(attendance.get(0));
                     }
 
                 }
@@ -185,7 +181,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         if(!standard.isPresent()) {
             throw new WitcurveException("No standard exists with given id");
         }
-        Long sessionId = standard.get().getTerm().getSession().getId();
+        Long sessionId = academicSessionRepository.nearestActiveSessionToDate(standard.get().getSchoolInfo().getId(), LocalDate.now()).getId();
         List<LeaveApplication> leaveApplications = new ArrayList<>();
         List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
         if(studentIds.size() !=0) {
@@ -271,12 +267,12 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         Event event = new Event();
         event.setName("Leave - "+leaveApplications.getReason());
         event.setType(EventType.ATTENDANCE);
-        event.setPresent(false);
+        event.setAttendanceType(AttendanceType.ABSENT);
         if(leaveApplicationDTO.getType().equals(LeaveApplyor.STUDENT)) {
         event.setStudent(leaveApplications.getAppliedStudent());}
         else if(leaveApplicationDTO.getType().equals(LeaveApplyor.STAFF)){
         event.setStaff(leaveApplications.getAppliedStaff()); }
-        event.setAcademicSession(leaveApplications.getSession());
+        //event.setAcademicSession(leaveApplications.getSession());
         event.setDate(date);
         //eventDTO.add(eventMapper.toDto(event));
         //eventService.saveOrUpdate(eventDTO);

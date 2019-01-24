@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.Keyword;
+import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 
@@ -49,7 +50,7 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Boolean sendSms = false;
 
-    private Boolean present;
+    private AttendanceType attendanceType = AttendanceType.PRESENT;
 
     private Integer marks;
 
@@ -183,12 +184,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.sendSms = sendSms;
     }
 
-    public Boolean getPresent() {
-        return present;
+    public AttendanceType getAttendanceType() {
+        return attendanceType;
     }
 
-    public void setPresent(Boolean present) {
-        this.present = present;
+    public void setAttendanceType(AttendanceType attendanceType) {
+        this.attendanceType = attendanceType;
     }
 
     public Integer getMarks() {
@@ -236,10 +237,12 @@ public class EventDTO extends AbstractAuditingDTO {
             ", grade=" + grade +
             ", schoolInfoId=" + schoolInfoId +
             ", scd=" + scd +
+            ", courseTeacher=" + courseTeacher +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
-            ( type == EventType.ATTENDANCE ? ", present=" + present : "") +
-            ( type == EventType.TEST ? ", marks=" + marks : "") +
+            ", attendanceType=" + attendanceType +
+            ", marks=" + marks +
+            ", keywords=" + keywords +
             '}';
     }
 }

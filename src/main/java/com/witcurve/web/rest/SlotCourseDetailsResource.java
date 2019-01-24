@@ -157,9 +157,9 @@ public class SlotCourseDetailsResource {
 
     @GetMapping("/slot-course-details/teacher/{teacherId}")
     @Timed
-    public ResponseEntity<List<SlotCourseDetailsDTO>> getSlotCourseDetailsByTeacherAndTermId(@PathVariable("teacherId") Long teacherId, @RequestParam("termId") Long termId) throws WitcurveException {
-        log.debug("Request to get SlotCourseDetails with teacher id : {} and term id : {}", teacherId, termId);
-        List<SlotCourseDetailsDTO> result = slotCourseDetailsService.getSlotCourseDetailsByTeacherIdAndTermId(teacherId, termId);
+    public ResponseEntity<List<SlotCourseDetailsDTO>> getSlotCourseDetailsByTeacherAndTermId(@PathVariable("teacherId") Long teacherId) throws WitcurveException {
+        log.debug("Request to get SlotCourseDetails with teacher id : {} ", teacherId);
+        List<SlotCourseDetailsDTO> result = slotCourseDetailsService.getSlotCourseDetailsByTeacherId(teacherId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

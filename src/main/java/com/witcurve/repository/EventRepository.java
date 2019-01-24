@@ -48,9 +48,9 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.staff.id = ?3 and e.type = 'ATTENDANCE') or " +
         "(e.scd.courseTeacher.teacher.id=?3 and (e.type in ?7)) or " +
         "(e.standard.id in ?4 and e.type='SCHOOL_EVENT') or " +
-        "((e.grade is null or (e.grade is not null and e.grade in ?5)) and e.academicSession.id in ?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "((e.grade is null or (e.grade is not null and e.grade in ?5)) and e.schoolInfo.id = ?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-    List<Event> findEventsByDateRangeForStaff(LocalDate startDate, LocalDate endDate, Long staffId, Set<Long> standardIds, Set<Grade> grades, List<Long> sessionIds, List<EventType> types);
+    List<Event> findEventsByDateRangeForStaff(LocalDate startDate, LocalDate endDate, Long staffId, Set<Long> standardIds, Set<Grade> grades,Long schoolInfoId, List<EventType> types);
 
     @Query("Select distinct e.date from Event e where e.date between ?1 and ?2 and" +
         "(" +
@@ -69,7 +69,10 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> eventsBlockingHolidayAndSchoolEvents(LocalDate date, List<EventType> types, Long schoolInfoId);
 
     @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.standard.schoolInfo.id =?3) and e.student.id=?4 and e.type in ?2")
-    List<Event> eventsBlockingLeave(LocalDate date, List<EventType> types, Long schoolInfoId, Long studentId);
+    List<Event> eventsBlockingLeaveForStudent(LocalDate date, List<EventType> types, Long schoolInfoId, Long studentId);
+
+    @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.staff.id=?4) and e.type in ?2")
+    List<Event> eventsBlockingLeaveForStaff(LocalDate date, List<EventType> types, Long schoolInfoId, Long studentId);
 
     @Query("Select e from Event e where e.bindingId = ?1 and " +
         "(" +
@@ -80,29 +83,29 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findEventsByBindingId(String bindingId, Long studentId, Long standardId, Grade grade,
                                       Long schoolInfoId);
 
-    @Query("Select e from Event e where e.student.id = ?1 and e.type = 'ATTENDANCE' " +
-        "and e.academicSession.id=?2 ")
-    List<Event> findAllLeavesForStudentInSession(Long studentId, Long sessionId);
-
-    @Query("Select e from Event e where e.standard.id = ?1 and e.type = 'ATTENDANCE' " +
-        "and e.schoolInfo.id=?2 ")
-    List<Event> findLeavesForStandard(Long studentId, Long schoolInfoId);
-
-    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
-        "and e.type = 'ATTENDANCE'")
-    List<Event> findLeaveForStudent(LocalDate date, Long studentId);
-
-    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
-        "and e.type = 'ATTENDANCE'")
-    List<Event> findLeaveForStaff(LocalDate date, Long staffId);
-
-    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
-        "and e.type = 'ATTENDANCE'")
-    Event findEventForStudent(LocalDate date, Long studentId);
-
-    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
-        "and e.type = 'ATTENDANCE'")
-    Event findEventForStaff(LocalDate date, Long staffId);
+//    @Query("Select e from Event e where e.student.id = ?1 and e.type = 'ATTENDANCE' " +
+//        "and e.academicSession.id=?2 ")
+//    List<Event> findAllLeavesForStudentInSession(Long studentId, Long sessionId);
+//
+//    @Query("Select e from Event e where e.standard.id = ?1 and e.type = 'ATTENDANCE' " +
+//        "and e.schoolInfo.id=?2 ")
+//    List<Event> findLeavesForStandard(Long studentId, Long schoolInfoId);
+//
+//    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
+//        "and e.type = 'ATTENDANCE'")
+//    List<Event> findLeaveForStudent(LocalDate date, Long studentId);
+//
+//    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
+//        "and e.type = 'ATTENDANCE'")
+//    List<Event> findLeaveForStaff(LocalDate date, Long staffId);
+//
+//    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
+//        "and e.type = 'ATTENDANCE'")
+//    Event findEventForStudent(LocalDate date, Long studentId);
+//
+//    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
+//        "and e.type = 'ATTENDANCE'")
+//    Event findEventForStaff(LocalDate date, Long staffId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2  and e.standard.id = ?3 " +
         "and e.type = 'ATTENDANCE'")
@@ -112,6 +115,10 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "and e.type = 'ATTENDANCE' order by e.date asc")
     List<Event> findAttendanceForStaff(LocalDate fromDate, LocalDate toDate, Long staffId);
 
+    @Query("Select e from Event e where e.date between ?1 and ?2  and e.staff.id in ?3 " +
+        "and e.type = 'ATTENDANCE' order by e.staff.id asc, e.date asc")
+    List<Event> findAttendanceForStaffs(LocalDate fromDate, LocalDate toDate, List<Long> staffIds);
+
     @Query("Select e from Event e where e.date between ?1 and ?2 and e.student.id = ?3 " +
         "and e.type = 'ATTENDANCE'")
     List<Event> findAttendanceForStudent(LocalDate fromDate, LocalDate toDate, Long student);
@@ -120,62 +127,55 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "e.staff is not null and e.staff.id in ?1 and e.date = ?2")
     List<Long> findAbsentTeacherList(List<Long> teacherIds, LocalDate date);
 
-    @Query("Select e from Event e where ((" +
-        "(e.academicSession is not null and e.academicSession.id=?1) " +
-        "or " +
-        "(e.standard is not null and e.standard.term.session.id=?1)" +
-        ") and (e.type='NOTICE' or e.type='STAFF_NOTICE' " +
-        ")) order by e.date desc")
-    List<Event> findAdminNotices(Long sessionId, Pageable pageable);
+    @Query("Select e from Event e where (e.schoolInfo.id=?1 or e.standard.schoolInfo.id=?1)" +
+        " and (e.type='NOTICE' or e.type='STAFF_NOTICE' ) " +
+        "and e.date >= ?2 "+
+        "order by e.date desc")
+    Page<Event> findAdminNotices(Long schoolInfoId, LocalDate termDate, Pageable pageable);
 
     @Query("Select e from Event e where " +
         "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
-        "and e.date >= ( \" +\n" +
-        "select max(a.startDate) from AcademicSession a where a.active = true and a.schoolInfo.id = ?1 and a.startDate <= 2)"+
+        "and e.date >= ?2 "+
         "order by e.date desc")
-    List<Event> findAdminNoticesBySession(Long schoolInfoId,LocalDate date);
+    List<Event> findAdminNoticesBySchoolInfoId(Long schoolInfoId, LocalDate termDate);
 
     @Query("Select e from Event e where " +
         "(e.standard.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
-        "and e.date >= ( \" +\n" +
-        "select max(a.startDate) from AcademicSession a where a.active = true and a.schoolInfo.id = ?1 and a.startDate <= 2)"+
+        "and e.date >= ?2 "+
         "order by e.date desc")
-    List<Event> findAdminNoticesByStandardInSession(Long schoolInfoId, LocalDate date);
+    List<Event> findAdminNoticesByStandardInSession(Long schoolInfoId, LocalDate termDate);
 
     @Query("Select e from Event e where e.type = 'NOTICE' and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
-        "and e.date >= ( \" +\n" +
-        "select max(a.startDate) from AcademicSession a where a.active = true and a.schoolInfo.id = ?3 and a.startDate <= 5)"+
+        "and e.date >= ?4 " +
         "order by e.date desc")
-    Page<Event> findStudentNotices(Long standardId, Grade grade, Long schoolInfoId, Pageable pageable,LocalDate date);
+    Page<Event> findStudentNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate termDate, Pageable pageable);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
-        "and e.date >= ( \" +\n" +
-        "select max(a.startDate) from AcademicSession a where a.active = true and a.schoolInfo.id = ?3 and a.startDate <= 5)"+
+        "and e.date >= ?4 " +
         "order by e.date desc")
-    Page<Event> findClassTeacherNotices(Long standardId, Grade grade, Long schoolInfoId, Pageable pageable, LocalDate date);
+    Page<Event> findClassTeacherNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate termDate, Pageable pageable);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "e.grade is null and e.schoolInfo.id=?1 " +
-        "and e.date >= ( \" +\n" +
-        "select max(a.startDate) from AcademicSession a where a.active = true and a.schoolInfo.id = ?1 and a.startDate <= 3)"+
+        "and e.date >= ?2 "+
         "order by e.date desc")
-    Page<Event> findTeacherNotices(Long schoolInfoId, Pageable pageable,LocalDate date);
+    Page<Event> findTeacherNotices(Long schoolInfoId, LocalDate termDate, Pageable pageable);
 
-    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY' and e.schoolInfo.id=?3"+"order by e.date desc")
+    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY' and e.schoolInfo.id=?3 order by e.date desc")
     Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
 
-    @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3" +"order by e.date desc")
+    @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findAssignmentsByTeacherInDateRange(Long staffId, LocalDate sdate, LocalDate eDate);
 
-    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3"+ "order by e.date desc")
+    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findTestsByTeacherInDateRange(Long staffId, LocalDate sdate, LocalDate eDate);
 
-    @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and e.date between ?3 and ?4" + "order by e.date desc" )
-    List<Event> findByTypeAndAcademicSessionIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
+    @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
+    List<Event> findByTypeAndSchoolInfoIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
 
 
 

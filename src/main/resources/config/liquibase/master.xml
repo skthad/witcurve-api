@@ -53,6 +53,8 @@
     <include file="config/liquibase/changelog/20190121152701_added_blood_group_Staff.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190122061626_added_hours_minutes_to_gsd.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190122181255_added_school_info_id_to_Event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190124210439_removed_termId_from_Standard_and_sessionId_from_Event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190124221356_added_AttendanceType_Event.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
