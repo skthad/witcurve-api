@@ -1,5 +1,5 @@
 package com.witcurve.domain.enumeration;
 
 public enum ApprovalStatus {
-    APPROVED, DECLINED
+    PENDING, APPROVED, DECLINED
 }

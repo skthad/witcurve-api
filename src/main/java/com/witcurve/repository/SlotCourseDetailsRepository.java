@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDetails, Long> {
 
-    @Query("Select scd from SlotCourseDetails scd where scd.gsd.standard.id=?1 and scd.gsd.exam is null order by scd.dayOfWeek asc, scd.gsd.start asc")
+    @Query("Select scd from SlotCourseDetails scd where scd.gsd.standard.id=?1 and scd.gsd.exam is null and scd.gsd.status = 'ACTIVE' order by scd.dayOfWeek asc, scd.gsd.start asc")
     List<SlotCourseDetails> findByStandardIdOrderByGsdStartTime(Long standardId);
 
-    @Query("Select scd from SlotCourseDetails scd where scd.courseTeacher.teacher.id=?1 and scd.gsd.standard.term.id=?2 and scd.gsd.exam is null order by scd.dayOfWeek asc, scd.gsd.start asc")
-    List<SlotCourseDetails> findByTeacherIdAndTermIdOrderByGsdStartTime(Long teacherId, Long termId);
+    @Query("Select scd from SlotCourseDetails scd where scd.courseTeacher.teacher.id=?1 and scd.gsd.exam is null and scd.gsd.status = 'ACTIVE' order by scd.dayOfWeek asc, scd.gsd.start asc")
+    List<SlotCourseDetails> findByTeacherIdOrderByGsdStartTime(Long teacherId);
 
     @Query("Select scd from SlotCourseDetails scd where scd.gsd.id=?1 and scd.dayOfWeek = ?2")
     SlotCourseDetails findByGsdAndDayOfWeek(Long gsdId, DayOfWeek dayOfWeek);

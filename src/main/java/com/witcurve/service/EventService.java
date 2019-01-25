@@ -33,11 +33,12 @@ public interface EventService {
 
     List<EventDTO> findEventsByDateRangeForStaffInUpcomingEvents(LocalDate date, Long staffId) throws WitcurveException;
 
-    List<EventDTO> getAllLeavesForStudent(LocalDate date, Long studentId) throws WitcurveException;
+//    List<EventDTO> getAllLeavesForStudent(LocalDate date, Long studentId) throws WitcurveException;
+//
+//    List<EventDTO> getAllLeavesForStandard(LocalDate date, Long standardId) throws WitcurveException;
 
-    List<EventDTO> getAllLeavesForStandard(LocalDate date, Long standardId) throws WitcurveException;
-
-    List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId, Long standardId, Long staffId) throws WitcurveException;
+    List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId,
+                                 Long standardId, Long staffId, Long schoolInfoId) throws WitcurveException;
 
     Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException;
 

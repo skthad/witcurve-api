@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -14,14 +15,14 @@ public interface LeaveApplicationService {
 
     void deleteLeaveApplication(Long leaveApplicationId) throws WitcurveException;
 
-    LeaveApplicationDTO getLeaveApplicationApprover(Long ApplicationId, Long StaffId) throws WitcurveException;
+    LeaveApplicationDTO changeLeaveStatus(Long ApplicationId, Long StaffId, ApprovalStatus status, String note) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeaveApplicationsForStudent(Long studentId,Long sessionId, Boolean approved) throws WitcurveException;
+    List<LeaveApplicationDTO> getLeaveApplicationsForStudent(Long studentId, Long sessionId, ApprovalStatus status) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeaveApplicationsForStaff(Long studentId,Long sessionId, Boolean approved) throws WitcurveException;
+    List<LeaveApplicationDTO> getLeaveApplicationsForStaff(Long staffId, Long sessionId, ApprovalStatus status) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, Boolean approved) throws WitcurveException;
+    List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, ApprovalStatus status) throws WitcurveException;
 
-    Long workingDays(LocalDate fromDate,LocalDate toDate, Long sessionId, Boolean isSaturdayWorking) throws WitcurveException;
+    Long workingDays(LocalDate fromDate,LocalDate toDate, Long schoolInfoId, Boolean isSaturdayWorking) throws WitcurveException;
 
 }

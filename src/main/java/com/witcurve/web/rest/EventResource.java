@@ -72,9 +72,10 @@ public class EventResource {
                                                         @RequestParam(value = "toDate") LocalDate toDate,
                                                   @RequestParam(value = "studentId", required = false) Long studentId,
                                                   @RequestParam(value = "standardId", required = false) Long standardId,
-                                                  @RequestParam(value = "staffId", required = false) Long staffId) throws WitcurveException {
+                                                  @RequestParam(value = "staffId", required = false) Long staffId,
+                                                @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get attendance");
-        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -165,9 +166,9 @@ public class EventResource {
             }
             result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(eventDate, studentId);
         }
-        if(type.equals(ViewType.LEAVE)) {
-            result = eventService.getAllLeavesForStudent(eventDate, studentId);
-        }
+//        if(type.equals(ViewType.LEAVE)) {
+//            result = eventService.getAllLeavesForStudent(eventDate, studentId);
+//        }
 
             return new ResponseEntity<>(result,  HttpStatus.OK);
     }
@@ -255,9 +256,9 @@ public class EventResource {
         //add null checks later and change log statement
         List<EventDTO> result = new ArrayList<>();
 
-        if(type.equals(ViewType.LEAVE)) {
-            result = eventService.getAllLeavesForStandard(eventDate, standardId);
-        }
+//        if(type.equals(ViewType.LEAVE)) {
+//            result = eventService.getAllLeavesForStandard(eventDate, standardId);
+//        }
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }

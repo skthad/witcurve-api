@@ -15,5 +15,5 @@ public interface SlotCourseDetailsService {
 
     List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId);
 
-    List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherIdAndTermId(Long teacherId, Long termId);
+    List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherId(Long teacherId);
 }

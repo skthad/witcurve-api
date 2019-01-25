@@ -18,4 +18,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     @Query("select staff from Staff staff where staff.schoolInfo.school.id = ?1")
     List<Staff> findBySchoolId(Long schoolId);
+
+    @Query("select staff.id from Staff staff where staff.schoolInfo.id = ?1")
+    List<Long> findStaffIdsBySchoolInfoId(Long schoolInfoId);
 }

@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.util.ListToStringConverter;
@@ -63,7 +64,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private Grade grade;
 
     @ManyToOne
-    private AcademicSession academicSession;
+    private SchoolInfo schoolInfo;
 
     @ManyToOne
     @JoinColumn(name = "scd_id")
@@ -80,7 +81,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "send_sms", nullable = false)
     private Boolean sendSms = false;
 
-    private Boolean present;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private AttendanceType attendanceType = AttendanceType.PRESENT;
 
     private Integer marks;
 
@@ -176,12 +179,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.grade = grade;
     }
 
-    public AcademicSession getAcademicSession() {
-        return academicSession;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setAcademicSession(AcademicSession academicSession) {
-        this.academicSession = academicSession;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public SlotCourseDetails getScd() {
@@ -216,12 +219,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.sendSms = sendSms;
     }
 
-    public Boolean getPresent() {
-        return present;
+    public AttendanceType getAttendanceType() {
+        return attendanceType;
     }
 
-    public void setPresent(Boolean present) {
-        this.present = present;
+    public void setAttendanceType(AttendanceType attendanceType) {
+        this.attendanceType = attendanceType;
     }
 
     public Integer getMarks() {
@@ -268,12 +271,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", standard=" + standard +
             ", staff=" + staff +
             ", grade=" + grade +
-            ", academicSession=" + academicSession +
+            ", schoolInfo=" + schoolInfo +
             ", scd=" + scd +
+            ", courseTeacher=" + courseTeacher +
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
-            ( type == EventType.ATTENDANCE ? ", present=" + present : "") +
-            ( type == EventType.TEST ? ", marks=" + marks : "") +
+            ", attendanceType=" + attendanceType +
+            ", marks=" + marks +
+            ", keywords=" + keywords +
             '}';
     }
 }
