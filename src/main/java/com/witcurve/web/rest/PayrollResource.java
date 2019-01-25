@@ -9,6 +9,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +36,20 @@ public class PayrollResource {
         if (payrollDetailsDTO.getId() != null) {
             throw new WitcurveException("New payroll details can't already have an id");
         }
-        PayrollDetailsDTO result = payrollService.saveOrUpdate(payrollDetailsDTO);
-        return ResponseEntity.created(new URI("/api/payroll-details/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("payroll-details", result.getId().toString()))
-            .body(result);
+        try {
+            PayrollDetailsDTO result = payrollService.saveOrUpdate(payrollDetailsDTO);
+            return ResponseEntity.created(new URI("/api/payroll-details/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("payroll-details", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("staff_payroll_cycle_UK")) {
+                throw new WitcurveException("Unique constraint (staff_id, payroll_cycle_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     @PutMapping("/payroll-details")
@@ -48,10 +59,20 @@ public class PayrollResource {
         if (payrollDetailsDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        PayrollDetailsDTO result = payrollService.saveOrUpdate(payrollDetailsDTO);
-        return ResponseEntity.created(new URI("/api/payroll-details/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("payroll-details", result.getId().toString()))
-            .body(result);
+        try {
+            PayrollDetailsDTO result = payrollService.saveOrUpdate(payrollDetailsDTO);
+            return ResponseEntity.created(new URI("/api/payroll-details/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("payroll-details", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("staff_payroll_cycle_UK")) {
+                throw new WitcurveException("Unique constraint (staff_id, payroll_cycle_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**
@@ -76,11 +97,20 @@ public class PayrollResource {
         if (payrollDTO.getId() != null) {
             throw new WitcurveException("New payroll can't already have an id");
         }
-
-        PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
-        return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("payroll", result.getId().toString()))
-            .body(result);
+        try {
+            PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
+            return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("payroll", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("staff_payroll_cycle_UK")) {
+                throw new WitcurveException("Unique constraint (staff_id, payroll_cycle_id) in payrollDetails  violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     @PutMapping("/payroll")
@@ -90,10 +120,20 @@ public class PayrollResource {
         if (payrollDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
-        return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
-            .headers(HeaderUtil.createEntityUpdateAlert("payroll", result.getId().toString()))
-            .body(result);
+        try {
+            PayrollDTO result = payrollService.saveOrUpdate(payrollDTO);
+            return ResponseEntity.created(new URI("/api/payroll/" + result.getId()))
+                .headers(HeaderUtil.createEntityUpdateAlert("payroll", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("staff_payroll_cycle_UK")) {
+                throw new WitcurveException("Unique constraint (school_info_id, month, year) in payrollDetails violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**
