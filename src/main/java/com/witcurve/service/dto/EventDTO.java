@@ -34,9 +34,13 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Long studentId;
 
+    private String studentName;
+
     private Long standardId;
 
     private Long staffId;
+
+    private String staffName;
 
     private Grade grade;
 
@@ -120,6 +124,14 @@ public class EventDTO extends AbstractAuditingDTO {
         this.studentId = studentId;
     }
 
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
     public Long getStandardId() {
         return standardId;
     }
@@ -134,6 +146,14 @@ public class EventDTO extends AbstractAuditingDTO {
 
     public void setStaffId(Long staffId) {
         this.staffId = staffId;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
     }
 
     public Grade getGrade() {
@@ -232,8 +252,10 @@ public class EventDTO extends AbstractAuditingDTO {
             ", eventStartTime='" + eventStartTime + '\'' +
             ", eventEndTime='" + eventEndTime + '\'' +
             ", studentId=" + studentId +
+            ", studentName=" + studentName +
             ", standardId=" + standardId +
             ", staffId=" + staffId +
+            ", staffName='" + staffName + '\'' +
             ", grade=" + grade +
             ", schoolInfoId=" + schoolInfoId +
             ", scd=" + scd +

@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -77,6 +79,25 @@ public class EventResource {
         log.debug("Request to get attendance");
         List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/event/attendance/staff")
+    @Timed
+    public ResponseEntity<Map<Long, List<EventDTO>>> getAttendanceForStaff(@RequestParam(value = "fromDate") LocalDate fromDate,
+                                                        @RequestParam(value = "toDate") LocalDate toDate,
+                                                        @RequestParam(value = "schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get staff attendance for schoolInfo with id : {}", schoolInfoId);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, null, null, null, schoolInfoId);
+        Map<Long, List<EventDTO>> resultMap = new HashMap<>();
+        for(EventDTO eventDTO : result ) {
+            List<EventDTO> staffAttendanceList = resultMap.get(eventDTO.getStaffId());
+            if(staffAttendanceList == null) {
+                staffAttendanceList = new ArrayList<>();
+            }
+            staffAttendanceList.add(eventDTO);
+            resultMap.put(eventDTO.getStaffId(), staffAttendanceList);
+        }
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
     /**
