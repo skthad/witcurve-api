@@ -43,7 +43,7 @@
     <changeSet author="WitCurve (generated)" id="1548375355689-7">
         <sql>
             UPDATE  message_thread
-            SET     status = 'PENDING' WHERE status is NULL and messageType='MEETING_REQUEST';
+            SET     status = 'PENDING' WHERE status is NULL and message_type='MEETING_REQUEST';
         </sql>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1548375355689-8">
