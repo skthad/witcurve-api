@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.domain.enumeration.Reason;
 
@@ -8,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -22,13 +22,12 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private LeaveApplyor type;
 
-    @NotNull
-    private Boolean approved = false;
+    private ApprovalStatus status = ApprovalStatus.PENDING;
 
     private Long approvedById;
 
     @NotNull
-    private Long sessionId;
+    private Long schoolInfoId;
 
     private Long appliedStaffId;
 
@@ -45,6 +44,8 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     private List<Long> eventIds;
 
     private Long numLeaveDays;
+
+    private String note;
 
     public Long getId() {
         return id;
@@ -78,12 +79,12 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.type = type;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public ApprovalStatus getStatus() {
+        return status;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
     }
 
     public Long getApprovedById() {
@@ -94,12 +95,12 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.approvedById = approvedById;
     }
 
-    public Long getSessionId() {
-        return sessionId;
+    public Long getSchoolInfoId() {
+        return schoolInfoId;
     }
 
-    public void setSessionId(Long sessionId) {
-        this.sessionId = sessionId;
+    public void setSchoolInfoId(Long schoolInfoId) {
+        this.schoolInfoId = schoolInfoId;
     }
 
     public Long getAppliedStaffId() {
@@ -158,6 +159,14 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.numLeaveDays = numLeaveDays;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,9 +182,9 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", reason=" + reason +
             ", description='" + description + '\'' +
             ", type=" + type +
-            ", approved=" + approved +
+            ", status=" + status +
             ", approvedById=" + approvedById +
-            ", sessionId=" + sessionId +
+            ", schoolInfoId=" + schoolInfoId +
             ", appliedStaffId=" + appliedStaffId +
             ", appliedStudentId=" + appliedStudentId +
             ", appliedGuardianId=" + appliedGuardianId +
@@ -183,6 +192,7 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", toLeaveDate=" + toLeaveDate +
             ", eventIds=" + eventIds +
             ", numLeaveDays=" + numLeaveDays +
+            ", note='" + note + '\'' +
             '}';
     }
 }

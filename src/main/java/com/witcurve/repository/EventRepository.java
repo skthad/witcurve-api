@@ -165,7 +165,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "order by e.date desc")
     Page<Event> findTeacherNotices(Long schoolInfoId, LocalDate termDate, Pageable pageable);
 
-    @Query("Select count(e) from Event e where e.date between ?1 and ?2 and e.type = 'HOLIDAY' and e.schoolInfo.id=?3 order by e.date desc")
+    @Query("Select count(e) from Event e where (e.date between ?1 and ?2) and e.type = 'HOLIDAY' and e.schoolInfo.id=?3")
     Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
 
     @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3 order by e.date desc")
@@ -176,8 +176,6 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
     List<Event> findByTypeAndSchoolInfoIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
-
-
 
 }
 

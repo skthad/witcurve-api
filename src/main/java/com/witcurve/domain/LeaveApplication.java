@@ -1,12 +1,10 @@
 package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.gag.annotation.remark.OhNoYouDidnt;
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.LeaveApplyor;
 import com.witcurve.domain.enumeration.Reason;
 import com.witcurve.service.util.LocalDateConverter;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,7 +36,8 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     @NotNull
     @Column(nullable = false)
-    private Boolean approved;
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus status = ApprovalStatus.PENDING;
 
     @ManyToOne
     private Staff approvedBy;
@@ -46,7 +45,7 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     @NotNull
     @JoinColumn(nullable = false)
     @ManyToOne
-    private AcademicSession session;
+    private SchoolInfo schoolInfo;
 
     @ManyToOne
     private Staff appliedStaff;
@@ -66,6 +65,9 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     @Column(name = "to_leave_date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
     private LocalDate toLeaveDate;
+
+    @Column
+    private String note;
 
     @JsonIgnore
     @ManyToMany
@@ -107,12 +109,20 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.type = type;
     }
 
-    public Boolean getApproved() {
-        return approved;
+    public ApprovalStatus getStatus() {
+        return status;
     }
 
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
+    }
+
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Staff getApprovedBy() {
@@ -121,14 +131,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     public void setApprovedBy(Staff approvedBy) {
         this.approvedBy = approvedBy;
-    }
-
-    public AcademicSession getSession() {
-        return session;
-    }
-
-    public void setSession(AcademicSession session) {
-        this.session = session;
     }
 
     public Staff getAppliedStaff() {
@@ -171,6 +173,14 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.toLeaveDate = toLeaveDate;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public Set<Event> getEvents() {
         return events;
     }
@@ -206,14 +216,16 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
             ", reason=" + reason +
             ", description='" + description + '\'' +
             ", type=" + type +
-            ", approved=" + approved +
+            ", status=" + status +
             ", approvedBy=" + approvedBy +
-            ", session=" + session +
+            ", schoolInfo=" + schoolInfo +
             ", appliedStaff=" + appliedStaff +
             ", appliedStudent=" + appliedStudent +
             ", appliedGuardian=" + appliedGuardian +
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
+            ", note='" + note + '\'' +
+            ", events=" + events +
             '}';
     }
 }

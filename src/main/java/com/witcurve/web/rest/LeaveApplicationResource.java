@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
@@ -105,12 +106,16 @@ public class LeaveApplicationResource {
      * @throws WitcurveException
      */
 
-    @PatchMapping("/leave-application/{leaveApplicationId}/approval")
+    @PatchMapping("/leave-application/{leaveApplicationId}")
     @Timed
-    public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationApproval(@PathVariable("leaveApplicationId") Long applicationId,@RequestParam Long staffId) throws WitcurveException {
+    public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationApproval(
+        @PathVariable("leaveApplicationId") Long applicationId,
+        @RequestParam Long staffId,
+        @RequestParam ApprovalStatus status,
+        @RequestParam(required = false) String note) throws WitcurveException {
         log.debug("The LeaveApplication approved by staff id {} for application with id : {}",staffId, applicationId);
         try {
-            LeaveApplicationDTO result = leaveApplicationService.getLeaveApplicationApprover(applicationId,staffId);
+            LeaveApplicationDTO result = leaveApplicationService.changeLeaveStatus(applicationId,staffId, status, note);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
@@ -130,9 +135,11 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application/staff/{staffId}")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStaffIdAndSessionId(@PathVariable Long staffId, @RequestParam Long sessionId, @RequestParam(required = false) Boolean approved) throws WitcurveException {
+    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStaffIdAndSessionId
+    (@PathVariable Long staffId, @RequestParam Long sessionId,
+     @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
         log.debug("Request to get LeaveApplication with session id : {} and staff id : {}", sessionId, staffId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStaff(staffId, sessionId, approved);
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStaff(staffId, sessionId, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -145,9 +152,11 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application/student/{studentId}")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStudentIdAndSessionId(@PathVariable Long studentId, @RequestParam Long sessionId, @RequestParam(required = false) Boolean approved) throws WitcurveException {
+    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStudentIdAndSessionId
+    (@PathVariable Long studentId, @RequestParam Long sessionId,
+     @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
         log.debug("Request to get LeaveApplication with session id : {} and student id : {}", sessionId, studentId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStudent(studentId, sessionId, approved);
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStudent(studentId, sessionId, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -160,9 +169,10 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application/standard/{standardId}")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStandardIdAndSessionId(@PathVariable Long standardId,  @RequestParam(required = false) Boolean approved) throws WitcurveException {
+    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStandardIdAndSessionId
+    (@PathVariable Long standardId,  @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
         log.debug("Request to get LeaveApplication with standard id : {}", standardId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStandard(standardId, approved);
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStandard(standardId, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -175,9 +185,9 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application/leave-count")
     @Timed
-    public ResponseEntity<Long> getLeaveCount(@RequestParam(name="fromDate") LocalDate fromDate, @RequestParam(name="toDate") LocalDate toDate,@RequestParam(required = false) Long sessionId, @RequestParam Boolean isSaturdayWorking) throws WitcurveException {
+    public ResponseEntity<Long> getLeaveCount(@RequestParam(name="fromDate") LocalDate fromDate, @RequestParam(name="toDate") LocalDate toDate,@RequestParam Long schoolInfoId, @RequestParam Boolean isSaturdayWorking) throws WitcurveException {
         log.debug("Request to get number of leaves from date : {}", fromDate," to date :",toDate);
-        Long workingDays= leaveApplicationService.workingDays(fromDate,toDate,sessionId,isSaturdayWorking);
+        Long workingDays= leaveApplicationService.workingDays(fromDate,toDate,schoolInfoId,isSaturdayWorking);
         return new ResponseEntity<>(workingDays, HttpStatus.OK);
     }
 }

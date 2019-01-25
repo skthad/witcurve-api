@@ -21,8 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -103,7 +101,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             if(messageThread.get().getMessageType().equals(MessageType.LEAVE)) {
                 if(ApprovalStatus.APPROVED.equals(status)) {
                     LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
-                    leaveApplication.setApproved(true);
+                    leaveApplication.setStatus(status);
                     Staff staff = new Staff();
                     staff.setId(staffId);
                     leaveApplication.setApprovedBy(staff);
@@ -253,6 +251,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             }
             if(messageThreadDTO.getMeetingDate() == null || messageThreadDTO.getMeetingTime() == null) {
                 throw new WitcurveException("For Meeting Request Type thread there should be meeting date and meeting time");
+            }
+            if(messageThreadDTO.getStatus() == null) {
+                messageThreadDTO.setStatus(ApprovalStatus.PENDING);
             }
         }
         if(messageType.equals(MessageType.PERSONAL)) {

@@ -9,14 +9,15 @@ import org.mapstruct.Mapping;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {StaffMapper.class ,GuardianMapper.class, EventMapper.class, StudentMapperLite.class , AcademicSessionMapper.class, EventMapper.class})
+@Mapper(componentModel = "spring", uses = {StaffMapper.class ,GuardianMapper.class, EventMapper.class,
+    StudentMapperLite.class , EventMapper.class, SchoolInfoMapper.class})
 public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO, LeaveApplication> {
 
     @Mapping(target = "appliedStaffId", source = "appliedStaff.id")
     @Mapping(target= "appliedGuardianId", source="appliedGuardian.id" )
     @Mapping(target= "appliedStudentId",source="appliedStudent.id")
     @Mapping(target= "approvedById", source="approvedBy.id" )
-    @Mapping(target="sessionId", source="session.id")
+    @Mapping(target="schoolInfoId", source="schoolInfo.id")
     @Mapping(target = "eventIds" , expression = "java(getIdsFromEvents(leaveApplication))")
     LeaveApplicationDTO toDto(LeaveApplication leaveApplication);
 
@@ -24,7 +25,7 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
     @Mapping(target = "appliedGuardian", source = "appliedGuardianId")
     @Mapping(target="appliedStudent" , source="appliedStudentId")
     @Mapping(target= "approvedBy", source="approvedById" )
-    @Mapping(target = "session", source = "sessionId")
+    @Mapping(target="schoolInfo", source="schoolInfoId")
     @Mapping(target="events",ignore=true)
     LeaveApplication toEntity(LeaveApplicationDTO leaveApplicationDTO);
 
