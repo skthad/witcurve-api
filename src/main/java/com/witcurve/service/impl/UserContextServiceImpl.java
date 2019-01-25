@@ -52,6 +52,9 @@ public class UserContextServiceImpl implements UserContextService {
     @Autowired
     AcademicSessionService academicSessionService;
 
+    @Autowired
+    EventService eventService;
+
     @Override
     public UserContextDTO getCurrentUserContext() throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -110,29 +113,105 @@ public class UserContextServiceImpl implements UserContextService {
 
         if (currentSession != null) {
 
-            contextDTO.setNumberOfCalendarDaysInSession(DAYS.between(currentSession.getStartDate(), currentDate) + 1);
-            //TODO: calculate numberOfWorkingDaysInSession
+            LocalDate sessionStartDate = currentSession.getStartDate();
+            LocalDate sessionEndDate = sessionStartDate.plusYears(1).minusDays(1);
+            AcademicSessionDTO nextSession = academicSessionService.getNextActiveSessionAfterDate(schoolInfoId, currentSession.getStartDate());
+            if (nextSession != null) {
+                sessionEndDate = nextSession.getStartDate().minusDays(1);
+            }
+
+            contextDTO.setCurrentSessionStartDate(sessionStartDate);
+            contextDTO.setCurrentSessionEndDate(sessionEndDate);
+
+            List<EventDTO> allHolidays = eventService.findHolidaysInSchoolInfo(schoolInfoId, sessionStartDate, sessionEndDate);
+            contextDTO.setHolidayList(allHolidays);
+
+            long totalHolidaysInSession = allHolidays.size();
+            //TODO: add sundays, and other holidays missing in this logic
+
+            long noOfHolidaysInSession = allHolidays.size();
+            for (EventDTO holiday : allHolidays) {
+                if (holiday.getDate().isAfter(currentDate)) {
+                    noOfHolidaysInSession--;
+                }
+            }
+
+            //TODO: verify the logic in all the day-count related fields
+
+            contextDTO.setTotalCalendarDaysInSession(DAYS.between(sessionStartDate, sessionEndDate) + 1);
+            contextDTO.setTotalWorkingDaysInSession(contextDTO.getTotalCalendarDaysInSession() - totalHolidaysInSession);
+
+            contextDTO.setNoOfCalendarDaysInSession(DAYS.between(sessionStartDate, currentDate) + 1);
+            contextDTO.setNoOfWorkingDaysInSession(contextDTO.getNoOfCalendarDaysInSession() - noOfHolidaysInSession);
 
             List<TermDTO> termsInSession = termService.getTermsByAcademicSessionId(currentSession.getId());
             currentSession.setTermsInSession(termsInSession);
 
             TermDTO currentTerm = null;
+            TermDTO nextTerm = null;
             for (TermDTO termDTO : termsInSession) {
                 if (!currentDate.isBefore(termDTO.getStartDate())) {
                     currentTerm = termDTO;
-                } else {
-                    continue;
+                }
+                if (currentDate.isBefore(termDTO.getStartDate())) {
+                    nextTerm = termDTO;
+                    break;
                 }
             }
             if (currentTerm != null) {
+
                 contextDTO.setCurrentTerm(currentTerm);
-                contextDTO.setNumberOfCalendarDaysInTerm(DAYS.between(currentTerm.getStartDate(), currentDate) + 1);
-                //TODO: calculate numberOfWorkingDaysInTerm
 
+                LocalDate termStartDate = currentTerm.getStartDate();
+                LocalDate termEndDate;
+
+                if (nextTerm != null) {
+                    termEndDate = nextTerm.getStartDate().minusDays(1);
+                } else {
+                    termEndDate = sessionEndDate;
+                }
+
+
+                contextDTO.setCurrentTermStartDate(termStartDate);
+                contextDTO.setCurrentTermEndDate(termEndDate);
+
+                //TODO: add sundays, and other holidays missing in this logic
+                long totalHolidaysInTerm = 0;
+                long noOfHolidaysInTerm = 0;
+                for (EventDTO holiday : allHolidays) {
+                    if (!holiday.getDate().isBefore(termStartDate) && !holiday.getDate().isAfter(termEndDate)) {
+                        totalHolidaysInTerm++;
+                        if (!holiday.getDate().isAfter(currentDate)) {
+                            noOfHolidaysInTerm++;
+                        }
+                    }
+                }
+                contextDTO.setTotalCalendarDaysInTerm(DAYS.between(termStartDate, termEndDate) + 1);
+                contextDTO.setTotalWorkingDaysInTerm(contextDTO.getTotalCalendarDaysInTerm() - totalHolidaysInTerm);
+
+                contextDTO.setNoOfCalendarDaysInTerm(DAYS.between(termStartDate, currentDate) + 1);
+                contextDTO.setNoOfWorkingDaysInTerm(contextDTO.getNoOfCalendarDaysInTerm() - noOfHolidaysInTerm);
+
+                LocalDate monthStartDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), 1);
+                LocalDate monthEndDate = monthStartDate.plusMonths(1).minusDays(1);
+
+                List<EventDTO> monthHolidays = eventService.findHolidaysInSchoolInfo(schoolInfoId, monthStartDate, monthEndDate);
+
+                long totalHolidaysInMonth = monthHolidays.size();
+                //TODO: add sundays, and other holidays missing in this logic
+
+                long noOfHolidaysInMonth = monthHolidays.size();
+                for (EventDTO holiday : monthHolidays) {
+                    if (holiday.getDate().isAfter(currentDate)) {
+                        noOfHolidaysInMonth--;
+                    }
+                }
+
+                contextDTO.setTotalCalendarDaysInMonth(DAYS.between(monthStartDate, monthEndDate) + 1);
+                contextDTO.setTotalWorkingDaysInMonth(contextDTO.getTotalCalendarDaysInMonth() - totalHolidaysInMonth);
+                contextDTO.setNoOfCalendarDaysInMonth(currentDate.getDayOfMonth());
+                contextDTO.setNoOfWorkingDaysInMonth(contextDTO.getNoOfCalendarDaysInMonth() - noOfHolidaysInMonth);
             }
-
-            contextDTO.setNumberOfCalendarDaysInMonth(currentDate.getDayOfMonth());
-            //TODO: calculate numberOfWorkingDaysInMonth
 
         }
 

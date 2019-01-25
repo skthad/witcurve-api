@@ -44,5 +44,5 @@ public interface EventService {
 
     List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate date, ViewType type) throws WitcurveException;
 
-    List<EventDTO> findHolidaysInASession(Long sessionId) throws WitcurveException;
+    List<EventDTO> findHolidaysInSchoolInfo(Long schoolInfoId, LocalDate startDate, LocalDate endDate) throws WitcurveException;
 }

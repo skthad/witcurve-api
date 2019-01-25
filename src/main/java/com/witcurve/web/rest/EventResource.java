@@ -313,19 +313,4 @@ public class EventResource {
     }
 
 
-    /**
-     *
-     *
-     * @param sessionId
-     * @return
-     */
-
-    @GetMapping("/event/session/{sessionId}")
-    @Timed
-    public ResponseEntity<List<EventDTO>> getHolidaysForSession(@PathVariable Long sessionId) throws WitcurveException, URISyntaxException{
-        List<EventDTO> result = eventService.findHolidaysInASession(sessionId);
-        return new ResponseEntity<>(result,  HttpStatus.OK);
-    }
-
-
 }

@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public class UserContextDTO {
 
     private AcademicSessionDTO currentAcademicSession;
 
+    private List<EventDTO> holidayList;
+
     private StudentStandardDTO studentStandardDTO;
 
     private List<CourseTeacherDTO> studentCourses;
@@ -22,17 +25,23 @@ public class UserContextDTO {
 
     private Map<Long, List<CourseDTO>> standardCourseMap;
 
-    private long numberOfCalendarDaysInSession;
+    private LocalDate currentSessionStartDate;
+    private LocalDate currentSessionEndDate;
+    private LocalDate currentTermStartDate;
+    private LocalDate currentTermEndDate;
 
-    private long numberOfCalendarDaysInTerm;
-
-    private long numberOfCalendarDaysInMonth;
-
-    private long numberOfWorkingDaysInSession;
-
-    private long numberOfWorkingDaysInTerm;
-
-    private long numberOfWorkingDaysInMonth;
+    private long totalCalendarDaysInSession;
+    private long totalWorkingDaysInSession;
+    private long noOfCalendarDaysInSession;
+    private long noOfWorkingDaysInSession;
+    private long totalCalendarDaysInTerm;
+    private long totalWorkingDaysInTerm;
+    private long noOfCalendarDaysInTerm;
+    private long noOfWorkingDaysInTerm;
+    private long totalCalendarDaysInMonth;
+    private long totalWorkingDaysInMonth;
+    private long noOfCalendarDaysInMonth;
+    private long noOfWorkingDaysInMonth;
 
     public UserDTO getCurrentUser() {
         return currentUser;
@@ -56,6 +65,14 @@ public class UserContextDTO {
 
     public void setCurrentAcademicSession(AcademicSessionDTO currentAcademicSession) {
         this.currentAcademicSession = currentAcademicSession;
+    }
+
+    public List<EventDTO> getHolidayList() {
+        return holidayList;
+    }
+
+    public void setHolidayList(List<EventDTO> holidayList) {
+        this.holidayList = holidayList;
     }
 
     public StudentStandardDTO getStudentStandardDTO() {
@@ -90,51 +107,131 @@ public class UserContextDTO {
         this.standardCourseMap = standardCourseMap;
     }
 
-    public long getNumberOfCalendarDaysInSession() {
-        return numberOfCalendarDaysInSession;
+    public LocalDate getCurrentSessionStartDate() {
+        return currentSessionStartDate;
     }
 
-    public void setNumberOfCalendarDaysInSession(long numberOfCalendarDaysInSession) {
-        this.numberOfCalendarDaysInSession = numberOfCalendarDaysInSession;
+    public void setCurrentSessionStartDate(LocalDate currentSessionStartDate) {
+        this.currentSessionStartDate = currentSessionStartDate;
     }
 
-    public long getNumberOfCalendarDaysInTerm() {
-        return numberOfCalendarDaysInTerm;
+    public LocalDate getCurrentSessionEndDate() {
+        return currentSessionEndDate;
     }
 
-    public void setNumberOfCalendarDaysInTerm(long numberOfCalendarDaysInTerm) {
-        this.numberOfCalendarDaysInTerm = numberOfCalendarDaysInTerm;
+    public void setCurrentSessionEndDate(LocalDate currentSessionEndDate) {
+        this.currentSessionEndDate = currentSessionEndDate;
     }
 
-    public long getNumberOfCalendarDaysInMonth() {
-        return numberOfCalendarDaysInMonth;
+    public LocalDate getCurrentTermStartDate() {
+        return currentTermStartDate;
     }
 
-    public void setNumberOfCalendarDaysInMonth(long numberOfCalendarDaysInMonth) {
-        this.numberOfCalendarDaysInMonth = numberOfCalendarDaysInMonth;
+    public void setCurrentTermStartDate(LocalDate currentTermStartDate) {
+        this.currentTermStartDate = currentTermStartDate;
     }
 
-    public long getNumberOfWorkingDaysInSession() {
-        return numberOfWorkingDaysInSession;
+    public LocalDate getCurrentTermEndDate() {
+        return currentTermEndDate;
     }
 
-    public void setNumberOfWorkingDaysInSession(long numberOfWorkingDaysInSession) {
-        this.numberOfWorkingDaysInSession = numberOfWorkingDaysInSession;
+    public void setCurrentTermEndDate(LocalDate currentTermEndDate) {
+        this.currentTermEndDate = currentTermEndDate;
     }
 
-    public long getNumberOfWorkingDaysInTerm() {
-        return numberOfWorkingDaysInTerm;
+    public long getTotalCalendarDaysInSession() {
+        return totalCalendarDaysInSession;
     }
 
-    public void setNumberOfWorkingDaysInTerm(long numberOfWorkingDaysInTerm) {
-        this.numberOfWorkingDaysInTerm = numberOfWorkingDaysInTerm;
+    public void setTotalCalendarDaysInSession(long totalCalendarDaysInSession) {
+        this.totalCalendarDaysInSession = totalCalendarDaysInSession;
     }
 
-    public long getNumberOfWorkingDaysInMonth() {
-        return numberOfWorkingDaysInMonth;
+    public long getTotalWorkingDaysInSession() {
+        return totalWorkingDaysInSession;
     }
 
-    public void setNumberOfWorkingDaysInMonth(long numberOfWorkingDaysInMonth) {
-        this.numberOfWorkingDaysInMonth = numberOfWorkingDaysInMonth;
+    public void setTotalWorkingDaysInSession(long totalWorkingDaysInSession) {
+        this.totalWorkingDaysInSession = totalWorkingDaysInSession;
+    }
+
+    public long getNoOfCalendarDaysInSession() {
+        return noOfCalendarDaysInSession;
+    }
+
+    public void setNoOfCalendarDaysInSession(long noOfCalendarDaysInSession) {
+        this.noOfCalendarDaysInSession = noOfCalendarDaysInSession;
+    }
+
+    public long getNoOfWorkingDaysInSession() {
+        return noOfWorkingDaysInSession;
+    }
+
+    public void setNoOfWorkingDaysInSession(long noOfWorkingDaysInSession) {
+        this.noOfWorkingDaysInSession = noOfWorkingDaysInSession;
+    }
+
+    public long getTotalCalendarDaysInTerm() {
+        return totalCalendarDaysInTerm;
+    }
+
+    public void setTotalCalendarDaysInTerm(long totalCalendarDaysInTerm) {
+        this.totalCalendarDaysInTerm = totalCalendarDaysInTerm;
+    }
+
+    public long getTotalWorkingDaysInTerm() {
+        return totalWorkingDaysInTerm;
+    }
+
+    public void setTotalWorkingDaysInTerm(long totalWorkingDaysInTerm) {
+        this.totalWorkingDaysInTerm = totalWorkingDaysInTerm;
+    }
+
+    public long getNoOfCalendarDaysInTerm() {
+        return noOfCalendarDaysInTerm;
+    }
+
+    public void setNoOfCalendarDaysInTerm(long noOfCalendarDaysInTerm) {
+        this.noOfCalendarDaysInTerm = noOfCalendarDaysInTerm;
+    }
+
+    public long getNoOfWorkingDaysInTerm() {
+        return noOfWorkingDaysInTerm;
+    }
+
+    public void setNoOfWorkingDaysInTerm(long noOfWorkingDaysInTerm) {
+        this.noOfWorkingDaysInTerm = noOfWorkingDaysInTerm;
+    }
+
+    public long getTotalCalendarDaysInMonth() {
+        return totalCalendarDaysInMonth;
+    }
+
+    public void setTotalCalendarDaysInMonth(long totalCalendarDaysInMonth) {
+        this.totalCalendarDaysInMonth = totalCalendarDaysInMonth;
+    }
+
+    public long getTotalWorkingDaysInMonth() {
+        return totalWorkingDaysInMonth;
+    }
+
+    public void setTotalWorkingDaysInMonth(long totalWorkingDaysInMonth) {
+        this.totalWorkingDaysInMonth = totalWorkingDaysInMonth;
+    }
+
+    public long getNoOfCalendarDaysInMonth() {
+        return noOfCalendarDaysInMonth;
+    }
+
+    public void setNoOfCalendarDaysInMonth(long noOfCalendarDaysInMonth) {
+        this.noOfCalendarDaysInMonth = noOfCalendarDaysInMonth;
+    }
+
+    public long getNoOfWorkingDaysInMonth() {
+        return noOfWorkingDaysInMonth;
+    }
+
+    public void setNoOfWorkingDaysInMonth(long noOfWorkingDaysInMonth) {
+        this.noOfWorkingDaysInMonth = noOfWorkingDaysInMonth;
     }
 }

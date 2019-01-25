@@ -8,7 +8,6 @@ import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
 import com.witcurve.service.AcademicSessionService;
 import com.witcurve.service.EventService;
-import com.witcurve.service.dto.AcademicSessionDTO;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -427,12 +426,11 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDto(events);
     }
 
-    public List<EventDTO> findHolidaysInASession(Long schoolInfoId) throws WitcurveException {
+    @Override
+    public List<EventDTO> findHolidaysInSchoolInfo(Long schoolInfoId, LocalDate startDate, LocalDate endDate) throws WitcurveException {
         log.debug("List of holidays for a schoolInfo with id : {}", schoolInfoId);
-        AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, LocalDate.now());
-        LocalDate sDate= currentSession.getStartDate();
-        LocalDate eDate= sDate.plusYears(1);
-        List<Event> events = eventRepository.findByTypeAndSchoolInfoIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId,sDate,eDate);
+
+        List<Event> events = eventRepository.findByTypeAndSchoolInfoIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId, startDate, endDate);
         return eventMapper.toDto(events);
     }
 

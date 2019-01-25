@@ -16,5 +16,7 @@ public interface AcademicSessionService {
 
     AcademicSessionDTO getCurrentSessionByDate(Long schoolInfoId, LocalDate date);
 
+    AcademicSessionDTO getNextActiveSessionAfterDate(Long schoolInfoId, LocalDate date);
+
     void deleteAcademicSession(Long academicSessionId) throws WitcurveException;
 }
