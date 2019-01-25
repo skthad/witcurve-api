@@ -12,6 +12,8 @@ public interface PayrollService {
 
     List<PayrollDTO> getPayrollsForStaff(Long staffId, Integer year, Month month);
 
+    List<PayrollDTO> getPayrollsForSchoolInfo(Long schoolInfoId, Integer year, Month month);
+
     PayrollDetailsDTO saveOrUpdate(PayrollDetailsDTO payrollDetailsDTO);
 
     List<PayrollDetailsDTO> getActivePayrollDetailsForStaff(Long staffId);

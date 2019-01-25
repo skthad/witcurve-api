@@ -97,15 +97,15 @@ public class PayrollResource {
     }
 
     /**
-     * get school by id
+     * get payrolls by staff id
      * @param staffId
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/payroll/{staffId}")
+    @GetMapping("/payroll/staff/{staffId}")
     @Timed
-    public ResponseEntity<List<PayrollDTO>> getPayrollDetailsByStaffId(@PathVariable("staffId") Long staffId,
+    public ResponseEntity<List<PayrollDTO>> getPayrollsByStaffId(@PathVariable("staffId") Long staffId,
                                                                        @RequestParam(value = "year", required = false) Integer year,
                                                                        @RequestParam(value = "month", required = false) Month month) throws WitcurveException {
         log.debug("Request to get payroll(s) for staffId {}", staffId);
@@ -113,6 +113,26 @@ public class PayrollResource {
             throw new WitcurveException("year cannot be null");
         }
         List<PayrollDTO> result = payrollService.getPayrollsForStaff(staffId, year, month);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get payrolls by school info id
+     * @param schoolInfoId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/payroll/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<List<PayrollDTO>> getPayrollsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId,
+                                                                 @RequestParam(value = "year", required = false) Integer year,
+                                                                 @RequestParam(value = "month", required = false) Month month) throws WitcurveException {
+        log.debug("Request to get payroll(s) for schoolInfoId {}", schoolInfoId);
+        if (year == null && month != null) {
+            throw new WitcurveException("year cannot be null");
+        }
+        List<PayrollDTO> result = payrollService.getPayrollsForSchoolInfo(schoolInfoId, year, month);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

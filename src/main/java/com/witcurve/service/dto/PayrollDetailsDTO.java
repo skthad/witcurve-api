@@ -11,6 +11,9 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
     @NotNull
     private StaffDTO staff;
 
+    @NotNull
+    private PayrollCycleDTO payrollCycle;
+
     private Instant deactivationDate;
 
     @NotNull
@@ -63,6 +66,14 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
 
     public void setStaff(StaffDTO staff) {
         this.staff = staff;
+    }
+
+    public PayrollCycleDTO getPayrollCycle() {
+        return payrollCycle;
+    }
+
+    public void setPayrollCycle(PayrollCycleDTO payrollCycle) {
+        this.payrollCycle = payrollCycle;
     }
 
     public Instant getDeactivationDate() {

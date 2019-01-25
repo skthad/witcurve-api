@@ -6,7 +6,7 @@ import com.witcurve.service.dto.PayrollDetailsDTO;
 import com.witcurve.service.dto.StaffDTO;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = PayrollCycleMapper.class)
 public interface PayrollDetailsMapper extends EntityMapper<PayrollDetailsDTO, PayrollDetails> {
 
     PayrollDetailsDTO toDto(PayrollDetails payrollDetails);

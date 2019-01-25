@@ -1,0 +1,83 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1548422278173-1">
+        <createSequence sequenceName="payroll_cycle_id_seq"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-2">
+        <sql>delete from payroll</sql>
+        <sql>delete from payroll_details</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-3">
+        <createTable tableName="payroll_cycle">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="cycle_end" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cycle_start" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="month" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="year" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-4">
+        <addColumn tableName="payroll_details">
+            <column name="payroll_cycle_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-5">
+        <addPrimaryKey columnNames="id" constraintName="payroll_cyclePK" tableName="payroll_cycle"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-6">
+        <addUniqueConstraint columnNames="school_info_id, month, year" constraintName="payroll_cycle_school_info_month_year_UK" tableName="payroll_cycle"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-7">
+        <addUniqueConstraint columnNames="staff_id, payroll_cycle_id" constraintName="staff_payroll_cycle_UK" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-8">
+        <addForeignKeyConstraint baseColumnNames="payroll_cycle_id" baseTableName="payroll_details" constraintName="FK48fensxrr27vtfa9ipgiqraye" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_cycle"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-9">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="payroll_cycle" constraintName="FKc7m7so9ik7ey3iscr2i5x6ebm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-10">
+        <dropUniqueConstraint constraintName="payroll_month_year_staff_UK" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-11">
+        <dropColumn columnName="cycle_end" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-12">
+        <dropColumn columnName="cycle_start" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-13">
+        <dropColumn columnName="month" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-14">
+        <dropColumn columnName="staff_id" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-15">
+        <dropColumn columnName="year" tableName="payroll"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548422278173-16">
+        <sql>update staff set type = 'NON_TEACHING' where type = 'ADMIN'</sql>
+    </changeSet>
+</databaseChangeLog>

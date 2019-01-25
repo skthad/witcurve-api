@@ -373,7 +373,8 @@ public class EventServiceImpl implements EventService {
                     result = eventRepository.findTeacherNotices(schoolInfoId, termDate, pageable);
                 }
             }
-            if(staff.get().getType().equals(StaffType.ADMIN)) {
+            // TODO: look for user role, not for staff type. 'ADMIN' is a role. It is no more a staff type
+            if(staff.get().getType().equals(StaffType.NON_TEACHING)) {
                 //result = eventRepository.findAdminNotices(schoolInfoId, termDate, pageable);
                 List<Event> results = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, termDate); //pr1
                 results.addAll(eventRepository.findAdminNoticesByStandardInSession(schoolInfoId, termDate));

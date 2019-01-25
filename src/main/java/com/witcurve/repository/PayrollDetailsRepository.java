@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface PayrollDetailsRepository extends JpaRepository<PayrollDetails, Long> {
 
-    @Query("select pd from PayrollDetails pd where pd.staff.id = ?1 and (pd.deactivationDate is null or pd.deactivationDate > now())")
+    @Query("select pd from PayrollDetails pd where pd.staff.id = ?1 " +
+        "and (pd.deactivationDate is null or pd.deactivationDate > now()) " +
+        "order by deactivationDate nulls last ")
     List<PayrollDetails> findActivePayrollDetailsForStaff(Long staffId);
 }

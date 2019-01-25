@@ -4,19 +4,13 @@ import com.witcurve.domain.enumeration.ModeOfPayment;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Objects;
 
 @Entity
-@Table(name="payroll", uniqueConstraints = {
-    @UniqueConstraint(name = "payroll_month_year_staff_UK",
-        columnNames = {"month", "year", "staff_id"})
-})
+@Table(name="payroll")
 public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,31 +40,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @Column
     @Convert(converter = LocalDateConverter.class)
     private LocalDate closedOn;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "month", nullable = false)
-    private Month month;
-
-    @NotNull
-    @Min(value = 1900)
-    @Max(value = 2099)
-    @Column(name = "year", nullable = false)
-    private Integer year;
-
-    @NotNull
-    @Column(nullable = false)
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate cycleStart;
-
-    @NotNull
-    @Column(nullable = false)
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate cycleEnd;
-
-    @NotNull
-    @Column(name = "staff_id", nullable = false)
-    private Long staffId;
 
     public Long getId() {
         return id;
@@ -118,46 +87,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     public void setClosedOn(LocalDate closedOn) {
         this.closedOn = closedOn;
-    }
-
-    public Month getMonth() {
-        return month;
-    }
-
-    public void setMonth(Month month) {
-        this.month = month;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public LocalDate getCycleStart() {
-        return cycleStart;
-    }
-
-    public void setCycleStart(LocalDate cycleStart) {
-        this.cycleStart = cycleStart;
-    }
-
-    public LocalDate getCycleEnd() {
-        return cycleEnd;
-    }
-
-    public void setCycleEnd(LocalDate cycleEnd) {
-        this.cycleEnd = cycleEnd;
-    }
-
-    public Long getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(Long staffId) {
-        this.staffId = staffId;
     }
 
     @Override

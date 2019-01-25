@@ -9,7 +9,10 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-@Table(name="payroll_details")
+@Table(name="payroll_details", uniqueConstraints = {
+    @UniqueConstraint(name = "staff_payroll_cycle_UK",
+        columnNames = {"staff_id", "payroll_cycle_id"})
+})
 public class PayrollDetails extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,6 +26,11 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     @ManyToOne
     @JoinColumn(nullable = false)
     private Staff staff;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private PayrollCycle payrollCycle;
 
     @Column
     @Convert(converter = InstantTimeConverter.class)
@@ -90,6 +98,14 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public PayrollCycle getPayrollCycle() {
+        return payrollCycle;
+    }
+
+    public void setPayrollCycle(PayrollCycle payrollCycle) {
+        this.payrollCycle = payrollCycle;
     }
 
     public Instant getDeactivationDate() {
