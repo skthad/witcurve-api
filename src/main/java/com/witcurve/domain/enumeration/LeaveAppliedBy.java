@@ -1,5 +1,5 @@
 package com.witcurve.domain.enumeration;
 
-public enum LeaveApplyor {
+public enum LeaveAppliedBy {
     STUDENT ,STAFF;
 }

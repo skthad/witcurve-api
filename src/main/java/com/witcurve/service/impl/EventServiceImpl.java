@@ -314,82 +314,10 @@ public class EventServiceImpl implements EventService {
             .collect(Collectors.toSet());
 
         List<Event> events = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_UPCOMING_EVENTS);
-        /*if (events.size() > 0) {
-            String lastBindingId = events.get(events.size()-1).getBindingId();
-            if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, sessionId);
-                if(remainingList.size() != 0) {
-                    events.addAll(remainingList);
-                    events = new ArrayList<>(new HashSet<>(events));
-                }
-            }
-        }*/
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 
     }
-
-//    @Override
-//    public List<EventDTO> getAllLeavesForStudent(LocalDate date, Long studentId) throws WitcurveException {
-//        log.debug("Find events for leaves for a student with id : {}", studentId);
-//
-//
-//        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
-//        Long standardId = studentStandard.getStandard().getId();
-//        Grade grade = studentStandard.getStandard().getGrade();
-//        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-//
-//        List<Event> events = new ArrayList<>();
-//        if (date == null) { // get all leaves info for the current term
-//
-//            //TODO change the implementation to have only those events associated with leave application
-////            events = eventRepository.findAllLeavesForStudentInSession(studentId, schoolInfoId);
-//        } else { // get leave data for a day
-//            events = eventRepository.findLeaveForStudent(date, studentId);
-//        }
-//
-//        if (events != null && events.size() > 0) {
-//            String lastBindingId = events.get(events.size()-1).getBindingId();
-//            if(lastBindingId != null) {
-//                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, schoolInfoId);
-//                if(remainingList.size() != 0) {
-//                    events.addAll(remainingList);
-//                    events = new ArrayList<>(new HashSet<>(events));
-//                }
-//            }
-//            Collections.sort(events, new EventDateDescComparator());
-//        }
-//        return eventMapper.toDto(events);
-//
-//    }
-//
-//    @Override
-//    public List<EventDTO> getAllLeavesForStandard(LocalDate date, Long standardId) throws WitcurveException {
-//        log.debug("Find events for leaves for a standard with id : {}", standardId);
-//
-//        Optional<Standard> result = standardRepository.findById(standardId);
-//
-//        if(!result.isPresent()) {
-//            throw new WitcurveException("There is no standard with given standard id : " + standardId);
-//        }
-//
-//        Standard standard = result.get();
-//
-//        Long schoolInfoId = standard.getSchoolInfo().getId();
-//
-//        List<Event> events = new ArrayList<>();
-//        if (date == null) { // get all leaves info for the current term
-//
-//            //TODO change the implementation to have only those events associated with leave application
-//            events = eventRepository.findLeavesForStandard(standardId, schoolInfoId);
-//        } else { // get attendance data for a day
-//            events = eventRepository.findAttendanceForStandard(date, date, standardId);
-//        }
-//
-//        Collections.sort(events, new EventDateDescComparator());
-//        return eventMapper.toDto(events);
-//
-//    }
 
     @Override
     public List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId,
@@ -397,8 +325,8 @@ public class EventServiceImpl implements EventService {
         if (studentId == null && standardId == null && staffId == null && schoolInfoId == null) {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
-        // find better logic condition to check if one more ids exist - use truth table;
-        List<Event> attendance = null;
+        //TODO find better logic condition to check if one more ids exist - use truth table;
+        List<Event> attendance;
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
         } else if(standardId != null) {
@@ -577,8 +505,8 @@ public class EventServiceImpl implements EventService {
                     log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
                     throw new WitcurveException("Invalid request body");
                 }
-                Long schoolInfoId = null;
-                List<Event> events = new ArrayList<>();
+                Long schoolInfoId;
+                List<Event> events;
                 if(eventDTO.getStudentId() != null) {
                     if(eventDTO.getStandardId() == null) {
                         log.error("Event of type : "+eventDTO.getType()+"should have only have standard id with student id");

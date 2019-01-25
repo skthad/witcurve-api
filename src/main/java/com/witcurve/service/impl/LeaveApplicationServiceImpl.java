@@ -4,7 +4,7 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
-import com.witcurve.domain.enumeration.LeaveApplyor;
+import com.witcurve.domain.enumeration.LeaveAppliedBy;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
@@ -290,9 +290,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         event.setName("Leave - "+leaveApplications.getReason());
         event.setType(EventType.ATTENDANCE);
         event.setAttendanceType(AttendanceType.ABSENT);
-        if(leaveApplicationDTO.getType().equals(LeaveApplyor.STUDENT)) {
+        if(leaveApplicationDTO.getType().equals(LeaveAppliedBy.STUDENT)) {
         event.setStudent(leaveApplications.getAppliedStudent());}
-        else if(leaveApplicationDTO.getType().equals(LeaveApplyor.STAFF)){
+        else if(leaveApplicationDTO.getType().equals(LeaveAppliedBy.STAFF)){
         event.setStaff(leaveApplications.getAppliedStaff()); }
         //event.setAcademicSession(leaveApplications.getSession());
         event.setDate(date);
@@ -304,7 +304,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     private void isLeaveApplicationValid(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException {
         log.debug("Request to check valid leaveApplications in list : {}",leaveApplicationDTO);
-            if (leaveApplicationDTO.getType().equals(LeaveApplyor.STUDENT)) {
+            if (leaveApplicationDTO.getType().equals(LeaveAppliedBy.STUDENT)) {
                 // add the condition for guardian id later when date is there
 //                if (leaveApplicationDTO.getAppliedStudentId() == null || leaveApplicationDTO.getAppliedGuardianId() == null) {
 //                    log.error("There either applied student id or applied guardian id is null for student leave application : {}", leaveApplicationDTO);
@@ -340,7 +340,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                     }
                 }
             }
-            if (leaveApplicationDTO.getType().equals(LeaveApplyor.STAFF)) {
+            if (leaveApplicationDTO.getType().equals(LeaveAppliedBy.STAFF)) {
                 if (leaveApplicationDTO.getAppliedStaffId() == null) {
                     log.error("Staff id is null for student leave application : {}", leaveApplicationDTO);
                     throw new WitcurveException("Invalid Request Body");

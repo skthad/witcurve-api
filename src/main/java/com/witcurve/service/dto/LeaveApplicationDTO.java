@@ -1,7 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.ApprovalStatus;
-import com.witcurve.domain.enumeration.LeaveApplyor;
+import com.witcurve.domain.enumeration.LeaveAppliedBy;
 import com.witcurve.domain.enumeration.Reason;
 
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     private String description;
 
     @NotNull
-    private LeaveApplyor type;
+    private LeaveAppliedBy type;
 
     private ApprovalStatus status = ApprovalStatus.PENDING;
 
@@ -71,11 +71,11 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.description = description;
     }
 
-    public LeaveApplyor getType() {
+    public LeaveAppliedBy getType() {
         return type;
     }
 
-    public void setType(LeaveApplyor type) {
+    public void setType(LeaveAppliedBy type) {
         this.type = type;
     }
 

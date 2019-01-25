@@ -2,7 +2,7 @@ package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.witcurve.domain.enumeration.ApprovalStatus;
-import com.witcurve.domain.enumeration.LeaveApplyor;
+import com.witcurve.domain.enumeration.LeaveAppliedBy;
 import com.witcurve.domain.enumeration.Reason;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -32,7 +32,7 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     @NotNull
     @Column(nullable =false)
-    private LeaveApplyor type;
+    private LeaveAppliedBy type;
 
     @NotNull
     @Column(nullable = false)
@@ -101,11 +101,11 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.description = description;
     }
 
-    public LeaveApplyor getType() {
+    public LeaveAppliedBy getType() {
         return type;
     }
 
-    public void setType(LeaveApplyor type) {
+    public void setType(LeaveAppliedBy type) {
         this.type = type;
     }
 
