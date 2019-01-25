@@ -10,10 +10,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name="exam", uniqueConstraints = {
-    @UniqueConstraint(name = "exam_name_academic_session_UK",
-        columnNames = {"name", "academic_session_id"})
-})
+@Table(name="exam")
 public class Exam extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,8 +36,8 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name ="academic_session_id", nullable = false)
-    private AcademicSession academicSession;
+    @JoinColumn(name ="school_info_id", nullable = false)
+    private SchoolInfo schoolInfo;
 
     @NotNull
     @Column(name = "grade", nullable = false, length = 50)
@@ -79,12 +76,12 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
         this.endDate = endDate;
     }
 
-    public AcademicSession getAcademicSession() {
-        return academicSession;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setAcademicSession(AcademicSession academicSession) {
-        this.academicSession = academicSession;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Grade getGrade() {
@@ -116,7 +113,8 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
             ", name='" + name + '\'' +
             ", startDate=" + startDate +
             ", endDate=" + endDate +
-            ", academicSession=" + academicSession +
+            ", schoolInfo=" + schoolInfo +
+            ", grade=" + grade +
             '}';
     }
 }

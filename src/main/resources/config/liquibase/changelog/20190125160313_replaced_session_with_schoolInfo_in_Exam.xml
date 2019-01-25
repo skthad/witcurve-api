@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1548432201788-1">
+        <addColumn tableName="exam">
+            <column name="school_info_id" type="int8"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548432201788-2">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="exam" constraintName="FKb3atfb980yit73nespxeruiq8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548432201788-3">
+        <dropForeignKeyConstraint baseTableName="exam" constraintName="FK796ohp1rjtd0wk2xu5kli8pok"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548432201788-4">
+        <dropUniqueConstraint constraintName="exam_name_academic_session_UK" tableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548432201788-5">
+        <sql>
+            UPDATE  exam
+            SET     school_info_id =
+            (
+            SELECT school_info_id
+            FROM academic_session a
+            WHERE exam.academic_session_id = a.id
+            )
+        </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548432201788-6">
+        <dropColumn columnName="academic_session_id" tableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548432201788-7">
+        <addNotNullConstraint columnName="school_info_id"
+                              tableName="exam"/>
+    </changeSet>
+</databaseChangeLog>

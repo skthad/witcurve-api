@@ -16,7 +16,6 @@ public class ExamDTO extends AbstractAuditingDTO {
     @NotNull
     private String name;
 
-
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate startDate;
@@ -26,7 +25,7 @@ public class ExamDTO extends AbstractAuditingDTO {
     private LocalDate endDate;
 
     @NotNull
-    private Long academicSessionId;
+    private Long schoolInfoId;
 
     @NotNull
     private Grade grade;
@@ -63,12 +62,12 @@ public class ExamDTO extends AbstractAuditingDTO {
         this.endDate = endDate;
     }
 
-    public Long getAcademicSessionId() {
-        return academicSessionId;
+    public Long getSchoolInfoId() {
+        return schoolInfoId;
     }
 
-    public void setAcademicSessionId(Long academicSessionId) {
-        this.academicSessionId = academicSessionId;
+    public void setSchoolInfoId(Long schoolInfoId) {
+        this.schoolInfoId = schoolInfoId;
     }
 
     public Grade getGrade() {
@@ -100,7 +99,8 @@ public class ExamDTO extends AbstractAuditingDTO {
             ", name='" + name + '\'' +
             ", startDate=" + startDate +
             ", endDate=" + endDate +
-            ", academicSessionId=" + academicSessionId +
+            ", schoolInfoId=" + schoolInfoId +
+            ", grade=" + grade +
             '}';
     }
 }

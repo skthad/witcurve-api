@@ -1,20 +1,17 @@
 package com.witcurve.service.mapper;
 
-import com.witcurve.domain.AcademicSession;
 import com.witcurve.domain.Exam;
 import com.witcurve.service.dto.ExamDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring", uses = {AcademicSessionMapper.class})
+@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class})
 public interface ExamMapper extends EntityMapper<ExamDTO, Exam> {
 
-    @Mapping(source = "academicSessionId", target = "academicSession.id")
+    @Mapping(source = "schoolInfoId", target = "schoolInfo")
     Exam toEntity(ExamDTO examDTO);
 
-    @Mapping(target = "academicSessionId", source = "academicSession.id")
+    @Mapping(target = "schoolInfoId", source = "schoolInfo.id")
     ExamDTO toDto(Exam exam);
 
 
