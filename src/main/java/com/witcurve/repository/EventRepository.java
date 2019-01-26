@@ -83,44 +83,24 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findEventsByBindingId(String bindingId, Long studentId, Long standardId, Grade grade,
                                       Long schoolInfoId);
 
-//    @Query("Select e from Event e where e.student.id = ?1 and e.type = 'ATTENDANCE' " +
-//        "and e.academicSession.id=?2 ")
-//    List<Event> findAllLeavesForStudentInSession(Long studentId, Long sessionId);
-//
-//    @Query("Select e from Event e where e.standard.id = ?1 and e.type = 'ATTENDANCE' " +
-//        "and e.schoolInfo.id=?2 ")
-//    List<Event> findLeavesForStandard(Long studentId, Long schoolInfoId);
-//
-//    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
-//        "and e.type = 'ATTENDANCE'")
-//    List<Event> findLeaveForStudent(LocalDate date, Long studentId);
-//
-//    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
-//        "and e.type = 'ATTENDANCE'")
-//    List<Event> findLeaveForStaff(LocalDate date, Long staffId);
-//
-//    @Query("Select e from Event e where e.date = ?1 and e.student.id = ?2 " +
-//        "and e.type = 'ATTENDANCE'")
-//    Event findEventForStudent(LocalDate date, Long studentId);
-//
-//    @Query("Select e from Event e where e.date = ?1 and e.staff.id = ?2 " +
-//        "and e.type = 'ATTENDANCE'")
-//    Event findEventForStaff(LocalDate date, Long staffId);
-
     @Query("Select e from Event e where e.date between ?1 and ?2  and e.standard.id = ?3 " +
         "and e.type = 'ATTENDANCE'")
     List<Event> findAttendanceForStandard(LocalDate fromDate, LocalDate toDate, Long standardId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2  and e.staff.id = ?3 " +
-        "and e.type = 'ATTENDANCE' order by e.date asc")
+        "and e.type = 'ATTENDANCE' order by e.date desc")
     List<Event> findAttendanceForStaff(LocalDate fromDate, LocalDate toDate, Long staffId);
 
-    @Query("Select e from Event e where e.date between ?1 and ?2  and e.staff.id in ?3 " +
-        "and e.type = 'ATTENDANCE' order by e.staff.id asc, e.date asc")
+    @Query("Select e from Event e where e.date between ?1 and ?2 and e.staff is not null and e.staff.id in ?3 " +
+        "and e.type = 'ATTENDANCE' order by e.staff.firstName, e.staff.lastName, e.date desc")
     List<Event> findAttendanceForStaffs(LocalDate fromDate, LocalDate toDate, List<Long> staffIds);
 
+    @Query("Select e from Event e where e.date between ?1 and ?2 and e.staff is not null and e.staff.schoolInfo.id = ?3 " +
+        "and e.type = 'ATTENDANCE' order by e.staff.firstName, e.staff.lastName, e.date desc")
+    List<Event> findAttendanceForAllStaffInSchoolInfo(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
+
     @Query("Select e from Event e where e.date between ?1 and ?2 and e.student.id = ?3 " +
-        "and e.type = 'ATTENDANCE'")
+        "and e.type = 'ATTENDANCE' order by e.date desc")
     List<Event> findAttendanceForStudent(LocalDate fromDate, LocalDate toDate, Long student);
 
     @Query("select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and " +
@@ -176,6 +156,5 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
     List<Event> findByTypeAndSchoolInfoIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
-
 }
 

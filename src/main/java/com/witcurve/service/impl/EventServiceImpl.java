@@ -333,8 +333,7 @@ public class EventServiceImpl implements EventService {
         } else if(staffId != null) {
             attendance =eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
         } else {
-            List<Long> staffIds = staffRepository.findStaffIdsBySchoolInfoId(schoolInfoId);
-            attendance=eventRepository.findAttendanceForStaffs(fromDate, toDate, staffIds);
+            attendance=eventRepository.findAttendanceForAllStaffInSchoolInfo(fromDate, toDate, schoolInfoId);
         }
 
         return eventMapper.toDto(attendance);
