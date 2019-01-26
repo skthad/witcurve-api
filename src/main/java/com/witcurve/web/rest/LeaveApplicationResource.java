@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 public class LeaveApplicationResource {
@@ -189,5 +193,53 @@ public class LeaveApplicationResource {
         log.debug("Request to get number of leaves from date : {}", fromDate," to date :",toDate);
         Long workingDays= leaveApplicationService.workingDays(fromDate,toDate,schoolInfoId,isSaturdayWorking);
         return new ResponseEntity<>(workingDays, HttpStatus.OK);
+    }
+
+    /**
+     * Validate existence of leave application
+     * @param fromDate
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/leave-application/leave-application-details")
+    @Timed
+    public ResponseEntity<List<LeaveApplicationDTO>> getExistingLeaveApplicationDetails
+    (@RequestParam(name="fromDate") LocalDate fromDate, @RequestParam(name="toDate") LocalDate toDate, @RequestParam(required = false) Long studentId,
+     @RequestParam(required = false) Long staffId) throws WitcurveException {
+        List<LeaveApplicationDTO> result= new ArrayList<>();
+        if(studentId !=null){
+            result= leaveApplicationService.getLeaveDetailsForStudent(studentId,fromDate,toDate);
+        }
+        else if(staffId != null){
+            result= leaveApplicationService.getLeaveDetailsForStaff(staffId ,fromDate,toDate);
+        }
+        return new ResponseEntity<>( result ,HttpStatus.OK);
+    }
+
+    /**
+     * Get all leave applications in a school for all staffs
+     * @param schoolInfoId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/leave-application/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<Map<Long,List<LeaveApplicationDTO>>> getAllLeaveApplicationForStaffInSchool(@PathVariable(name="schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get all leave applications for all staffs in a school with schoolInfoId : {}", schoolInfoId);
+        List<LeaveApplicationDTO> result= leaveApplicationService.getLeavesForAllStaffsInSchool(schoolInfoId);
+        Map<Long, List<LeaveApplicationDTO>> resultMap = new HashMap<>();
+        if(result.size() !=0){
+            for(LeaveApplicationDTO leaveApplicationDTO : result){
+                List<LeaveApplicationDTO> leaveApplicationDTOs = resultMap.get(leaveApplicationDTO.getAppliedStaffId());
+                if(leaveApplicationDTOs== null){
+                    leaveApplicationDTOs= new ArrayList<>();
+                }
+                leaveApplicationDTOs.add(leaveApplicationDTO);
+                resultMap.put(leaveApplicationDTO.getAppliedStaffId(),leaveApplicationDTOs);
+            }
+        }
+        return new ResponseEntity<>( resultMap ,HttpStatus.OK);
     }
 }

@@ -9,8 +9,10 @@ import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
+import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.service.mapper.LeaveApplicationMapper;
+import com.witcurve.service.mapper.StaffMapper;
 import com.witcurve.service.util.WeekdayUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -60,6 +62,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     @Autowired
     EventMapper eventMapper;
+
+    @Autowired
+    StaffMapper staffMapper;
 
     @Override
     public LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException {
@@ -225,6 +230,31 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         } else {
             return leaveApplicationDTOS;
         }
+    }
+
+    public List<LeaveApplicationDTO> getLeaveDetailsForStudent(Long studentId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
+        List<LeaveApplication> result= new ArrayList<>();
+        Student student= studentRepository.getStudentByUserId(studentId);
+        Long schoolInfoId= student.getSchoolInfo().getId();
+        result = leaveApplicationRepository.findLeaveApplicationsForStudentInADateRange(schoolInfoId, studentId, fromDate, toDate);
+        return leaveApplicationMapper.toDto(result);
+    }
+
+    public List<LeaveApplicationDTO> getLeaveDetailsForStaff(Long staffId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
+        List<LeaveApplication> result= new ArrayList<>();
+        Long schoolInfoId=0L;
+        Staff staff= staffRepository.getStaffByUserId(staffId);
+        StaffDTO staffDTO= staffMapper.toDto(staff) ;
+        schoolInfoId= staffDTO.getSchoolInfo().getId();
+        result = leaveApplicationRepository.findLeaveApplicationsForStaffInADateRange(schoolInfoId, staffId, fromDate, toDate);
+        return leaveApplicationMapper.toDto(result);
+    }
+
+    public List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId){
+        AcademicSession academicSession= academicSessionRepository.nearestActiveSessionToDate(schoolInfoId,LocalDate.now());
+        LocalDate startDate= academicSession.getStartDate();
+        List<LeaveApplication> result=leaveApplicationRepository.findLeaveApplicationsForAllStaffsInSchool(schoolInfoId,startDate);
+        return leaveApplicationMapper.toDto(result);
     }
 
     private List<LeaveApplicationDTO> insertLeaveDays(List<LeaveApplicationDTO> leaveApplicationDTOS) throws WitcurveException {
