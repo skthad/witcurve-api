@@ -10,9 +10,6 @@ import java.util.List;
 public interface ExamCourseDetailsRepository extends JpaRepository<ExamCourseDetails, Long> {
 
     @Query("Select ecd from ExamCourseDetails ecd where ecd.gsd.grade=?1 and ecd.gsd.exam.id = ?2 order by ecd.date asc, ecd.gsd.start asc")
-    List<ExamCourseDetails> findByGradeOrderByGsdStart(Grade grade, Long examId);
-
-    @Query("Select ecd from ExamCourseDetails ecd where ecd.courseTeacher.teacher.id=?1 and ecd.gsd.exam.id = ?2 order by ecd.date asc, ecd.gsd.start asc")
-    List<ExamCourseDetails> findByTeacherIdAndExamIdOrderByGsdStart(Long teacherId, Long examId);
+    List<ExamCourseDetails> findByGradeAndExamIdOrderByGsdStart(Grade grade, Long examId);
 
 }

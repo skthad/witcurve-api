@@ -176,15 +176,9 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public List<GeneralSlotDetailsDTO> getExamSlotsByGrade(Grade grade, Long examId) throws WitcurveException {
+    public List<GeneralSlotDetailsDTO> getExamSlotsByGradeAndExam(Grade grade, Long examId) throws WitcurveException {
         log.debug("Request to get generalSlotDetails by grade : {}", grade);
-        List<GeneralSlotDetails> gsdList;
-
-        if (examId == null) {
-            gsdList = generalSlotDetailsRepository.findExamSlotsByGrade(grade);
-        } else {
-            gsdList = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(grade, examId);
-        }
+        List<GeneralSlotDetails> gsdList = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(grade, examId);
         return generalSlotDetailsMapper.toDto(gsdList);
     }
 

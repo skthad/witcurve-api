@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.ExamService;
 import com.witcurve.service.dto.ExamDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -33,32 +36,25 @@ public class ExamResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/exam")
+    @PostMapping("/exams")
     @Timed
     public ResponseEntity<ExamDTO> createExam(@RequestBody @Valid ExamDTO examDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Exam");
         if (examDTO.getId() != null) {
             throw new WitcurveException("New Exam can't already have an id");
         }
-        ExamDTO result = examService.saveOrUpdate(examDTO);
-        return ResponseEntity.created(new URI("/api/exam/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("exam", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * get exam by id
-     * @param examId
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/exam/{examId}")
-    @Timed
-    public ResponseEntity<ExamDTO> getExamById(@PathVariable("examId") Long examId) throws WitcurveException {
-        log.debug("Request to get Exam with id {}", examId);
-        ExamDTO result = examService.getExamById(examId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            ExamDTO result = examService.saveOrUpdate(examDTO);
+            return ResponseEntity.created(new URI("/api/exams/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("exams", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**
@@ -68,7 +64,7 @@ public class ExamResource {
      * @throws WitcurveException
      */
 
-    @PutMapping("/exam")
+    @PutMapping("/exams")
     @Timed
     public ResponseEntity<ExamDTO> updateExam(@RequestBody @Valid ExamDTO examDTO) throws WitcurveException {
         log.debug("Request to update exam");
@@ -77,10 +73,53 @@ public class ExamResource {
         } else {
             examService.getExamById(examDTO.getId());
         }
-        ExamDTO result = examService.saveOrUpdate(examDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("exam", examDTO.getId().toString()))
-            .body(result);
+        try {
+            ExamDTO result = examService.saveOrUpdate(examDTO);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("exam", examDTO.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+
+    /**
+     * get exam by id
+     * @param examId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/exams/{examId}")
+    @Timed
+    public ResponseEntity<ExamDTO> getExamById(@PathVariable("examId") Long examId) throws WitcurveException {
+        log.debug("Request to get Exam with id {}", examId);
+        ExamDTO result = examService.getExamById(examId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get exam by id
+     * @param schoolInfoId
+     * @param grade
+     *
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/exams/school-info/{schoolInfoId}/grade/{grade}")
+    @Timed
+    public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfoAndGrade(@PathVariable("schoolInfoId") Long schoolInfoId,
+                                                                   @PathVariable("grade") Grade grade,
+                                                                      @RequestParam(value = "startDate", required = false) LocalDate startDate,
+                                                                      @RequestParam(value = "endDate", required = false) LocalDate endDate) throws WitcurveException {
+        log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
+        List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
@@ -89,7 +128,7 @@ public class ExamResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/exam/{examId}")
+    @DeleteMapping("/exams/{examId}")
     @Timed
     public ResponseEntity<Void> deleteExam(@PathVariable Long examId) throws WitcurveException {
         log.debug("REST request to delete Exam: {}", examId);

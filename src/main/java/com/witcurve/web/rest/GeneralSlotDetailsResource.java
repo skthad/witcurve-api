@@ -86,20 +86,18 @@ public class GeneralSlotDetailsResource {
      * get generalSlotDetails by standard id
      *
      * @param grade
-     * @param status
      * @param examId
      *
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/general-slot-details/grade/{grade}")
+    @GetMapping("/general-slot-details/grade/{grade}/exams/{examId}")
     @Timed
-    public ResponseEntity<List<GeneralSlotDetailsDTO>> getExamSlotsByGrade(@PathVariable("grade") Grade grade,
-                                                                           @RequestParam(value = "examId", required = false) Long examId,
-                                                                           @RequestParam(value = "status", required = false) GSDStatus status) throws WitcurveException {
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> getExamSlotsByGradeAndExam(@PathVariable("grade") Grade grade,
+                                                                           @PathVariable(value = "examId") Long examId) throws WitcurveException {
         log.debug("Request to get GeneralSlotDetails with grade {} and examId {} ", grade, examId);
-        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getExamSlotsByGrade(grade, examId);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getExamSlotsByGradeAndExam(grade, examId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -225,9 +223,9 @@ public class GeneralSlotDetailsResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/general-slot-details/grade/{grade}")
+    @DeleteMapping("/general-slot-details/grade/{grade}/exams/{examId}")
     @Timed
-    public ResponseEntity<Void> deleteExamSlotsByGradeExamId(@PathVariable Grade grade, @RequestParam Long examId) throws WitcurveException {
+    public ResponseEntity<Void> deleteExamSlotsByGradeExamId(@PathVariable Grade grade, @PathVariable Long examId) throws WitcurveException {
         log.debug("REST request to delete Exam Slots for grade: {} and examId: {}", grade, examId);
         generalSlotDetailsService.deleteExamSlotsByGradeAndExamId(grade, examId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("Exam Slots deleted with grade " + grade + " and examId " + examId,

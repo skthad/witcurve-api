@@ -58,6 +58,7 @@
     <include file="config/liquibase/changelog/20190125001546_LeaveApplication_Changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190125131749_added_payroll_cycle.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190125160313_replaced_session_with_schoolInfo_in_Exam.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190126093143_added_course_to_exam.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

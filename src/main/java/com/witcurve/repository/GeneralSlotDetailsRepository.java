@@ -20,9 +20,6 @@ public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotD
         "and gsd.exam.id is null and status = ?2 order by bindingId, start")
     List<GeneralSlotDetails> findGSDsByStandardIdAndStatus(Long standardId, GSDStatus status);
 
-    @Query("select gsd from GeneralSlotDetails gsd where gsd.grade = ?1 order by bindingId, start")
-    List<GeneralSlotDetails> findExamSlotsByGrade(Grade grade);
-
     @Query("select gsd from GeneralSlotDetails gsd where gsd.grade = ?1 " +
         "and gsd.exam.id = ?2 order by bindingId, start")
     List<GeneralSlotDetails> findExamSlotsByGradeAndExamId(Grade grade,Long examId);

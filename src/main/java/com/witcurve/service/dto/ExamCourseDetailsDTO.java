@@ -20,7 +20,8 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate date;
 
-    private CourseTeacherDTO courseTeacher;
+    @NotNull
+    private CourseDTO course;
 
     public Long getId() {
         return id;
@@ -47,13 +48,12 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
         this.date = date;
     }
 
-    @NotNull
-    public CourseTeacherDTO getCourseTeacher() {
-        return courseTeacher;
+    public CourseDTO getCourse() {
+        return course;
     }
 
-    public void setCourseTeacher(CourseTeacherDTO courseTeacher) {
-        this.courseTeacher = courseTeacher;
+    public void setCourse(CourseDTO course) {
+        this.course = course;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
             "id=" + id +
             ", gsd=" + gsd +
             ", date=" + date +
-            ", courseTeacher=" + courseTeacher +
+            ", courseId=" + course.getId() +
             '}';
     }
 }

@@ -4,7 +4,7 @@ import com.witcurve.domain.ExamCourseDetails;
 import com.witcurve.service.dto.ExamCourseDetailsDTO;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {CourseTeacherMapper.class, GeneralSlotDetailsMapper.class})
+@Mapper(componentModel = "spring", uses = {CourseMapper.class, GeneralSlotDetailsMapper.class})
 public interface ExamCourseDetailsMapper extends EntityMapper<ExamCourseDetailsDTO, ExamCourseDetails> {
 
     ExamCourseDetails toEntity(ExamCourseDetailsDTO examCourseDetailsDTO);

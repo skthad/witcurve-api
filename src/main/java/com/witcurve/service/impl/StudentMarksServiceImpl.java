@@ -6,7 +6,6 @@ import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.repository.StudentMarksRepository;
 import com.witcurve.service.EventService;
-import com.witcurve.service.ExamCourseDetailsService;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.StudentMarksDTO;
@@ -108,12 +107,12 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public Map<EventType,List<StudentMarksDTO>> getAllMarksForStudent(Long courseTeacherId,Long studentId) throws WitcurveException{
+    public Map<EventType,List<StudentMarksDTO>> getAllMarksForStudentInACourse(Long courseId, Long studentId) throws WitcurveException{
         log.debug("Request to get all marks List for test, assignment,exam of a student");
         Map<EventType,List<StudentMarksDTO>> mapMarksEventType= new HashMap<>();
-        mapMarksEventType.put(EventType.TEST,studentMarksMapper.toDto(studentMarksRepository.getByCourseTeacherIdAndEventTypeAndStudentId(courseTeacherId,EventType.TEST,studentId)));
-        mapMarksEventType.put(EventType.ASSIGNMENT,studentMarksMapper.toDto(studentMarksRepository.getByCourseTeacherIdAndEventTypeAndStudentIdForAssignment(courseTeacherId,EventType.ASSIGNMENT,studentId)));
-        mapMarksEventType.put(EventType.EXAM,studentMarksMapper.toDto(studentMarksRepository.getStudentMarksForExamByStudentIdAndCourseTeacherId(courseTeacherId,studentId)));
+        mapMarksEventType.put(EventType.TEST,studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndEventTypeAndStudentId(courseId,EventType.TEST,studentId)));
+        mapMarksEventType.put(EventType.ASSIGNMENT,studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndEventTypeAndStudentIdForAssignment(courseId,EventType.ASSIGNMENT,studentId)));
+        mapMarksEventType.put(EventType.EXAM,studentMarksMapper.toDto(studentMarksRepository.getStudentMarksForExamByStudentIdAndCourseId(courseId,studentId)));
         return mapMarksEventType;
     }
 }

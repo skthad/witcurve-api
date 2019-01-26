@@ -32,6 +32,9 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
         "and ct.course.masterSubject = ?2 and ct.standard.grade = ?3 and ct.active = true")
     List<CourseTeacher> findByStaffAndSubjectAndGrade(Long staffId, MasterSubject subject, Grade grade);
 
+    @Query("select distinct ct.course.id from CourseTeacher ct where ct.teacher.id = ?1")
+    List<Long> findCourseIdsByTeacherId(Long teacher);
+
     @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.course.eligibleForSubstitute = true " +
         "and ct.teacher.id != ?1 and ct.teacher.schoolInfo.id = ?2")
     List<Long> findEligibleForSubstituteBySchoolInfoId(Long staffId, Long schoolInfoId);

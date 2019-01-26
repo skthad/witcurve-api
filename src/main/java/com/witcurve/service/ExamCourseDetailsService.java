@@ -8,13 +8,12 @@ import java.util.List;
 
 public interface ExamCourseDetailsService {
 
-    ExamCourseDetailsDTO saveOrUpdate(ExamCourseDetailsDTO examCourseDetailsDTO);
+    ExamCourseDetailsDTO saveOrUpdate(ExamCourseDetailsDTO examCourseDetailsDTO, Long examId) throws WitcurveException;
+
+    List<ExamCourseDetailsDTO> getExamCourseDetailsByGradeAndExamId(Grade grade, Long examId);
 
     ExamCourseDetailsDTO getExamCourseDetailsById(Long examCourseDetailsId) throws WitcurveException;
 
     void deleteExamCourseDetails(Long examCourseDetailsId) throws WitcurveException;
 
-    List<ExamCourseDetailsDTO> getExamCourseDetailsByGradeAndExamId(Grade grade, Long examId);
-
-    List<ExamCourseDetailsDTO> getExamCourseDetailsByTeacherIdAndExamId(Long teacherId, Long examId);
 }

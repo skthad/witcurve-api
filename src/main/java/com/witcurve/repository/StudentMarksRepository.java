@@ -26,16 +26,16 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
 
     List<StudentMarks> getStudentMarksByEventId(Long eventId);
 
-    @Query("select sm from StudentMarks sm where sm.event.scd.courseTeacher.id = ?1 and sm.event.type = ?2 and sm.student.id=?3 order by sm.event.date asc")
-    List<StudentMarks> getByCourseTeacherIdAndEventTypeAndStudentId(Long courseTeacherId, EventType eventType,Long studentId);
+    @Query("select sm from StudentMarks sm where sm.event.scd.courseTeacher.course.id = ?1 and sm.event.type = ?2 and sm.student.id=?3 order by sm.event.date asc")
+    List<StudentMarks> getByCourseIdAndEventTypeAndStudentId(Long courseId, EventType eventType, Long studentId);
 
-    @Query("select sm from StudentMarks sm where sm.event.courseTeacher.id = ?1 and sm.event.type = ?2 and sm.student.id=?3 order by sm.event.date asc")
-    List<StudentMarks> getByCourseTeacherIdAndEventTypeAndStudentIdForAssignment(Long courseTeacherId, EventType eventType,Long studentId);
+    @Query("select sm from StudentMarks sm where sm.event.courseTeacher.course.id = ?1 and sm.event.type = ?2 and sm.student.id=?3 order by sm.event.date asc")
+    List<StudentMarks> getByCourseIdAndEventTypeAndStudentIdForAssignment(Long courseId, EventType eventType, Long studentId);
 
     List<StudentMarks> getStudentMarksByExamCourseDetailsId(Long examCourseDetailsId);
 
-    @Query("select sm from StudentMarks sm where sm.examCourseDetails.courseTeacher.id = ?1 and sm.student.id =?2 order by sm.examCourseDetails.date asc")
-    List<StudentMarks> getStudentMarksForExamByStudentIdAndCourseTeacherId(Long courseTeacherId , Long studentId);
+    @Query("select sm from StudentMarks sm where sm.examCourseDetails.course.id = ?1 and sm.student.id =?2 order by sm.examCourseDetails.date asc")
+    List<StudentMarks> getStudentMarksForExamByStudentIdAndCourseId(Long courseId , Long studentId);
 
 }
 

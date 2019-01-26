@@ -10,8 +10,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="exam_course_details", uniqueConstraints = {
-    @UniqueConstraint(name = "ecd_slot_day_UK",
-        columnNames = {"gsd_id", "date"})
+    @UniqueConstraint(name = "ecd_slot_date_course_UK",
+        columnNames = {"gsd_id", "date", "course_id"})
 })
 public class ExamCourseDetails extends AbstractAuditingEntity implements Serializable {
 
@@ -35,7 +35,7 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private CourseTeacher courseTeacher;
+    private Course course;
 
     public Long getId() {
         return id;
@@ -61,12 +61,12 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
         this.date = date;
     }
 
-    public CourseTeacher getCourseTeacher() {
-        return courseTeacher;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setCourseTeacher(CourseTeacher courseTeacher) {
-        this.courseTeacher = courseTeacher;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
             "id=" + id +
             ", gsd=" + gsd +
             ", date=" + date +
-            ", courseTeacher=" + courseTeacher +
+            ", courseId=" + course.getId() +
             '}';
     }
 }

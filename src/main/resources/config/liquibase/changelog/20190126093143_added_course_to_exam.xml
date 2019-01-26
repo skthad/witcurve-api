@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1548495112061-1">
+        <addColumn tableName="exam_course_details">
+            <column name="course_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548495112061-2">
+        <sql>update exam_course_details ecd set course_id =
+            (select course_id from course_teacher where id = ecd.course_teacher_id)</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548495112061-3">
+        <addNotNullConstraint columnName="course_id" tableName="exam_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548495112061-4">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="exam_course_details" constraintName="FKpp70w86kxm992wp0ognh0enrt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548495112061-5">
+        <dropForeignKeyConstraint baseTableName="exam_course_details" constraintName="FKq0ukk6g62dtcl3es7gpm36obs"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548495112061-6">
+        <dropColumn columnName="course_teacher_id" tableName="exam_course_details"/>
+    </changeSet>
+</databaseChangeLog>
