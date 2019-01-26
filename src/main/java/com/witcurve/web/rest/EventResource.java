@@ -70,7 +70,7 @@ public class EventResource {
 
     @GetMapping("/event/attendance")
     @Timed
-    public ResponseEntity<List<EventDTO>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
+    public ResponseEntity<Map<Long, List<EventDTO>>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
                                                         @RequestParam(value = "toDate") LocalDate toDate,
                                                   @RequestParam(value = "studentId", required = false) Long studentId,
                                                   @RequestParam(value = "standardId", required = false) Long standardId,
@@ -78,25 +78,32 @@ public class EventResource {
                                                 @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get attendance");
         List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @GetMapping("/event/attendance/staff")
-    @Timed
-    public ResponseEntity<Map<Long, List<EventDTO>>> getAttendanceForStaff(@RequestParam(value = "fromDate") LocalDate fromDate,
-                                                        @RequestParam(value = "toDate") LocalDate toDate,
-                                                        @RequestParam(value = "schoolInfoId") Long schoolInfoId) throws WitcurveException {
-        log.debug("Request to get staff attendance for schoolInfo with id : {}", schoolInfoId);
-        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, null, null, null, schoolInfoId);
         Map<Long, List<EventDTO>> resultMap = new HashMap<>();
-        for(EventDTO eventDTO : result ) {
-            List<EventDTO> staffAttendanceList = resultMap.get(eventDTO.getStaffId());
-            if(staffAttendanceList == null) {
-                staffAttendanceList = new ArrayList<>();
+
+        if (studentId != null) {
+            resultMap.put(studentId, result);
+        } else if(standardId != null) {
+            for(EventDTO eventDTO : result ) {
+                List<EventDTO> studentAttendanceList = resultMap.get(eventDTO.getStudentId());
+                if(studentAttendanceList == null) {
+                    studentAttendanceList = new ArrayList<>();
+                }
+                studentAttendanceList.add(eventDTO);
+                resultMap.put(eventDTO.getStudentId(), studentAttendanceList);
             }
-            staffAttendanceList.add(eventDTO);
-            resultMap.put(eventDTO.getStaffId(), staffAttendanceList);
+        } else if(staffId != null) {
+            resultMap.put(staffId, result);
+        } else {
+            for(EventDTO eventDTO : result ) {
+                List<EventDTO> staffAttendanceList = resultMap.get(eventDTO.getStaffId());
+                if(staffAttendanceList == null) {
+                    staffAttendanceList = new ArrayList<>();
+                }
+                staffAttendanceList.add(eventDTO);
+                resultMap.put(eventDTO.getStaffId(), staffAttendanceList);
+            }
         }
+
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
