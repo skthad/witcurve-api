@@ -444,37 +444,32 @@ public class EventServiceImpl implements EventService {
                 if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
                     if(eventDTO.getStandardId() == null) {
                         log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId for event with date");
-                        throw new WitcurveException("Invalid request body");
+                        throw new WitcurveException("An assignment cannot have empty standardId for event with date");
                     }
                     // add a check later
 
                 } else {
                     if(eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
-                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId and scd");
-                        throw new WitcurveException("Invalid request body");
+                        throw new WitcurveException("Event cannot have SCD without standardId");
                     }
                     Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
                     if(event != null) {
-                        log.error("There already exists a record for given event type : "+eventDTO.getType()+" for scd with id : "+eventDTO.getScd().getId()+ " on date : "+eventDTO.getDate().toString());
-                        throw new WitcurveException("Invalid request body");
+                        throw new WitcurveException("IThere already exists a record for given event type and date for SCD with with id: " +eventDTO.getScd().getId());
                     }
                 }
             } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
                 if(eventDTO.getSchoolInfoId() == null) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have the field : schoolInfoId");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("A holiday must have schoolInfoId");
                 }
 
                 List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, eventDTO.getSchoolInfoId());
                 events = removeExistingEvent(events, eventDTO);
                 if(events.size() !=0) {
-                    log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
                 }
             } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
                 if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : schoolInfoId, standardId");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("A school event must have only one of the fields [schoolInfoId, standardId]");
                 }
                 Long schoolInfoId = eventDTO.getSchoolInfoId();
                 if(schoolInfoId == null) {
@@ -488,27 +483,24 @@ public class EventServiceImpl implements EventService {
                 List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, schoolInfoId);
                 events = removeExistingEvent(events, eventDTO);
                 if(events.size() !=0) {
-                    log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("The event clashes with an existing holiday or school event");
                 }
 
             } else if(eventDTO.getType().equals(EventType.SUBJECT_NOTE)) {
                 if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have only of the fields : schoolInfoId, standardId, studentId");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("A subject note must have only one of the fields [schoolInfoId, standardId, studentId]");
                 }
 
             }  else if(eventDTO.getType().equals(EventType.ATTENDANCE)) {
                 if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
                     log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("An attendance record must have only one of the fields [studentId, staffId]");
                 }
                 Long schoolInfoId;
                 List<Event> events;
                 if(eventDTO.getStudentId() != null) {
                     if(eventDTO.getStandardId() == null) {
-                        log.error("Event of type : "+eventDTO.getType()+"should have only have standard id with student id");
-                        throw new WitcurveException("Invalid request body");
+                        throw new WitcurveException("An attendance record for student must have only standardId");
                     }
                     StudentStandard studentStandard = getStudentStandardFromStudentId(eventDTO.getStudentId());
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
@@ -520,26 +512,23 @@ public class EventServiceImpl implements EventService {
                     events = removeExistingEvent(events, eventDTO);
                 }
                 if(events.size() !=0) {
-                    log.error("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT or LEAVE");
-                    throw new WitcurveException("Invalid request body");
+                    throw new WitcurveException("An attendance record cannot be posted on a holiday or school event");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
                 if(eventDTO.getType().equals(EventType.NOTICE)) {
                     if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
-                        log.error("Event of type : "+eventDTO.getType()+"should have one of the fields : schoolInfoId, standardId");
-                        throw new WitcurveException("Invalid request body");
+                        throw new WitcurveException("A notice must have only one of the fields [schoolInfoId, standardId]");
                     }
                     Long schoolInfoId = eventDTO.getSchoolInfoId();
                     if(schoolInfoId == null) {
-                        Standard standard = standardRepository.findById(eventDTO.getStandardId()).get();
-                        if(standard == null) {
-                            throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
+                        Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
+                        if(!standard.isPresent()) {
+                            throw new WitcurveException("No standard found with id :"+eventDTO.getStandardId());
                         }
                     }
                 } else {
                     if(eventDTO.getSchoolInfoId() ==null) {
-                        log.error("Event of type : "+eventDTO.getType()+"should have the fields : schoolInfoId");
-                        throw new WitcurveException("Invalid request body");
+                        throw new WitcurveException("A staff event must have schoolInfoId");
                     }
                 }
             }
