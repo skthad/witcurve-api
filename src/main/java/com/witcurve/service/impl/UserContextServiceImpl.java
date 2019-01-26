@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.UserMapper;
+import com.witcurve.service.util.WeekdayUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,9 +129,13 @@ public class UserContextServiceImpl implements UserContextService {
             contextDTO.setHolidayList(allHolidays);
 
             long totalHolidaysInSession = allHolidays.size();
-            //TODO: add sundays, and other holidays missing in this logic
+            long totalSundaysInSession = WeekdayUtil.getNoOfWeekDayBetweenDates
+                (sessionStartDate, sessionEndDate, DayOfWeek.SUNDAY);
+            //TODO: add other holidays missing in this logic
 
             long noOfHolidaysInSession = allHolidays.size();
+            long noOfSundaysInSession =  WeekdayUtil.getNoOfWeekDayBetweenDates
+                (sessionStartDate, currentDate, DayOfWeek.SUNDAY);
             for (EventDTO holiday : allHolidays) {
                 if (holiday.getDate().isAfter(currentDate)) {
                     noOfHolidaysInSession--;
@@ -139,10 +145,10 @@ public class UserContextServiceImpl implements UserContextService {
             //TODO: verify the logic in all the day-count related fields
 
             contextDTO.setTotalCalendarDaysInSession(DAYS.between(sessionStartDate, sessionEndDate) + 1);
-            contextDTO.setTotalWorkingDaysInSession(contextDTO.getTotalCalendarDaysInSession() - totalHolidaysInSession);
+            contextDTO.setTotalWorkingDaysInSession(contextDTO.getTotalCalendarDaysInSession() - totalHolidaysInSession - totalSundaysInSession);
 
             contextDTO.setNoOfCalendarDaysInSession(DAYS.between(sessionStartDate, currentDate) + 1);
-            contextDTO.setNoOfWorkingDaysInSession(contextDTO.getNoOfCalendarDaysInSession() - noOfHolidaysInSession);
+            contextDTO.setNoOfWorkingDaysInSession(contextDTO.getNoOfCalendarDaysInSession() - noOfHolidaysInSession - noOfSundaysInSession);
 
             List<TermDTO> termsInSession = termService.getTermsByAcademicSessionId(currentSession.getId());
             currentSession.setTermsInSession(termsInSession);
@@ -175,9 +181,13 @@ public class UserContextServiceImpl implements UserContextService {
                 contextDTO.setCurrentTermStartDate(termStartDate);
                 contextDTO.setCurrentTermEndDate(termEndDate);
 
-                //TODO: add sundays, and other holidays missing in this logic
+                //TODO: add holidays missing in this logic
                 long totalHolidaysInTerm = 0;
                 long noOfHolidaysInTerm = 0;
+                long totalSundaysInTerm = WeekdayUtil.getNoOfWeekDayBetweenDates
+                    (termStartDate, termEndDate, DayOfWeek.SUNDAY);
+                long noOfSundaysInTerm = WeekdayUtil.getNoOfWeekDayBetweenDates
+                    (termStartDate, currentDate, DayOfWeek.SUNDAY);
                 for (EventDTO holiday : allHolidays) {
                     if (!holiday.getDate().isBefore(termStartDate) && !holiday.getDate().isAfter(termEndDate)) {
                         totalHolidaysInTerm++;
@@ -187,10 +197,10 @@ public class UserContextServiceImpl implements UserContextService {
                     }
                 }
                 contextDTO.setTotalCalendarDaysInTerm(DAYS.between(termStartDate, termEndDate) + 1);
-                contextDTO.setTotalWorkingDaysInTerm(contextDTO.getTotalCalendarDaysInTerm() - totalHolidaysInTerm);
+                contextDTO.setTotalWorkingDaysInTerm(contextDTO.getTotalCalendarDaysInTerm() - totalHolidaysInTerm - totalSundaysInTerm);
 
                 contextDTO.setNoOfCalendarDaysInTerm(DAYS.between(termStartDate, currentDate) + 1);
-                contextDTO.setNoOfWorkingDaysInTerm(contextDTO.getNoOfCalendarDaysInTerm() - noOfHolidaysInTerm);
+                contextDTO.setNoOfWorkingDaysInTerm(contextDTO.getNoOfCalendarDaysInTerm() - noOfHolidaysInTerm - noOfSundaysInTerm);
 
                 LocalDate monthStartDate = LocalDate.of(currentDate.getYear(), currentDate.getMonth(), 1);
                 LocalDate monthEndDate = monthStartDate.plusMonths(1).minusDays(1);
@@ -198,9 +208,14 @@ public class UserContextServiceImpl implements UserContextService {
                 List<EventDTO> monthHolidays = eventService.findHolidaysInSchoolInfo(schoolInfoId, monthStartDate, monthEndDate);
 
                 long totalHolidaysInMonth = monthHolidays.size();
+                long totalSundaysInMonth = WeekdayUtil.getNoOfWeekDayBetweenDates
+                    (monthStartDate, monthEndDate, DayOfWeek.SUNDAY);
                 //TODO: add sundays, and other holidays missing in this logic
 
+
                 long noOfHolidaysInMonth = monthHolidays.size();
+                long noOfSundaysInMonth = WeekdayUtil.getNoOfWeekDayBetweenDates
+                    (monthStartDate, currentDate, DayOfWeek.SUNDAY);
                 for (EventDTO holiday : monthHolidays) {
                     if (holiday.getDate().isAfter(currentDate)) {
                         noOfHolidaysInMonth--;
@@ -208,9 +223,9 @@ public class UserContextServiceImpl implements UserContextService {
                 }
 
                 contextDTO.setTotalCalendarDaysInMonth(DAYS.between(monthStartDate, monthEndDate) + 1);
-                contextDTO.setTotalWorkingDaysInMonth(contextDTO.getTotalCalendarDaysInMonth() - totalHolidaysInMonth);
+                contextDTO.setTotalWorkingDaysInMonth(contextDTO.getTotalCalendarDaysInMonth() - totalHolidaysInMonth - totalSundaysInMonth);
                 contextDTO.setNoOfCalendarDaysInMonth(currentDate.getDayOfMonth());
-                contextDTO.setNoOfWorkingDaysInMonth(contextDTO.getNoOfCalendarDaysInMonth() - noOfHolidaysInMonth);
+                contextDTO.setNoOfWorkingDaysInMonth(contextDTO.getNoOfCalendarDaysInMonth() - noOfHolidaysInMonth - noOfSundaysInMonth);
             }
 
         }

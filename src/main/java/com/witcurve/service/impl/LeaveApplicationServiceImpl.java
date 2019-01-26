@@ -11,6 +11,7 @@ import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.service.mapper.LeaveApplicationMapper;
+import com.witcurve.service.util.WeekdayUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
@@ -255,27 +258,20 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         }
         LocalDate startDate= academicSession.getStartDate();
         LocalDate endDate = startDate.plusYears(1);
-        Long workingDays = 0L;
+        Long workingDays = DAYS.between(fromDate, toDate) + 1;
+        Long noOfSundays = 0L;
+        Long noOfSaturdays = 0L;
         if (fromDate.isAfter(toDate)) {
             throw new WitcurveException("from date cannot be after to date.");
         }
         if (fromDate.isAfter(startDate.minusDays(1)) && toDate.isBefore(endDate.plusDays(1))) {
-            if (isSaturdayWorking == false) {
-                for(LocalDate date=fromDate ; date.isBefore(toDate) || date.equals(toDate); date= date.plusDays(1)){
-                    if (date.getDayOfWeek() != DayOfWeek.SUNDAY && date.getDayOfWeek() != DayOfWeek.SATURDAY) {
-                        workingDays++;
-                    }
-                }
-            } else {
-                for(LocalDate date=fromDate ; date.isBefore(toDate) || date.equals(toDate) ; date=date.plusDays(1)){
-                    if (date.getDayOfWeek() != DayOfWeek.SUNDAY) {
-                        workingDays++;
-                    }
-                }
+            noOfSundays = WeekdayUtil.getNoOfWeekDayBetweenDates(fromDate, toDate, DayOfWeek.SUNDAY);
+            if(!isSaturdayWorking) {
+                noOfSaturdays = WeekdayUtil.getNoOfWeekDayBetweenDates(fromDate, toDate, DayOfWeek.SATURDAY);
             }
             // to remove the holidays
             Long holidays = eventRepository.findHolidaysBetweenFromDateAndToDate(fromDate,toDate, schoolInfoId);
-            workingDays = workingDays - holidays;
+            workingDays = workingDays - noOfSundays - noOfSaturdays - holidays;
         }
         else
         {
@@ -305,7 +301,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     private void isLeaveApplicationValid(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException {
         log.debug("Request to check valid leaveApplications in list : {}",leaveApplicationDTO);
             if (leaveApplicationDTO.getType().equals(LeaveAppliedBy.STUDENT)) {
-                // add the condition for guardian id later when date is there
+                // add the condition for guardian id later when guardian id is made required
 //                if (leaveApplicationDTO.getAppliedStudentId() == null || leaveApplicationDTO.getAppliedGuardianId() == null) {
 //                    log.error("There either applied student id or applied guardian id is null for student leave application : {}", leaveApplicationDTO);
 //                    throw new WitcurveException("Invalid Request Body");
