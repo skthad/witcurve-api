@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/api")
 public class StaffEligibilityResource {
 
-
     private final Logger log = LoggerFactory.getLogger(StaffEligibility.class);
 
     @Autowired

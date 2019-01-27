@@ -3,10 +3,12 @@ package com.witcurve.service.impl;
 import com.google.common.base.Strings;
 import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.MasterSubject;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.StaffEligibility;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.MasterSubjectRepository;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StaffEligibilityRepository;
 import com.witcurve.service.StaffEligibilityService;
 import com.witcurve.service.dto.StaffEligibilityDTO;
@@ -38,6 +40,9 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
 
     @Autowired
     MasterSubjectRepository masterSubjectRepository;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
 
     @Override
     public StaffEligibilityDTO findById(Long staffEligibilityId) throws WitcurveException {
@@ -73,6 +78,10 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
 
     @Override
     public List<StaffEligibilityDTO> getStaffEligibilitysBySchoolInfo(Long schoolInfoId, String subject, Grade grade) throws WitcurveException {
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo with given id " + schoolInfo);
+        }
         MasterSubject masterSubject = null;
         if (!Strings.isNullOrEmpty(subject)) {
             masterSubject = masterSubjectRepository.findByName(subject);
