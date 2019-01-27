@@ -1,0 +1,116 @@
+package com.witcurve.web.rest;
+
+import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.CourseContent;
+import com.witcurve.service.CourseContentService;
+import com.witcurve.service.dto.CourseContentDTO;
+import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.util.HeaderUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api")
+public class CourseContentResource {
+
+    private final Logger log = LoggerFactory.getLogger(CourseContent.class);
+
+    @Autowired
+    CourseContentService courseContentService;
+
+    /**
+     * creates courseContents
+     * @param courseContentDTOs
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PostMapping("/course-content")
+    @Timed
+    public ResponseEntity<List<CourseContentDTO>> createCourseContents(@RequestBody @Valid List<CourseContentDTO> courseContentDTOs) throws WitcurveException, URISyntaxException {
+        log.debug("Request Save or Update courseContents");
+
+        try {
+            List<CourseContentDTO> result = courseContentService.saveOrUpdate(courseContentDTOs);
+            return ResponseEntity.created(new URI("/api/course-content/"))
+                .headers(HeaderUtil.createEntityCreationAlert("courseContent", null))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("course_parent_content_order_UK")) {
+                throw new WitcurveException("Unique constraint (course_id, parent_content_id, order) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
+    }
+
+    /**
+     * get courseContent by id
+     * @param courseContentId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course-content/{courseContentId}")
+    @Timed
+    public ResponseEntity<CourseContentDTO> getCourseContentsById(@PathVariable(value = "courseContentId") Long courseContentId) throws WitcurveException {
+
+        log.debug("Request to get CourseContent with id {}", courseContentId);
+
+        CourseContentDTO result = courseContentService.getCourseContentById(courseContentId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get courseContents by courseId
+     * @param courseId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course-content/course/{courseId}")
+    @Timed
+    public ResponseEntity<Map<CourseContentDTO, List<CourseContentDTO>>> getCourseContentsByStaff(@PathVariable("courseId") Long courseId) throws WitcurveException {
+        log.debug("Request to get CourseContents with courseId {}", courseId);
+        Map<CourseContentDTO, List<CourseContentDTO>> result = courseContentService.getCourseContentsByCourseId(courseId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * delete the courseContent
+     * @param courseContentId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/course-content/{courseContentId}")
+    @Timed
+    public ResponseEntity<Void> deleteCourseContent(@PathVariable Long courseContentId) throws WitcurveException {
+        log.debug("REST request to delete CourseContent: {}", courseContentId);
+
+        try {
+            courseContentService.deleteCourseContent(courseContentId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A courseContent is deleted with identifier " + courseContentId,
+                courseContentId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+}
