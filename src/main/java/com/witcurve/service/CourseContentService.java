@@ -4,6 +4,7 @@ import com.witcurve.service.dto.CourseContentDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CourseContentService {
 
@@ -11,7 +12,7 @@ public interface CourseContentService {
 
     CourseContentDTO getCourseContentById(Long courseContentId) throws WitcurveException;
 
-    List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException;
+    Map<CourseContentDTO, List<CourseContentDTO>> getCourseContentsByCourseId(Long courseId) throws WitcurveException;
 
     void deleteCourseContent(Long courseContentId) throws WitcurveException;
 }

@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -83,9 +84,9 @@ public class CourseContentResource {
 
     @GetMapping("/course-content/course/{courseId}")
     @Timed
-    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByStaff(@PathVariable("courseId") Long courseId) throws WitcurveException {
+    public ResponseEntity<Map<CourseContentDTO, List<CourseContentDTO>>> getCourseContentsByStaff(@PathVariable("courseId") Long courseId) throws WitcurveException {
         log.debug("Request to get CourseContents with courseId {}", courseId);
-        List<CourseContentDTO> result = courseContentService.getCourseContentsByCourseId(courseId);
+        Map<CourseContentDTO, List<CourseContentDTO>> result = courseContentService.getCourseContentsByCourseId(courseId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

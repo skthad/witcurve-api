@@ -17,6 +17,8 @@ public class CourseContentDTO extends AbstractAuditingDTO {
     @NotNull
     private Integer contentOrder;
 
+    private String index;
+
     public Long getId() {
         return id;
     }
@@ -55,6 +57,14 @@ public class CourseContentDTO extends AbstractAuditingDTO {
 
     public void setContentOrder(Integer contentOrder) {
         this.contentOrder = contentOrder;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     @Override
