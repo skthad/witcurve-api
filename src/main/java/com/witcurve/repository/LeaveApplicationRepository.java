@@ -42,4 +42,20 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     @Query("Select la from LeaveApplication la where la.appliedStaff.id = ?1 and (la.fromLeaveDate <= ?2) and (la.toLeaveDate >= ?2)")
     LeaveApplication findLeaveForStaffOnDate(Long staffId, LocalDate date);
 
+    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id = ?2 and la.status=?5 " +
+        "and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
+    List<LeaveApplication> findLeaveApplicationsWithStatusForStudentInADateRange(Long schoolInfoId, Long studentId, LocalDate fromDate, LocalDate toDate,ApprovalStatus status);
+
+    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStaff.id = ?2 and la.status=?5 " +
+        "and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
+    List<LeaveApplication> findLeaveApplicationsWithStatusForStaffInADateRange(Long schoolInfoId, Long staffId, LocalDate fromDate, LocalDate toDate,ApprovalStatus status);
+
+    @Query("Select la from LeaveApplication la where la.schoolInfo.id = ?1 and la.appliedStaff.id is not null and la.appliedStudent.id is null " +
+        "and (la.fromLeaveDate between ?2 and ?3 or la.toLeaveDate between ?2 and ?3) order by la.appliedStaff.id, la.fromLeaveDate")
+    List<LeaveApplication> findLeaveApplicationsForAllStaffsInSchool(Long schoolInfoId,LocalDate fromDate,LocalDate toDate);
+
+    @Query("Select la from LeaveApplication la where la.schoolInfo.id = ?1 and la.appliedStaff.id is not null and la.appliedStudent.id is null " +
+        "and (la.fromLeaveDate between ?2 and ?3 or la.toLeaveDate between ?2 and ?3) and la.status=?4 order by la.appliedStaff.id, la.fromLeaveDate")
+    List<LeaveApplication> findLeaveApplicationsWithStatusForAllStaffsInSchool(Long schoolInfoId,LocalDate fromDate,LocalDate toDate,ApprovalStatus status);
+
 }
