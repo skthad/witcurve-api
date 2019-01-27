@@ -25,10 +25,6 @@ public interface LeaveApplicationService {
 
     Long workingDays(LocalDate fromDate,LocalDate toDate, Long schoolInfoId, Boolean isSaturdayWorking) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeaveDetailsForStudent(Long studentId, LocalDate fromDate, LocalDate toDate) throws WitcurveException;
-
-    List<LeaveApplicationDTO> getLeaveDetailsForStaff(Long staffId, LocalDate fromDate, LocalDate toDate) throws WitcurveException;
-
-    List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId,ApprovalStatus status) throws WitcurveException;
+    List<LeaveApplicationDTO> getAppliedLeaveDetails(Long studentId,Long staffId,Long schoolInfoId,LocalDate fromDate, LocalDate toDate) throws WitcurveException ;
 
 }

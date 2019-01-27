@@ -238,26 +238,21 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         }
     }
 
-    public List<LeaveApplicationDTO> getLeaveDetailsForStudent(Long studentId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
-        List<LeaveApplication> result= new ArrayList<>();
-        StudentDTO studentDTO= studentService.getStudentById(studentId);
-        Long schoolInfoId= studentDTO.getSchoolInfo().getId();
-        result = leaveApplicationRepository.findLeaveApplicationsForStudentInADateRange(schoolInfoId, studentId, fromDate, toDate);
-        return leaveApplicationMapper.toDto(result);
-    }
+    public List<LeaveApplicationDTO> getAppliedLeaveDetails(Long studentId,Long staffId,Long schoolInfoId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
+        if (studentId == null && staffId == null && schoolInfoId == null) {
+            throw new WitcurveException("Student ID and staff ID and schoolInfoId all cannot be null");
+        }
+        List<LeaveApplication> result = new ArrayList<>();
+        if(studentId !=null) {
+            result = leaveApplicationRepository.findLeaveApplicationsForStudentInADateRange(schoolInfoId, studentId, fromDate, toDate);
+        } else if(staffId != null){
+            result = leaveApplicationRepository.findLeaveApplicationsForStaffInADateRange(schoolInfoId, staffId, fromDate, toDate);
+        } else if(schoolInfoId != null){
+            AcademicSession academicSession= academicSessionRepository.nearestActiveSessionToDate(schoolInfoId,LocalDate.now());
+            LocalDate startDate= academicSession.getStartDate();
+            result=leaveApplicationRepository.findLeaveApplicationsForAllStaffsInSchool(schoolInfoId,startDate,ApprovalStatus.PENDING);
+        }
 
-    public List<LeaveApplicationDTO> getLeaveDetailsForStaff(Long staffId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
-        List<LeaveApplication> result= new ArrayList<>();
-        StaffDTO staffDTO =staffService.getStaffById(staffId);
-        Long schoolInfoId= staffDTO.getSchoolInfo().getId();
-        result = leaveApplicationRepository.findLeaveApplicationsForStaffInADateRange(schoolInfoId, staffId, fromDate, toDate);
-        return leaveApplicationMapper.toDto(result);
-    }
-
-    public List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId,ApprovalStatus status){
-        AcademicSession academicSession= academicSessionRepository.nearestActiveSessionToDate(schoolInfoId,LocalDate.now());
-        LocalDate startDate= academicSession.getStartDate();
-        List<LeaveApplication> result=leaveApplicationRepository.findLeaveApplicationsForAllStaffsInSchool(schoolInfoId,startDate,status);
         return leaveApplicationMapper.toDto(result);
     }
 
