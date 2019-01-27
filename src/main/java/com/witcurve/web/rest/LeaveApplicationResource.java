@@ -216,15 +216,16 @@ public class LeaveApplicationResource {
     @Timed
     public ResponseEntity<Map<Long,List<LeaveApplicationDTO>>> getExistingLeaveApplicationDetails
     (@RequestParam(name = "fromDate") LocalDate fromDate, @RequestParam(name = "toDate") LocalDate toDate, @RequestParam(required = false) Long studentId,
-     @RequestParam(required = false) Long staffId, @RequestParam(required = false) Long schoolInfoId) throws WitcurveException {
-        List<LeaveApplicationDTO> result = leaveApplicationService.getAppliedLeaveDetails(studentId, staffId, schoolInfoId, fromDate, toDate);
+     @RequestParam(required = false) Long staffId,
+     @RequestParam(required = false) Long schoolInfoId,@RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveDetails(studentId, staffId, schoolInfoId, fromDate, toDate,status);
         Map<Long, List<LeaveApplicationDTO>> resultMap = new HashMap<>();
-        if (studentId != null) {
-            resultMap.put(studentId,result);
-        } else if (staffId != null) {
-            resultMap.put(staffId,result);
-        } else if (schoolInfoId != null) {
-            for (LeaveApplicationDTO leaveApplicationDTO : result) {
+            if (studentId != null) {
+                resultMap.put(studentId, result);
+            } else if (staffId != null) {
+                resultMap.put(staffId, result);
+            } else if (schoolInfoId != null) {
+                for (LeaveApplicationDTO leaveApplicationDTO : result) {
                     List<LeaveApplicationDTO> leaveApplicationDTOs = resultMap.get(leaveApplicationDTO.getAppliedStaffId());
                     if (leaveApplicationDTOs == null) {
                         leaveApplicationDTOs = new ArrayList<>();
@@ -232,7 +233,7 @@ public class LeaveApplicationResource {
                     leaveApplicationDTOs.add(leaveApplicationDTO);
                     resultMap.put(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTOs);
                 }
-        }
+            }
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 }
