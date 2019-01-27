@@ -24,15 +24,15 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     @NotNull
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "parent_content_id")
     private CourseContent parentContent;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "content_order", nullable = false)
     private Integer contentOrder;
 
     public Long getId() {
