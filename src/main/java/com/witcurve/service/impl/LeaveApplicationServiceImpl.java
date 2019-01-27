@@ -8,8 +8,11 @@ import com.witcurve.domain.enumeration.LeaveAppliedBy;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
+import com.witcurve.service.StaffService;
+import com.witcurve.service.StudentService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.service.dto.StaffDTO;
+import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.service.mapper.LeaveApplicationMapper;
 import com.witcurve.service.mapper.StaffMapper;
@@ -64,7 +67,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     EventMapper eventMapper;
 
     @Autowired
-    StaffMapper staffMapper;
+    StaffService staffService;
+
+    @Autowired
+    StudentService studentService;
 
     @Override
     public LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException {
@@ -234,18 +240,16 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     public List<LeaveApplicationDTO> getLeaveDetailsForStudent(Long studentId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
         List<LeaveApplication> result= new ArrayList<>();
-        Student student= studentRepository.getStudentByUserId(studentId);
-        Long schoolInfoId= student.getSchoolInfo().getId();
+        StudentDTO studentDTO= studentService.getStudentById(studentId);
+        Long schoolInfoId= studentDTO.getSchoolInfo().getId();
         result = leaveApplicationRepository.findLeaveApplicationsForStudentInADateRange(schoolInfoId, studentId, fromDate, toDate);
         return leaveApplicationMapper.toDto(result);
     }
 
     public List<LeaveApplicationDTO> getLeaveDetailsForStaff(Long staffId,LocalDate fromDate, LocalDate toDate) throws WitcurveException {
         List<LeaveApplication> result= new ArrayList<>();
-        Long schoolInfoId=0L;
-        Staff staff= staffRepository.getStaffByUserId(staffId);
-        StaffDTO staffDTO= staffMapper.toDto(staff) ;
-        schoolInfoId= staffDTO.getSchoolInfo().getId();
+        StaffDTO staffDTO =staffService.getStaffById(staffId);
+        Long schoolInfoId= staffDTO.getSchoolInfo().getId();
         result = leaveApplicationRepository.findLeaveApplicationsForStaffInADateRange(schoolInfoId, staffId, fromDate, toDate);
         return leaveApplicationMapper.toDto(result);
     }
