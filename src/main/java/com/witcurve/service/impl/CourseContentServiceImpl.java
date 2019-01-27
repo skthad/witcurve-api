@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -51,13 +50,33 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
-    public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
+    public Map<CourseContentDTO, List<CourseContentDTO>> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
-        List<CourseContent> courseContents = courseContentRepository.findByCourseId(courseId);
-        return courseContentMapper.toDto(courseContents);
+        List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
+        Map<Long, CourseContentDTO> parentContentMap = new HashMap<>();
+        for (CourseContentDTO cc : courseContents) {
+            if (cc.getParentContentId() == null) {
+                parentContentMap.put(cc.getId(), cc);
+            }
+        }
+        Map<CourseContentDTO, List<CourseContentDTO>> contentMap = new HashMap<>();
+        for (CourseContentDTO cc : courseContents) {
+            Long parentContentId = cc.getParentContentId();
+            if (parentContentId != null) {
+                CourseContentDTO parentContent = parentContentMap.get(parentContentId);
+                if (contentMap.get(parentContent) == null) {
+                    parentContent.setIndex(parentContent.getContentOrder().toString());
+                    contentMap.put(parentContent, new ArrayList<>());
+                }
+                String index = parentContent.getContentOrder() + "." + cc.getContentOrder();
+                cc.setIndex(index);
+                contentMap.get(parentContent).add(cc);
+            }
+        }
+        return contentMap;
     }
 
     @Override
