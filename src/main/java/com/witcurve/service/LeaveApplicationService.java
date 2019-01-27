@@ -29,6 +29,6 @@ public interface LeaveApplicationService {
 
     List<LeaveApplicationDTO> getLeaveDetailsForStaff(Long staffId, LocalDate fromDate, LocalDate toDate) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId) throws WitcurveException;
+    List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId,ApprovalStatus status) throws WitcurveException;
 
 }

@@ -226,9 +226,9 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<Map<Long,List<LeaveApplicationDTO>>> getAllLeaveApplicationForStaffInSchool(@PathVariable(name="schoolInfoId") Long schoolInfoId) throws WitcurveException {
+    public ResponseEntity<Map<Long,List<LeaveApplicationDTO>>> getAllPendingLeaveApplicationForStaffInSchool(@PathVariable(name="schoolInfoId") Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get all leave applications for all staffs in a school with schoolInfoId : {}", schoolInfoId);
-        List<LeaveApplicationDTO> result= leaveApplicationService.getLeavesForAllStaffsInSchool(schoolInfoId);
+        List<LeaveApplicationDTO> result= leaveApplicationService.getLeavesForAllStaffsInSchool(schoolInfoId,ApprovalStatus.PENDING);
         Map<Long, List<LeaveApplicationDTO>> resultMap = new HashMap<>();
         if(result.size() !=0){
             for(LeaveApplicationDTO leaveApplicationDTO : result){

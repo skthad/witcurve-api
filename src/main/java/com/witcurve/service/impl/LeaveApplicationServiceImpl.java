@@ -254,10 +254,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         return leaveApplicationMapper.toDto(result);
     }
 
-    public List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId){
+    public List<LeaveApplicationDTO> getLeavesForAllStaffsInSchool(Long schoolInfoId,ApprovalStatus status){
         AcademicSession academicSession= academicSessionRepository.nearestActiveSessionToDate(schoolInfoId,LocalDate.now());
         LocalDate startDate= academicSession.getStartDate();
-        List<LeaveApplication> result=leaveApplicationRepository.findLeaveApplicationsForAllStaffsInSchool(schoolInfoId,startDate);
+        List<LeaveApplication> result=leaveApplicationRepository.findLeaveApplicationsForAllStaffsInSchool(schoolInfoId,startDate,status);
         return leaveApplicationMapper.toDto(result);
     }
 
