@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 
 public class CourseContentDTO extends AbstractAuditingDTO {
@@ -18,6 +19,8 @@ public class CourseContentDTO extends AbstractAuditingDTO {
     private Integer contentOrder;
 
     private String index;
+
+    private List<CourseContentDTO> subTopics;
 
     public Long getId() {
         return id;
@@ -67,12 +70,20 @@ public class CourseContentDTO extends AbstractAuditingDTO {
         this.index = index;
     }
 
+    public List<CourseContentDTO> getSubTopics() {
+        return subTopics;
+    }
+
+    public void setSubTopics(List<CourseContentDTO> subTopics) {
+        this.subTopics = subTopics;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CourseContentDTO)) return false;
-        CourseContentDTO courseDTO = (CourseContentDTO) o;
-        return Objects.equals(getId(), courseDTO.getId());
+        CourseContentDTO courseContentDTO = (CourseContentDTO) o;
+        return Objects.equals(getId(), courseContentDTO.getId());
     }
 
     @Override
@@ -83,7 +94,7 @@ public class CourseContentDTO extends AbstractAuditingDTO {
 
     @Override
     public String toString() {
-        return "CourseDTO{" +
+        return "CourseContentDTO{" +
             "id=" + id +
             '}';
     }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,9 +33,15 @@ public class CourseContentServiceImpl implements CourseContentService {
     CourseRepository courseRepository;
 
     @Override
-    public List<CourseContentDTO> saveOrUpdate(List<CourseContentDTO> courseContentDTOs) {
+    public List<CourseContentDTO> saveOrUpdateForCourse(Long courseId, List<CourseContentDTO> courseContentDTOs) throws WitcurveException {
         log.debug("Request to save or update CourseContents");
-
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No Course with given id " + courseId);
+        }
+        for (CourseContentDTO courseContentDTO : courseContentDTOs) {
+            courseContentDTO.setCourseId(courseId);
+        }
         List<CourseContent> courseContents  = courseContentMapper.toEntity(courseContentDTOs);
         courseContents  = courseContentRepository.saveAll(courseContents);
         return courseContentMapper.toDto(courseContents );
@@ -50,33 +57,28 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
-    public Map<CourseContentDTO, List<CourseContentDTO>> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
+    public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
         Map<Long, CourseContentDTO> parentContentMap = new HashMap<>();
-        for (CourseContentDTO cc : courseContents) {
-            if (cc.getParentContentId() == null) {
-                parentContentMap.put(cc.getId(), cc);
+        for (CourseContentDTO courseContentDTO : courseContents) {
+            if (courseContentDTO.getParentContentId() == null) {
+                parentContentMap.put(courseContentDTO.getId(), courseContentDTO);
             }
         }
-        Map<CourseContentDTO, List<CourseContentDTO>> contentMap = new HashMap<>();
-        for (CourseContentDTO cc : courseContents) {
-            Long parentContentId = cc.getParentContentId();
-            if (parentContentId != null) {
-                CourseContentDTO parentContent = parentContentMap.get(parentContentId);
-                if (contentMap.get(parentContent) == null) {
-                    parentContent.setIndex(parentContent.getContentOrder().toString());
-                    contentMap.put(parentContent, new ArrayList<>());
-                }
-                String index = parentContent.getContentOrder() + "." + cc.getContentOrder();
-                cc.setIndex(index);
-                contentMap.get(parentContent).add(cc);
+        for (CourseContentDTO courseContentDTO : courseContents) {
+            if (courseContentDTO.getParentContentId() == null) {
+                courseContentDTO.setIndex(courseContentDTO.getContentOrder().toString());
+            } else {
+                courseContentDTO.setIndex(
+                    parentContentMap.get(courseContentDTO.getParentContentId())
+                        .getContentOrder() + "." + courseContentDTO.getContentOrder());
             }
         }
-        return contentMap;
+        return courseContents.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
     }
 
     @Override
@@ -87,5 +89,14 @@ public class CourseContentServiceImpl implements CourseContentService {
             throw new WitcurveException("No CourseContent with given id " + courseContentId);
         }
         courseContentRepository.delete(courseContent.get());
+    }
+
+    @Override
+    public void deleteCourseContentByCourseId(Long courseId) throws WitcurveException {
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No Course with given id " + courseId);
+        }
+        //courseContentRepository.deleteByParentContentIdNotNullAndCourseId();
     }
 }

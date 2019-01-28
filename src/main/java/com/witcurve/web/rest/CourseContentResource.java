@@ -18,7 +18,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -36,14 +35,15 @@ public class CourseContentResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/course-content")
+    @PostMapping("/course-content/course/{courseId}")
     @Timed
-    public ResponseEntity<List<CourseContentDTO>> createCourseContents(@RequestBody @Valid List<CourseContentDTO> courseContentDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<CourseContentDTO>> createCourseContents(@RequestBody @Valid List<CourseContentDTO> courseContentDTOs,
+                                                                        @PathVariable("courseId") Long courseId) throws WitcurveException, URISyntaxException {
         log.debug("Request Save or Update courseContents");
 
         try {
-            List<CourseContentDTO> result = courseContentService.saveOrUpdate(courseContentDTOs);
-            return ResponseEntity.created(new URI("/api/course-content/"))
+            List<CourseContentDTO> result = courseContentService.saveOrUpdateForCourse(courseId, courseContentDTOs);
+            return ResponseEntity.created(new URI("/api/course-content/course/{courseId}"))
                 .headers(HeaderUtil.createEntityCreationAlert("courseContent", null))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
@@ -84,9 +84,9 @@ public class CourseContentResource {
 
     @GetMapping("/course-content/course/{courseId}")
     @Timed
-    public ResponseEntity<Map<CourseContentDTO, List<CourseContentDTO>>> getCourseContentsByStaff(@PathVariable("courseId") Long courseId) throws WitcurveException {
+    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByStaff(@PathVariable("courseId") Long courseId) throws WitcurveException {
         log.debug("Request to get CourseContents with courseId {}", courseId);
-        Map<CourseContentDTO, List<CourseContentDTO>> result = courseContentService.getCourseContentsByCourseId(courseId);
+        List<CourseContentDTO> result = courseContentService.getCourseContentsByCourseId(courseId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -105,6 +105,30 @@ public class CourseContentResource {
             courseContentService.deleteCourseContent(courseContentId);
             return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A courseContent is deleted with identifier " + courseContentId,
                 courseContentId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+
+    /**
+     * delete the courseContents by course
+     * @param courseId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/course-content/course/{courseId}")
+    @Timed
+    public ResponseEntity<Void> deleteCourseContentByCourse(@PathVariable Long courseId) throws WitcurveException {
+        log.debug("REST request to delete CourseContent with courseId: {}", courseId);
+
+        try {
+            courseContentService.deleteCourseContentByCourseId(courseId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("All courseContent is deleted with courseId " + courseId,
+                courseId.toString())).build();
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
