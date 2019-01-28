@@ -10,12 +10,12 @@ import java.util.List;
 @Repository
 public interface CourseContentRepository extends JpaRepository<CourseContent, Long> {
 
-    @Query("select cc from CourseContent cc where cc.course.id = ?1")
+    @Query("select cc from CourseContent cc where cc.course.id = ?1 order by cc.contentOrder")
     List<CourseContent> findByCourseId(Long courseId);
 
-    @Query("delete from CourseContent where course.id = ?1 and parentContent is not null")
-    void deleteAllSubTopics(Long courseId);
+    @Query("select cc from CourseContent cc where cc.course.id = ?1 and cc.parentContent is not null")
+    List<CourseContent> findAllSubTopicsInCourse(Long courseId);
 
-    @Query("delete from CourseContent where course.id = ?1")
-    void deleteAllTopics(Long courseId);
+    @Query("select cc from CourseContent cc where cc.course.id = ?1")
+    List<CourseContent> findAllTopicsInCourse(Long courseId);
 }
