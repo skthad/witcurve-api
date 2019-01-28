@@ -13,4 +13,9 @@ public interface CourseContentRepository extends JpaRepository<CourseContent, Lo
     @Query("select cc from CourseContent cc where cc.course.id = ?1")
     List<CourseContent> findByCourseId(Long courseId);
 
+    @Query("delete from CourseContent where course.id = ?1 and parentContent is not null")
+    void deleteAllSubTopics(Long courseId);
+
+    @Query("delete from CourseContent where course.id = ?1")
+    void deleteAllTopics(Long courseId);
 }

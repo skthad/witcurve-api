@@ -97,6 +97,7 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
-        //courseContentRepository.deleteByParentContentIdNotNullAndCourseId();
+        courseContentRepository.deleteAllSubTopics(courseId);
+        courseContentRepository.deleteAllTopics(courseId);
     }
 }
