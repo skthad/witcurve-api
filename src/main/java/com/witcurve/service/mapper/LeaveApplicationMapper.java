@@ -2,6 +2,8 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Event;
 import com.witcurve.domain.LeaveApplication;
+import com.witcurve.domain.Staff;
+import com.witcurve.domain.Student;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,6 +21,8 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
     @Mapping(target= "approvedById", source="approvedBy.id" )
     @Mapping(target="schoolInfoId", source="schoolInfo.id")
     @Mapping(target = "eventIds" , expression = "java(getIdsFromEvents(leaveApplication))")
+    @Mapping(target = "studentName", expression = "java(getStudentName(leaveApplication.getAppliedStudent()))")
+    @Mapping(target = "staffName", expression = "java(getStaffName(leaveApplication.getAppliedStaff()))")
     LeaveApplicationDTO toDto(LeaveApplication leaveApplication);
 
     @Mapping(target = "appliedStaff", source = "appliedStaffId")
@@ -50,4 +54,31 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
         return leaveApplication;
     }
 
+    default String getStudentName(Student student) {
+        String result = "";
+        if(student != null) {
+            result += student.getFirstName() + " ";
+            if(student.getMiddleName() != null) {
+                result += student.getMiddleName() + " ";
+            }
+            result += student.getLastName();
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    default String getStaffName(Staff staff) {
+        String result = "";
+        if(staff != null) {
+            result += staff.getFirstName() + " ";
+            if(staff.getMiddleName() != null) {
+                result += staff.getMiddleName() + " ";
+            }
+            result += staff.getLastName();
+            return result;
+        } else {
+            return null;
+        }
+    }
 }
