@@ -40,7 +40,9 @@ public class CourseContentServiceImpl implements CourseContentService {
             throw new WitcurveException("No Course with given id " + courseId);
         }
         for (CourseContentDTO courseContentDTO : courseContentDTOs) {
-            courseContentDTO.setCourseId(courseId);
+            if (!courseContentDTO.getCourseId().equals(courseId)) {
+                throw new WitcurveException("CourseId provided does not match with courseId in courseContent");
+            }
         }
         List<CourseContent> courseContents  = courseContentMapper.toEntity(courseContentDTOs);
         courseContents  = courseContentRepository.saveAll(courseContents);
@@ -60,7 +62,7 @@ public class CourseContentServiceImpl implements CourseContentService {
     public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
-            throw new WitcurveException("No Course with given id " + courseId);
+            throw new WitcurveException("No Course with given id: " + courseId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
         Map<Long, CourseContentDTO> parentContentMap = new HashMap<>();
@@ -69,8 +71,11 @@ public class CourseContentServiceImpl implements CourseContentService {
                 parentContentMap.put(courseContentDTO.getId(), courseContentDTO);
             }
         }
+        log.info("no. of course contents: " + courseContents.size());
+        log.info("no. of course contents in map: " + parentContentMap.keySet().size());
         for (CourseContentDTO courseContentDTO : courseContents) {
             if (courseContentDTO.getParentContentId() == null) {
+                log.info("index: " + courseContentDTO.getContentOrder().toString());
                 courseContentDTO.setIndex(courseContentDTO.getContentOrder().toString());
             } else {
                 courseContentDTO.setIndex(
@@ -78,6 +83,7 @@ public class CourseContentServiceImpl implements CourseContentService {
                         .getContentOrder() + "." + courseContentDTO.getContentOrder());
             }
         }
+        log.info("no. of course contents: " + courseContents.size());
         return courseContents.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
     }
 
