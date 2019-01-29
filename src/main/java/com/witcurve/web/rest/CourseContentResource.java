@@ -43,7 +43,7 @@ public class CourseContentResource {
 
         try {
             List<CourseContentDTO> result = courseContentService.saveOrUpdateForCourse(courseId, courseContentDTOs);
-            return ResponseEntity.created(new URI("/api/course-content/course/{courseId}"))
+            return ResponseEntity.created(new URI("/api/course-content/course/" + courseId))
                 .headers(HeaderUtil.createEntityCreationAlert("courseContent", null))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
