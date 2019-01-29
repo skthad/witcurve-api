@@ -322,16 +322,16 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     private void isLeaveApplicationValid(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException {
         log.debug("Request to check valid leaveApplications in list : {}",leaveApplicationDTO);
-            if (leaveApplicationDTO.getType().equals(LeaveAppliedBy.STUDENT)) {
+            if (leaveApplicationDTO.getAppliedStudentId()!= null && leaveApplicationDTO.getAppliedStaffId()==null) {
                 // add the condition for guardian id later when guardian id is made required
 //                if (leaveApplicationDTO.getAppliedStudentId() == null || leaveApplicationDTO.getAppliedGuardianId() == null) {
 //                    log.error("There either applied student id or applied guardian id is null for student leave application : {}", leaveApplicationDTO);
 //                    throw new WitcurveException("Invalid Request Body");
 //                }
-                if (leaveApplicationDTO.getAppliedStudentId() == null) {
-                    log.error("There either applied student id  for student leave application : {}", leaveApplicationDTO);
-                    throw new WitcurveException("Invalid Request Body");
-                }
+//                if (leaveApplicationDTO.getAppliedStudentId() == null) {
+//                    log.error("There either applied student id  for student leave application : {}", leaveApplicationDTO);
+//                    throw new WitcurveException("Invalid Request Body");
+//                }
                 Long workingDays = workingDays(leaveApplicationDTO.getFromLeaveDate(),
                     leaveApplicationDTO.getToLeaveDate(),leaveApplicationDTO.getSchoolInfoId(),
                     false);
@@ -354,15 +354,11 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                     }
                 } else {
                     if(leaveApplications.size() != 0) {
-                        throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");
+                        throw new WitcurveException("The Leave application for this student already exists in the date range !! ");
                     }
                 }
-            }
-            if (leaveApplicationDTO.getType().equals(LeaveAppliedBy.STAFF)) {
-                if (leaveApplicationDTO.getAppliedStaffId() == null) {
-                    log.error("Staff id is null for student leave application : {}", leaveApplicationDTO);
-                    throw new WitcurveException("Invalid Request Body");
-                }
+            } else if (leaveApplicationDTO.getAppliedStaffId() != null && leaveApplicationDTO.getAppliedStudentId()==null) {
+
                 Long workingDays = workingDays(leaveApplicationDTO.getFromLeaveDate(),
                     leaveApplicationDTO.getToLeaveDate(),leaveApplicationDTO.getSchoolInfoId(),
                     false);
@@ -388,6 +384,8 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                         throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");
                     }
                 }
+            } else {
+                throw new WitcurveException("Leave application cannot have null or value for both the staffId and studentId !!");
             }
     }
 }

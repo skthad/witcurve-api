@@ -19,9 +19,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     private String description;
 
-    @NotNull
-    private LeaveAppliedBy type;
-
     private ApprovalStatus status = ApprovalStatus.PENDING;
 
     private Long approvedById;
@@ -47,6 +44,10 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     private String note;
 
+    private String studentName;
+
+    private String staffName;
+
     public Long getId() {
         return id;
     }
@@ -69,14 +70,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public LeaveAppliedBy getType() {
-        return type;
-    }
-
-    public void setType(LeaveAppliedBy type) {
-        this.type = type;
     }
 
     public ApprovalStatus getStatus() {
@@ -167,6 +160,22 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.note = note;
     }
 
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -181,7 +190,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             "id=" + id +
             ", reason=" + reason +
             ", description='" + description + '\'' +
-            ", type=" + type +
             ", status=" + status +
             ", approvedById=" + approvedById +
             ", schoolInfoId=" + schoolInfoId +
@@ -193,6 +201,8 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", eventIds=" + eventIds +
             ", numLeaveDays=" + numLeaveDays +
             ", note='" + note + '\'' +
+            ", studentName='" + studentName + '\'' +
+            ", staffName='" + staffName + '\'' +
             '}';
     }
 }
