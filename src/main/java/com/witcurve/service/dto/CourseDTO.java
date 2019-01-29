@@ -1,5 +1,7 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.Grade;
+
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -13,6 +15,9 @@ public class CourseDTO extends AbstractAuditingDTO {
     private String description;
 
     private Boolean eligibleForSubstitute;
+
+    @NotNull
+    private Grade grade;
 
     @NotNull
     private String masterSubject;
@@ -52,6 +57,14 @@ public class CourseDTO extends AbstractAuditingDTO {
         this.eligibleForSubstitute = eligibleForSubstitute;
     }
 
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
     public String getMasterSubject() {
         return masterSubject;
     }
@@ -89,7 +102,8 @@ public class CourseDTO extends AbstractAuditingDTO {
             ", courseCode='" + courseCode + '\'' +
             ", description='" + description + '\'' +
             ", eligibleForSubstitute=" + eligibleForSubstitute +
-            ", masterSubject=" + masterSubject +
+            ", grade=" + grade +
+            ", masterSubject='" + masterSubject + '\'' +
             ", schoolInfoId=" + schoolInfoId +
             '}';
     }

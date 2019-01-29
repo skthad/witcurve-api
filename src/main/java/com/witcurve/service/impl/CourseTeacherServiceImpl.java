@@ -54,9 +54,11 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             throw new WitcurveException("A valid course id must be provided");
         }
         Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
-
         if (!standard.isPresent()) {
             throw new WitcurveException("a valid standard id must be provided");
+        }
+        if(!course.get().getGrade().equals(standard.get().getGrade())){
+            throw new WitcurveException("Grade of course and standard doesn't match");
         }
         if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
 

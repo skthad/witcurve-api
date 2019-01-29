@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1548786129056-1">
+        <addColumn tableName="course">
+            <column name="grade" type="varchar(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-2">
+        <sql>
+            UPDATE  course
+            SET     grade = 'III'
+            WHERE course_code LIKE '%3%';
+        </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-3">
+        <sql>
+            UPDATE  course
+            SET     grade = 'I'
+            WHERE course_code LIKE '%1%';
+        </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-4">
+        <sql>
+            UPDATE  course
+            SET     grade = 'X'
+            WHERE course_code LIKE '%10%';
+        </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-5">
+        <sql>
+            UPDATE  course
+            SET     grade = 'IX'
+            WHERE grade is NULL;
+        </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-6">
+        <addNotNullConstraint columnName="grade" tableName="course"/>
+    </changeSet>
+</databaseChangeLog>

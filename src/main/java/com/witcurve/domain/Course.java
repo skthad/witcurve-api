@@ -1,5 +1,7 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.Grade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -28,6 +30,11 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     @Column
     private Boolean eligibleForSubstitute;
+
+    @NotNull
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @NotNull
     @ManyToOne
@@ -79,6 +86,14 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.masterSubject = masterSubject;
     }
 
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
     public SchoolInfo getSchoolInfo() {
         return schoolInfo;
     }
@@ -102,6 +117,7 @@ public class Course extends AbstractAuditingEntity implements Serializable {
             ", courseCode='" + courseCode + '\'' +
             ", description='" + description + '\'' +
             ", eligibleForSubstitute=" + eligibleForSubstitute +
+            ", grade=" + grade +
             ", masterSubject=" + masterSubject +
             ", schoolInfo=" + schoolInfo +
             '}';
