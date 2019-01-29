@@ -31,10 +31,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     private String description;
 
     @NotNull
-    @Column(nullable =false)
-    private LeaveAppliedBy type;
-
-    @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status = ApprovalStatus.PENDING;
@@ -99,14 +95,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public LeaveAppliedBy getType() {
-        return type;
-    }
-
-    public void setType(LeaveAppliedBy type) {
-        this.type = type;
     }
 
     public ApprovalStatus getStatus() {
@@ -215,7 +203,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
             "id=" + id +
             ", reason=" + reason +
             ", description='" + description + '\'' +
-            ", type=" + type +
             ", status=" + status +
             ", approvedBy=" + approvedBy +
             ", schoolInfo=" + schoolInfo +
