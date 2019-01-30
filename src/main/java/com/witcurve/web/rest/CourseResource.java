@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -80,6 +82,22 @@ public class CourseResource {
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable("courseId") Long courseId) throws WitcurveException {
         log.debug("Request to get Course with id {}", courseId);
         CourseDTO result = courseService.getCourseById(courseId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get course by grade
+     * @param grade
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course/school-info/{schoolInfoId}/grade/{grade}")
+    @Timed
+    public ResponseEntity<List<CourseDTO>> getCourseById(@PathVariable("schoolInfoId") Long schoolInfoId,
+                                                         @PathVariable("grade") Grade grade) throws WitcurveException {
+        log.debug("Request to get Courses with grade {}", grade);
+        List<CourseDTO> result = courseService.getCourseBySchoolInfoAndGrade(schoolInfoId, grade);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

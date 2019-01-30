@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +46,12 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.toDto(course.get());
     }
 
+    @Override
+    public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade) throws WitcurveException {
+        log.debug("Request to get courses in schoolInfo {} with grade : {}", schoolInfoId, grade);
+        List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+        return courseMapper.toDto(courses);
+    }
     @Override
     public void deleteCourse(Long courseId) throws WitcurveException {
         log.debug("Request to delete course with id {}", courseId);
