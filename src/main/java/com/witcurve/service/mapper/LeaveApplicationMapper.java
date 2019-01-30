@@ -16,7 +16,6 @@ import java.util.List;
 public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO, LeaveApplication> {
 
     @Mapping(target = "appliedStaffId", source = "appliedStaff.id")
-    @Mapping(target= "appliedGuardianId", source="appliedGuardian.id" )
     @Mapping(target= "appliedStudentId",source="appliedStudent.id")
     @Mapping(target= "approvedById", source="approvedBy.id" )
     @Mapping(target="schoolInfoId", source="schoolInfo.id")
@@ -26,7 +25,6 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
     LeaveApplicationDTO toDto(LeaveApplication leaveApplication);
 
     @Mapping(target = "appliedStaff", source = "appliedStaffId")
-    @Mapping(target = "appliedGuardian", source = "appliedGuardianId")
     @Mapping(target="appliedStudent" , source="appliedStudentId")
     @Mapping(target= "approvedBy", source="approvedById" )
     @Mapping(target="schoolInfo", source="schoolInfoId")

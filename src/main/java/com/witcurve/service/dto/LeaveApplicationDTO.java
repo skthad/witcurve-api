@@ -1,7 +1,6 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.ApprovalStatus;
-import com.witcurve.domain.enumeration.LeaveAppliedBy;
 import com.witcurve.domain.enumeration.Reason;
 
 import javax.validation.constraints.NotNull;
@@ -29,8 +28,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     private Long appliedStaffId;
 
     private Long appliedStudentId;
-
-    private Long appliedGuardianId;
 
     @NotNull
     private LocalDate fromLeaveDate;
@@ -112,14 +109,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
         this.appliedStudentId = appliedStudentId;
     }
 
-    public Long getAppliedGuardianId() {
-        return appliedGuardianId;
-    }
-
-    public void setAppliedGuardianId(Long appliedGuardianId) {
-        this.appliedGuardianId = appliedGuardianId;
-    }
-
     public List<Long> getEventIds() {
         return eventIds;
     }
@@ -195,7 +184,6 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
             ", schoolInfoId=" + schoolInfoId +
             ", appliedStaffId=" + appliedStaffId +
             ", appliedStudentId=" + appliedStudentId +
-            ", appliedGuardianId=" + appliedGuardianId +
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
             ", eventIds=" + eventIds +

@@ -37,4 +37,10 @@
     <changeSet author="WitCurve (generated)" id="1548786129056-6">
         <addNotNullConstraint columnName="grade" tableName="course"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-7">
+        <dropForeignKeyConstraint baseTableName="leave_application" constraintName="FKnt867ot4ush56kfrbqjejxry"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1548786129056-8">
+        <dropColumn columnName="applied_guardian_id" tableName="leave_application"/>
+    </changeSet>
 </databaseChangeLog>

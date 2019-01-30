@@ -2,7 +2,6 @@ package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.witcurve.domain.enumeration.ApprovalStatus;
-import com.witcurve.domain.enumeration.LeaveAppliedBy;
 import com.witcurve.domain.enumeration.Reason;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -48,9 +47,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     @ManyToOne
     private Student appliedStudent;
-
-    @ManyToOne
-    private Guardian appliedGuardian;
 
     @NotNull
     @Column(name = "from_leave_date", nullable = false)
@@ -137,14 +133,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.appliedStudent = appliedStudent;
     }
 
-    public Guardian getAppliedGuardian() {
-        return appliedGuardian;
-    }
-
-    public void setAppliedGuardian(Guardian appliedGuardian) {
-        this.appliedGuardian = appliedGuardian;
-    }
-
     public LocalDate getFromLeaveDate() {
         return fromLeaveDate;
     }
@@ -208,7 +196,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
             ", schoolInfo=" + schoolInfo +
             ", appliedStaff=" + appliedStaff +
             ", appliedStudent=" + appliedStudent +
-            ", appliedGuardian=" + appliedGuardian +
             ", fromLeaveDate=" + fromLeaveDate +
             ", toLeaveDate=" + toLeaveDate +
             ", note='" + note + '\'' +
