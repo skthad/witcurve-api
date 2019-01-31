@@ -42,7 +42,7 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
     private ExamRepository examRepository;
 
     @Override
-    public ExamCourseDetailsDTO saveOrUpdate(ExamCourseDetailsDTO examCourseDetailsDTO, Long examId) throws WitcurveException {
+    public List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTOs, Long examId) throws WitcurveException {
         log.debug("Request to save or update examCourseDetailsDTO for examId: " + examId);
 
         Optional<Exam> exam = examRepository.findById(examId);
@@ -50,12 +50,14 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
             throw new WitcurveException("No exam found with id: " + examId);
         }
 
-        if (examCourseDetailsDTO.getDate().isBefore(exam.get().getStartDate())
-            || examCourseDetailsDTO.getDate().isAfter(exam.get().getEndDate())) {
-            throw new WitcurveException("Date cannot be out of boundary of the exam startDate and endDate");
+        for (ExamCourseDetailsDTO examCourseDetailsDTO : examCourseDetailsDTOs) {
+            if (examCourseDetailsDTO.getDate().isBefore(exam.get().getStartDate())
+                || examCourseDetailsDTO.getDate().isAfter(exam.get().getEndDate())) {
+                throw new WitcurveException("Date cannot be out of boundary of the exam startDate and endDate");
+            }
         }
-        ExamCourseDetails examCourseDetails = examCourseDetailsMapperLite.toEntity(examCourseDetailsDTO);
-        examCourseDetails = examCourseDetailsRepository.save(examCourseDetails);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsMapperLite.toEntity(examCourseDetailsDTOs);
+        examCourseDetails = examCourseDetailsRepository.saveAll(examCourseDetails);
         return examCourseDetailsMapperLite.toDto(examCourseDetails);
     }
 

@@ -31,54 +31,19 @@ public class ExamCourseDetailsResource {
     /**
      * creates an examCourseDetails
      *
-     * @param examCourseDetailsDTO
+     * @param examCourseDetailsDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/exam-course-details/exams/{examId}")
     @Timed
-    public ResponseEntity<ExamCourseDetailsDTO> createExamCourseDetails(@RequestBody @Valid ExamCourseDetailsDTO examCourseDetailsDTO,
+    public ResponseEntity<List<ExamCourseDetailsDTO>> createExamCourseDetails(@RequestBody @Valid List<ExamCourseDetailsDTO> examCourseDetailsDTOs,
                                                                         @PathVariable Long examId) throws WitcurveException, URISyntaxException {
         log.debug("Request Save examCourseDetails");
-        if (examCourseDetailsDTO.getId() != null) {
-            throw new WitcurveException("New examCourseDetailsDTO can't already have an id");
-        }
         try {
-            ExamCourseDetailsDTO result = examCourseDetailsService.saveOrUpdate(examCourseDetailsDTO, examId);
-            return ResponseEntity.created(new URI("/api/slot-course-details/"))
-                .headers(HeaderUtil.createEntityUpdateAlert("examCourseDetails", ""))
-                .body(result);
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("ecd_slot_date_course_UK")) {
-                throw new WitcurveException("Unique constraint (gsd_id, date, course) violated");
-            } else if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key for some field might be invalid");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
-    }
-
-    /**
-     * updates an examCourseDetails
-     *
-     * @param examCourseDetailsDTO
-     * @return
-     * @throws WitcurveException
-     * @throws URISyntaxException
-     */
-    @PutMapping("/exam-course-details/exams/{examId}")
-    @Timed
-    public ResponseEntity<ExamCourseDetailsDTO> updateExamCourseDetails(@RequestBody @Valid ExamCourseDetailsDTO examCourseDetailsDTO,
-                                                                        @PathVariable Long examId) throws WitcurveException, URISyntaxException {
-        log.debug("Request Save examCourseDetails");
-        if (examCourseDetailsDTO.getId() == null) {
-            throw new WitcurveException("An update request for examCourseDetailsDTO must have an id");
-        }
-        try {
-            ExamCourseDetailsDTO result = examCourseDetailsService.saveOrUpdate(examCourseDetailsDTO, examId);
-            return ResponseEntity.created(new URI("/api/slot-course-details/"))
+            List<ExamCourseDetailsDTO> result = examCourseDetailsService.saveOrUpdate(examCourseDetailsDTOs, examId);
+            return ResponseEntity.created(new URI("/api/exam-course-details/exams/" + examId))
                 .headers(HeaderUtil.createEntityUpdateAlert("examCourseDetails", ""))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
