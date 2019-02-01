@@ -54,32 +54,11 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         log.debug("Request to save or update Student Marks: {}", studentMarksDTO);
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTO);
         if(studentMarksDTO.size() !=0) {
-            for (int i = 0; i < studentMarksDTO.size(); i++) {
-                if (studentMarksDTO.get(i).getEventDTO() != null) {
-                    if (studentMarksRepository.getByStudentAndTestId(studentMarksDTO.get(i).getStudentId(), studentMarksDTO.get(i).getEventDTO().getId()).size() != 0) {
-                        throw new WitcurveException("Student id and event id combination already exists with marks !!");
-                    }
-                } else if (studentMarksDTO.get(i).getExamCourseDetailsDTO() != null) {
-                    if (studentMarksRepository.getByStudentIdAndExamCourseDetailsId(studentMarksDTO.get(i).getStudentId(), studentMarksDTO.get(i).getExamCourseDetailsDTO().getId()).size() != 0) {
-                        throw new WitcurveException("Student id and exam course details id combination already exists with marks !!");
-                    }
-                }
-            }
             studentMarks = studentMarksRepository.saveAll(studentMarks);
             return studentMarksMapper.toDto(studentMarks);
         } else{
-            throw new WitcurveException("student marks DTO is null !! ");
+            throw new WitcurveException("No records to update");
         }
-    }
-
-    @Override
-     public void deleteStudentMarks(Long studentMarksId) throws WitcurveException {
-         log.debug("Request to delete student Marks with id {}", studentMarksId);
-         StudentMarks studentMarks = studentMarksRepository.findByStudentMarksId(studentMarksId);
-         if (studentMarks == null){
-             throw new WitcurveException("No student Marks relation with given Id");
-         }
-         studentMarksRepository.delete(studentMarks);
     }
 
     @Override
@@ -186,5 +165,15 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStandardForEvent(courseId, standardId, type, startDate, endDate));
         }
         throw new WitcurveException("Not a valid type");
+    }
+
+    @Override
+    public void deleteStudentMarks(Long studentMarksId) throws WitcurveException {
+        log.debug("Request to delete student Marks with id {}", studentMarksId);
+        Optional<StudentMarks> studentMarks = studentMarksRepository.findById(studentMarksId);
+        if (!studentMarks.isPresent()){
+            throw new WitcurveException("No student Marks relation with given Id: " + studentMarksId);
+        }
+        studentMarksRepository.delete(studentMarks.get());
     }
 }

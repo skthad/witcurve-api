@@ -13,18 +13,6 @@ import java.util.List;
 @Repository
 public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long> {
 
-    @Query("select sm from StudentMarks sm where sm.event.id = ?1 order by sm.event.date desc")
-    List<StudentMarks> getByTestId(Long eventId);
-
-    @Query("select sm from StudentMarks sm where sm.student.id = ?1 and sm.event.id = ?2 order by sm.event.date desc")
-    List<StudentMarks> getByStudentAndTestId(Long studentId, Long eventId);
-
-    @Query("select sm from StudentMarks sm where sm.id = ?1")
-    StudentMarks findByStudentMarksId(Long studentMarksId);
-
-    @Query("select sm from StudentMarks sm where sm.student.id=?1 and sm.examCourseDetails.id = ?2")
-    List<StudentMarks> getByStudentIdAndExamCourseDetailsId(Long studentId ,Long examCourseDetailsId);
-
     @Query("select sm from StudentMarks sm where sm.event.id = ?1")
     List<StudentMarks> getStudentMarksByEventId(Long eventId);
 
