@@ -12,7 +12,6 @@ import com.witcurve.web.rest.errors.EmailAlreadyUsedException;
 import com.witcurve.web.rest.errors.InvalidPasswordException;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ManagedUserVM;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -103,11 +102,7 @@ public class AccountResource {
     @PostMapping(path = "/account/change-password")
     @Timed
     public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
-        if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
-            throw new WitcurveException("Incorrect password length, it should be between "+
-                ManagedUserVM.PASSWORD_MIN_LENGTH+" and "+ManagedUserVM.PASSWORD_MAX_LENGTH);
-//            throw new InvalidPasswordException();
-        }
+        checkValidPassword(passwordChangeDto.getNewPassword());
         userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
    }
 
@@ -120,17 +115,17 @@ public class AccountResource {
     @PostMapping(path = "/account/set-password")
     @Timed
     public void setPassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
-        if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
-            throw new WitcurveException("Incorrect password length, it should be between "+
-                ManagedUserVM.PASSWORD_MIN_LENGTH+" and "+ManagedUserVM.PASSWORD_MAX_LENGTH);
-//            throw new InvalidPasswordException();
-        }
+        checkValidPassword(passwordChangeDto.getNewPassword());
         userService.setPassword(passwordChangeDto.getNewPassword());
     }
 
-    private static boolean checkPasswordLength(String password) {
-        return !StringUtils.isEmpty(password) &&
-            password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
-            password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
+    private static void checkValidPassword(String password) throws WitcurveException {
+        if(!password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{"+
+            ManagedUserVM.PASSWORD_MIN_LENGTH+","+ManagedUserVM.PASSWORD_MAX_LENGTH+"}$")) {
+            throw new WitcurveException("Password must be at least "+ManagedUserVM.PASSWORD_MIN_LENGTH
+                +" characters, no more than "+ManagedUserVM.PASSWORD_MAX_LENGTH+" characters," +
+                " and must include at least one upper case letter, one lower case letter, and" +
+                " one numeric digit and a special character (@, #, $, %, &. etc..)");
+        }
     }
 }
