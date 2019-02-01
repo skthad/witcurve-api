@@ -70,15 +70,10 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate) throws WitcurveException {
         log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
-        List<Exam> exams;
-        if (startDate != null && endDate != null) {
-            if (startDate.isAfter(endDate)) {
-                throw new WitcurveException("StartDate cannot be after EndDate");
-            }
-            exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate);
-        } else {
-            exams = examRepository.findAllBySchoolInfoAndGrade(schoolInfoId, grade);
+        if (startDate.isAfter(endDate)) {
+            throw new WitcurveException("StartDate cannot be after EndDate");
         }
+        List<Exam> exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate);
 
         return examMapper.toDto(exams);
     }

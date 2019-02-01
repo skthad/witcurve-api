@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.EventType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -58,58 +59,87 @@ public class StudentMarksResource {
     }
 
     /**
-      * get student marks by id
-      * @param studentMarksId
-      * @return
-      * @throws WitcurveException
-     */
-    @GetMapping("/student-marks/{studentMarksId}")
-    @Timed
-    public ResponseEntity<StudentMarksDTO> getStudentMarksById(@PathVariable("studentMarksId") Long studentMarksId) throws WitcurveException {
-        log.debug("Request to get Student marks by id");
-        StudentMarksDTO result = studentMarksService.getStudentMarksById(studentMarksId);
-        return ResponseEntity.ok(result);
-    }
-
-    /**
-      * get student marks in a course teacher by event id for test and assignment only
+      * get student marks by event id
       * @param eventId
       * @return
       * @throws WitcurveException
      */
-    @GetMapping("/student-marks/event/{eventId}")
+    @GetMapping("/student-marks/events/{eventId}")
     @Timed
-    public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacher(@PathVariable("eventId")  Long eventId) throws WitcurveException {
+    public ResponseEntity<List<StudentMarksDTO>> getStudentMarksForTestOrAssignmentEvent(@PathVariable("eventId")  Long eventId) throws WitcurveException {
+        log.debug("Request to get list of tudent marks by eventId: {}", eventId);
+        List<StudentMarksDTO> result = studentMarksService.getStudentMarksByEventId(eventId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get student marks by exam id
+     * @param examId
+     * @param ecdId
+     *
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/student-marks/exams/{examId}")
+    @Timed
+    public ResponseEntity<List<StudentMarksDTO>> getStudentMarksForExam(@PathVariable("examId")  Long examId,
+                                                                         @RequestParam(value = "ecdId", required = false) Long ecdId) throws WitcurveException {
         log.debug("Request to get list of Student marks by course teacher id and event Id for test and assignment only .");
-        List<StudentMarksDTO> result = studentMarksService.getListStudentMarksInACourseTeacherByEventId(eventId);
+        List<StudentMarksDTO> result = studentMarksService.getStudentMarksByExamId(examId, ecdId);
         return ResponseEntity.ok(result);
     }
 
     /**
-     * get student marks in course Teacher id by examCourseDetails id for Exam only
-     * @param examCourseDetailsId
+     * get student marks by course id for a student
+     * @param courseId
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/student-marks/exam-course-details/{examCourseDetailsId}")
+    @GetMapping("/student-marks/students/{studentId}/courses/{courseId}")
     @Timed
-    public ResponseEntity<List<StudentMarksDTO>> getListStudentMarksByCourseTeacherAndEcd(@PathVariable("examCourseDetailsId") Long examCourseDetailsId) throws WitcurveException {
-        log.debug("Request to get list of Student marks in course teacher id by ecd id for EXAM only .");
-        List<StudentMarksDTO> result = studentMarksService.getListStudentMarksForExamInACourseTeacher(examCourseDetailsId);
-        return ResponseEntity.ok(result);
-    }
-
-    /**
-     * get student marks by course Teacher id
-     * @param courseTeacherId, studentId
-     * @return
-     * @throws WitcurveException
-     */
-    @GetMapping("/student-marks/course/{courseId}")
-    @Timed
-    public ResponseEntity<Map<EventType,List<StudentMarksDTO>>> getListMarksForStudentInACourse(@PathVariable("courseId")  Long courseId, @RequestParam Long studentId) throws WitcurveException {
+    public ResponseEntity<List<StudentMarksDTO>> getAllMarksForAStudentInACourse(@PathVariable("studentId")  Long studentId,
+                                                                                @PathVariable("courseId")  Long courseId,
+                                                                                @RequestParam("type") EventType type,
+                                                                                 @RequestParam(value = "startDate") LocalDate startDate,
+                                                                                 @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
         log.debug("Request to get list of Student marks by course id and event type and student id");
-        Map<EventType,List<StudentMarksDTO>> result = studentMarksService.getAllMarksForStudentInACourse(courseId,studentId);
+        List<StudentMarksDTO> result = studentMarksService.getAllMarksForAStudentInACourse(studentId, courseId, type, startDate, endDate);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get student marks by course id for a grade
+     * @param courseId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/student-marks/grades/{grade}/courses/{courseId}")
+    @Timed
+    public ResponseEntity<List<StudentMarksDTO>> getMarksForAllStudentsInAGradeAndCourse(@PathVariable("grade") Grade grade,
+                                                                               @PathVariable("courseId") Long courseId,
+                                                                              @RequestParam("type") EventType type,
+                                                                              @RequestParam(value = "startDate") LocalDate startDate,
+                                                                              @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
+        log.debug("Request to get list of Student marks by course id and event type and grade");
+        List<StudentMarksDTO> result = studentMarksService.getMarksForAllStudentsInAGradeAndCourse(grade, courseId, type, startDate, endDate);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get student marks by course id for a grade
+     * @param courseId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/student-marks/standards/{standardId}/courses/{courseId}")
+    @Timed
+    public ResponseEntity<List<StudentMarksDTO>> getMarksForAllStudentsInAStandardAndCourse(@PathVariable("standardId") Long standardId,
+                                                                                 @PathVariable("courseId") Long courseId,
+                                                                                 @RequestParam("type") EventType type,
+                                                                                 @RequestParam(value = "startDate") LocalDate startDate,
+                                                                                 @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
+        log.debug("Request to get list of Student marks by course id and event type and grade");
+        List<StudentMarksDTO> result = studentMarksService.getMarksForAllStudentsInAStandardAndCourse(standardId, courseId, type, startDate, endDate);
         return ResponseEntity.ok(result);
     }
 

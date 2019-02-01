@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class StudentMarksDTO extends AbstractAuditingDTO {
@@ -10,6 +11,7 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     private EventDTO eventDTO;
 
+    @NotNull
     private Integer marks;
 
     private ExamCourseDetailsDTO examCourseDetailsDTO;

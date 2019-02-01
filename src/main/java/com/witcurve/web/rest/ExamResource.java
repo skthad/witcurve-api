@@ -115,8 +115,8 @@ public class ExamResource {
     @Timed
     public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfoAndGrade(@PathVariable("schoolInfoId") Long schoolInfoId,
                                                                    @PathVariable("grade") Grade grade,
-                                                                      @RequestParam(value = "startDate", required = false) LocalDate startDate,
-                                                                      @RequestParam(value = "endDate", required = false) LocalDate endDate) throws WitcurveException {
+                                                                      @RequestParam(value = "startDate") LocalDate startDate,
+                                                                      @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
         log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
         List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate);
         return new ResponseEntity<>(result, HttpStatus.OK);

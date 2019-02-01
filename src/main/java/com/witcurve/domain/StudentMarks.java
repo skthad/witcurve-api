@@ -21,11 +21,12 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @JoinColumn(nullable = false)
     private Student student;
 
-
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
 
+    @NotNull
+    @Column(name = "marks", nullable = false)
     private Integer marks;
 
     @ManyToOne

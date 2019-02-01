@@ -1,23 +1,26 @@
 package com.witcurve.service;
 
 import com.witcurve.domain.enumeration.EventType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface StudentMarksService {
     List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) throws WitcurveException;
 
-    StudentMarksDTO getStudentMarksById(Long studentMarksId) throws WitcurveException;
-
     void deleteStudentMarks(Long studentMarksId) throws WitcurveException;
 
-    List<StudentMarksDTO> getListStudentMarksInACourseTeacherByEventId(Long eventId) throws WitcurveException;
+    List<StudentMarksDTO> getStudentMarksByEventId(Long eventId) throws WitcurveException;
 
-    List<StudentMarksDTO> getListStudentMarksForExamInACourseTeacher(Long examCourseDetailsId) throws WitcurveException;
+    List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId) throws WitcurveException;
 
-    Map<EventType,List<StudentMarksDTO>> getAllMarksForStudentInACourse(Long courseId, Long studentId) throws WitcurveException;
+    List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException;
+
+    List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException;
+
+    List<StudentMarksDTO> getMarksForAllStudentsInAStandardAndCourse(Long standardId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException;
 
 }

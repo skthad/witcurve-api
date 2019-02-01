@@ -1,13 +1,11 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.ExamCourseDetails;
-import com.witcurve.domain.StudentMarks;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
-import com.witcurve.repository.ExamCourseDetailsRepository;
-import com.witcurve.repository.StudentMarksRepository;
+import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.StudentMarksService;
-import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.service.mapper.StudentMarksMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -17,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -32,6 +32,18 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    EventRepository eventRepository;
+
+    @Autowired
+    ExamRepository examRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
+    StandardRepository standardRepository;
 
     @Autowired
     ExamCourseDetailsRepository examCourseDetailsRepository;
@@ -61,16 +73,6 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-     public StudentMarksDTO getStudentMarksById(Long studentMarksId) throws WitcurveException {
-         log.debug("Request to get student Marks with id : {}", studentMarksId);
-         StudentMarks studentMarks = studentMarksRepository.findByStudentMarksId(studentMarksId);
-         if (studentMarks == null) {
-             throw new WitcurveException("No student marks relation exits with given id");
-         }
-         return studentMarksMapper.toDto(studentMarks);
-    }
-
-    @Override
      public void deleteStudentMarks(Long studentMarksId) throws WitcurveException {
          log.debug("Request to delete student Marks with id {}", studentMarksId);
          StudentMarks studentMarks = studentMarksRepository.findByStudentMarksId(studentMarksId);
@@ -81,38 +83,108 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getListStudentMarksInACourseTeacherByEventId(Long eventId) throws WitcurveException {
-        log.debug("Request to get student Marks List with event type exam or test and event id : {}", eventId);
-        List<StudentMarks> studentMarks= new ArrayList<>();
-        EventDTO eventDTO= eventService.getEventById(eventId);
-        if(EventType.TEST.equals(eventDTO.getType()) || EventType.ASSIGNMENT.equals(eventDTO.getType())){
+    public List<StudentMarksDTO> getStudentMarksByEventId(Long eventId) throws WitcurveException {
+        log.debug("Request to get student Marks by event id : {}", eventId);
+        List<StudentMarks> studentMarks;
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (!event.isPresent()) {
+            throw new WitcurveException("Event does not exist with id: " + eventId);
+        }
+        if(EventType.TEST.equals(event.get().getType()) || EventType.ASSIGNMENT.equals(event.get().getType())){
             studentMarks=studentMarksRepository.getStudentMarksByEventId(eventId);
         } else  {
-            throw new WitcurveException("Event id entered is neither Assignment nor Test !!");
+            throw new WitcurveException("The eventId must be TEST or ASSIGNMENT");
         }
         return studentMarksMapper.toDto(studentMarks);
     }
 
     @Override
-    public List<StudentMarksDTO> getListStudentMarksForExamInACourseTeacher(Long examCourseDetailsId) throws WitcurveException {
-        log.debug("Request to get student Marks List with event type exam or test and ecd id : {}", examCourseDetailsId);
-        List<StudentMarks> studentMarks= new ArrayList<>();
-        Optional<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findById(examCourseDetailsId);
-        if(examCourseDetails.isPresent()) {
-            studentMarks = studentMarksRepository.getStudentMarksByExamCourseDetailsId(examCourseDetailsId);
-        } else  {
-            throw new WitcurveException("ExamCourseDetails id entered is not EXAM type !!");
+    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId) throws WitcurveException {
+        log.debug("Request to get student Marks by examId id : {}", examId);
+        Optional<Exam> exam = examRepository.findById(examId);
+        if (!exam.isPresent()) {
+            throw new WitcurveException("Exam does not exist with id: " + examId);
         }
-        return studentMarksMapper.toDto(studentMarks);
+        if (ecdId == null) {
+            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId));
+        } else {
+            Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(ecdId);
+            if (!ecd.isPresent()) {
+                throw new WitcurveException("ExamCourseDetails does not exist with id: " + examId);
+            }
+            if (!ecd.get().getGsd().getExam().getId().equals(examId)) {
+                throw new WitcurveException("ExamCourseDetails provided does not belong to the examId: " + examId);
+            }
+            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, ecdId));
+        }
     }
 
     @Override
-    public Map<EventType,List<StudentMarksDTO>> getAllMarksForStudentInACourse(Long courseId, Long studentId) throws WitcurveException{
-        log.debug("Request to get all marks List for test, assignment,exam of a student");
-        Map<EventType,List<StudentMarksDTO>> mapMarksEventType= new HashMap<>();
-        mapMarksEventType.put(EventType.TEST,studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndEventTypeAndStudentId(courseId,EventType.TEST,studentId)));
-        mapMarksEventType.put(EventType.ASSIGNMENT,studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndEventTypeAndStudentIdForAssignment(courseId,EventType.ASSIGNMENT,studentId)));
-        mapMarksEventType.put(EventType.EXAM,studentMarksMapper.toDto(studentMarksRepository.getStudentMarksForExamByStudentIdAndCourseId(courseId,studentId)));
-        return mapMarksEventType;
+    public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
+        log.debug("Request to get all {} marks for student {} in course {}", type, studentId, courseId);
+        if (startDate.isAfter(endDate)) {
+            throw new WitcurveException("StartDate cannot be after EndDate");
+        }
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No course found with ID: " + courseId);
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new WitcurveException("StartDate cannot be after EndDate");
+        }
+        switch (type) {
+            case TEST:
+            case ASSIGNMENT:
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForEvent(courseId, studentId, type, startDate, endDate));
+            case EXAM:
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate));
+        }
+        throw new WitcurveException("Not a valid type");
+    }
+
+    public List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
+        log.debug("Request to get marks for all students {} in grade {} in course {}", type, grade, courseId);
+        if (startDate.isAfter(endDate)) {
+            throw new WitcurveException("StartDate cannot be after EndDate");
+        }
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No course found with ID: " + courseId);
+        }
+        if (!course.get().getGrade().equals(grade)) {
+            throw new WitcurveException("Provided grade does not have the course with ID: " + courseId);
+        }
+        switch (type) {
+            case TEST:
+            case ASSIGNMENT:
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForEvent(courseId, grade, type, startDate, endDate));
+            case EXAM:
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate));
+        }
+        throw new WitcurveException("Not a valid type");
+    }
+
+    public List<StudentMarksDTO> getMarksForAllStudentsInAStandardAndCourse(Long standardId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
+        log.debug("Request to get marks for all students {} in standard {} in course {}", type, standardId, courseId);
+        if (startDate.isAfter(endDate)) {
+            throw new WitcurveException("StartDate cannot be after EndDate");
+        }
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("No course found with ID: " + courseId);
+        }
+        Optional<Standard> standard = standardRepository.findById(standardId);
+        if (!standard.isPresent()) {
+            throw new WitcurveException("No standard found with ID: " + standardId);
+        }
+        if (!course.get().getSchoolInfo().getId().equals(standard.get().getSchoolInfo().getId())) {
+            throw new WitcurveException("School Info ID in course and standard don't match");
+        }
+        switch (type) {
+            case TEST:
+            case ASSIGNMENT:
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStandardForEvent(courseId, standardId, type, startDate, endDate));
+        }
+        throw new WitcurveException("Not a valid type");
     }
 }

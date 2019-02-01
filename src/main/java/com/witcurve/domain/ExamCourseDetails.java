@@ -37,6 +37,10 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     @JoinColumn(nullable = false)
     private Course course;
 
+    @NotNull
+    @Column(name = "full_marks", nullable = false)
+    private Integer fullMarks;
+
     public Long getId() {
         return id;
     }
@@ -69,6 +73,14 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
         this.course = course;
     }
 
+    public Integer getFullMarks() {
+        return fullMarks;
+    }
+
+    public void setFullMarks(Integer fullMarks) {
+        this.fullMarks = fullMarks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,6 +102,7 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
             ", gsd=" + gsd +
             ", date=" + date +
             ", courseId=" + course.getId() +
+            ", fullMarks=" + fullMarks +
             '}';
     }
 }

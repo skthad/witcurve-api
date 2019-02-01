@@ -85,7 +85,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private AttendanceType attendanceType = AttendanceType.PRESENT;
 
-    private Integer marks;
+    private Integer fullMarks;
 
     @Column
     @Convert(converter = ListToStringConverter.class)
@@ -227,12 +227,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.attendanceType = attendanceType;
     }
 
-    public Integer getMarks() {
-        return marks;
+    public Integer getFullMarks() {
+        return fullMarks;
     }
 
-    public void setMarks(Integer marks) {
-        this.marks = marks;
+    public void setFullMarks(Integer fullMarks) {
+        this.fullMarks = fullMarks;
     }
 
     public List<Keyword> getKeywords() {
@@ -277,7 +277,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             ", attendanceType=" + attendanceType +
-            ", marks=" + marks +
+            ", fullMarks=" + fullMarks +
             ", keywords=" + keywords +
             '}';
     }

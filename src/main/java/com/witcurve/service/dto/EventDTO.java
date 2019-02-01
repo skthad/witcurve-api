@@ -56,7 +56,7 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private AttendanceType attendanceType = AttendanceType.PRESENT;
 
-    private Integer marks;
+    private Integer fullMarks;
 
     private List<Keyword> keywords;
 
@@ -212,12 +212,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.attendanceType = attendanceType;
     }
 
-    public Integer getMarks() {
-        return marks;
+    public Integer getFullMarks() {
+        return fullMarks;
     }
 
-    public void setMarks(Integer marks) {
-        this.marks = marks;
+    public void setFullMarks(Integer fullMarks) {
+        this.fullMarks = fullMarks;
     }
 
     public List<Keyword> getKeywords() {
@@ -263,7 +263,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", bindingId='" + bindingId + '\'' +
             ", sendSms=" + sendSms +
             ", attendanceType=" + attendanceType +
-            ", marks=" + marks +
+            ", fullMarks=" + fullMarks +
             ", keywords=" + keywords +
             '}';
     }

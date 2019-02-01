@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1549024490579-1">
+        <addColumn tableName="event">
+            <column name="full_marks" type="int4"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549024490579-2">
+        <addColumn tableName="exam_course_details">
+            <column name="full_marks" type="int4"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549024490579-3">
+        <sql>update event set full_marks = 100 where type in ('TEST', 'ASSIGNMENT')</sql>
+        <sql>update exam_course_details set full_marks = 100</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549024490579-4">
+        <dropColumn columnName="marks" tableName="event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549024490579-5">
+        <addNotNullConstraint columnDataType="int" columnName="marks" tableName="student_marks"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549024490579-6">
+        <addNotNullConstraint columnDataType="int4" columnName="full_marks" tableName="exam_course_details"/>
+    </changeSet>
+</databaseChangeLog>
