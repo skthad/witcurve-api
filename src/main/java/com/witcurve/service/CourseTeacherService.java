@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CourseTeacherService {
 
-    CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException;
+    List<CourseTeacherDTO> saveOrUpdate(List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException;
 
     CourseTeacherDTO getCourseTeacherById(Long id) throws WitcurveException;
 
