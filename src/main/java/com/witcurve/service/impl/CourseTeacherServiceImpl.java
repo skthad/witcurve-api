@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,31 +48,34 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     GeneralSlotDetailsRepository generalSlotDetailsRepository;
 
     @Override
-    public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
-        log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
-        Optional<Course> course = courseRepository.findById(courseTeacherDTO.getCourse().getId());
-        if (!course.isPresent()) {
-            throw new WitcurveException("A valid course id must be provided");
-        }
-        Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
-
-        if (!standard.isPresent()) {
-            throw new WitcurveException("a valid standard id must be provided");
-        }
-        if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
-
-            List<StaffEligibility> se = staffEligibilityRepository
-                .findByStaffAndSubjectAndGrade(courseTeacherDTO.getTeacher().getId(),
-                    course.get().getMasterSubject(), standard.get().getGrade());
-            if (se.size() == 0) {
-                throw new WitcurveException("Staff does not meet the eligibility criteria");
+    public List<CourseTeacherDTO> saveOrUpdate(List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException {
+        log.debug("Request to save or update CourseTeachers", courseTeacherDTOs);
+        List<CourseTeacher> result = new ArrayList<>();
+        for(CourseTeacherDTO courseTeacherDTO : courseTeacherDTOs) {
+            Optional<Course> course = courseRepository.findById(courseTeacherDTO.getCourse().getId());
+            if (!course.isPresent()) {
+                throw new WitcurveException("A valid course id must be provided");
             }
+            Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
 
+            if (!standard.isPresent()) {
+                throw new WitcurveException("a valid standard id must be provided");
+            }
+            if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
+
+                List<StaffEligibility> se = staffEligibilityRepository
+                    .findByStaffAndSubjectAndGrade(courseTeacherDTO.getTeacher().getId(),
+                        course.get().getMasterSubject(), standard.get().getGrade());
+                if (se.size() == 0) {
+                    throw new WitcurveException("Staff does not meet the eligibility criteria");
+                }
+
+            }
+            CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
+            courseTeacher = courseTeacherRepository.save(courseTeacher);
+            result.add(courseTeacher);
         }
-        CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
-        courseTeacher = courseTeacherRepository.save(courseTeacher);
-
-        return courseTeacherMapper.toDto(courseTeacher);
+        return courseTeacherMapper.toDto(result);
     }
 
 
