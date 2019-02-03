@@ -31,23 +31,29 @@ public class CourseTeacherResource {
     CourseTeacherService courseTeacherService;
 
     /**
-     * creates a courseTeacher
-     * @param courseTeacherDTO
+     * creates a courseTeachers
+     * @param courseTeacherDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/course-teacher")
     @Timed
-    public ResponseEntity<CourseTeacherDTO> createCourseTeacher(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<CourseTeacherDTO>> createCourseTeacher(@RequestBody @Valid List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save courseTeacher");
-        if (courseTeacherDTO.getId() != null) {
-            throw new WitcurveException("New courseTeacher can't already have an id");
+        Long standardId = courseTeacherDTOs.get(0).getStandard().getId();
+        for(CourseTeacherDTO courseTeacherDTO : courseTeacherDTOs) {
+            if (courseTeacherDTO.getId() != null) {
+                throw new WitcurveException("New courseTeacher can't already have an id");
+            }
+            if(standardId != courseTeacherDTO.getStandard().getId()) {
+                throw new WitcurveException("CourseTeachers belonging to same standard id can be saved at a time");
+            }
         }
         try {
-            CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
-            return ResponseEntity.created(new URI("/api/course-teacher/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("courseTeacher", result.getId().toString()))
+            List<CourseTeacherDTO> result = courseTeacherService.saveOrUpdate(courseTeacherDTOs);
+            return ResponseEntity.created(new URI("/api/course-teacher/"))
+                .headers(HeaderUtil.createEntityCreationAlert("courseTeacher", "created"))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("course_teacher_standard_UK")) {
@@ -61,25 +67,29 @@ public class CourseTeacherResource {
     }
 
     /**
-     * update the given courseTeacher
-     * @param courseTeacherDTO
+     * update the given courseTeachers
+     * @param courseTeacherDTOs
      * @return
      * @throws WitcurveException
      */
 
     @PutMapping("/course-teacher")
     @Timed
-    public ResponseEntity<CourseTeacherDTO> updateCourseTeacher(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
+    public ResponseEntity<List<CourseTeacherDTO>> updateCourseTeacher(@RequestBody @Valid List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException {
         log.debug("Request to update courseTeacher");
-        if (courseTeacherDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        } else {
-            courseTeacherService.getCourseTeacherById(courseTeacherDTO.getId());
+        Long standardId = courseTeacherDTOs.get(0).getStandard().getId();
+        for(CourseTeacherDTO courseTeacherDTO : courseTeacherDTOs) {
+            if (courseTeacherDTO.getId() == null) {
+                throw new WitcurveException("CourseTeachers should have id to update");
+            }
+            if(standardId != courseTeacherDTO.getStandard().getId()) {
+                throw new WitcurveException("CourseTeachers belonging to same standard id can be saved at a time");
+            }
         }
         try {
-            CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
+            List<CourseTeacherDTO> result = courseTeacherService.saveOrUpdate(courseTeacherDTOs);
             return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", courseTeacherDTO.getId().toString()))
+                .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", "updated"))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("course_teacher_standard_UK")) {
