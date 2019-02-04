@@ -27,11 +27,10 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and" +
         "(" +
         "(e.staff.id = ?2 and e.type = 'ATTENDANCE') or " +
-        "(e.scd.courseTeacher.teacher.id=?2 and (e.type = 'DAILY_UPDATE' or e.type = 'TEST' or e.type = 'ASSIGNMENT')) or " +
-        "(e.standard.id in ?3 and e.type='SCHOOL_EVENT') or " +
-        "((e.grade is null or (e.grade is not null and e.grade in ?4)) and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
+        "(e.standard.id in ?3 and e.type in ?6) or " +
+        "((e.grade is null or (e.grade is not null and e.grade in ?4)) and e.schoolInfo.id=?5 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
-    List<Event> findEventsByDateForStaff(LocalDate date, Long staffId, Set<Long> standardIds, Set<Grade> grades);
+    List<Event> findEventsByDateForStaff(LocalDate date, Long staffId, Set<Long> standardIds, Set<Grade> grades, Long schoolInfoId, List<EventType> types);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and" +
         "(" +
