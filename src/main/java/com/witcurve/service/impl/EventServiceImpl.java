@@ -170,7 +170,6 @@ public class EventServiceImpl implements EventService {
         }
         Long schoolInfoId = staff.get().getSchoolInfo().getId();
 
-        //TODO: input eventDate may not be in the current term. So we should bring even inactive ones.
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
         Set<Long> standardIds = new HashSet<>();
         Set<Grade> grades = new HashSet<>();
@@ -178,8 +177,6 @@ public class EventServiceImpl implements EventService {
             standardIds.add(courseTeacher.getStandard().getId());
             grades.add(courseTeacher.getStandard().getGrade());
         }
-
-        //TODO: not sending session id anymore, as the query is driven by a date.
         if (courseTeachers.size() == 0) {
             throw new WitcurveException("This staff hasn't been assigned to any standard yet");
         }
@@ -361,13 +358,9 @@ public class EventServiceImpl implements EventService {
         LocalDate termDate = term.get().getStartDate();
         Page<Event> result = null;
         if(studentId != null) {
-            List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
-            schoolInfoId= studentStandards.get(0).getStandard().getSchoolInfo().getId();
-            if(studentStandards.size() !=1) {
-                throw new WitcurveException("There should be an active student standard with given student id : "+studentId);
-            }
-            Long standardId = studentStandards.get(0).getStandard().getId();
-            Grade grade = studentStandards.get(0).getStandard().getGrade();
+            StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+            Long standardId = studentStandard.getStandard().getId();
+            Grade grade = studentStandard.getStandard().getGrade();
             result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, termDate, pageable);
         }
         if (staffId != null) {
