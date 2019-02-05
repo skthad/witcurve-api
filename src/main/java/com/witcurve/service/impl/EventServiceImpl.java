@@ -161,8 +161,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) {
+    public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
+
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if(!staff.isPresent()) {
+            throw new WitcurveException("Staff doesn't exist with given id");
+        }
+        Long schoolInfoId = staff.get().getSchoolInfo().getId();
 
         //TODO: input eventDate may not be in the current term. So we should bring even inactive ones.
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
@@ -174,7 +180,10 @@ public class EventServiceImpl implements EventService {
         }
 
         //TODO: not sending session id anymore, as the query is driven by a date.
-        List<Event> events = eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades);
+        if (courseTeachers.size() == 0) {
+            throw new WitcurveException("This staff hasn't been assigned to any standard yet");
+        }
+        List<Event> events =   eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades, schoolInfoId, LIST_FOR_STUDENT);
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
@@ -299,6 +308,9 @@ public class EventServiceImpl implements EventService {
         SchoolInfo schoolInfo = staff.get().getSchoolInfo();
 
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if (courseTeachers.size() == 0) {
+            throw new WitcurveException("This staff hasn't been assigned to any standard yet");
+        }
 
         Set<Long> standardIds = courseTeachers
             .stream()
