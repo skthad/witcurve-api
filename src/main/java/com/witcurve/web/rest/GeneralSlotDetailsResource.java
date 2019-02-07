@@ -73,7 +73,7 @@ public class GeneralSlotDetailsResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/general-slot-details/standard/{standardId}")
+    @GetMapping("/general-slot-details/standards/{standardId}")
     @Timed
     public ResponseEntity<List<GeneralSlotDetailsDTO>> getGeneralSlotDetailsByStandardId(@PathVariable("standardId") Long standardId,
                                                                                          @RequestParam(value = "status", required = false) GSDStatus status) throws WitcurveException {
@@ -92,7 +92,7 @@ public class GeneralSlotDetailsResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/general-slot-details/grade/{grade}/exams/{examId}")
+    @GetMapping("/general-slot-details/grades/{grade}/exams/{examId}")
     @Timed
     public ResponseEntity<List<GeneralSlotDetailsDTO>> getExamSlotsByGradeAndExam(@PathVariable("grade") Grade grade,
                                                                            @PathVariable(value = "examId") Long examId) throws WitcurveException {
@@ -223,7 +223,7 @@ public class GeneralSlotDetailsResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/general-slot-details/grade/{grade}/exams/{examId}")
+    @DeleteMapping("/general-slot-details/grades/{grade}/exams/{examId}")
     @Timed
     public ResponseEntity<Void> deleteExamSlotsByGradeExamId(@PathVariable Grade grade, @PathVariable Long examId) throws WitcurveException {
         log.debug("REST request to delete Exam Slots for grade: {} and examId: {}", grade, examId);

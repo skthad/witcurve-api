@@ -90,7 +90,7 @@ public class PayrollResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/payroll")
+    @PostMapping("/payrolls")
     @Timed
     public ResponseEntity<PayrollDTO> createPayroll(@RequestBody @Valid PayrollDTO payrollDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to save Payroll");
@@ -113,7 +113,7 @@ public class PayrollResource {
         }
     }
 
-    @PutMapping("/payroll")
+    @PutMapping("/payrolls")
     @Timed
     public ResponseEntity<PayrollDTO> updatePayroll(@RequestBody @Valid PayrollDTO payrollDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to update Payroll");
@@ -143,7 +143,7 @@ public class PayrollResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/payroll/staff/{staffId}")
+    @GetMapping("/payrolls/staff/{staffId}")
     @Timed
     public ResponseEntity<List<PayrollDTO>> getPayrollsByStaffId(@PathVariable("staffId") Long staffId,
                                                                        @RequestParam(value = "year", required = false) Integer year,
@@ -163,7 +163,7 @@ public class PayrollResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/payroll/school-info/{schoolInfoId}")
+    @GetMapping("/payrolls/school-info/{schoolInfoId}")
     @Timed
     public ResponseEntity<List<PayrollDTO>> getPayrollsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId,
                                                                  @RequestParam(value = "year", required = false) Integer year,

@@ -35,7 +35,7 @@ public class CourseResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/course")
+    @PostMapping("/courses")
     @Timed
     public ResponseEntity<CourseDTO> createCourseUpdate(@RequestBody @Valid CourseDTO courseDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save course");
@@ -55,7 +55,7 @@ public class CourseResource {
      * @throws WitcurveException
      */
 
-    @PutMapping("/course")
+    @PutMapping("/courses")
     @Timed
     public ResponseEntity<CourseDTO> updateCourseUpdate(@RequestBody @Valid CourseDTO courseDTO) throws WitcurveException {
         log.debug("Request to update course");
@@ -77,7 +77,7 @@ public class CourseResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/course/{courseId}")
+    @GetMapping("/courses/{courseId}")
     @Timed
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable("courseId") Long courseId) throws WitcurveException {
         log.debug("Request to get Course with id {}", courseId);
@@ -92,7 +92,7 @@ public class CourseResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/course/school-info/{schoolInfoId}/grade/{grade}")
+    @GetMapping("/courses/school-info/{schoolInfoId}/grades/{grade}")
     @Timed
     public ResponseEntity<List<CourseDTO>> getCourseById(@PathVariable("schoolInfoId") Long schoolInfoId,
                                                          @PathVariable("grade") Grade grade) throws WitcurveException {
@@ -107,7 +107,7 @@ public class CourseResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/course/{courseId}")
+    @DeleteMapping("/courses/{courseId}")
     @Timed
     public ResponseEntity<Void> deleteCourse(@PathVariable Long courseId) throws WitcurveException {
         log.debug("REST request to delete Course: {}", courseId);

@@ -82,7 +82,7 @@ public class ExamCourseDetailsResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/exam-course-details/grade/{grade}/exams/{examId}")
+    @GetMapping("/exam-course-details/grades/{grade}/exams/{examId}")
     @Timed
     public ResponseEntity<List<ExamCourseDetailsDTO>> getExamCourseDetailsByGradeAndExam(@PathVariable("grade") Grade grade,
                                                                                          @PathVariable("examId") Long examId) throws WitcurveException {
