@@ -34,7 +34,7 @@ public class GuardianResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/guardian")
+    @PostMapping("/guardians")
     @Timed
     public ResponseEntity<GuardianDTO> createGuardian(@RequestBody @Valid GuardianDTO guardianDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Guardian");
@@ -76,7 +76,7 @@ public class GuardianResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/guardian/{guardianId}")
+    @GetMapping("/guardians/{guardianId}")
     @Timed
     public ResponseEntity<GuardianDTO> getGuardianById(@PathVariable("guardianId") Long guardianId) throws WitcurveException {
         log.debug("Request to get guardian with id {}", guardianId);
@@ -91,7 +91,7 @@ public class GuardianResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/guardian/students/{studentId}")
+    @GetMapping("/guardians/students/{studentId}")
     @Timed
     public ResponseEntity<List<GuardianDTO>> getGuardiansByStudentId(@PathVariable("studentId") Long studentId) {
         log.debug("Request to get guardians for student with id {}", studentId);
@@ -105,7 +105,7 @@ public class GuardianResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/guardian/{guardianId}")
+    @DeleteMapping("/guardians/{guardianId}")
     @Timed
     public ResponseEntity<Void> deleteGuardian(@PathVariable Long guardianId) throws WitcurveException {
         log.debug("REST request to delete Guardian: {}", guardianId);
