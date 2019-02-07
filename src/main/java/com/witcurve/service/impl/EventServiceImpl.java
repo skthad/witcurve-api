@@ -66,7 +66,7 @@ public class EventServiceImpl implements EventService {
     private static final ArrayList<EventType> LIST_FOR_MONTH = new ArrayList<EventType>(
         Arrays.asList(EventType.SCHOOL_EVENT));
 
-    private static final ArrayList<EventType> LIST_FOR_UPCOMING_EVENTS = new ArrayList<EventType>(
+    private static final ArrayList<EventType> LIST_FOR_DAILY_UPDATES = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.SCHOOL_EVENT, EventType.TEST));
 
 
@@ -185,6 +185,37 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<EventDTO> findAllEventsOnGivenMonthForStaff(Integer month, Integer year, Long staffId) throws WitcurveException {
+        log.debug("Request to get tests with month no. : {} of year : {} or student with id : {}", month, year, staffId);
+        // need to get Events of type Holiday, Leave, Exam, SchoolEvent
+
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (!staff.isPresent()) {
+            throw new WitcurveException("Staff does not exist with id " + staffId);
+        }
+        SchoolInfo schoolInfo = staff.get().getSchoolInfo();
+
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+
+        Set<Long> standardIds = courseTeachers
+            .stream()
+            .map(CourseTeacher::getStandard)
+            .map(s -> s.getId())
+            .collect(Collectors.toSet());
+
+        Set<Grade> grades = courseTeachers
+            .stream()
+            .map(CourseTeacher::getStandard)
+            .map(s -> s.getGrade())
+            .collect(Collectors.toSet());
+        LocalDate monthStart = LocalDate.of(year,month,1);
+        LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
+        List<Event> events = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_DAILY_UPDATES);;
+        Collections.sort(events, new EventDateAscComparator());
+        return eventMapper.toDto(events);
+    }
+
+    @Override
     public List<LocalDate> findAllEventDatesOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
 
         StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
@@ -206,7 +237,7 @@ public class EventServiceImpl implements EventService {
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade, schoolInfoId, LIST_FOR_UPCOMING_EVENTS);
+        List<Event> events = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade, schoolInfoId, LIST_FOR_DAILY_UPDATES);
         if (events.size() > 0) {
             String lastBindingId = events.get(events.size()-1).getBindingId();
             if(lastBindingId != null) {
@@ -247,7 +278,7 @@ public class EventServiceImpl implements EventService {
             .map(s -> s.getGrade())
             .collect(Collectors.toSet());
 
-        List<Event> events = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_UPCOMING_EVENTS);
+        List<Event> events = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_DAILY_UPDATES);
         Collections.sort(events, new EventDateAscComparator());
         return eventMapper.toDto(events);
 

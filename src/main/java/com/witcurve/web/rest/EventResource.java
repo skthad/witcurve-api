@@ -221,6 +221,12 @@ public class EventResource {
 
             result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId);
         }
+        if(type.equals(ViewType.MONTH)) {
+            if(month == null || year ==null) {
+                throw new WitcurveException("There should be month and year param for MONTH view");
+            }
+            result = eventService.findAllEventsOnGivenMonthForStaff(month, year, staffId);
+        }
         if(ViewType.TEST.equals(type)){
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for TEST view");
