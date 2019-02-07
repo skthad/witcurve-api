@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface StandardService {
 
-    StandardDTO saveOrUpdateStandard(StandardDTO standardDTO);
+    StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) throws WitcurveException;
 
     StandardDTO getStandardById(Long id) throws WitcurveException;
 

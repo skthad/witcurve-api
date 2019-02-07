@@ -12,4 +12,6 @@ public interface SubstitutionService {
     SubstitutionDTO substitute(SubstitutionDTO substitutionDTO) throws WitcurveException;
 
     List<StaffDTO> getSubstituteSuggestion(Long gsdId, Long teacherId, LocalDate date) throws WitcurveException;
+
+    List<SubstitutionDTO> getSubstitutions(List<Long> gsdIds, LocalDate date);
 }

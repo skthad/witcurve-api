@@ -46,4 +46,9 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     public List<StudentStandardDTO> getByStandardId(Long standardId) {
         return studentStandardMapper.toDto(studentStandardRepository.getByStandardId(standardId));
     }
+
+    @Override
+    public List<StudentStandardDTO> getBySchoolInfoId(Long schoolInfoId) {
+        return studentStandardMapper.toDto(studentStandardRepository.getBySchoolInfoId(schoolInfoId));
+    }
 }

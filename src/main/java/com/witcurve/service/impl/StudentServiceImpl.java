@@ -77,14 +77,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> getStudentsBySchoolId(Long schoolId) {
-        log.debug("Request to get students with school id : {} ", schoolId);
-        List<Student> studentList = studentRepository.findBySchoolId(schoolId);
-        List<StudentDTO> result = studentMapper.toDto(studentList);
-        return result;
-    }
-
-    @Override
     public StudentDTO getStudentByUserId(Long userId) throws WitcurveException {
         log.debug("Request to get students with user id : {}", userId);
         Student student = studentRepository.getStudentByUserId(userId);

@@ -161,7 +161,7 @@ public class LeaveApplicationResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/leave-application/student/{studentId}")
+    @GetMapping("/leave-application/students/{studentId}")
     @Timed
     public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStudentIdAndSessionId
     (@PathVariable Long studentId, @RequestParam Long sessionId,

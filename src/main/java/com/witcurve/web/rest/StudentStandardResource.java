@@ -24,7 +24,7 @@ public class StudentStandardResource {
     @Autowired
     StudentStandardService studentStandardService;
 
-    @GetMapping("/student-standard/student/{studentId}")
+    @GetMapping("/student-standard/students/{studentId}")
     @Timed
     public ResponseEntity<StudentStandardDTO> getByStudentId(@PathVariable("studentId") Long studentId) throws WitcurveException {
         log.debug("Request to get student-standard by student id");
@@ -32,11 +32,19 @@ public class StudentStandardResource {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/student-standard/standard/{standardId}")
+    @GetMapping("/student-standard/standards/{standardId}")
     @Timed
     public ResponseEntity<List<StudentStandardDTO>> getByStandardId(@PathVariable("standardId") Long standardId) throws WitcurveException {
         log.debug("Request to get student-standard by standard id");
         List<StudentStandardDTO> result = studentStandardService.getByStandardId(standardId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/student-standard/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<List<StudentStandardDTO>> getBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get student-standard by schoolInfo id");
+        List<StudentStandardDTO> result = studentStandardService.getBySchoolInfoId(schoolInfoId);
         return ResponseEntity.ok(result);
     }
 

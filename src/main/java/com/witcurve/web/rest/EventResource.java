@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class EventResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/event")
+    @PostMapping("/events")
     @Timed
     public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Events : {}",eventDTOs);
@@ -60,7 +59,7 @@ public class EventResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/event/{eventId}")
+    @GetMapping("/events/{eventId}")
     @Timed
     public ResponseEntity<EventDTO> getEventById(@PathVariable("eventId") Long eventId) throws WitcurveException {
         log.debug("Request to get Event with id {}", eventId);
@@ -68,7 +67,7 @@ public class EventResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/event/attendance")
+    @GetMapping("/events/attendance")
     @Timed
     public ResponseEntity<Map<Long, List<EventDTO>>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
                                                         @RequestParam(value = "toDate") LocalDate toDate,
@@ -114,7 +113,7 @@ public class EventResource {
      * @throws WitcurveException
      */
 
-    @PutMapping("/event")
+    @PutMapping("/events")
     @Timed
     public ResponseEntity<List<EventDTO>> updateEvent(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
         log.debug("Request to update events : {}",eventDTOs);
@@ -133,7 +132,7 @@ public class EventResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/event/{eventId}")
+    @DeleteMapping("/events/{eventId}")
     @Timed
     public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId) throws WitcurveException {
         log.debug("REST request to delete Event: {}", eventId);
@@ -158,7 +157,7 @@ public class EventResource {
      * @param studentId
      * @return
      */
-    @GetMapping("/event/student/{studentId}")
+    @GetMapping("/events/students/{studentId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForStudent(
         @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
@@ -182,12 +181,6 @@ public class EventResource {
             }
             result = eventService.findAllEventsOnGivenMonthForStudent(month, year, studentId);
         }
-        if(type.equals(ViewType.DIARY)) {
-            if(eventDate == null) {
-                throw new WitcurveException("There should be eventDate param for DIARY view");
-            }
-            result = eventService.findAllEventsForDiary(eventDate, studentId);
-        }
         if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
@@ -208,7 +201,7 @@ public class EventResource {
      * @param staffId
      * @return
      */
-    @GetMapping("/event/staff/{staffId}")
+    @GetMapping("/events/staff/{staffId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForTeacher(
         @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
@@ -226,7 +219,6 @@ public class EventResource {
             }
             //LocalDate date = getLocalDate(eventDate);
 
-            //TODO: no need to send termId anymore, since it is based on date
             result = eventService.findAllEventsOnGivenDateForStaff(eventDate, staffId);
         }
         if(ViewType.TEST.equals(type)){
@@ -246,22 +238,6 @@ public class EventResource {
             }
             result = eventService.findEventsByDateRangeForStaffInUpcomingEvents(eventDate, staffId);
         }
-//        if(type.equals(ViewType.MONTH)) {
-//            if(month == null || year ==null) {
-//                throw new WitcurveException("There should be month and year param for MONTH view");
-//            }
-//            result = eventService.findAllEventsOnGivenMonthForStudent(month, year, studentId);
-//        }
-//        if(type.equals(ViewType.DIARY)) {
-//            if(eventDate == null) {
-//                throw new WitcurveException("There should be eventDate param for DIARY view");
-//            }
-//            LocalDate date = getLocalDate(eventDate);
-//            result = eventService.findAllEventsForDiary(date, studentId);
-//        }
-//        if(type.equals(ViewType.LEAVE)) {
-//            result = eventService.getAllLeavesForStudent(eventDate == null ? null : getLocalDate(eventDate), studentId);
-//        }
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
@@ -273,7 +249,7 @@ public class EventResource {
      * @param standardId
      * @return
      */
-    @GetMapping("/event/standard/{standardId}")
+    @GetMapping("/events/standards/{standardId}")
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
         @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
@@ -293,26 +269,28 @@ public class EventResource {
 
     /**
      *
-     * @param termId
+     * @param startDate
+     * @param endDate
      * @param studentId
      * @param staffId
      * @param pageable
      * @return
      */
-    @GetMapping("/event/term/{termId}")
+    @GetMapping("/events/notices")
     @Timed
-    public ResponseEntity<Page<EventDTO>> getNoticesForTerm(@ApiParam Pageable pageable,
-                                                            @PathVariable Long termId,
+    public ResponseEntity<List<EventDTO>> getNotices(@ApiParam Pageable pageable,
+                                                            @RequestParam(value = "startDate") LocalDate startDate,
+                                                            @RequestParam(value = "endDate") LocalDate endDate,
                                                             @RequestParam(required = false) Long studentId,
                                                             @RequestParam(required = false) Long staffId) throws WitcurveException, URISyntaxException {
         if(staffId != null) {
-            log.debug("Request to get staff notices events on given for term id : {} and staff id : {}", termId, staffId);
+            log.debug("Request to get notices for staff id : {}", staffId);
         } else if (studentId != null){
-            log.debug("Request to get student notices events on given for term id : {} and studentId : {}", termId, studentId);
+            log.debug("Request to get notices for student id : {}", studentId);
         } else {
-            throw new WitcurveException("Invalid request, there should be one student id or staff id but not both");
+            throw new WitcurveException("Invalid request, there should be one of student id or staff id but not both");
         }
-        Page<EventDTO> result = eventService.getNotices(termId, studentId, staffId, pageable);
+        List<EventDTO> result = eventService.getNotices(startDate, endDate, studentId, staffId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
@@ -325,7 +303,7 @@ public class EventResource {
      * @return
      */
 
-    @GetMapping("/event/student/{studentId}/dates")
+    @GetMapping("/event/students/{studentId}/dates")
     @Timed
     public ResponseEntity<List<LocalDate>> getAllEventsDatesForStudentInAMonth(
         @RequestParam(value = "month", required = false) Integer month,

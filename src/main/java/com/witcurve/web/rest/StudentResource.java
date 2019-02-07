@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +26,7 @@ public class StudentResource {
     @Autowired
     StudentService studentService;
 
-    @PostMapping("/student")
+    @PostMapping("/students")
     public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO studentDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request create student");
         if (studentDTO.getId() != null) {
@@ -39,7 +38,7 @@ public class StudentResource {
             .body(result);
     }
 
-    @PutMapping("/student")
+    @PutMapping("/students")
     public ResponseEntity<StudentDTO> updateStudent(@RequestBody @Valid StudentDTO studentDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request create standard");
         if (studentDTO.getId() == null) {
@@ -51,7 +50,7 @@ public class StudentResource {
             .body(result);
     }
 
-    @GetMapping("/student/{studentId}")
+    @GetMapping("/students/{studentId}")
     @Timed
     public ResponseEntity<StudentDTO> getStudentById(@PathVariable("studentId") Long studentId) throws WitcurveException {
         log.debug("Request to get student by id");
@@ -59,22 +58,7 @@ public class StudentResource {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * get Student by school id
-     * @param schoolId
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/student/schools/{schoolId}")
-    @Timed
-    public ResponseEntity<List<StudentDTO>> getStudentBySchoolId(@PathVariable("schoolId") Long schoolId) throws WitcurveException {
-        log.debug("Request to get students with school id {}", schoolId);
-        List<StudentDTO> result = studentService.getStudentsBySchoolId(schoolId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @GetMapping("/students/standard/{standardId}")
+    @GetMapping("/students/standards/{standardId}")
     @Timed
     public ResponseEntity<List<StudentDTO>> getStudentsByStandardId(@PathVariable("standardId") Long standardId) throws WitcurveException {
         log.debug("Request to get students by standard id");
@@ -88,7 +72,7 @@ public class StudentResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/student/{studentId}")
+    @DeleteMapping("/students/{studentId}")
     @Timed
     public ResponseEntity<Void> deleteStudent(@PathVariable Long studentId) throws WitcurveException {
         log.debug("REST request to delete Student: {}", studentId);

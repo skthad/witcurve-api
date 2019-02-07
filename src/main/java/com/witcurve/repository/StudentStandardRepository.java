@@ -17,6 +17,9 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true")
     List<StudentStandard> getByStandardId(Long standardId);
 
+    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true")
+    List<StudentStandard> getBySchoolInfoId(Long schoolInfoId);
+
     @Query("select ss.student.id from StudentStandard ss where ss.standard.id = ?1 and ss.active = true")
     List<Long> findStudentIdByStandardId(Long standardId);
 

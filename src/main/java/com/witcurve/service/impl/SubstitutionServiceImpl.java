@@ -4,7 +4,6 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.SubstitutionService;
-import com.witcurve.service.dto.SlotCourseDetailsDTO;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.service.dto.SubstitutionDTO;
 import com.witcurve.service.mapper.SlotCourseDetailsMapper;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -57,7 +55,6 @@ public class SubstitutionServiceImpl implements SubstitutionService {
     @Override
     public List<StaffDTO> getSubstituteSuggestion(Long gsdId, Long teacherId, LocalDate date) throws WitcurveException {
 
-        HashMap<Long, List<SlotCourseDetailsDTO>> staffSCDMap = new HashMap<>();
         SlotCourseDetails scd = slotCourseDetailsRepository.findByGsdAndDayOfWeek(gsdId, date.getDayOfWeek());
 
         if (scd == null) {
@@ -129,7 +126,13 @@ public class SubstitutionServiceImpl implements SubstitutionService {
         return staffMapperLite.toDto(staffList);
     }
 
-    public SubstitutionDTO substitute(SubstitutionDTO substitutionDTO) throws WitcurveException {
+    @Override
+    public List<SubstitutionDTO> getSubstitutions(List<Long> gsdIds, LocalDate date) {
+        List<Substitution> substitutions = substitutionRepository.findByDateAndGSDs(date, gsdIds);
+        return substitutionMapper.toDto(substitutions);
+    }
+
+    public SubstitutionDTO substitute(SubstitutionDTO substitutionDTO) {
         Substitution substitution = substitutionRepository.save(substitutionMapper.toEntity(substitutionDTO));
         return substitutionMapper.toDto(substitution);
     }

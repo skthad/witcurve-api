@@ -85,7 +85,7 @@ public class UserResource {
         this.mailService = mailService;
     }
 
-    @GetMapping("/students/username/{username}")
+    @GetMapping("/student/username/{username}")
     @Timed
     public ResponseEntity<StudentDTO> getStudentByUsername(@PathVariable("username") String username) throws WitcurveException {
         log.debug("Request to get student by username {}", username);

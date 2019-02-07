@@ -3,8 +3,6 @@ package com.witcurve.repository;
 import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -34,7 +32,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and" +
         "(" +
-        "(e.staff.id = ?3 and e.type = 'ATTENDANCE') or " +
+        "(e.student.id = ?3 and e.type = 'ATTENDANCE') or " +
         "(e.standard.id=?4 and e.type in ?7) or " +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) and e.schoolInfo.id=?6 and (e.type='HOLIDAY' or e.type='SCHOOL_EVENT'))" +
         ")")
@@ -102,43 +100,31 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "e.staff is not null and e.staff.id in ?1 and e.date = ?2")
     List<Long> findAbsentTeacherList(List<Long> teacherIds, LocalDate date);
 
-    @Query("Select e from Event e where (e.schoolInfo.id=?1 or e.standard.schoolInfo.id=?1)" +
-        " and (e.type='NOTICE' or e.type='STAFF_NOTICE' ) " +
-        "and e.date >= ?2 "+
-        "order by e.date desc")
-    Page<Event> findAdminNotices(Long schoolInfoId, LocalDate termDate, Pageable pageable);
-
     @Query("Select e from Event e where " +
         "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
-        "and e.date >= ?2 "+
+        "and e.date between ?2 and ?3 "+
         "order by e.date desc")
-    List<Event> findAdminNoticesBySchoolInfoId(Long schoolInfoId, LocalDate termDate);
-
-    @Query("Select e from Event e where " +
-        "(e.standard.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
-        "and e.date >= ?2 "+
-        "order by e.date desc")
-    List<Event> findAdminNoticesByStandardInSession(Long schoolInfoId, LocalDate termDate);
+    List<Event> findAdminNoticesBySchoolInfoId(Long schoolInfoId, LocalDate startDate, LocalDate endDate);
 
     @Query("Select e from Event e where e.type = 'NOTICE' and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
-        "and e.date >= ?4 " +
+        "and e.date between ?4 and ?5 " +
         "order by e.date desc")
-    Page<Event> findStudentNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate termDate, Pageable pageable);
+    List<Event> findStudentNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
-        "and e.date >= ?4 " +
+        "and e.date between ?4 and ?5 " +
         "order by e.date desc")
-    Page<Event> findClassTeacherNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate termDate, Pageable pageable);
+    List<Event> findClassTeacherNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "e.grade is null and e.schoolInfo.id=?1 " +
-        "and e.date >= ?2 "+
+        "and e.date between ?2 and ?3 "+
         "order by e.date desc")
-    Page<Event> findTeacherNotices(Long schoolInfoId, LocalDate termDate, Pageable pageable);
+    List<Event> findTeacherNotices(Long schoolInfoId, LocalDate startDate, LocalDate endDate);
 
     @Query("Select count(e) from Event e where (e.date between ?1 and ?2) and e.type = 'HOLIDAY' and e.schoolInfo.id=?3")
     Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);

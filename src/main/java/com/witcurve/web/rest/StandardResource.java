@@ -34,7 +34,7 @@ public class StandardResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/standard")
+    @PostMapping("/standards")
     @Timed
     public ResponseEntity<StandardDTO> createStandard(@RequestBody @Valid StandardDTO standardDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request create standard");
@@ -58,7 +58,7 @@ public class StandardResource {
 
     }
 
-    @PutMapping("/standard")
+    @PutMapping("/standards")
     @Timed
     public ResponseEntity<StandardDTO> updateStandard(@RequestBody @Valid StandardDTO standardDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request create standard");
@@ -90,7 +90,7 @@ public class StandardResource {
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/standard/{standardId}")
+    @GetMapping("/standards/{standardId}")
     @Timed
     public ResponseEntity<StandardDTO> getStandardById(@PathVariable("standardId") Long standardId) throws WitcurveException {
         log.debug("Request to get standard by id");
@@ -104,7 +104,7 @@ public class StandardResource {
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/standard/school-info/{schoolInfoId}")
+    @GetMapping("/standards/school-info/{schoolInfoId}")
     @Timed
     public ResponseEntity<List<StandardDTO>> getStandardsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get standards by school info id: {}", schoolInfoId);
@@ -118,7 +118,7 @@ public class StandardResource {
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/standard/teacher/{teacherId}")
+    @GetMapping("/standards/teachers/{teacherId}")
     @Timed
     public ResponseEntity<List<StandardDTO>> getCoursesByTeacherId(
         @PathVariable(value = "teacherId") Long teacherId) {
@@ -133,7 +133,7 @@ public class StandardResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/standard/{standardId}")
+    @DeleteMapping("/standards/{standardId}")
     @Timed
     public ResponseEntity<Void> deleteStandard(@PathVariable Long standardId) throws WitcurveException {
         log.debug("REST request to delete Standard: {}", standardId);
@@ -150,6 +150,5 @@ public class StandardResource {
         }
 
     }
-
 
 }

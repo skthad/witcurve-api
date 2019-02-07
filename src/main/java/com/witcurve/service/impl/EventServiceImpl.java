@@ -6,7 +6,6 @@ import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
-import com.witcurve.service.AcademicSessionService;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.mapper.EventMapper;
@@ -14,13 +13,10 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,13 +49,7 @@ public class EventServiceImpl implements EventService {
     StaffRepository staffRepository;
 
     @Autowired
-    AcademicSessionRepository academicSessionRepository;
-
-    @Autowired
     LeaveApplicationRepository leaveApplicationRepository;
-
-    @Autowired
-    AcademicSessionService academicSessionService;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
@@ -75,12 +65,6 @@ public class EventServiceImpl implements EventService {
 
     private static final ArrayList<EventType> LIST_FOR_MONTH = new ArrayList<EventType>(
         Arrays.asList(EventType.SCHOOL_EVENT));
-
-    private static final ArrayList<EventType> LIST_FOR_WEEK = new ArrayList<EventType>(
-        Arrays.asList(EventType.ASSIGNMENT, EventType.SCHOOL_EVENT, EventType.TEST));
-
-    private static final ArrayList<EventType> LIST_FOR_DIARY = new ArrayList<EventType>(
-        Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.SCHOOL_EVENT, EventType.TEST));
 
     private static final ArrayList<EventType> LIST_FOR_UPCOMING_EVENTS = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.SCHOOL_EVENT, EventType.TEST));
@@ -164,12 +148,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
 
-        Optional<Staff> staff = staffRepository.findById(staffId);
-        if(!staff.isPresent()) {
-            throw new WitcurveException("Staff doesn't exist with given id");
-        }
-        Long schoolInfoId = staff.get().getSchoolInfo().getId();
-
+        //TODO: input eventDate may not be in the current term. So we should bring even inactive ones.
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
         Set<Long> standardIds = new HashSet<>();
         Set<Grade> grades = new HashSet<>();
@@ -177,10 +156,13 @@ public class EventServiceImpl implements EventService {
             standardIds.add(courseTeacher.getStandard().getId());
             grades.add(courseTeacher.getStandard().getGrade());
         }
-        if (courseTeachers.size() == 0) {
-            throw new WitcurveException("This staff hasn't been assigned to any standard yet");
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (!staff.isPresent()) {
+            throw new WitcurveException("No staff found with ID: " + staffId);
         }
-        List<Event> events =   eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades, schoolInfoId, LIST_FOR_STUDENT);
+
+        //TODO: not sending session id anymore, as the query is driven by a date.
+        List<Event> events =   eventRepository.findEventsByDateForStaff(eventDate, staffId, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_STUDENT);
         Collections.sort(events, new EventDateAscComparator());
 
         return eventMapper.toDto(events);
@@ -213,59 +195,6 @@ public class EventServiceImpl implements EventService {
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
         List<LocalDate> eventDates = eventRepository.findEventDatesByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade, schoolInfoId, LIST_FOR_MONTH);
         return eventDates;
-    }
-
-    @Override
-    public List<EventDTO> findAllEventsOnGivenWeekForStudent(LocalDate weekDate, Integer year, Long studentId) throws WitcurveException{
-        log.debug("Request to get tests with week having weekDate : {} of year : {} or student with id : {}", weekDate, year, studentId);
-
-        // Go backward to get Sunday
-        LocalDate sunday = weekDate;
-        while (sunday.getDayOfWeek() != DayOfWeek.SUNDAY)
-        {
-            sunday = sunday.minusDays(1);
-        }
-
-        // Go forward to get Saturday
-        LocalDate saturday = weekDate;
-        while (saturday.getDayOfWeek() != DayOfWeek.SATURDAY)
-        {
-            saturday = saturday.plusDays(1);
-        }
-
-        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
-        Long standardId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(sunday, saturday, studentId, standardId, grade, schoolInfoId, LIST_FOR_WEEK);
-        Collections.sort(events, new EventDateAscComparator());
-        return eventMapper.toDto(events);
-
-    }
-
-    @Override
-    public List<EventDTO> findAllEventsForDiary(LocalDate date, Long studentId) throws WitcurveException {
-        log.debug("Find events for diary for a duration of week from date : {} and for student with id : {}", date, studentId);
-        LocalDate startDate = date.minusDays(6);
-
-        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
-        Long standardId = studentStandard.getStandard().getId();
-        Grade grade = studentStandard.getStandard().getGrade();
-        Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-        List<Event> events = eventRepository.findEventsByDateRangeForStudent(startDate, date, studentId, standardId, grade, schoolInfoId, LIST_FOR_DIARY);
-        if (events.size() > 0) {
-            String lastBindingId = events.get(events.size()-1).getBindingId();
-            if(lastBindingId != null) {
-                List<Event> remainingList = eventRepository.findEventsByBindingId(lastBindingId, studentId, standardId, grade, schoolInfoId);
-                if(remainingList.size() != 0) {
-                    events.addAll(remainingList);
-                    events = new ArrayList<>(new HashSet<>(events));
-                }
-            }
-        }
-        Collections.sort(events, new EventDateDescComparator());
-        return eventMapper.toDto(events);
-
     }
 
     @Override
@@ -305,9 +234,6 @@ public class EventServiceImpl implements EventService {
         SchoolInfo schoolInfo = staff.get().getSchoolInfo();
 
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
-        if (courseTeachers.size() == 0) {
-            throw new WitcurveException("This staff hasn't been assigned to any standard yet");
-        }
 
         Set<Long> standardIds = courseTeachers
             .stream()
@@ -349,45 +275,35 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> getNotices(Long termId, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
-        Optional<Term> term = termRepository.findById(termId);
-        if(!term.isPresent()) {
-            throw new WitcurveException("No term exists for id : "+termId);
-        }
-        Long schoolInfoId = term.get().getSession().getSchoolInfo().getId();
-        LocalDate termDate = term.get().getStartDate();
-        Page<Event> result = null;
+    public List<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
+        List<Event> result = null;
+        Long schoolInfoId;
         if(studentId != null) {
             StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+            schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
-            result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, termDate, pageable);
+            result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, startDate, endDate);
         }
         if (staffId != null) {
             Optional<Staff> staff = staffRepository.findById(staffId);
             if(!staff.isPresent()) {
                 throw new WitcurveException("No staff exists for id : "+ staffId);
             }
+            schoolInfoId = staff.get().getSchoolInfo().getId();
             if(staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
                 if(standard != null) {
                    result = eventRepository.findClassTeacherNotices(standard.getId(),
-                       standard.getGrade(), schoolInfoId, termDate, pageable);
+                       standard.getGrade(), schoolInfoId, startDate, endDate);
                 } else {
-                    result = eventRepository.findTeacherNotices(schoolInfoId, termDate, pageable);
+                    result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate);
                 }
             }
             // TODO: look for user role, not for staff type. 'ADMIN' is a role. It is no more a staff type
             if(staff.get().getType().equals(StaffType.NON_TEACHING)) {
-                //result = eventRepository.findAdminNotices(schoolInfoId, termDate, pageable);
-                List<Event> results = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, termDate); //pr1
-                results.addAll(eventRepository.findAdminNoticesByStandardInSession(schoolInfoId, termDate));
-                Collections.sort(results, new Comparator<Event>() {
-                    @Override
-                    public int compare(Event o1, Event o2) {
-                        return o1.getDate().isAfter(o2.getDate()) ? -1 : 0;
-                    }
-                });
+                List<Event> results = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate); //pr1
+                Collections.sort(results, (o1, o2) -> o1.getDate().isAfter(o2.getDate()) ? -1 : 0);
 
                 Integer resultSize = results.size();
                 // offset  2, size 10
@@ -408,11 +324,11 @@ public class EventServiceImpl implements EventService {
                     results.subList(from, resultSize);
                 }
 
-                return new PageImpl<>(eventMapper.toDto(results));
+                return eventMapper.toDto(results);
             }
         }
 
-        return result.map(eventMapper::toDto);
+        return eventMapper.toDto(result);
     }
 
     public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate eventDate, ViewType type) throws WitcurveException {
@@ -520,20 +436,10 @@ public class EventServiceImpl implements EventService {
                     throw new WitcurveException("An attendance record cannot be posted on a holiday or school event");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
-                if(eventDTO.getType().equals(EventType.NOTICE)) {
-                    if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
-                        throw new WitcurveException("A notice must have only one of the fields [schoolInfoId, standardId]");
-                    }
-                    Long schoolInfoId = eventDTO.getSchoolInfoId();
-                    if(schoolInfoId == null) {
-                        Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
-                        if(!standard.isPresent()) {
-                            throw new WitcurveException("No standard found with id :"+eventDTO.getStandardId());
-                        }
-                    }
-                } else {
-                    if(eventDTO.getSchoolInfoId() ==null) {
-                        throw new WitcurveException("A staff event must have schoolInfoId");
+                if (eventDTO.getStandardId() != null) {
+                    Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
+                    if(!standard.isPresent()) {
+                        throw new WitcurveException("No standard found with id :" + eventDTO.getStandardId());
                     }
                 }
             }

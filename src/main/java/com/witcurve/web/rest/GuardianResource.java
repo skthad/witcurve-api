@@ -48,6 +48,28 @@ public class GuardianResource {
     }
 
     /**
+     * update the given Guardian
+     * @param guardianDTO
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PutMapping("/guardians")
+    @Timed
+    public ResponseEntity<GuardianDTO> updateGuardian(@RequestBody @Valid GuardianDTO guardianDTO) throws WitcurveException {
+        log.debug("Request to update guardian");
+        if (guardianDTO.getId() == null) {
+            throw new WitcurveException("Id is required for update request");
+        } else {
+            guardianService.getGuardianById(guardianDTO.getId());
+        }
+        GuardianDTO result = guardianService.saveOrUpdate(guardianDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert("guardian", guardianDTO.getId().toString()))
+            .body(result);
+    }
+
+    /**
      * get guardian by id
      * @param guardianId
      * @return
@@ -69,34 +91,12 @@ public class GuardianResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/guardian/student/{studentId}")
+    @GetMapping("/guardian/students/{studentId}")
     @Timed
     public ResponseEntity<List<GuardianDTO>> getGuardiansByStudentId(@PathVariable("studentId") Long studentId) {
         log.debug("Request to get guardians for student with id {}", studentId);
         List<GuardianDTO> result = guardianService.getGuardiansByStudentId(studentId);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * update the given Guardian
-     * @param guardianDTO
-     * @return
-     * @throws WitcurveException
-     */
-
-    @PutMapping("/guardian")
-    @Timed
-    public ResponseEntity<GuardianDTO> updateGuardian(@RequestBody @Valid GuardianDTO guardianDTO) throws WitcurveException {
-        log.debug("Request to update guardian");
-        if (guardianDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        } else {
-            guardianService.getGuardianById(guardianDTO.getId());
-        }
-        GuardianDTO result = guardianService.saveOrUpdate(guardianDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("guardian", guardianDTO.getId().toString()))
-            .body(result);
     }
 
     /**

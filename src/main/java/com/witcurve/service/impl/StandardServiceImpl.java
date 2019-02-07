@@ -1,7 +1,9 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Standard;
 import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.StandardService;
 import com.witcurve.service.dto.StandardDTO;
@@ -35,10 +37,18 @@ public class StandardServiceImpl implements StandardService {
     @Autowired
     StandardMapperLite standardMapperLite;
 
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
     @Override
-    public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) {
+    public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) throws WitcurveException {
         log.debug("Request to save or update Standard: {}", standardDTO);
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(standardDTO.getSchoolInfo().getId());
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("SchoolInfo does not exist with given id");
+        }
         Standard standard = standardMapper.toEntity(standardDTO);
+        standard.setSchoolInfo(schoolInfo.get());
         standard = standardRepository.save(standard);
         return standardMapper.toDto(standard);
     }
