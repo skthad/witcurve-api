@@ -1,6 +1,8 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.StudentStandard;
+import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.StudentStandardDTO;
@@ -12,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -25,6 +30,9 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     @Autowired
     StudentStandardMapper studentStandardMapper;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
 
     @Override
     public StudentStandardDTO getByStudentId(Long studentId) throws WitcurveException {
@@ -50,5 +58,22 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     @Override
     public List<StudentStandardDTO> getBySchoolInfoId(Long schoolInfoId) {
         return studentStandardMapper.toDto(studentStandardRepository.getBySchoolInfoId(schoolInfoId));
+    }
+
+    @Override
+    public List<StudentStandardDTO> getByStaffId(Long staffId) throws WitcurveException {
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if(courseTeachers.size() ==0) {
+            throw new WitcurveException("This teacher is not attached to any courses or standards");
+        }
+        Set<Long> standardIds = courseTeachers
+            .stream()
+            .map(CourseTeacher::getStandard)
+            .map(s -> s.getId())
+            .collect(Collectors.toSet());
+
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStandardsId(new ArrayList<>(standardIds));
+        return studentStandardMapper.toDto(studentStandards);
+
     }
 }
