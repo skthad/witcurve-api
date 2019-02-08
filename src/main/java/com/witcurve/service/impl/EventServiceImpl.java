@@ -7,7 +7,9 @@ import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
+import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.EventDTO;
+import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.EventMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -50,6 +52,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     LeaveApplicationRepository leaveApplicationRepository;
+    
+    @Autowired
+    StudentStandardService studentStandardService;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
@@ -133,7 +138,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
 
-        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+        StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
@@ -173,7 +178,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to get tests with month no. : {} of year : {} or student with id : {}", month, year, studentId);
         // need to get Events of type Holiday, Leave, Exam, SchoolEvent
 
-        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+        StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
@@ -197,6 +202,10 @@ public class EventServiceImpl implements EventService {
 
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
 
+        if(courseTeachers.size() ==0) {
+            throw new WitcurveException("Current staff is not attached to any standards or courses");
+        }
+
         Set<Long> standardIds = courseTeachers
             .stream()
             .map(CourseTeacher::getStandard)
@@ -218,7 +227,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<LocalDate> findAllEventDatesOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
 
-        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+        StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
@@ -233,7 +242,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate endDate = date.plusDays(6);
 
-        StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+        StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         Long standardId = studentStandard.getStandard().getId();
         Grade grade = studentStandard.getStandard().getGrade();
         Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
@@ -265,6 +274,10 @@ public class EventServiceImpl implements EventService {
         SchoolInfo schoolInfo = staff.get().getSchoolInfo();
 
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+
+        if(courseTeachers.size() ==0) {
+            throw new WitcurveException("Current staff is not attached to any standards or courses");
+        }
 
         Set<Long> standardIds = courseTeachers
             .stream()
@@ -310,7 +323,7 @@ public class EventServiceImpl implements EventService {
         List<Event> result = null;
         Long schoolInfoId;
         if(studentId != null) {
-            StudentStandard studentStandard = getStudentStandardFromStudentId(studentId);
+            StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
             schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
@@ -454,7 +467,7 @@ public class EventServiceImpl implements EventService {
                     if(eventDTO.getStandardId() == null) {
                         throw new WitcurveException("An attendance record for student must have only standardId");
                     }
-                    StudentStandard studentStandard = getStudentStandardFromStudentId(eventDTO.getStudentId());
+                    StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
                     events = eventRepository.eventsBlockingLeaveForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
                     events = removeExistingEvent(events, eventDTO);
@@ -516,20 +529,6 @@ public class EventServiceImpl implements EventService {
                 }
             }
         }
-    }
-
-    private StudentStandard getStudentStandardFromStudentId(Long studentId) throws WitcurveException {
-
-        StudentStandard studentStandard = null;
-        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
-        if(studentStandards.isEmpty()) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
-        } else if (studentStandards.size() > 1) {
-            throw new WitcurveException("There are more than one active student standard with given student id : "+studentId);
-        } else {
-            studentStandard = studentStandards.get(0);
-        }
-        return studentStandard;
     }
 
     private List<Event> removeExistingEvent(List<Event> events, EventDTO eventDTO) {

@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.Exam;
 import com.witcurve.domain.ExamCourseDetails;
 import com.witcurve.domain.enumeration.Grade;
@@ -7,7 +8,9 @@ import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.repository.ExamRepository;
 import com.witcurve.service.ExamCourseDetailsService;
+import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.ExamCourseDetailsDTO;
+import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.ExamCourseDetailsMapper;
 import com.witcurve.service.mapper.ExamCourseDetailsMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -17,8 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,6 +47,9 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
 
     @Autowired
     private ExamRepository examRepository;
+
+    @Autowired
+    private StudentStandardService studentStandardService;
 
     @Override
     public List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTOs, Long examId) throws WitcurveException {
@@ -77,6 +87,17 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         List<ExamCourseDetails> examCourseDetailsList = examCourseDetailsRepository.findByGradeAndExamIdOrderByGsdStart(grade, examId);
         return examCourseDetailsMapper.toDto(examCourseDetailsList);
     }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getExamCourseDetailsForStudentOnDate(Long studentId, LocalDate date) throws WitcurveException{
+        log.debug("Request to get list of examCourseDetails for given student with id : {} and on date : {}", studentId, date);
+        StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
+        Grade grade = studentStandardDTO.getStandard().getGrade();
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, date);
+        return examCourseDetailsMapper.toDto(examCourseDetails);
+    }
+
+
 
     @Override
     public void deleteExamCourseDetails(Long examCourseDetailsId) throws WitcurveException {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -88,6 +89,15 @@ public class ExamCourseDetailsResource {
                                                                                          @PathVariable("examId") Long examId) throws WitcurveException {
         log.debug("Request to get ExamCourseDetails with grade: {} and examId: {}", grade, examId);
         List<ExamCourseDetailsDTO> result = examCourseDetailsService.getExamCourseDetailsByGradeAndExamId(grade, examId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/exam-course-details/students/{studentId}")
+    @Timed
+    public ResponseEntity<List<ExamCourseDetailsDTO>> getExamCourseDetailsForStudentOnDate(@PathVariable("studentId") Long studentId,
+                                                                                         @RequestParam("date") LocalDate date) throws WitcurveException {
+        log.debug("Request to get ExamCourseDetails for student with id : {} and on date : {}", studentId, date);
+        List<ExamCourseDetailsDTO> result = examCourseDetailsService.getExamCourseDetailsForStudentOnDate(studentId, date);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
