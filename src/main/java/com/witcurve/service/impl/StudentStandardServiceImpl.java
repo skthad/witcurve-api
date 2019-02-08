@@ -37,7 +37,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     @Override
     public StudentStandardDTO getByStudentId(Long studentId) throws WitcurveException {
 
-        StudentStandard studentStandard = null;
+        StudentStandard studentStandard;
         List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
         if(studentStandards.isEmpty()) {
             return null;

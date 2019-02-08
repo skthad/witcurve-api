@@ -499,8 +499,8 @@ public class EventServiceImpl implements EventService {
                         throw new WitcurveException("An attendance record for student must have only standardId");
                     }
                     StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
-                    if(studentStandard != null) {
-                        throw new WitcurveException("Student with id :"+eventDTO.getStandardId()+" not mapped to his standard id, so attendance cannot be created");
+                    if(studentStandard == null) {
+                        throw new WitcurveException("Student with id :"+eventDTO.getStandardId()+" not mapped to this standard id, so attendance cannot be created");
                     }
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
                     events = eventRepository.eventsBlockingLeaveForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
