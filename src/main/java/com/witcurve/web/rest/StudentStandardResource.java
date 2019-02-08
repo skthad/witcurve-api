@@ -48,4 +48,12 @@ public class StudentStandardResource {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/student-standard/staff/{staffId}")
+    @Timed
+    public ResponseEntity<List<StudentStandardDTO>> getByStaffId(@PathVariable("staffId") Long staffId) throws WitcurveException {
+        log.debug("Request to get student-standard by schoolInfo id");
+        List<StudentStandardDTO> result = studentStandardService.getByStaffId(staffId);
+        return ResponseEntity.ok(result);
+    }
+
 }
