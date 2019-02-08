@@ -6,6 +6,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface LeaveApplicationService {
 
@@ -17,14 +18,8 @@ public interface LeaveApplicationService {
 
     LeaveApplicationDTO changeLeaveStatus(Long ApplicationId, Long StaffId, ApprovalStatus status, String note) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeaveApplicationsForStudent(Long studentId, Long sessionId, ApprovalStatus status) throws WitcurveException;
-
-    List<LeaveApplicationDTO> getLeaveApplicationsForStaff(Long staffId, Long sessionId, ApprovalStatus status) throws WitcurveException;
-
-    List<LeaveApplicationDTO> getLeaveApplicationsForStandard(Long standardId, ApprovalStatus status) throws WitcurveException;
-
     Long workingDays(LocalDate fromDate,LocalDate toDate, Long schoolInfoId, Boolean isSaturdayWorking) throws WitcurveException;
 
-    List<LeaveApplicationDTO> getLeaveDetails(Long studentId,Long staffId,Long schoolInfoId,LocalDate fromDate, LocalDate toDate,ApprovalStatus status) throws WitcurveException ;
+    Map<Long, List<LeaveApplicationDTO>> getLeaveDetails(Long studentId, Long staffId, Long standardId, Long schoolInfoId, LocalDate fromDate, LocalDate toDate, ApprovalStatus status) throws WitcurveException ;
 
 }

@@ -2,7 +2,6 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.ApprovalStatus;
-import com.witcurve.service.EventService;
 import com.witcurve.service.LeaveApplicationService;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +28,6 @@ public class LeaveApplicationResource {
 
     @Autowired
     LeaveApplicationService leaveApplicationService;
-
-    @Autowired
-    EventService eventService;
 
     /**
      * creates a leave-applications
@@ -141,25 +135,26 @@ public class LeaveApplicationResource {
      * @param staffId,sessionId
      * @return
      * @throws WitcurveException
-     */
+     *//*
 
     @GetMapping("/leave-application/staff/{staffId}")
     @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStaffIdAndSessionId
-    (@PathVariable Long staffId, @RequestParam Long sessionId,
+    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStaffId(@PathVariable Long staffId,
+                                                                                  @RequestParam(value = "startDate") LocalDate startDate,
+                                                                                  @RequestParam(value = "endDate") LocalDate endDate,
      @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
-        log.debug("Request to get LeaveApplication with session id : {} and staff id : {}", sessionId, staffId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStaff(staffId, sessionId, status);
+        log.debug("Request to get LeaveApplication with staff id : {}", staffId);
+        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStaff(staffId, startDate, endDate, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    /**
+    *//**
      * get leave-application of student by id
      *
      * @param studentId,sessionId
      * @return
      * @throws WitcurveException
-     */
+     *//*
 
     @GetMapping("/leave-application/students/{studentId}")
     @Timed
@@ -171,13 +166,13 @@ public class LeaveApplicationResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    /**
+    *//**
      * get leave-application for standard by id
      *
      * @param standardId
      * @return
      * @throws WitcurveException
-     */
+     *//*
 
     @GetMapping("/leave-application/standard/{standardId}")
     @Timed
@@ -186,7 +181,7 @@ public class LeaveApplicationResource {
         log.debug("Request to get LeaveApplication with standard id : {}", standardId);
         List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStandard(standardId, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+    }*/
 
     /**
      * get leave-application count
@@ -214,26 +209,14 @@ public class LeaveApplicationResource {
 
     @GetMapping("/leave-application")
     @Timed
-    public ResponseEntity<Map<Long,List<LeaveApplicationDTO>>> getExistingLeaveApplicationDetails
-    (@RequestParam(name = "fromDate") LocalDate fromDate, @RequestParam(name = "toDate") LocalDate toDate, @RequestParam(required = false) Long studentId,
-     @RequestParam(required = false) Long staffId,
-     @RequestParam(required = false) Long schoolInfoId,@RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveDetails(studentId, staffId, schoolInfoId, fromDate, toDate,status);
-        Map<Long, List<LeaveApplicationDTO>> resultMap = new HashMap<>();
-            if (studentId != null) {
-                resultMap.put(studentId, result);
-            } else if (staffId != null) {
-                resultMap.put(staffId, result);
-            } else if (schoolInfoId != null) {
-                for (LeaveApplicationDTO leaveApplicationDTO : result) {
-                    List<LeaveApplicationDTO> leaveApplicationDTOs = resultMap.get(leaveApplicationDTO.getAppliedStaffId());
-                    if (leaveApplicationDTOs == null) {
-                        leaveApplicationDTOs = new ArrayList<>();
-                    }
-                    leaveApplicationDTOs.add(leaveApplicationDTO);
-                    resultMap.put(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTOs);
-                }
-            }
+    public ResponseEntity<Map<Long,List<LeaveApplicationDTO>>> getExistingLeaveApplicationDetails(@RequestParam(name = "fromDate") LocalDate fromDate,
+                                                                                                  @RequestParam(name = "toDate") LocalDate toDate,
+                                                                                                  @RequestParam(required = false) Long studentId,
+                                                                                                  @RequestParam(required = false) Long staffId,
+                                                                                                  @RequestParam(required = false) Long standardId,
+                                                                                                  @RequestParam(required = false) Long schoolInfoId,
+                                                                                                  @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
+        Map<Long, List<LeaveApplicationDTO>> resultMap = leaveApplicationService.getLeaveDetails(studentId, staffId, standardId, schoolInfoId, fromDate, toDate,status);
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 }

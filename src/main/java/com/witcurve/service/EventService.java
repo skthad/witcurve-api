@@ -3,6 +3,7 @@ package com.witcurve.service;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -33,7 +34,7 @@ public interface EventService {
     List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId,
                                  Long standardId, Long staffId, Long schoolInfoId) throws WitcurveException;
 
-    List<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId, Pageable pageable) throws WitcurveException;
+    Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId, Pageable pageable) throws WitcurveException;
 
     List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate date, ViewType type) throws WitcurveException;
 

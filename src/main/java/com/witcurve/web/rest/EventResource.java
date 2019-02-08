@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -284,7 +285,7 @@ public class EventResource {
      */
     @GetMapping("/events/notices")
     @Timed
-    public ResponseEntity<List<EventDTO>> getNotices(@ApiParam Pageable pageable,
+    public ResponseEntity<Page<EventDTO>> getNotices(@ApiParam Pageable pageable,
                                                             @RequestParam(value = "startDate") LocalDate startDate,
                                                             @RequestParam(value = "endDate") LocalDate endDate,
                                                             @RequestParam(required = false) Long studentId,
@@ -296,7 +297,7 @@ public class EventResource {
         } else {
             throw new WitcurveException("Invalid request, there should be one of student id or staff id but not both");
         }
-        List<EventDTO> result = eventService.getNotices(startDate, endDate, studentId, staffId, pageable);
+        Page<EventDTO> result = eventService.getNotices(startDate, endDate, studentId, staffId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
@@ -315,6 +316,7 @@ public class EventResource {
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @PathVariable Long studentId) throws WitcurveException, URISyntaxException{
+        //TODO: check if this resource is actually needed anywhere, it doesn't make sense
         if(month == null || year ==null) {
             throw new WitcurveException("There should be month and year param for MONTH view");
         }

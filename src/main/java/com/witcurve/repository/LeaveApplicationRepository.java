@@ -12,50 +12,28 @@ import java.util.List;
 @Repository
 public interface LeaveApplicationRepository extends JpaRepository<LeaveApplication, Long> {
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id = ?2 and la.fromLeaveDate > ?3 order by la.fromLeaveDate")
-    List<LeaveApplication> findBySchoolInfoIdAndAppliedStudentId(Long schoolInfoId, Long appliedStudentId, LocalDate startDate);
+    @Query("Select la from LeaveApplication la where la.appliedStudent.id = ?1 and la.fromLeaveDate between ?2 and ?3 order by la.fromLeaveDate")
+    List<LeaveApplication> findByStudentId(Long appliedStudentId, LocalDate startDate, LocalDate endDate);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id = ?2 and la.status = ?3 and la.fromLeaveDate > ?4 order by la.fromLeaveDate")
-    List<LeaveApplication> findBySchoolInfoIdAndAppliedStudentIdWithStatus(Long schoolInfoId, Long appliedStudentId, ApprovalStatus status, LocalDate startDate);
+    @Query("Select la from LeaveApplication la where la.appliedStudent.id =?1 and la.fromLeaveDate between ?2 and ?3 and la.status = ?4 order by la.fromLeaveDate")
+    List<LeaveApplication> findByStudentAndStatus(Long appliedStudentId, LocalDate startDate, LocalDate endDate, ApprovalStatus status);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStaff.id = ?2 and la.fromLeaveDate > ?3 order by la.fromLeaveDate")
-    List<LeaveApplication> findBySchoolInfoIdAndAppliedStaffId(Long schoolInfoId, Long appliedStaffId, LocalDate startDate);
+    @Query("Select la from LeaveApplication la where la.appliedStudent.id in ?1 and la.fromLeaveDate between ?2 and ?3 order by la.appliedStudent.id, la.fromLeaveDate")
+    List<LeaveApplication> findByStudentList(List<Long> studentIds, LocalDate startDate, LocalDate endDate);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStaff.id = ?2 and la.status = ?3 and la.fromLeaveDate > ?4 order by la.fromLeaveDate")
-    List<LeaveApplication> findBySchoolInfoIdAndAppliedStaffIdWithStatus(Long schoolInfoId, Long appliedStaffId, ApprovalStatus status, LocalDate startDate);
+    @Query("Select la from LeaveApplication la where la.appliedStudent.id in ?1 and la.fromLeaveDate between ?2 and ?3 and la.status = ?4 order by la.appliedStudent.id, la.fromLeaveDate")
+    List<LeaveApplication> findByStudentListAndStatus(List<Long> studentIds, LocalDate startDate, LocalDate endDate, ApprovalStatus status);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id in ?2 and la.fromLeaveDate > ?3 order by la.fromLeaveDate")
-    List<LeaveApplication> findLeaveAppicationsForStudentsForSchoolInfoId(Long schoolInfoId,List<Long> studentIds, LocalDate startDate);
+    @Query("Select la from LeaveApplication la where la.appliedStaff.id = ?1 and la.fromLeaveDate between ?2 and ?3 order by la.fromLeaveDate")
+    List<LeaveApplication> findByStaffId(Long appliedStaffId, LocalDate startDate, LocalDate endDate);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id in ?2 and la.status = ?3 and la.fromLeaveDate > ?4 order by la.fromLeaveDate")
-    List<LeaveApplication> findLeaveAppicationsForStudentsForSchoolInfoIdWithStatus(Long schoolInfoId,List<Long> studentIds, ApprovalStatus status, LocalDate startDate);
+    @Query("Select la from LeaveApplication la where la.appliedStaff.id =?1 and la.fromLeaveDate between ?2 and ?3 and la.status = ?4 order by la.fromLeaveDate")
+    List<LeaveApplication> findByStaffIdAndStatus(Long appliedStaffId, LocalDate startDate, LocalDate endDate, ApprovalStatus status);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id = ?2 and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
-    List<LeaveApplication> findLeaveApplicationsForStudentInADateRange(Long schoolInfoId, Long studentId, LocalDate fromDate, LocalDate toDate);
+    @Query("Select la from LeaveApplication la where la.appliedStaff.schoolInfo.id = ?1 and la.fromLeaveDate between ?2 and ?3 order by la.appliedStaff.id, la.fromLeaveDate")
+    List<LeaveApplication> findByStaffInSchoolInfoId(Long schoolInfoId, LocalDate fromDate, LocalDate toDate);
 
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStaff.id = ?2 and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
-    List<LeaveApplication> findLeaveApplicationsForStaffInADateRange(Long schoolInfoId, Long staffId, LocalDate fromDate, LocalDate toDate);
-
-    @Query("Select la from LeaveApplication la where la.appliedStudent.id = ?1 and (la.fromLeaveDate <= ?2) and (la.toLeaveDate >= ?2)")
-    LeaveApplication findLeaveForStudentOnDate(Long studentId, LocalDate date);
-
-    @Query("Select la from LeaveApplication la where la.appliedStaff.id = ?1 and (la.fromLeaveDate <= ?2) and (la.toLeaveDate >= ?2)")
-    LeaveApplication findLeaveForStaffOnDate(Long staffId, LocalDate date);
-
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStudent.id = ?2 and la.status=?5 " +
-        "and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
-    List<LeaveApplication> findLeaveApplicationsWithStatusForStudentInADateRange(Long schoolInfoId, Long studentId, LocalDate fromDate, LocalDate toDate,ApprovalStatus status);
-
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id =?1 and la.appliedStaff.id = ?2 and la.status=?5 " +
-        "and (la.fromLeaveDate between ?3 and ?4 or la.toLeaveDate between ?3 and ?4) order by la.fromLeaveDate")
-    List<LeaveApplication> findLeaveApplicationsWithStatusForStaffInADateRange(Long schoolInfoId, Long staffId, LocalDate fromDate, LocalDate toDate,ApprovalStatus status);
-
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id = ?1 and la.appliedStaff.id is not null and la.appliedStudent.id is null " +
-        "and (la.fromLeaveDate between ?2 and ?3 or la.toLeaveDate between ?2 and ?3) order by la.appliedStaff.id, la.fromLeaveDate")
-    List<LeaveApplication> findLeaveApplicationsForAllStaffsInSchool(Long schoolInfoId,LocalDate fromDate,LocalDate toDate);
-
-    @Query("Select la from LeaveApplication la where la.schoolInfo.id = ?1 and la.appliedStaff.id is not null and la.appliedStudent.id is null " +
-        "and (la.fromLeaveDate between ?2 and ?3 or la.toLeaveDate between ?2 and ?3) and la.status=?4 order by la.appliedStaff.id, la.fromLeaveDate")
-    List<LeaveApplication> findLeaveApplicationsWithStatusForAllStaffsInSchool(Long schoolInfoId,LocalDate fromDate,LocalDate toDate,ApprovalStatus status);
+    @Query("Select la from LeaveApplication la where la.appliedStaff.schoolInfo.id = ?1 and la.fromLeaveDate between ?2 and ?3 and la.status = ?4 order by la.appliedStaff.id, la.fromLeaveDate")
+    List<LeaveApplication> findByStaffInSchoolInfoIdAndStatus(Long schoolInfoId, LocalDate fromDate, LocalDate toDate, ApprovalStatus status);
 
 }

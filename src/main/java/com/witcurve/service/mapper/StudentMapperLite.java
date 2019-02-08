@@ -32,22 +32,22 @@ public interface StudentMapperLite extends EntityMapper<StudentDTO, Student>{
     default SchoolInfo toSchoolInfo(SchoolInfoDTO schoolInfoDTO) {
         SchoolInfo schoolInfo = new SchoolInfo();
         schoolInfo.setId(schoolInfoDTO.getId());
-
-        School school = new School();
-        school.setId(schoolInfoDTO.getSchool().getId());
-        schoolInfo.setSchool(school);
-
+        if(schoolInfo.getSchool() != null) {
+            School school = new School();
+            school.setId(schoolInfoDTO.getSchool().getId());
+            schoolInfo.setSchool(school);
+        }
         return schoolInfo;
     }
 
     default SchoolInfoDTO toSchoolInfoDTO(SchoolInfo schoolInfo) {
         SchoolInfoDTO schoolInfoDTO = new SchoolInfoDTO();
         schoolInfoDTO.setId(schoolInfo.getId());
-
-        SchoolDTO school = new SchoolDTO();
-        school.setId(schoolInfo.getSchool().getId());
-        schoolInfoDTO.setSchool(school);
-
+        if(schoolInfoDTO.getSchool() != null) {
+            SchoolDTO school = new SchoolDTO();
+            school.setId(schoolInfo.getSchool().getId());
+            schoolInfoDTO.setSchool(school);
+        }
         return schoolInfoDTO;
     }
 

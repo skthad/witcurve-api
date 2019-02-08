@@ -40,7 +40,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
         StudentStandard studentStandard = null;
         List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
         if(studentStandards.isEmpty()) {
-            throw new WitcurveException("There is no student standard with given student id : "+studentId);
+            return null;
         } else if (studentStandards.size() > 1) {
             throw new WitcurveException("There are more than one active student standard with given student id : "+studentId);
         } else {
