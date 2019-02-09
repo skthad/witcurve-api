@@ -88,7 +88,7 @@ public class StaffEligibility extends AbstractAuditingEntity implements Serializ
             "id=" + id +
             ", staffId='" + staff.getId()+ '\'' +
             ", grade='" + grade+ '\'' +
-            ", masterSubjectt='" + masterSubject.getName()+ '\'' +
+            ", masterSubject='" + masterSubject.getName()+ '\'' +
             '}';
     }
 }
