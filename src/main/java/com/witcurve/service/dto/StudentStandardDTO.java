@@ -1,15 +1,19 @@
 package com.witcurve.service.dto;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class StudentStandardDTO extends AbstractAuditingDTO {
 
     private Long id;
 
+    @NotNull
     private StudentDTO student;
 
+    @NotNull
     private StandardDTO standard;
 
+    @NotNull
     private String rollNo;
 
     private Boolean active = true;

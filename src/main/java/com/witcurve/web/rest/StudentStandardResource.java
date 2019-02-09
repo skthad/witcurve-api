@@ -7,11 +7,9 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +21,31 @@ public class StudentStandardResource {
 
     @Autowired
     StudentStandardService studentStandardService;
+
+    /**
+     * get Staff by id
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PostMapping("/student-standard")
+    @Timed
+    public ResponseEntity<List<StudentStandardDTO>> saveOrUpdateStudentStandards(@RequestBody List<StudentStandardDTO> studentStandardDTOs) throws WitcurveException {
+        log.debug("Request to add student-standard");
+
+        try {
+            List<StudentStandardDTO> result = studentStandardService.saveOrUpdate(studentStandardDTOs);
+            return ResponseEntity.ok(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("student_standard_UK")) {
+                throw new WitcurveException("Unique constraint (student_id, standard_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
 
     @GetMapping("/student-standard/students/{studentId}")
     @Timed

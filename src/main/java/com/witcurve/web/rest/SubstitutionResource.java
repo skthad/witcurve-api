@@ -8,6 +8,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,31 @@ public class SubstitutionResource {
 
     @Autowired
     SubstitutionService substitutionService;
+
+    /**
+     * get Staff by id
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PostMapping("/substitutions")
+    @Timed
+    public ResponseEntity<SubstitutionDTO> substituteTeacher(@RequestBody SubstitutionDTO substitutionDTO) throws WitcurveException {
+        log.debug("Request to substitute");
+
+        try {
+            SubstitutionDTO result = substitutionService.substitute(substitutionDTO);
+            return ResponseEntity.ok(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("scd_date_id_UK")) {
+                throw new WitcurveException("Unique constraint (scd_id, date) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
 
     /**
      * get substitute teacher suggestions
@@ -51,19 +77,5 @@ public class SubstitutionResource {
         log.debug("Request to get substitutions on {}", date);
         List<SubstitutionDTO> result = substitutionService.getSubstitutions(gsdIds, date);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * get Staff by id
-     * @return
-     * @throws WitcurveException
-     */
-
-    @PostMapping("/substitutions")
-    @Timed
-    public ResponseEntity<SubstitutionDTO> substituteTeacher(@RequestBody SubstitutionDTO substitutionDTO) throws WitcurveException {
-        log.debug("Request to substitute");
-        SubstitutionDTO result = substitutionService.substitute(substitutionDTO);
-        return ResponseEntity.ok(result);
     }
 }

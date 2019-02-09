@@ -153,8 +153,8 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     public Map<Long, List<LeaveApplicationDTO>> getLeaveDetails(Long studentId,Long staffId, Long standardId, Long schoolInfoId,LocalDate fromDate, LocalDate toDate, ApprovalStatus status) throws WitcurveException {
-        if (studentId == null && staffId == null && schoolInfoId == null) {
-            throw new WitcurveException("Student ID and staff ID and schoolInfoId all cannot be null");
+        if (studentId == null && staffId == null && schoolInfoId == null && standardId == null) {
+            throw new WitcurveException("One of studentId, standardId, staffId or schoolInfoId is required");
         }
         List<LeaveApplicationDTO> result = new ArrayList<>();
         if(status==null) {

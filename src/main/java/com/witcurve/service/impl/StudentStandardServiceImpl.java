@@ -35,6 +35,13 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     CourseTeacherRepository courseTeacherRepository;
 
     @Override
+    public List<StudentStandardDTO> saveOrUpdate(List<StudentStandardDTO> studentStandardDTOs) {
+        List<StudentStandard> studentStandards = studentStandardRepository.saveAll(
+            studentStandardMapper.toEntity(studentStandardDTOs));
+        return studentStandardMapper.toDto(studentStandards);
+    }
+
+    @Override
     public StudentStandardDTO getByStudentId(Long studentId) throws WitcurveException {
 
         StudentStandard studentStandard;

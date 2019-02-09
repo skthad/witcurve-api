@@ -14,19 +14,19 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Query("select ss from StudentStandard ss left join fetch ss.standard std where ss.student.id = ?1 and ss.active = true")
     List<StudentStandard> getByStudentId(Long studentId);
 
-    @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.student.admissionId")
+    @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
     List<StudentStandard> getByStandardId(Long standardId);
 
-    @Query("select ss from StudentStandard ss where ss.standard.id in ?1 and ss.active = true order by ss.standard.grade, ss.student.admissionId")
+    @Query("select ss from StudentStandard ss where ss.standard.id in ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getByStandardsId(List<Long> standardIds);
 
-    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true order by ss.standard.grade, ss.student.admissionId")
+    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getBySchoolInfoId(Long schoolInfoId);
 
     @Query("select ss.student.id from StudentStandard ss where ss.standard.id = ?1 and ss.active = true")
     List<Long> findStudentIdByStandardId(Long standardId);
 
-    @Query("select ss.student from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.student.admissionId")
+    @Query("select ss.student from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
     List<Student> getStudentsByStandardId(Long standardId);
 
     @Query("select ss.standard.id from StudentStandard ss where ss.student.id = ?1 and ss.active = true")

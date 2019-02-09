@@ -15,8 +15,8 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "courseIdSeq")
-    @SequenceGenerator(name = "courseIdSeq", sequenceName="course_content_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "courseContentIdSeq")
+    @SequenceGenerator(name = "courseContentIdSeq", sequenceName="course_content_id_seq", allocationSize = 0)
     private Long id;
 
     @Column
