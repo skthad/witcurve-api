@@ -20,5 +20,7 @@ public interface CourseTeacherService {
 
     List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException;
 
+    List<CourseTeacherDTO> getCourseTeachersByCourseId(Long courseId) throws WitcurveException;
+
     List<CourseTeacherDTO> getCourseTeacherSuggestionForSlot(Long gsdId, DayOfWeek dayOfWeek) throws WitcurveException;
 }
