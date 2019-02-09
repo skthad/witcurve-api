@@ -19,5 +19,7 @@ public interface StaffService {
 
     List<StaffDTO> getStaffBySchoolId(Long schoolId);
 
+    List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId);
+
     StaffDTO getStaffByUsername(String username) throws WitcurveException;
 }
