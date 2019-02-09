@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -94,16 +96,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(Long studentId) throws WitcurveException {
-        log.debug("Request to delete student with id : {}", studentId);
-        Student student = studentRepository.findById(studentId).get();
-        if (student == null){
-            throw  new WitcurveException("No student with given id");
-        }
-        studentRepository.delete(student);
-    }
-
-    @Override
     public StudentDTO getStudentByUsername(String username) throws WitcurveException {
         log.debug("Request to get student with username: {}", username);
         int index = username.indexOf("-");
@@ -133,6 +125,15 @@ public class StudentServiceImpl implements StudentService {
         } else {
             log.error("Entered user name is not in format of schoolInfoId-studentId for username : {}", username);
             throw new WitcurveException("Invalid username, please enter the correct username");
+        }
+    }
+
+    @Override
+    public void deactivate(Long studentId) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isPresent()) {
+            studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
+            student.get().getUser().setActivated(false);
         }
     }
 }

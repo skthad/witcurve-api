@@ -8,7 +8,6 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +27,12 @@ public class StudentResource {
 
     @PostMapping("/students")
     public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO studentDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request create student");
+        log.debug("Request to create student");
         if (studentDTO.getId() != null) {
             throw new WitcurveException("New student can't already have an id");
         }
         StudentDTO result = studentService.create(studentDTO);
-        return ResponseEntity.created(new URI("/api/student/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/students/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("student", result.getId().toString()))
             .body(result);
     }
@@ -66,27 +65,12 @@ public class StudentResource {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * delete the student
-     * @param studentId
-     * @return
-     * @throws WitcurveException
-     */
-    @DeleteMapping("/students/{studentId}")
-    @Timed
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long studentId) throws WitcurveException {
-        log.debug("REST request to delete Student: {}", studentId);
-        try {
-            studentService.deleteStudent(studentId);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A student is deleted with identifier " + studentId,
-                studentId.toString())).build();
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
+    @PutMapping("/students/{studentId}/deactivate")
+    public ResponseEntity<Void> deactivateStudent(@PathVariable Long studentId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to deactivate student with ID: " + studentId);
+        studentService.deactivate(studentId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("A student is deactivated with identifier " + studentId,
+            studentId.toString())).build();
     }
 
 }

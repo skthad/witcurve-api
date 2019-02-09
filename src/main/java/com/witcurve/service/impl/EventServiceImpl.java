@@ -62,13 +62,13 @@ public class EventServiceImpl implements EventService {
     @Autowired
     SlotCourseDetailsService slotCourseDetailsService;
 
-    private static final ArrayList<EventType> FIRST_LIST = new ArrayList<EventType>(
+    private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
 
-    private static final ArrayList<EventType> SECOND_LIST = new ArrayList<EventType>(
+    private static final ArrayList<EventType> SECOND_LIST = new ArrayList<>(
         Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT));
 
-    private static final ArrayList<EventType> THIRD_LIST = new ArrayList<EventType>(
+    private static final ArrayList<EventType> THIRD_LIST = new ArrayList<>(
         Arrays.asList(EventType.HOLIDAY, EventType.ATTENDANCE));
 
     private static final ArrayList<String> LIST_FOR_DAY = new ArrayList<>(
@@ -449,7 +449,7 @@ public class EventServiceImpl implements EventService {
 //                        throw new WitcurveException("This scd doesn't belong to given standard id");
 //                    }
                     Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
-                    if(event != null) {
+                    if(event != null && !event.getId().equals(eventDTO.getId())) {
                         throw new WitcurveException("There already exists a record for given event type and date for SCD with with id: " +eventDTO.getScd().getId());
                     }
                 }

@@ -44,9 +44,38 @@ public class EventResource {
     @Timed
     public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Events : {}",eventDTOs);
+
         for(EventDTO eventDTO: eventDTOs) {
             if (eventDTO.getId() != null) {
                 throw new WitcurveException("New Event can't already have an id");
+            }
+        }
+        try {
+            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+            return ResponseEntity.ok(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+
+    /**
+     * update given events
+     * @param eventDTOs
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PutMapping("/events")
+    @Timed
+    public ResponseEntity<List<EventDTO>> updateEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+        log.debug("Request to update events : {}",eventDTOs);
+        for(EventDTO eventDTO : eventDTOs) {
+            if (eventDTO.getId() == null) {
+                throw new WitcurveException("Id is required for update request");
             }
         }
         List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
@@ -105,26 +134,6 @@ public class EventResource {
         }
 
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
-    }
-
-    /**
-     * update given events
-     * @param eventDTOs
-     * @return
-     * @throws WitcurveException
-     */
-
-    @PutMapping("/events")
-    @Timed
-    public ResponseEntity<List<EventDTO>> updateEvent(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
-        log.debug("Request to update events : {}",eventDTOs);
-        for(EventDTO eventDTO : eventDTOs) {
-            if (eventDTO.getId() == null) {
-                throw new WitcurveException("Id is required for update request");
-            }
-        }
-        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
-        return ResponseEntity.ok(result);
     }
 
     /**

@@ -65,6 +65,8 @@
     <include file="config/liquibase/changelog/20190201123440_student_marks_related_changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190209134359_added_event_content.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190209140614_added_gender_in_staff.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190209174932_removed_abstract_fields_from_Keywords_and_increased_keywords_column_size_in_Event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190209182523_added_one_to_many_keyword_relation_in_Event.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

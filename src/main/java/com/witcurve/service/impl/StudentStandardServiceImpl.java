@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,10 +36,33 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     CourseTeacherRepository courseTeacherRepository;
 
     @Override
-    public List<StudentStandardDTO> saveOrUpdate(List<StudentStandardDTO> studentStandardDTOs) {
+    public List<StudentStandardDTO> save(List<StudentStandardDTO> studentStandardDTOs, Long standardId) {
+        for (StudentStandardDTO studentStandardDTO : studentStandardDTOs) {
+            studentStandardDTO.setId(null);
+            studentStandardDTO.getStandard().setId(standardId);
+            studentStandardDTO.setActive(Boolean.TRUE);
+        }
+        List<Long> studentIds = studentStandardDTOs.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
+        studentStandardRepository.deactivateByStudentIds(studentIds);
+
         List<StudentStandard> studentStandards = studentStandardRepository.saveAll(
             studentStandardMapper.toEntity(studentStandardDTOs));
         return studentStandardMapper.toDto(studentStandards);
+    }
+
+    @Override
+    public StudentStandardDTO update(StudentStandardDTO studentStandardDTO) {
+        studentStandardDTO.setId(null);
+        studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentStandardDTO.getStudent().getId()));
+        StudentStandard studentStandard = studentStandardRepository.getByStudentIdAndStandardId(
+            studentStandardDTO.getStudent().getId(), studentStandardDTO.getStandard().getId());
+        if (studentStandard != null) {
+            studentStandard.setActive(Boolean.TRUE);
+
+        } else {
+            studentStandard = studentStandardRepository.save(studentStandard);
+        }
+        return studentStandardMapper.toDto(studentStandard);
     }
 
     @Override

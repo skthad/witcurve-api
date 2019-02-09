@@ -3,16 +3,18 @@ package com.witcurve.domain;
 import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="event")
@@ -87,9 +89,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     private Integer fullMarks;
 
-    @Column
-    @Convert(converter = ListToStringConverter.class)
-    private List<@Pattern(regexp="^[6-9]\\d{9}$")Keyword> keywords;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "event_keyword",
+        joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "keyword_name", referencedColumnName = "name")})
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @BatchSize(size = 20)
+    private Set<Keyword> keywords = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -235,11 +242,11 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.fullMarks = fullMarks;
     }
 
-    public List<Keyword> getKeywords() {
+    public Set<Keyword> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(List<Keyword> keywords) {
+    public void setKeywords(Set<Keyword> keywords) {
         this.keywords = keywords;
     }
 

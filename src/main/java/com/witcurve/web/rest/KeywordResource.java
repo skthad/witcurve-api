@@ -24,6 +24,17 @@ public class KeywordResource {
     @Autowired
     KeywordRepository keywordRepository;
 
+    @PostMapping("/keywords")
+    @Timed
+    public ResponseEntity<Keyword> createKeyword(@RequestBody Keyword keyword) throws WitcurveException, URISyntaxException {
+        log.debug("Request to create keywords: " + keyword.getName());
+        keyword.setName(keyword.getName().toLowerCase());
+        Keyword result = keywordRepository.save(keyword);
+        return ResponseEntity.created(new URI("/api/keywords/" + result.getName()))
+            .headers(HeaderUtil.createEntityCreationAlert("keywords", result.getName()))
+            .body(result);
+    }
+
     /**
      * searches keywords
      * @return
@@ -32,20 +43,10 @@ public class KeywordResource {
      */
     @GetMapping("/keywords")
     @Timed
-    public ResponseEntity<List<Keyword>> searchKeywords(@RequestParam("search") String search) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<Keyword>> searchKeywords(@RequestParam("search") String search) {
         log.debug("Request to search keywords: {}", search);
         List<Keyword> result = keywordRepository.searchKeywords(search.toLowerCase());
         return ResponseEntity.ok(result);
-    }
-
-    @PostMapping("/keywords")
-    @Timed
-    public ResponseEntity<Keyword> createKeyword(@RequestParam("keyword") String keyword) throws WitcurveException, URISyntaxException {
-        log.debug("Request to create keyword: {}", keyword);
-        Keyword result = keywordRepository.create(keyword.toLowerCase());
-        return ResponseEntity.created(new URI("/api/keywords/" + result.getName()))
-            .headers(HeaderUtil.createEntityCreationAlert("keywords", result.getName()))
-            .body(result);
     }
 
 }

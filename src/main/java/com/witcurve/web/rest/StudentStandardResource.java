@@ -23,18 +23,44 @@ public class StudentStandardResource {
     StudentStandardService studentStandardService;
 
     /**
-     * get Staff by id
+     * create StudentStandards
      * @return
      * @throws WitcurveException
      */
 
-    @PostMapping("/student-standard")
+    @PostMapping("/student-standard/standards/{standardId}")
     @Timed
-    public ResponseEntity<List<StudentStandardDTO>> saveOrUpdateStudentStandards(@RequestBody List<StudentStandardDTO> studentStandardDTOs) throws WitcurveException {
+    public ResponseEntity<List<StudentStandardDTO>> saveStudentStandards(@RequestBody List<StudentStandardDTO> studentStandardDTOs,
+                                                                                 @PathVariable Long standardId) throws WitcurveException {
         log.debug("Request to add student-standard");
 
         try {
-            List<StudentStandardDTO> result = studentStandardService.saveOrUpdate(studentStandardDTOs);
+            List<StudentStandardDTO> result = studentStandardService.save(studentStandardDTOs, standardId);
+            return ResponseEntity.ok(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("student_standard_UK")) {
+                throw new WitcurveException("Unique constraint (student_id, standard_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+
+    /**
+     * Update StudentStandard
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PutMapping("/student-standard")
+    @Timed
+    public ResponseEntity<StudentStandardDTO> updateStudentStandard(@RequestBody StudentStandardDTO studentStandardDTO) throws WitcurveException {
+        log.debug("Request to add student-standard");
+
+        try {
+            StudentStandardDTO result = studentStandardService.update(studentStandardDTO);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("student_standard_UK")) {

@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1549736732186-1">
+        <createTable tableName="event_keyword">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="keyword_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549736732186-2">
+        <addPrimaryKey columnNames="event_id, keyword_name" tableName="event_keyword"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549736732186-3">
+        <addForeignKeyConstraint baseColumnNames="keyword_name" baseTableName="event_keyword" constraintName="FK5xxg1fejxxk596wg2l4gjpiah" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="keyword"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549736732186-4">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_keyword" constraintName="FKjj6x75xwnt9b02shxjvfxkxyg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1549736732186-5">
+        <dropColumn columnName="keywords" tableName="event"/>
+    </changeSet>
+</databaseChangeLog>
