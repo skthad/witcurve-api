@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.BloodGroup;
+import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.StaffType;
 
 import javax.validation.constraints.NotNull;
@@ -50,6 +51,9 @@ public class StaffDTO extends AbstractAuditingDTO {
     private String country;
 
     private String pincode;
+
+    @NotNull
+    private Gender gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate joiningDate;
@@ -207,6 +211,14 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setPincode(String pincode) {
         this.pincode = pincode;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public LocalDate getJoiningDate() {

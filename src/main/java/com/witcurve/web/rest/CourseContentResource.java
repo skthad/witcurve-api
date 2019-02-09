@@ -1,8 +1,8 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.CourseContent;
 import com.witcurve.service.CourseContentService;
+import com.witcurve.service.EventContentService;
 import com.witcurve.service.dto.CourseContentDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
@@ -23,10 +23,13 @@ import java.util.List;
 @RequestMapping("/api")
 public class CourseContentResource {
 
-    private final Logger log = LoggerFactory.getLogger(CourseContent.class);
+    private final Logger log = LoggerFactory.getLogger(CourseContentResource.class);
 
     @Autowired
     CourseContentService courseContentService;
+
+    @Autowired
+    EventContentService eventContentService;
 
     /**
      * creates courseContents
@@ -35,7 +38,7 @@ public class CourseContentResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/course-content/course/{courseId}")
+    @PostMapping("/course-content/courses/{courseId}")
     @Timed
     public ResponseEntity<List<CourseContentDTO>> createCourseContents(@RequestBody @Valid List<CourseContentDTO> courseContentDTOs,
                                                                         @PathVariable("courseId") Long courseId) throws WitcurveException, URISyntaxException {
@@ -43,7 +46,7 @@ public class CourseContentResource {
 
         try {
             List<CourseContentDTO> result = courseContentService.saveOrUpdateForCourse(courseId, courseContentDTOs);
-            return ResponseEntity.created(new URI("/api/course-content/course/" + courseId))
+            return ResponseEntity.created(new URI("/api/course-content/courses/" + courseId))
                 .headers(HeaderUtil.createEntityCreationAlert("courseContent", null))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
@@ -82,11 +85,26 @@ public class CourseContentResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/course-content/course/{courseId}")
+    @GetMapping("/course-content/courses/{courseId}")
     @Timed
     public ResponseEntity<List<CourseContentDTO>> getCourseContentsByStaff(@PathVariable("courseId") Long courseId) throws WitcurveException {
         log.debug("Request to get CourseContents with courseId {}", courseId);
         List<CourseContentDTO> result = courseContentService.getCourseContentsByCourseId(courseId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get courseContents by eventId
+     * @param eventId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/course-content/events/{eventId}")
+    @Timed
+    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByEvent(@PathVariable("eventId") Long eventId) throws WitcurveException {
+        log.debug("Request to get CourseContents with eventId {}", eventId);
+        List<CourseContentDTO> result = courseContentService.getCourseContentsByEventId(eventId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -120,13 +138,13 @@ public class CourseContentResource {
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/course-content/course/{courseId}")
+    @DeleteMapping("/course-content/courses/{courseId}")
     @Timed
-    public ResponseEntity<Void> deleteCourseContentByCourse(@PathVariable Long courseId) throws WitcurveException {
+    public ResponseEntity<Void> deleteCourseContentsByCourse(@PathVariable Long courseId) throws WitcurveException {
         log.debug("REST request to delete CourseContent with courseId: {}", courseId);
 
         try {
-            courseContentService.deleteCourseContentByCourseId(courseId);
+            courseContentService.deleteCourseContentsByCourseId(courseId);
             return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("All courseContent is deleted with courseId " + courseId,
                 courseId.toString())).build();
         } catch (DataIntegrityViolationException e) {

@@ -2,8 +2,11 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
 import com.witcurve.domain.CourseContent;
+import com.witcurve.domain.Event;
 import com.witcurve.repository.CourseContentRepository;
 import com.witcurve.repository.CourseRepository;
+import com.witcurve.repository.EventContentRepository;
+import com.witcurve.repository.EventRepository;
 import com.witcurve.service.CourseContentService;
 import com.witcurve.service.dto.CourseContentDTO;
 import com.witcurve.service.mapper.CourseContentMapper;
@@ -32,6 +35,12 @@ public class CourseContentServiceImpl implements CourseContentService {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    EventContentRepository eventContentRepository;
+
+    @Autowired
+    EventRepository eventRepository;
+
     @Override
     public List<CourseContentDTO> saveOrUpdateForCourse(Long courseId, List<CourseContentDTO> courseContentDTOs) throws WitcurveException {
         log.debug("Request to save or update CourseContents");
@@ -41,12 +50,11 @@ public class CourseContentServiceImpl implements CourseContentService {
         }
         for (CourseContentDTO courseContentDTO : courseContentDTOs) {
             if (!courseContentDTO.getCourseId().equals(courseId)) {
-                throw new WitcurveException("CourseId provided does not match with courseId in courseContent");
+                throw new WitcurveException("CourseId provided does not match with courseId in one or more courseContent");
             }
         }
         List<CourseContent> courseContents  = courseContentMapper.toEntity(courseContentDTOs);
-        courseContents  = courseContentRepository.saveAll(courseContents);
-        return courseContentMapper.toDto(courseContents );
+        return courseContentMapper.toDto(courseContentRepository.saveAll(courseContents));
     }
 
     @Override
@@ -60,6 +68,7 @@ public class CourseContentServiceImpl implements CourseContentService {
 
     @Override
     public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
+        log.debug("Request to get CourseContents by course ID: " + courseId);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id: " + courseId);
@@ -88,6 +97,17 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
+    public List<CourseContentDTO> getCourseContentsByEventId(Long eventId) throws WitcurveException {
+        log.debug("Request to get EventContents by event ID: " + eventId);
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (!event.isPresent()) {
+            throw new WitcurveException("No Event with given id " + eventId);
+        }
+        List<CourseContent> courseContents = eventContentRepository.findCourseContentsByEventId(eventId);
+        return courseContentMapper.toDto(courseContents);
+    }
+
+    @Override
     public void deleteCourseContent(Long courseContentId) throws WitcurveException {
         log.debug("Request to delete courseContent with id {}", courseContentId);
         Optional<CourseContent> courseContent = courseContentRepository.findById(courseContentId);
@@ -98,7 +118,7 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
-    public void deleteCourseContentByCourseId(Long courseId) throws WitcurveException {
+    public void deleteCourseContentsByCourseId(Long courseId) throws WitcurveException {
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);

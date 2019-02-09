@@ -90,6 +90,7 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private List<String> alternateMobileNumbers;
 
+    @NotNull
     private Gender gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)

@@ -132,8 +132,9 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Convert(converter = ListToStringConverter.class)
     private List<@Pattern(regexp="^[6-9]\\d{9}$")String> alternateMobileNumbers;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false)
     private Gender gender;
 
     @Column(name = "admission_date")

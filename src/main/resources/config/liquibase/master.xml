@@ -63,6 +63,8 @@
     <include file="config/liquibase/changelog/20190129171504_dropped_type_from_leave_application.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190129182200_add_grade_in_course.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190201123440_student_marks_related_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190209134359_added_event_content.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190209140614_added_gender_in_staff.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
