@@ -169,7 +169,7 @@ public class CourseTeacherResource {
     }
 
     /**
-     * get courseTeacher by teacherId
+     * get courseTeacher by courseId and standardId
      * @param courseId
      * @return
      * @throws WitcurveException
@@ -177,13 +177,10 @@ public class CourseTeacherResource {
 
     @GetMapping("/course-teacher/courses/{courseId}")
     @Timed
-    public ResponseEntity<List<CourseTeacherDTO>> getCourseTeacherByCourseId (
-        @PathVariable(value = "courseId") Long courseId) throws WitcurveException {
+    public ResponseEntity<List<CourseTeacherDTO>> getCourseTeacherByCourseIdAndStandardId (
+        @PathVariable(value = "courseId") Long courseId ,@RequestParam Long standardId) throws WitcurveException {
         log.debug("Request to get list of teachers from CourseTeacher with course id {}", courseId);
-        if(courseId == null){
-            throw new WitcurveException("Course Id cannot be null !!");
-        }
-        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByCourseId(courseId);
+        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByCourseAndStandardId(courseId,standardId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

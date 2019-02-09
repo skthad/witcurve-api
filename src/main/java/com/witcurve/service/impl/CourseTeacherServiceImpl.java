@@ -105,12 +105,9 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     }
 
     @Override
-    public List<CourseTeacherDTO> getCourseTeachersByCourseId(Long courseId) throws WitcurveException {
-        log.debug("Request to get list of all course teachers by course id : {}", courseId);
-        if(courseId == null){
-            throw new WitcurveException("Course Id cannot be null !!");
-        }
-        List<CourseTeacher> result = courseTeacherRepository.findByCourseId(courseId);
+    public List<CourseTeacherDTO> getCourseTeachersByCourseAndStandardId(Long courseId, Long standardId) throws WitcurveException {
+        log.debug("Request to get list of all course teachers by standard id : {}",standardId +" and course id : {}", courseId);
+        List<CourseTeacher> result = courseTeacherRepository.findByCourseAndStandardId(courseId,standardId);
         return courseTeacherMapper.toDto(result);
     }
 
@@ -119,7 +116,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         Long std = studentStandardRepository.getStandardIdByStudentId(studentId);
             List<CourseTeacher> result = courseTeacherRepository.findByStandardId(std);
         if(studentStandardRepository.getByStudentId(studentId).size()>1) {
-              throw new WitcurveException("standard repository is giving more than one rows at a time !!");
+              throw new WitcurveException("standard repository is giving more than one rows at a time.");
         }
         return courseTeacherMapper.toDto(result);
     }
