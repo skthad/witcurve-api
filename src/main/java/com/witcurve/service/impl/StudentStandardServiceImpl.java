@@ -4,6 +4,7 @@ import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.StudentStandard;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.repository.UserRepository;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.StudentStandardMapper;
@@ -35,6 +36,9 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     public List<StudentStandardDTO> save(List<StudentStandardDTO> studentStandardDTOs, Long standardId) {
         for (StudentStandardDTO studentStandardDTO : studentStandardDTOs) {
@@ -58,10 +62,10 @@ public class StudentStandardServiceImpl implements StudentStandardService {
             studentStandardDTO.getStudent().getId(), studentStandardDTO.getStandard().getId());
         if (studentStandard != null) {
             studentStandard.setActive(Boolean.TRUE);
-
         } else {
-            studentStandard = studentStandardRepository.save(studentStandard);
+            studentStandard = studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
         }
+        userRepository.activateAllUsersByStudentIds(studentStandard.getStudent().getId());
         return studentStandardMapper.toDto(studentStandard);
     }
 
