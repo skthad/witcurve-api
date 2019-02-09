@@ -166,8 +166,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                     leaveApplicationRepository.findByStaffId(staffId, fromDate, toDate));
             } else if (standardId != null) {
                 List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStudentList(studentIds, fromDate,toDate));
+                if (studentIds.size() > 0) {
+                    result = leaveApplicationMapper.toDto(
+                        leaveApplicationRepository.findByStudentList(studentIds, fromDate,toDate));
+                }
             } else if (schoolInfoId != null) {
                 result = leaveApplicationMapper.toDto(
                     leaveApplicationRepository.findByStaffInSchoolInfoId(schoolInfoId, fromDate,toDate));
@@ -181,8 +183,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                     leaveApplicationRepository.findByStaffIdAndStatus(staffId, fromDate, toDate, status));
             } else if (standardId != null) {
                 List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStudentListAndStatus(studentIds, fromDate,toDate, status));
+                if (studentIds.size() > 0) {
+                    result = leaveApplicationMapper.toDto(
+                        leaveApplicationRepository.findByStudentListAndStatus(studentIds, fromDate,toDate, status));
+                }
             } else if (schoolInfoId != null) {
                 result = leaveApplicationMapper.toDto(
                     leaveApplicationRepository.findByStaffInSchoolInfoIdAndStatus(schoolInfoId, fromDate,toDate, status));
