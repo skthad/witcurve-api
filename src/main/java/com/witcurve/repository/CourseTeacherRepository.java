@@ -36,7 +36,4 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
         "and ct.teacher.id != ?1 and ct.teacher.schoolInfo.id = ?2")
     List<Long> findEligibleForSubstituteBySchoolInfoId(Long staffId, Long schoolInfoId);
 
-    @Query("select ct from CourseTeacher ct where ct.course.id=?1 and ct.standard.id=?2 and ct.active=true order by ct.standard.id ")
-    List<CourseTeacher> findByCourseAndStandardId(Long courseId,Long standardId);
-
 }
