@@ -126,9 +126,9 @@ public class CourseTeacherResource {
 
     @PutMapping("/course-teacher/{courseTeacherId}")
     @Timed
-    public ResponseEntity<CourseTeacherDTO> updateCourseTeacherStatus(@PathVariable("courseTeacherId") Long courseTeacherId, @RequestParam Boolean status) throws WitcurveException {
-        log.debug("Request to update CourseTeacher with id {} with status", courseTeacherId, status);
-        CourseTeacherDTO result = courseTeacherService.updateStatusForCourseTeacher(courseTeacherId, status);
+    public ResponseEntity<CourseTeacherDTO> updateCourseTeacherStatus(@PathVariable("courseTeacherId") Long courseTeacherId, @RequestParam Boolean active) throws WitcurveException {
+        log.debug("Request to update CourseTeacher with id {} with status", courseTeacherId, active);
+        CourseTeacherDTO result = courseTeacherService.updateStatusForCourseTeacher(courseTeacherId, active);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

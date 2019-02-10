@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.StaffType;
@@ -99,6 +100,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String primaryPhone;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Column(length = 50)
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
