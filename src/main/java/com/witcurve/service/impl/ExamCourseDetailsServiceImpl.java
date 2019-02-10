@@ -97,6 +97,78 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         return examCourseDetailsMapper.toDto(examCourseDetails);
     }
 
+    @Override
+    public List<ExamCourseDetailsDTO> getExamCourseDetailsOnAGivenMonthForStudent(Long studentId, Integer month, Integer year) throws WitcurveException {
+        log.debug("Request to get list of examCourseDetails for given student with id : {} for month : {} and on year : {}", studentId, month, year);
+        StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
+        Grade grade = studentStandardDTO.getStandard().getGrade();
+        LocalDate monthStart = LocalDate.of(year,month,1);
+        LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, monthStart, monthEnd);
+        return examCourseDetailsMapper.toDto(examCourseDetails);
+    }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getUpcomingExamCourseDetailsForStudent(Long studentId, LocalDate date) throws WitcurveException {
+        log.debug("Request to get list of a week examCourseDetails for given student with id : {} and from date : {}", studentId, date);
+        StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
+        Grade grade = studentStandardDTO.getStandard().getGrade();
+        LocalDate endDate = date.plusDays(6);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, endDate);
+        return examCourseDetailsMapper.toDto(examCourseDetails);
+    }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getExamCourseDetailsForStaffOnDate(Long staffId, LocalDate date) throws WitcurveException {
+        log.debug("Request to get list of a week examCourseDetails for given staff with id : {} and from date : {}", staffId, date);
+        List<ExamCourseDetails> result = new ArrayList<>();
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if(courseTeachers.size()!=0) {
+            Set<Long> couseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+            result = examCourseDetailsRepository.findByCoursesBetweenDateOrderByGsdStart(new ArrayList<>(couseIds), date, date);
+        }
+        return examCourseDetailsMapper.toDto(result);
+    }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getExamCourseDetailsOnAGivenMonthForStaff(Long staffId, Integer month, Integer year) throws WitcurveException {
+        log.debug("Request to get list of examCourseDetails for given staff with id : {} for month : {} and on year : {}", staffId, month, year);
+        LocalDate monthStart = LocalDate.of(year,month,1);
+        LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
+        List<ExamCourseDetails> result = new ArrayList<>();
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if(courseTeachers.size()!=0) {
+            Set<Long> couseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+            result = examCourseDetailsRepository.findByCoursesBetweenDateOrderByGsdStart(new ArrayList<>(couseIds), monthStart, monthEnd);
+        }
+        return examCourseDetailsMapper.toDto(result);
+    }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getUpcomingExamCourseDetailsForStaff(Long staffId, LocalDate date) throws WitcurveException {
+        log.debug("Request to get list of a week examCourseDetails for given staff with id : {} and from date : {}", staffId, date);
+        LocalDate endDate = date.plusDays(6);
+        List<ExamCourseDetails> result = new ArrayList<>();
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if(courseTeachers.size()!=0) {
+            Set<Long> couseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+            result = examCourseDetailsRepository.findByCoursesBetweenDateOrderByGsdStart(new ArrayList<>(couseIds), date, endDate);
+        }
+        return examCourseDetailsMapper.toDto(result);
+    }
+
 
 
     @Override

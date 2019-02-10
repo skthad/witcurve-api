@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.ExamCourseDetailsService;
 import com.witcurve.service.dto.ExamCourseDetailsDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -95,9 +97,56 @@ public class ExamCourseDetailsResource {
     @GetMapping("/exam-course-details/students/{studentId}")
     @Timed
     public ResponseEntity<List<ExamCourseDetailsDTO>> getExamCourseDetailsForStudentOnDate(@PathVariable("studentId") Long studentId,
-                                                                                         @RequestParam("date") LocalDate date) throws WitcurveException {
-        log.debug("Request to get ExamCourseDetails for student with id : {} and on date : {}", studentId, date);
-        List<ExamCourseDetailsDTO> result = examCourseDetailsService.getExamCourseDetailsForStudentOnDate(studentId, date);
+                                                                                           @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
+                                                                                           @RequestParam(value = "month", required = false) Integer month,
+                                                                                           @RequestParam(value = "year", required = false) Integer year,
+                                                                                           @RequestParam(value = "type") ViewType type) throws WitcurveException{
+        log.debug("Request to get ExamCourseDetails for student with id : {} and for view type : {}", studentId, type);
+        List<ExamCourseDetailsDTO> result = new ArrayList<>();
+        if(ViewType.DAY.equals(type)) {
+            if(eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for DAY view");
+            }
+            result = examCourseDetailsService.getExamCourseDetailsForStudentOnDate(studentId, eventDate);
+        } else if(ViewType.MONTH.equals(type)){
+            if(month == null || year ==null) {
+                throw new WitcurveException("There should be month and year param for MONTH view");
+            }
+            result = examCourseDetailsService.getExamCourseDetailsOnAGivenMonthForStudent(studentId, month, year);
+        } else if(ViewType.UPCOMING_EVENTS.equals(type)) {
+            if (eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for Upcoming Events view");
+            }
+            result = examCourseDetailsService.getUpcomingExamCourseDetailsForStudent(studentId, eventDate);
+        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/exam-course-details/staff/{staffId}")
+    @Timed
+    public ResponseEntity<List<ExamCourseDetailsDTO>> getExamCourseDetailsForStaffOnDate(@PathVariable("staffId") Long staffId,
+                                                                                           @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
+                                                                                           @RequestParam(value = "month", required = false) Integer month,
+                                                                                           @RequestParam(value = "year", required = false) Integer year,
+                                                                                           @RequestParam(value = "type") ViewType type) throws WitcurveException{
+        log.debug("Request to get ExamCourseDetails for staff with id : {} and for view type : {}", staffId, type);
+        List<ExamCourseDetailsDTO> result = new ArrayList<>();
+        if(ViewType.DAY.equals(type)) {
+            if(eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for DAY view");
+            }
+            result = examCourseDetailsService.getExamCourseDetailsForStaffOnDate(staffId, eventDate);
+        } else if(ViewType.MONTH.equals(type)){
+            if(month == null || year ==null) {
+                throw new WitcurveException("There should be month and year param for MONTH view");
+            }
+            result = examCourseDetailsService.getExamCourseDetailsOnAGivenMonthForStaff(staffId, month, year);
+        } else if(ViewType.UPCOMING_EVENTS.equals(type)) {
+            if (eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for Upcoming Events view");
+            }
+            result = examCourseDetailsService.getUpcomingExamCourseDetailsForStaff(staffId, eventDate);
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

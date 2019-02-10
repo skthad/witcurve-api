@@ -193,7 +193,7 @@ public class EventResource {
         }
         if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
-                throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
+                throw new WitcurveException("There should be eventDate param for Upcoming Events view");
             }
             result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(eventDate, studentId);
         }
