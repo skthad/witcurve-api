@@ -48,34 +48,31 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     GeneralSlotDetailsRepository generalSlotDetailsRepository;
 
     @Override
-    public List<CourseTeacherDTO> saveOrUpdate(List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException {
-        log.debug("Request to save or update CourseTeachers", courseTeacherDTOs);
-        List<CourseTeacher> result = new ArrayList<>();
-        for(CourseTeacherDTO courseTeacherDTO : courseTeacherDTOs) {
-            Optional<Course> course = courseRepository.findById(courseTeacherDTO.getCourse().getId());
-            if (!course.isPresent()) {
-                throw new WitcurveException("A valid course id must be provided");
-            }
-            Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
-
-            if (!standard.isPresent()) {
-                throw new WitcurveException("a valid standard id must be provided");
-            }
-            if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
-
-                List<StaffEligibility> se = staffEligibilityRepository
-                    .findByStaffAndSubjectAndGrade(courseTeacherDTO.getTeacher().getId(),
-                        course.get().getMasterSubject(), standard.get().getGrade());
-                if (se.size() == 0) {
-                    throw new WitcurveException("Staff does not meet the eligibility criteria");
-                }
-
-            }
-            CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
-            courseTeacher = courseTeacherRepository.save(courseTeacher);
-            result.add(courseTeacher);
+    public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
+        log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
+        Optional<Course> course = courseRepository.findById(courseTeacherDTO.getCourse().getId());
+        if (!course.isPresent()) {
+            throw new WitcurveException("A valid course id must be provided");
         }
-        return courseTeacherMapper.toDto(result);
+        Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
+
+        if (!standard.isPresent()) {
+            throw new WitcurveException("a valid standard id must be provided");
+        }
+        if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
+            List<StaffEligibility> se = staffEligibilityRepository
+                .findByStaffAndSubjectAndGrade(courseTeacherDTO.getTeacher().getId(),
+                    course.get().getMasterSubject(), standard.get().getGrade());
+            if (se.size() == 0) {
+                throw new WitcurveException("There is no staff eligibility for this staff for grade "
+                    +standard.get().getGrade()+" and subject "
+                    +course.get().getMasterSubject()+".");
+            }
+        }
+        CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
+        courseTeacher = courseTeacherRepository.save(courseTeacher);
+
+        return courseTeacherMapper.toDto(courseTeacher);
     }
 
 
@@ -84,7 +81,29 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         log.debug("Request to get course teacher by id : {}", id);
         Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(id);
         if (!courseTeacher.isPresent()) {
-            throw new WitcurveException("No course tecaher with given id " + id);
+            throw new WitcurveException("No course teacher with given id " + id);
+        }
+        return courseTeacherMapper.toDto(courseTeacher.get());
+    }
+
+    @Override
+    public CourseTeacherDTO updateStatusForCourseTeacher(Long id, Boolean status) throws WitcurveException {
+        log.debug("Request to update course teacher by id : {} by status : {}", id, status);
+        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(id);
+        if (!courseTeacher.isPresent()) {
+            throw new WitcurveException("No course teacher with given id " + id);
+        }
+        courseTeacher.get().setActive(status);
+        if(status) {
+            List<StaffEligibility> se = staffEligibilityRepository
+                .findByStaffAndSubjectAndGrade(courseTeacher.get().getTeacher().getId(),
+                    courseTeacher.get().getCourse().getMasterSubject(),
+                    courseTeacher.get().getStandard().getGrade());
+            if (se.size() == 0) {
+                throw new WitcurveException("There is no staff eligibility for this staff for grade "
+                    +courseTeacher.get().getCourse().getGrade()+" and subject "
+                    +courseTeacher.get().getCourse().getMasterSubject()+".");
+            }
         }
         return courseTeacherMapper.toDto(courseTeacher.get());
     }
@@ -98,16 +117,24 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     }
 
     @Override
-    public List<CourseTeacherDTO> getCoursesByStandardId(Long standardId) {
-        List<CourseTeacher> results = courseTeacherRepository.findByStandardId(standardId);
-
+    public List<CourseTeacherDTO> getCoursesByStandardId(Long standardId, Boolean active) {
+        List<CourseTeacher> results = new ArrayList<>();
+        if(active == null) {
+            results = courseTeacherRepository.findByStandardId(standardId);
+        } else {
+            if(active) {
+                results= courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
+            } else {
+                results= courseTeacherRepository.findInActiveCourseTeachersByStandardId(standardId);
+            }
+        }
         return courseTeacherMapper.toDto(results);
     }
 
     @Override
     public List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException{
         Long std = studentStandardRepository.getStandardIdByStudentId(studentId);
-            List<CourseTeacher> result = courseTeacherRepository.findByStandardId(std);
+            List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(std);
         if(studentStandardRepository.getByStudentId(studentId).size()>1) {
               throw new WitcurveException("standard repository is giving more than one rows at a time.");
         }
@@ -124,7 +151,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         Integer startTime = Integer.parseInt(gsd.get().getStart());
         Integer endTime = startTime + gsd.get().getDuration();
 
-        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByStandardId(gsd.get().getStandard().getId());
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findActiveCourseTeachersByStandardId(gsd.get().getStandard().getId());
         List<Long> allocatedTeachers = slotCourseDetailsRepository.findAllocatedTeachersList(startTime, endTime, dayOfWeek, gsd.get().getStandard().getSchoolInfo().getId());
 
         courseTeachers.removeIf((CourseTeacher ct) -> allocatedTeachers.indexOf(ct.getTeacher().getId()) > -1);

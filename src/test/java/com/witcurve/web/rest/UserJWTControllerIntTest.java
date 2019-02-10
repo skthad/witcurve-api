@@ -58,7 +58,7 @@ public class UserJWTControllerIntTest {
 
     @Before
     public void setup() {
-        UserJWTController userJWTController = new UserJWTController(tokenProvider, authenticationManager, otpAuthenticationProvider);
+        UserJWTController userJWTController = new UserJWTController(tokenProvider, authenticationManager, otpAuthenticationProvider, userRepository);
         this.mockMvc = MockMvcBuilders.standaloneSetup(userJWTController)
             .setControllerAdvice(exceptionTranslator)
             .build();

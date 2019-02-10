@@ -67,6 +67,9 @@ public class UserDTO {
 
     private String password;
 
+    @NotNull
+    private Boolean firstTimeLogin = true;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -240,6 +243,14 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getFirstTimeLogin() {
+        return firstTimeLogin;
+    }
+
+    public void setFirstTimeLogin(Boolean firstTimeLogin) {
+        this.firstTimeLogin = firstTimeLogin;
     }
 
     @Override

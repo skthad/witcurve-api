@@ -32,26 +32,20 @@ public class CourseTeacherResource {
 
     /**
      * creates a courseTeachers
-     * @param courseTeacherDTOs
+     * @param courseTeacherDTO
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/course-teacher")
     @Timed
-    public ResponseEntity<List<CourseTeacherDTO>> createCourseTeacher(@RequestBody @Valid List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<CourseTeacherDTO> createCourseTeacher(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save courseTeacher");
-        Long standardId = courseTeacherDTOs.get(0).getStandard().getId();
-        for(CourseTeacherDTO courseTeacherDTO : courseTeacherDTOs) {
-            if (courseTeacherDTO.getId() != null) {
-                throw new WitcurveException("New courseTeacher can't already have an id");
-            }
-            if(standardId != courseTeacherDTO.getStandard().getId()) {
-                throw new WitcurveException("CourseTeachers belonging to same standard id can be saved at a time");
-            }
+        if (courseTeacherDTO.getId() != null) {
+            throw new WitcurveException("New courseTeacher can't already have an id");
         }
         try {
-            List<CourseTeacherDTO> result = courseTeacherService.saveOrUpdate(courseTeacherDTOs);
+            CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
             return ResponseEntity.created(new URI("/api/course-teacher/"))
                 .headers(HeaderUtil.createEntityCreationAlert("courseTeacher", "created"))
                 .body(result);
@@ -68,26 +62,21 @@ public class CourseTeacherResource {
 
     /**
      * update the given courseTeachers
-     * @param courseTeacherDTOs
+     * @param courseTeacherDTO
      * @return
      * @throws WitcurveException
      */
 
     @PutMapping("/course-teacher")
     @Timed
-    public ResponseEntity<List<CourseTeacherDTO>> updateCourseTeacher(@RequestBody @Valid List<CourseTeacherDTO> courseTeacherDTOs) throws WitcurveException {
+    public ResponseEntity<CourseTeacherDTO> updateCourseTeacher(@RequestBody @Valid CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
         log.debug("Request to update courseTeacher");
-        Long standardId = courseTeacherDTOs.get(0).getStandard().getId();
-        for(CourseTeacherDTO courseTeacherDTO : courseTeacherDTOs) {
-            if (courseTeacherDTO.getId() == null) {
-                throw new WitcurveException("CourseTeachers should have id to update");
-            }
-            if(standardId != courseTeacherDTO.getStandard().getId()) {
-                throw new WitcurveException("CourseTeachers belonging to same standard id can be saved at a time");
-            }
+        if (courseTeacherDTO.getId() == null) {
+            throw new WitcurveException("CourseTeachers should have id to update");
         }
+
         try {
-            List<CourseTeacherDTO> result = courseTeacherService.saveOrUpdate(courseTeacherDTOs);
+            CourseTeacherDTO result = courseTeacherService.saveOrUpdate(courseTeacherDTO);
             return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert("courseTeacher", "updated"))
                 .body(result);
@@ -135,6 +124,14 @@ public class CourseTeacherResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PutMapping("/course-teacher/{courseTeacherId}")
+    @Timed
+    public ResponseEntity<CourseTeacherDTO> updateCourseTeacherStatus(@PathVariable("courseTeacherId") Long courseTeacherId, @RequestParam Boolean status) throws WitcurveException {
+        log.debug("Request to update CourseTeacher with id {} with status", courseTeacherId, status);
+        CourseTeacherDTO result = courseTeacherService.updateStatusForCourseTeacher(courseTeacherId, status);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     /**
      * get courseTeacher by teacherId
      * @param teacherId
@@ -152,11 +149,13 @@ public class CourseTeacherResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+
+
     @GetMapping("/course-teacher/standards/{standardId}")
     @Timed
-    public ResponseEntity<List<CourseTeacherDTO>> getCoursesByStandardId(@PathVariable("standardId") Long standardId) throws WitcurveException {
-        log.debug("Request to get Course with standardId {}", standardId);
-        List<CourseTeacherDTO> result = courseTeacherService.getCoursesByStandardId(standardId);
+    public ResponseEntity<List<CourseTeacherDTO>> getCoursesByStandardId(@PathVariable("standardId") Long standardId, @RequestParam(required = false) Boolean active) throws WitcurveException {
+        log.debug("Request to get Course with standardId {} with active status : {}", standardId, active);
+        List<CourseTeacherDTO> result = courseTeacherService.getCoursesByStandardId(standardId, active);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

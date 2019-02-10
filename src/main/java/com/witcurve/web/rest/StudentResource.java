@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +32,20 @@ public class StudentResource {
         if (studentDTO.getId() != null) {
             throw new WitcurveException("New student can't already have an id");
         }
-        StudentDTO result = studentService.create(studentDTO);
-        return ResponseEntity.created(new URI("/api/students/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("student", result.getId().toString()))
-            .body(result);
+        try {
+            StudentDTO result = studentService.create(studentDTO);
+            return ResponseEntity.created(new URI("/api/students/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("student", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("admission_school_info_id_UK")) {
+                throw new WitcurveException("Unique constraint (admission_id, school_info_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     @PutMapping("/students")
@@ -43,10 +54,20 @@ public class StudentResource {
         if (studentDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
         }
-        StudentDTO result = studentService.update(studentDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("student", result.getId().toString()))
-            .body(result);
+        try {
+            StudentDTO result = studentService.update(studentDTO);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("student", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("admission_school_info_id_UK")) {
+                throw new WitcurveException("Unique constraint (admission_id, school_info_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     @GetMapping("/students/{studentId}")

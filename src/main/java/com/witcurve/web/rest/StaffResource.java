@@ -41,10 +41,21 @@ public class StaffResource {
         if (staffDTO.getId() != null) {
             throw new WitcurveException("New Staff can't already have an id");
         }
-        StaffDTO result = staffService.create(staffDTO);
-        return ResponseEntity.created(new URI("/api/staff/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
-            .body(result);
+        try {
+            StaffDTO result = staffService.create(staffDTO);
+            return ResponseEntity.created(new URI("/api/staff/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("staff_school_info_id_UK")) {
+                throw new WitcurveException("Unique constraint (staff_id, school_info_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
     }
 
     /**
@@ -108,10 +119,21 @@ public class StaffResource {
         } else {
             staffService.getStaffById(staffDTO.getId());
         }
-        StaffDTO result = staffService.update(staffDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
-            .body(result);
+        try {
+            StaffDTO result = staffService.update(staffDTO);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("staff_school_info_id_UK")) {
+                throw new WitcurveException("Unique constraint (staff_id, school_info_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
     }
 
     /**

@@ -82,6 +82,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "image_url", length = 256)
     private String imageUrl;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean firstTimeLogin = true;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -171,6 +175,18 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public Boolean isFirstTimeLogin() {
+        return firstTimeLogin;
+    }
+
+    public void setFirstTimeLogin(Boolean firstTimeLogin) {
+        this.firstTimeLogin = firstTimeLogin;
     }
 
     public boolean getActivated() {

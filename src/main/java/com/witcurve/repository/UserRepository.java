@@ -45,4 +45,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User set activated = true where id in (select s.user.id from Student s where s.id = ?1)")
     void activateAllUsersByStudentIds(Long studentId);
+
+    @Modifying
+    @Query("update User set activated = true where id in (select s.user.id from Student s where s.id = ?1)")
+    void activateByUserId(Long userId);
 }
