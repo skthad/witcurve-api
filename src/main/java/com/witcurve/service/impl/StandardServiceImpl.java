@@ -64,9 +64,18 @@ public class StandardServiceImpl implements StandardService {
     }
 
     @Override
-    public List<StandardDTO> getStandardsBySchoolInfoId(Long schoolInfoId) {
+    public List<StandardDTO> getStandardsBySchoolInfoId(Long schoolInfoId, Boolean slotAssigned) {
         log.debug("Request to get standards with school info id : {}", schoolInfoId);
-        List<Standard> standards = standardRepository.findBySchoolInfoId(schoolInfoId);
+        List<Standard> standards;
+        if(slotAssigned == null) {
+            standards = standardRepository.findBySchoolInfoId(schoolInfoId);
+        } else {
+            if(slotAssigned) {
+                standards = standardRepository.findSlotAssignedBySchoolInfoId(schoolInfoId);
+            } else {
+                standards = standardRepository.findSlotUnassignedBySchoolInfoId(schoolInfoId);
+            }
+        }
         return standardMapperLite.toDto(standards);
     }
 
