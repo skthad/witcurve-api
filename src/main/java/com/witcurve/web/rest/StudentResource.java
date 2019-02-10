@@ -86,6 +86,14 @@ public class StudentResource {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/students/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<List<StudentDTO>> getStudentsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get unallocated students in schoolInfo with id: "+ schoolInfoId);
+        List<StudentDTO> result = studentService.getStudentsBySchoolInfoId(schoolInfoId);
+        return ResponseEntity.ok(result);
+    }
+
     @PutMapping("/students/{studentId}/deactivate")
     public ResponseEntity<Void> deactivateStudent(@PathVariable Long studentId) throws WitcurveException, URISyntaxException {
         log.debug("Request to deactivate student with ID: " + studentId);

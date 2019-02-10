@@ -96,6 +96,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<StudentDTO> getStudentsBySchoolInfoId(Long schoolInfoId) {
+        log.debug("Request to get unallocated students in schoolInfo with id : {}", schoolInfoId);
+        List<Student> students = studentRepository.getUnallocatedStudentsBySchoolInfoId(schoolInfoId);
+        return studentMapperLite.toDto(students);
+    }
+
+    @Override
     public StudentDTO getStudentByUsername(String username) throws WitcurveException {
         log.debug("Request to get student with username: {}", username);
         int index = username.indexOf("-");
