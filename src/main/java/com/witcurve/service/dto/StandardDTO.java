@@ -3,9 +3,10 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class StandardDTO extends AbstractAuditingDTO {
+public class StandardDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -14,7 +15,6 @@ public class StandardDTO extends AbstractAuditingDTO {
 
     private String section;
 
-    @NotNull
     private Long classTeacherId;
 
     @NotNull

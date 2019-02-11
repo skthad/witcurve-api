@@ -99,6 +99,20 @@ public class StandardResource {
     }
 
     /**
+     * get standard by id
+     * @param standardId
+     * @return
+     * @throws WitcurveException
+     */
+    @PutMapping("/standards/{standardId}")
+    @Timed
+    public ResponseEntity<StandardDTO> updateClassTeacher(@PathVariable("standardId") Long standardId, @RequestParam Long classTeacherId) throws WitcurveException {
+        log.debug("Request to update standard by id : {} with class teacher id : {}", standardId, classTeacherId);
+        StandardDTO result = standardService.addClassTeacher(standardId, classTeacherId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
      * get standards by school info id
      * @param schoolInfoId
      * @return

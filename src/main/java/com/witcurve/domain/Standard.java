@@ -29,9 +29,7 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
     @Column(length = 50)
     private String section;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @OneToOne
     private Staff classTeacher;
 
     @NotNull

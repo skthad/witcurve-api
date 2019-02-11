@@ -132,9 +132,14 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId) {
+    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher) {
         log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId);
-        List<Staff> staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+        List<Staff> staffList = null;
+        if(areClassTeacher) {
+            staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
+        } else {
+            staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+        }
         List<StaffDTO> result = staffMapper.toDto(staffList);
         return result;
     }

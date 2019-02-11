@@ -68,6 +68,7 @@
     <include file="config/liquibase/changelog/20190209174932_removed_abstract_fields_from_Keywords_and_increased_keywords_column_size_in_Event.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190209182523_added_one_to_many_keyword_relation_in_Event.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190210161905_added_first_time_login_in_user.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190211183602_removed_null_constraint_added_class_teacher_unique_constraint.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

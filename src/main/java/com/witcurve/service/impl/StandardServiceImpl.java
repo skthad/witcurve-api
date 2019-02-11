@@ -1,9 +1,11 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.Staff;
 import com.witcurve.domain.Standard;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.SchoolInfoRepository;
+import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.StandardService;
 import com.witcurve.service.dto.StandardDTO;
@@ -40,6 +42,9 @@ public class StandardServiceImpl implements StandardService {
     @Autowired
     SchoolInfoRepository schoolInfoRepository;
 
+    @Autowired
+    StaffRepository staffRepository;
+
     @Override
     public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) throws WitcurveException {
         log.debug("Request to save or update Standard: {}", standardDTO);
@@ -61,6 +66,25 @@ public class StandardServiceImpl implements StandardService {
             throw new WitcurveException("No standard exits with given id " + standardId);
         }
         return standardMapperLite.toDto(standard.get());
+    }
+
+    @Override
+    public StandardDTO addClassTeacher(Long standardId, Long staffId) throws WitcurveException {
+        log.debug("Request to add class teacher for staff with id : {} and standard with id : {}", staffId, standardId);
+        Optional<Standard> standard = standardRepository.findById(standardId);
+        if (!standard.isPresent()) {
+            throw new WitcurveException("No standard exits with given id " + standardId);
+        }
+        Optional<Staff> staffOptional = staffRepository.findById(staffId);
+        if(!staffOptional.isPresent()) {
+            throw new WitcurveException("No staff exits with given id " + staffId);
+        }
+        Standard existingClassTeacherStandard = standardRepository.findByClassTeacherId(staffId);
+        if(existingClassTeacherStandard != null && !standard.get().equals(existingClassTeacherStandard)) {
+            throw new WitcurveException("There exists a standard with class teacher " + staffId);
+        }
+        standard.get().setClassTeacher(staffOptional.get());
+        return standardMapper.toDto(standard.get());
     }
 
     @Override
