@@ -31,6 +31,8 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String userName;
 
+    private Boolean active;
+
     private Boolean hasPassword;
 
     @NotNull
@@ -150,6 +152,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Boolean getHasPassword() {

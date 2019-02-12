@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,7 +117,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     @Override
     public List<CourseTeacherDTO> getCoursesByStandardId(Long standardId, Boolean active) {
-        List<CourseTeacher> results = new ArrayList<>();
+        List<CourseTeacher> results;
         if(active == null) {
             results = courseTeacherRepository.findByStandardId(standardId);
         } else {

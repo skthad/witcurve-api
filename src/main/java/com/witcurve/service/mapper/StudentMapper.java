@@ -11,6 +11,7 @@ public interface StudentMapper extends EntityMapper<StudentDTO, Student>{
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.login")
+    @Mapping(target = "active", source = "user.activated")
     StudentDTO toDto(Student student);
 
     @Mapping(target = "user.id", source = "userId")

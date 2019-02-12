@@ -18,19 +18,19 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Query("select ss from StudentStandard ss where ss.student.id = ?1 and ss.standard.id = ?2")
     StudentStandard getByStudentIdAndStandardId(Long studentId, Long standardId);
 
-    @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
+    @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true and ss.student.user.activated = true order by ss.rollNo")
     List<StudentStandard> getByStandardId(Long standardId);
 
-    @Query("select ss from StudentStandard ss where ss.standard.id in ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
+    @Query("select ss from StudentStandard ss where ss.standard.id in ?1 and ss.active = true and ss.student.user.activated = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getByStandardsId(List<Long> standardIds);
 
-    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
+    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true and ss.student.user.activated = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getBySchoolInfoId(Long schoolInfoId);
 
-    @Query("select ss.student.id from StudentStandard ss where ss.standard.id = ?1 and ss.active = true")
+    @Query("select ss.student.id from StudentStandard ss where ss.standard.id = ?1 and ss.active = true and ss.student.user.activated = true ")
     List<Long> findStudentIdByStandardId(Long standardId);
 
-    @Query("select ss.student from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
+    @Query("select ss.student from StudentStandard ss where ss.standard.id = ?1 and ss.active = true and ss.student.user.activated = true order by ss.rollNo")
     List<Student> getStudentsByStandardId(Long standardId);
 
     @Query("select ss.standard.id from StudentStandard ss where ss.student.id = ?1 and ss.active = true")
