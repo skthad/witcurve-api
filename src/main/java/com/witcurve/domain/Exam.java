@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -43,6 +44,11 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @Column(name = "grade", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private Grade grade;
+
+    @NotNull
+    @Column(name = "status", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private ExamStatus status = ExamStatus.DRAFT;
 
     public Long getId() {
         return id;
@@ -90,6 +96,14 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     public void setGrade(Grade grade) {
         this.grade = grade;
+    }
+
+    public ExamStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExamStatus status) {
+        this.status = status;
     }
 
     @Override

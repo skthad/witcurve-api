@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Exam;
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.ExamRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
@@ -68,12 +69,17 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate) throws WitcurveException {
+    public List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate, ExamStatus status) throws WitcurveException {
         log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
         if (startDate.isAfter(endDate)) {
             throw new WitcurveException("StartDate cannot be after EndDate");
         }
-        List<Exam> exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate);
+        List<Exam> exams;
+        if (status == null) {
+            exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate);
+        } else {
+            exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate, status);
+        }
 
         return examMapper.toDto(exams);
     }

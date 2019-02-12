@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.ExamService;
 import com.witcurve.service.dto.ExamDTO;
@@ -116,9 +117,10 @@ public class ExamResource {
     public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfoAndGrade(@PathVariable("schoolInfoId") Long schoolInfoId,
                                                                    @PathVariable("grade") Grade grade,
                                                                       @RequestParam(value = "startDate") LocalDate startDate,
-                                                                      @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
+                                                                      @RequestParam(value = "endDate") LocalDate endDate,
+                                                                      @RequestParam(value = "status", required = false) ExamStatus status) throws WitcurveException {
         log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
-        List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate);
+        List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

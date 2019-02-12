@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.ExamDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -13,7 +14,7 @@ public interface ExamService {
 
     ExamDTO getExamById(Long examId) throws WitcurveException;
 
-    List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate) throws WitcurveException;
+    List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate, ExamStatus status) throws WitcurveException;
 
     void deleteExam(Long examId) throws WitcurveException;
 }

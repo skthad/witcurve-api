@@ -30,6 +30,7 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
     private String section;
 
     @OneToOne
+    @JoinColumn(unique = true)
     private Staff classTeacher;
 
     @NotNull

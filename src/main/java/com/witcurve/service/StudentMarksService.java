@@ -11,6 +11,10 @@ import java.util.List;
 public interface StudentMarksService {
     List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) throws WitcurveException;
 
+    void publishMarksForEvent(Long eventId);
+
+    void publishMarksForECD(Long ecdId);
+
     void deleteStudentMarks(Long studentMarksId) throws WitcurveException;
 
     List<StudentMarksDTO> getStudentMarksByEventId(Long eventId) throws WitcurveException;

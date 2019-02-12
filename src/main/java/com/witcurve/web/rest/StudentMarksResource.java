@@ -36,26 +36,27 @@ public class StudentMarksResource {
     @PostMapping("/student-marks")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> createStudentMarks(@RequestBody @Valid List<StudentMarksDTO> studentMarksDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request create student Marks Relation !!");
-        if (studentMarksDTO.get(0).getId()!=null) {
-            throw new WitcurveException("New student marks relation can't already have an id");
-        }
+        log.debug("Request to create student Marks ");
         List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTO);
 
         return ResponseEntity.ok()
             .body(result);
     }
 
-    @PutMapping("/student-marks")
+    @PutMapping("/student-marks/events/{eventId}")
     @Timed
-    public ResponseEntity<List<StudentMarksDTO>> updateStudentMarks(@RequestBody @Valid List<StudentMarksDTO> studentMarksDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request to update student marks");
-        if (studentMarksDTO.get(0).getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTO);
-        return ResponseEntity.ok()
-            .body(result);
+    public ResponseEntity<Void> publishMarksForEvent(@PathVariable Long eventId) {
+        log.debug("Request to publish student marks for event ID: " + eventId);
+         studentMarksService.publishMarksForEvent(eventId);
+        return (ResponseEntity<Void>) ResponseEntity.ok();
+    }
+
+    @PutMapping("/student-marks/exam-course-details/{ecdId}")
+    @Timed
+    public ResponseEntity<Void> publishMarksForECD(@PathVariable Long ecdId) {
+        log.debug("Request to publish student marks for ECD ID: " + ecdId);
+        studentMarksService.publishMarksForECD(ecdId);
+        return (ResponseEntity<Void>) ResponseEntity.ok();
     }
 
     /**

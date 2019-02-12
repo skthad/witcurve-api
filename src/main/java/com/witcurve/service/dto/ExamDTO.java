@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
@@ -29,6 +30,9 @@ public class ExamDTO extends AbstractAuditingDTO {
 
     @NotNull
     private Grade grade;
+
+    @NotNull
+    private ExamStatus status = ExamStatus.DRAFT;
 
     public Long getId() {
         return id;
@@ -76,6 +80,14 @@ public class ExamDTO extends AbstractAuditingDTO {
 
     public void setGrade(Grade grade) {
         this.grade = grade;
+    }
+
+    public ExamStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ExamStatus status) {
+        this.status = status;
     }
 
     @Override

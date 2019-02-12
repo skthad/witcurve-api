@@ -32,6 +32,8 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     private ExamCourseDetails examCourseDetails;
 
+    private Boolean published;
+
     public Long getId() {
         return id;
     }
@@ -72,6 +74,14 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
         this.marks = marks;
     }
 
+    public Boolean getPublished() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,6 +104,7 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
             ", event=" + event +
             ", marks=" + marks +
             ", examCourseDetails=" + examCourseDetails +
+            ", published=" + published +
             '}';
     }
 }

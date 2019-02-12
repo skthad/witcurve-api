@@ -1,6 +1,6 @@
 package com.witcurve.domain.enumeration;
 
-public enum EventStatus {
+public enum ExamStatus {
     DRAFT,
     PUBLISHED,
     CLOSED

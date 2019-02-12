@@ -167,6 +167,25 @@ public class UserResource {
     }
 
     /**
+     * PUT /users : Updates an existing User to activated or deactivated
+     *
+     * @return the ResponseEntity with status 200 (OK) and with body the updated user
+     * @throws EmailAlreadyUsedException 400 (Bad Request) if the email is already in use
+     * @throws LoginAlreadyUsedException 400 (Bad Request) if the login is already in use
+     */
+    @PutMapping("/users/{userId}")
+    @Timed
+    @Secured(AuthoritiesConstants.ADMIN)
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId,
+                                              @RequestParam Boolean activate) {
+        log.debug("REST request to " + (activate ? "" : "de") + "activate user : {}", userId);
+
+        userRepository.activateOrDeactivateByUserId(userId, activate);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert( (activate ? "" : "de")
+            + "activated user with ID " + userId, null)).build();
+    }
+
+    /**
      * GET /users/{username}/contact-numbers : get all contact numbers associated with a username.
      *
      * @return the ResponseEntity with status 200 (OK) and with body all users

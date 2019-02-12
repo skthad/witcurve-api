@@ -45,5 +45,10 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
         "and sm.event.date between ?4 and ?5 order by sm.event.date asc")
     List<StudentMarks> getByCourseIdAndStandardForEvent(Long courseId, Long standardId, EventType type, LocalDate startDate, LocalDate endDate);
 
+    @Query("update StudentMarks set published = true where event.id = ?1")
+    void publishMarksForEvent(Long eventId);
+
+    @Query("update StudentMarks set published = true where examCourseDetails.id = ?1")
+    void publishMarksForECD(Long ecdId);
 }
 

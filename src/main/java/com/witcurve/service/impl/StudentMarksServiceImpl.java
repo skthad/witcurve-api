@@ -62,6 +62,16 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
+    public void publishMarksForEvent(Long eventId) {
+        studentMarksRepository.publishMarksForEvent(eventId);
+    }
+
+    @Override
+    public void publishMarksForECD(Long ecdId) {
+        studentMarksRepository.publishMarksForECD(ecdId);
+    }
+
+    @Override
     public List<StudentMarksDTO> getStudentMarksByEventId(Long eventId) throws WitcurveException {
         log.debug("Request to get student Marks by event id : {}", eventId);
         List<StudentMarks> studentMarks;
