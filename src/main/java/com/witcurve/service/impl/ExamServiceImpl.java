@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.Exam;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.repository.ExamRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.service.ExamService;
@@ -12,6 +13,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     GeneralSlotDetailsRepository generalSlotDetailsRepository;
+
+    @Autowired
+    ExamCourseDetailsRepository examCourseDetailsRepository;
 
     @Autowired
     ExamMapper examMapper;
@@ -56,6 +61,27 @@ public class ExamServiceImpl implements ExamService {
             throw new WitcurveException("Date range provided overlaps with another exam");
         }
         return examMapper.toDto(examRepository.save(examMapper.toEntity(examDTO)));
+    }
+
+    @Override
+    public ExamDTO updateExamStatus(Long examId, ExamStatus status) throws WitcurveException{
+        log.debug("Request to update exam with id {} with status : {}", examId, status);
+        Optional<Exam> exam = examRepository.findById(examId);
+        if (!exam.isPresent()) {
+            throw new WitcurveException("No Exam with given Id " + examId);
+        }
+        if(ExamStatus.DRAFT.equals(exam.get().getStatus())) {
+            if(ExamStatus.CLOSED.equals(status)) {
+                throw new WitcurveException("Drafted exams cannot be closed");
+            }
+        }
+        if(ExamStatus.CLOSED.equals(exam.get().getStatus())) {
+            if(ExamStatus.DRAFT.equals(status)) {
+                throw new WitcurveException("Closed exams cannot be drafted");
+            }
+        }
+        exam.get().setStatus(status);
+        return examMapper.toDto(exam.get());
     }
 
     @Override
@@ -91,7 +117,22 @@ public class ExamServiceImpl implements ExamService {
         if (!exam.isPresent()) {
             throw  new WitcurveException("No Exam with given Id " + examId);
         }
-        generalSlotDetailsRepository.deleteByExamId(examId);
-        examRepository.delete(exam.get());
+        if(ExamStatus.CLOSED.equals(exam.get().getStatus())) {
+            throw new WitcurveException("CLOSED exams cannot be deleted");
+        }
+        if(ExamStatus.PUBLISHED.equals(exam.get().getStatus()) && LocalDate.now().isAfter(exam.get().getStartDate().minusDays(1))) {
+            throw new WitcurveException("Exam cannot be deleted as it has already been conducted");
+        }
+        try {
+            examCourseDetailsRepository.deleteByExamId(examId);
+            generalSlotDetailsRepository.deleteByExamId(examId);
+            examRepository.delete(exam.get());
+        }  catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 }

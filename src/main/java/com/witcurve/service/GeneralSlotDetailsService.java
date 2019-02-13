@@ -11,7 +11,7 @@ public interface GeneralSlotDetailsService {
 
     List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException;
 
-    List<GeneralSlotDetailsDTO> createExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException;
+    List<GeneralSlotDetailsDTO> createOrUpdateExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException;
 
     List<GeneralSlotDetailsDTO> update(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs);
 

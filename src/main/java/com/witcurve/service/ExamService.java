@@ -12,6 +12,8 @@ public interface ExamService {
 
     ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException;
 
+    ExamDTO updateExamStatus(Long examId, ExamStatus status) throws WitcurveException;
+
     ExamDTO getExamById(Long examId) throws WitcurveException;
 
     List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate, ExamStatus status) throws WitcurveException;

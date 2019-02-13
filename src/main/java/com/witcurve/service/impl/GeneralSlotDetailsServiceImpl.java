@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.GeneralSlotDetails;
 import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.GeneralSlotDetailsService;
@@ -33,6 +34,9 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Autowired
     private StandardRepository standardRepository;
 
+    @Autowired
+    private ExamCourseDetailsRepository examCourseDetailsRepository;
+
     @Override
     public List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
         log.debug("Request to create generalSlotDetails");
@@ -57,7 +61,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public List<GeneralSlotDetailsDTO> createExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
+    public List<GeneralSlotDetailsDTO> createOrUpdateExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
         log.debug("Request to create exam slots");
 
         //TODO: logic for overlap
@@ -189,6 +193,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
 
     @Override
     public void deleteExamSlotsByGradeAndExamId(Grade grade, Long examId) throws WitcurveException {
+
         generalSlotDetailsRepository.deleteByGradeAndExamId(grade, examId);
     }
 

@@ -45,10 +45,43 @@ public class GeneralSlotDetailsResource {
         try {
             if (Boolean.TRUE.equals(exam)) {
                 log.debug("Request Save exam slots");
-                result = generalSlotDetailsService.createExamSlots(generalSlotDetailsDTOs);
+                result = generalSlotDetailsService.createOrUpdateExamSlots(generalSlotDetailsDTOs);
             } else {
                 log.debug("Request Save generalSlotDetails");
                 result = generalSlotDetailsService.createGSDs(generalSlotDetailsDTOs);
+            }
+            return ResponseEntity.created(new URI("/api/general-slot-details/"))
+                .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
+                .body(result);
+        } catch (Exception e) {
+            if (e.getMessage().contains("Could not commit JPA transaction")) {
+                throw new WitcurveException("Some data validation failed..." + e.getMessage());
+            } else {
+                throw new WitcurveException("Error occurred: " + e.getMessage());
+            }
+
+        }
+    }
+
+    /**
+     * update a generalSlotDetails for exam
+     *
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PutMapping("/general-slot-details")
+    @Timed
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> updateGeneralSlotDetails(@RequestParam(required = false, defaultValue = "false") Boolean exam,
+                                                                                @RequestBody @Valid List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException, URISyntaxException {
+        log.debug("Request Save generalSlotDetails");
+        List<GeneralSlotDetailsDTO> result;
+        try {
+            if (Boolean.TRUE.equals(exam)) {
+                log.debug("Request Save exam slots");
+                result = generalSlotDetailsService.createOrUpdateExamSlots(generalSlotDetailsDTOs);
+            } else {
+                throw  new WitcurveException("Curriculum slots cannot be updated");
             }
             return ResponseEntity.created(new URI("/api/general-slot-details/"))
                 .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
@@ -162,23 +195,6 @@ public class GeneralSlotDetailsResource {
     }
 
     /**
-     * updates a generalSlotDetails
-     *
-     * @return
-     * @throws WitcurveException
-     * @throws URISyntaxException
-     */
-    @PutMapping("/general-slot-details")
-    @Timed
-    public ResponseEntity<List<GeneralSlotDetailsDTO>> updateGeneralSlotDetails(@RequestBody @Valid List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException, URISyntaxException {
-        log.debug("Request Save generalSlotDetails");
-        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.update(generalSlotDetailsDTOs);
-        return ResponseEntity.created(new URI("/api/general-slot-details/"))
-            .headers(HeaderUtil.createEntityCreationAlert("generalSlotDetails", null))
-            .body(result);
-    }
-
-    /**
      * get generalSlotDetails by id
      *
      * @param generalSlotDetailsId
@@ -193,6 +209,8 @@ public class GeneralSlotDetailsResource {
         GeneralSlotDetailsDTO result = generalSlotDetailsService.getGeneralSlotDetailsById(generalSlotDetailsId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
 
     /**
      * delete the gsd

@@ -89,6 +89,21 @@ public class ExamResource {
     }
 
     /**
+     * update exam status by id with status
+     * @param examId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PutMapping("/exams/{examId}")
+    @Timed
+    public ResponseEntity<ExamDTO> updateExamStatus(@PathVariable("examId") Long examId, @RequestParam ExamStatus status) throws WitcurveException {
+        log.debug("Request to get Exam with id {}", examId);
+        ExamDTO result = examService.updateExamStatus(examId, status);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
      * get exam by id
      * @param examId
      * @return
