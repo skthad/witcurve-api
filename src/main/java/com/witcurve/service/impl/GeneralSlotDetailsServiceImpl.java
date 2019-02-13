@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.GeneralSlotDetails;
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.ExamCourseDetailsRepository;
@@ -159,11 +160,11 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Override
     public GeneralSlotDetailsDTO getGeneralSlotDetailsById(Long generalSlotDetailsId) throws WitcurveException {
         log.debug("Request to get generalSlotDetail by id : {}", generalSlotDetailsId);
-        GeneralSlotDetails generalSlotDetails = generalSlotDetailsRepository.findById(generalSlotDetailsId).get();
-        if(generalSlotDetails == null) {
+        Optional<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsRepository.findById(generalSlotDetailsId);
+        if(generalSlotDetails.isPresent()) {
             throw new WitcurveException("No GeneraSlotDetails exist for given id");
         }
-        return generalSlotDetailsMapper.toDto(generalSlotDetails);
+        return generalSlotDetailsMapper.toDto(generalSlotDetails.get());
     }
 
     @Override
@@ -189,6 +190,22 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Override
     public void deleteGSDsByBindingId(String bindingId) throws WitcurveException {
         generalSlotDetailsRepository.deleteByBindingId(bindingId);
+    }
+
+    @Override
+    public void deleteGSDById(Long gsdId) throws WitcurveException {
+        log.debug("Request to delete generalSlotDetails by id : {}", gsdId);
+        Optional<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsRepository.findById(gsdId);
+        if(!generalSlotDetails.isPresent()) {
+            throw new WitcurveException("No GeneraSlotDetails exist for given id");
+        }
+        if(generalSlotDetails.get().getExam() != null && !generalSlotDetails.get().getExam().getStatus().equals(ExamStatus.CLOSED)) {
+            examCourseDetailsRepository.deleteByGsdId(gsdId);
+            generalSlotDetailsRepository.deleteById(gsdId);
+        } else {
+            throw new WitcurveException("GeneraSlotDetails with id "+gsdId+" cannot be deleted");
+        }
+
     }
 
     @Override

@@ -24,4 +24,8 @@ public interface ExamCourseDetailsRepository extends JpaRepository<ExamCourseDet
     @Query("Delete from ExamCourseDetails ecd where ecd.gsd.exam.id=?1")
     void deleteByExamId(Long examId);
 
+    @Modifying
+    @Query("Delete from ExamCourseDetails ecd where ecd.gsd.id=?1")
+    void deleteByGsdId(Long gsdId);
+
 }

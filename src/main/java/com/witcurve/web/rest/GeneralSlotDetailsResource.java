@@ -210,7 +210,28 @@ public class GeneralSlotDetailsResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
+    /**
+     * delete the gsd
+     * @param generalSlotDetailsId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/general-slot-details/{generalSlotDetailsId}")
+    @Timed
+    public ResponseEntity<Void> deleteGeneralSlotDetailsById(@PathVariable Long generalSlotDetailsId) throws WitcurveException {
+        log.debug("REST request to delete GeneralSlotDetails for id: {}", generalSlotDetailsId);
+        try {
+            generalSlotDetailsService.deleteGSDById(generalSlotDetailsId);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("GSD deleted with id " + generalSlotDetailsId,
+                generalSlotDetailsId.toString())).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
 
     /**
      * delete the gsd

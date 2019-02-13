@@ -31,5 +31,7 @@ public interface GeneralSlotDetailsService {
 
     void deleteGSDsByBindingId(String bindingId) throws WitcurveException;
 
+    void deleteGSDById(Long gsdId) throws WitcurveException;
+
     void deleteExamSlotsByGradeAndExamId(Grade grade, Long examId) throws WitcurveException;
 }
