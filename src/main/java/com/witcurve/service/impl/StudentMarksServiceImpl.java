@@ -4,7 +4,6 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
-import com.witcurve.service.EventService;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.service.mapper.StudentMarksMapper;
@@ -31,9 +30,6 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     StudentMarksRepository studentMarksRepository;
 
     @Autowired
-    EventService eventService;
-
-    @Autowired
     EventRepository eventRepository;
 
     @Autowired
@@ -52,8 +48,8 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     @Override
     public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) throws WitcurveException {
         log.debug("Request to save or update Student Marks: {}", studentMarksDTO);
-        List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTO);
         if(studentMarksDTO.size() !=0) {
+            List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTO);
             studentMarks = studentMarksRepository.saveAll(studentMarks);
             return studentMarksMapper.toDto(studentMarks);
         } else{

@@ -71,6 +71,7 @@
     <include file="config/liquibase/changelog/20190211183602_removed_null_constraint_added_class_teacher_unique_constraint.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190212171335_added_status_in_exam_event_marks.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190214152618_added_description_to_syllabus_and_other_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190214172435_added_config_settings.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
