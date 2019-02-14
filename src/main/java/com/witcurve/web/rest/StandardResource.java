@@ -49,6 +49,8 @@ public class StandardResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("grade_section_teacher_UK")) {
                 throw new WitcurveException("Unique constraint (grade, section, class_teacher) violated");
+            } else if (e.getMessage().contains("uc_standardclass_teacher_id_col")) {
+                throw new WitcurveException("The staff is already assigned as a class teacher");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -76,6 +78,8 @@ public class StandardResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("grade_section_teacher_UK")) {
                 throw new WitcurveException("Unique constraint (grade, section, class_teacher) violated");
+            } else if (e.getMessage().contains("uc_standardclass_teacher_id_col")) {
+                throw new WitcurveException("The staff is already assigned as a class teacher");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {

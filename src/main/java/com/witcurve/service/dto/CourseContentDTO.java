@@ -20,6 +20,8 @@ public class CourseContentDTO extends AbstractAuditingDTO {
 
     private String index;
 
+    private String description;
+
     private List<CourseContentDTO> subTopics;
 
     public Long getId() {
@@ -68,6 +70,14 @@ public class CourseContentDTO extends AbstractAuditingDTO {
 
     public void setIndex(String index) {
         this.index = index;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<CourseContentDTO> getSubTopics() {

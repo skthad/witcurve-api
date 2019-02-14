@@ -35,6 +35,9 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
     @Column(name = "content_order", nullable = false)
     private Integer contentOrder;
 
+    @Column
+    private String description;
+
     public Long getId() {
         return id;
     }
@@ -73,6 +76,14 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     public void setContentOrder(Integer contentOrder) {
         this.contentOrder = contentOrder;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
