@@ -4,6 +4,7 @@ import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="student", uniqueConstraints = {
@@ -140,6 +142,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "admission_date")
     @Convert(converter = LocalDateConverter.class)
     private LocalDate admissionDate;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="student_id", insertable = false)
+    @Where(clause = "active=true")
+    private Set<StudentStandard> studentStandards;
 
     public Long getId() {
         return id;
@@ -403,6 +410,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setAdmissionDate(LocalDate admissionDate) {
         this.admissionDate = admissionDate;
+    }
+
+    public Set<StudentStandard> getStudentStandards() {
+        return studentStandards;
+    }
+
+    public void setStudentStandards(Set<StudentStandard> studentStandards) {
+        this.studentStandards = studentStandards;
     }
 
     @Override

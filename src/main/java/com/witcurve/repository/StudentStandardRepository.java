@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface StudentStandardRepository extends JpaRepository<StudentStandard, Long> {
 
-    @Query("select ss from StudentStandard ss where ss.student.id = ?1 and ss.active = true")
+    @Query("select ss from StudentStandard ss where ss.student.id = ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getByStudentId(Long studentId);
 
     @Query("select ss from StudentStandard ss where ss.student.id = ?1 and ss.standard.id = ?2")

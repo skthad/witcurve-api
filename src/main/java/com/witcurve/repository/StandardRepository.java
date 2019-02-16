@@ -12,12 +12,12 @@ public interface StandardRepository extends JpaRepository<Standard,Long> {
 
     Standard findByClassTeacherId(Long classTeacherId);
 
-    @Query("select std from Standard std where std.schoolInfo.id = ?1")
+    @Query("select std from Standard std where std.schoolInfo.id = ?1 order by std.grade, std.section")
     List<Standard> findBySchoolInfoId(Long schoolInfoId);
 
-    @Query("select std from Standard std where std.schoolInfo.id = ?1 and std.id in (select gsd.standard.id from GeneralSlotDetails gsd where gsd.status='ACTIVE' and gsd.standard.id=std.id)")
+    @Query("select std from Standard std where std.schoolInfo.id = ?1 and std.id in (select gsd.standard.id from GeneralSlotDetails gsd where gsd.status='ACTIVE' and gsd.standard.id=std.id) order by std.grade, std.section")
     List<Standard> findSlotAssignedBySchoolInfoId(Long schoolInfoId);
 
-    @Query("select std from Standard std where std.schoolInfo.id = ?1 and std.id not in (select gsd.standard.id from GeneralSlotDetails gsd where gsd.status='ACTIVE' and gsd.standard.id=std.id)")
+    @Query("select std from Standard std where std.schoolInfo.id = ?1 and std.id not in (select gsd.standard.id from GeneralSlotDetails gsd where gsd.status='ACTIVE' and gsd.standard.id=std.id)  order by std.grade, std.section")
     List<Standard> findSlotUnassignedBySchoolInfoId(Long schoolInfoId);
 }
