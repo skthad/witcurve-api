@@ -11,7 +11,6 @@ public interface StaffMapperLite extends EntityMapper<StaffDTO, Staff> {
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.login")
-    @Mapping(target = "active", source = "user.activated")
     StaffDTO toDto(Staff staff);
 
     @Mapping(target = "user.id", source = "userId")

@@ -45,6 +45,8 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     private String staffName;
 
+    private String rollNo;
+
     public Long getId() {
         return id;
     }
@@ -163,6 +165,14 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
 
     public void setStaffName(String staffName) {
         this.staffName = staffName;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
     }
 
     @Override

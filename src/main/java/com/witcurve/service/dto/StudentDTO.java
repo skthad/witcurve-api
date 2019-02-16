@@ -19,6 +19,8 @@ public class StudentDTO extends AbstractAuditingDTO {
     @NotNull
     private String admissionId;
 
+    private String rollNo;
+
     @NotNull
     private String firstName;
 
@@ -97,6 +99,14 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate admissionDate;
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
 
     public Long getId() {
         return id;

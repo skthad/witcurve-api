@@ -21,6 +21,7 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
     @Mapping(target="schoolInfoId", source="schoolInfo.id")
     @Mapping(target = "eventIds" , expression = "java(getIdsFromEvents(leaveApplication))")
     @Mapping(target = "studentName", expression = "java(getStudentName(leaveApplication.getAppliedStudent()))")
+    @Mapping(target = "rollNo", expression = "java(getStudentRollNo(leaveApplication.getAppliedStudent()))")
     @Mapping(target = "staffName", expression = "java(getStaffName(leaveApplication.getAppliedStaff()))")
     LeaveApplicationDTO toDto(LeaveApplication leaveApplication);
 
@@ -64,6 +65,13 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
         } else {
             return null;
         }
+    }
+
+    default String getStudentRollNo(Student student) {
+        if(student != null && student.getStudentStandards() != null && student.getStudentStandards().size() != 0) {
+            return (new ArrayList<>(student.getStudentStandards())).get(0).getRollNo();
+        }
+        return null;
     }
 
     default String getStaffName(Staff staff) {
