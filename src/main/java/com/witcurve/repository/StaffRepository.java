@@ -16,13 +16,13 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     @Query("select staff from Staff staff left join fetch staff.user usr where staff.schoolInfo.id = ?1 and lower(staff.staffId) = ?2")
     Staff findBySchoolInfoIdAndStaffId(Long schoolId, String staffId);
 
-    @Query("select staff from Staff staff where staff.schoolInfo.school.id = ?1 and staff.user.activated = true order by staff.schoolInfo.school.name, staff.staffId")
+    @Query("select staff from Staff staff where staff.schoolInfo.school.id = ?1 order by staff.schoolInfo.school.name, staff.staffId")
     List<Staff> findBySchoolId(Long schoolId);
 
-    @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 and staff.user.activated = true order by staff.staffId")
+    @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 order by staff.staffId")
     List<Staff> findBySchoolInfoId(Long schoolInfoId);
 
-    @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 and staff.user.activated = true and staff.id in (Select s.classTeacher.id from Standard s where s.classTeacher.id=staff.id) order by staff.staffId")
+    @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 and staff.id in (Select s.classTeacher.id from Standard s where s.classTeacher.id=staff.id) order by staff.staffId")
     List<Staff> findClassTeachersBySchoolInfoId(Long schoolInfoId);
 
 }

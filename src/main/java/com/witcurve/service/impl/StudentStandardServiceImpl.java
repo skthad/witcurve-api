@@ -40,32 +40,46 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     UserRepository userRepository;
 
     @Override
-    public List<StudentStandardDTO> save(List<StudentStandardDTO> studentStandardDTOs, Long standardId) {
+    public List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId) throws WitcurveException {
+        List<String> rollNos = new ArrayList<>();
         for (StudentStandardDTO studentStandardDTO : studentStandardDTOs) {
             studentStandardDTO.setId(null);
             studentStandardDTO.getStandard().setId(standardId);
             studentStandardDTO.setActive(Boolean.TRUE);
+            rollNos.add(studentStandardDTO.getRollNo());
+        }
+        List<StudentStandard> existingRollNos = studentStandardRepository.getByStandardIdAndRollNos(standardId, rollNos);
+        if(existingRollNos.size() !=0) {
+            throw new WitcurveException("There already exists a student in given standard with entered roll no.");
         }
         List<Long> studentIds = studentStandardDTOs.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
         studentStandardRepository.deactivateByStudentIds(studentIds);
-
         List<StudentStandard> studentStandards = studentStandardRepository.saveAll(
             studentStandardMapper.toEntity(studentStandardDTOs));
         return studentStandardMapper.toDto(studentStandards);
     }
 
     @Override
-    public StudentStandardDTO update(StudentStandardDTO studentStandardDTO) {
+    public StudentStandardDTO save(StudentStandardDTO studentStandardDTO) throws WitcurveException {
         studentStandardDTO.setId(null);
         studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentStandardDTO.getStudent().getId()));
         StudentStandard studentStandard = studentStandardRepository.getByStudentIdAndStandardId(
             studentStandardDTO.getStudent().getId(), studentStandardDTO.getStandard().getId());
         if (studentStandard != null) {
+            List<StudentStandard> existingRollNos = studentStandardRepository.getByStandardIdAndRollNo(studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
+            if(existingRollNos.size() ==1 && !existingRollNos.get(0).equals(studentStandard)) {
+                throw new WitcurveException("There already exists a student in given standard with entered roll no.");
+            }
             studentStandard.setActive(Boolean.TRUE);
+            studentStandard.setRollNo(studentStandardDTO.getRollNo());
         } else {
+            studentStandardDTO.setId(null);
+            List<StudentStandard> existingRollNos = studentStandardRepository.getByStandardIdAndRollNo(studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
+            if(existingRollNos.size()!=0) {
+                throw new WitcurveException("There already exists a student in given standard with entered roll no.");
+            }
             studentStandard = studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
         }
-        userRepository.activateAllUsersByStudentIds(studentStandard.getStudent().getId());
         return studentStandardMapper.toDto(studentStandard);
     }
 

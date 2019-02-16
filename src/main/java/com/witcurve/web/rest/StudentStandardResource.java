@@ -28,18 +28,19 @@ public class StudentStandardResource {
      * @throws WitcurveException
      */
 
-    @PostMapping("/student-standard/standards/{standardId}")
+    @PostMapping("/student-standard/standards/{standardId}/multiple")
     @Timed
-    public ResponseEntity<List<StudentStandardDTO>> saveStudentStandards(@RequestBody List<StudentStandardDTO> studentStandardDTOs,
+    public ResponseEntity<List<StudentStandardDTO>> saveMultipleStudentStandards(@RequestBody List<StudentStandardDTO> studentStandardDTOs,
                                                                                  @PathVariable Long standardId) throws WitcurveException {
         log.debug("Request to add student-standard");
 
         try {
-            List<StudentStandardDTO> result = studentStandardService.save(studentStandardDTOs, standardId);
+            List<StudentStandardDTO> result = studentStandardService.saveMultiple(studentStandardDTOs, standardId);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("student_standard_UK")) {
-                throw new WitcurveException("Unique constraint (student_id, standard_id) violated");
+                log.error("Unique constraint (student_id, standard_id) violated");
+                throw new WitcurveException("There is already student with given standard");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -49,22 +50,23 @@ public class StudentStandardResource {
     }
 
     /**
-     * Update StudentStandard
+     * Creeate StudentStandard
      * @return
      * @throws WitcurveException
      */
 
-    @PutMapping("/student-standard")
+    @PostMapping("/student-standard")
     @Timed
     public ResponseEntity<StudentStandardDTO> updateStudentStandard(@RequestBody StudentStandardDTO studentStandardDTO) throws WitcurveException {
         log.debug("Request to add student-standard");
 
         try {
-            StudentStandardDTO result = studentStandardService.update(studentStandardDTO);
+            StudentStandardDTO result = studentStandardService.save(studentStandardDTO);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("student_standard_UK")) {
-                throw new WitcurveException("Unique constraint (student_id, standard_id) violated");
+                log.error("Unique constraint (student_id, standard_id) violated");
+                throw new WitcurveException("There is already student with given standard");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {

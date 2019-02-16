@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface StudentStandardService {
 
-    List<StudentStandardDTO> save(List<StudentStandardDTO> studentStandardDTOs, Long standardId);
+    List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId) throws WitcurveException;
+
+    StudentStandardDTO save(StudentStandardDTO studentStandardDTO) throws WitcurveException;
 
     StudentStandardDTO getByStudentId(Long studentId) throws WitcurveException;
 
@@ -16,6 +18,4 @@ public interface StudentStandardService {
     List<StudentStandardDTO> getBySchoolInfoId(Long schoolInfoId);
 
     List<StudentStandardDTO> getByStaffId(Long staffId) throws WitcurveException;
-
-    StudentStandardDTO update(StudentStandardDTO studentStandardDTO);
 }
