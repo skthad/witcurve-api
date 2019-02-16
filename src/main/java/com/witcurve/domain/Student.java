@@ -144,7 +144,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     private LocalDate admissionDate;
 
     @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name="student_id", insertable = false)
+    @JoinColumn(name="student_id", insertable = false, updatable = false)
     @Where(clause = "active=true")
     private Set<StudentStandard> studentStandards;
 
