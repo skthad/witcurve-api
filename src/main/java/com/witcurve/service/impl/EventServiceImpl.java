@@ -139,7 +139,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
-        log.debug("Request to get tests with eventDate : {} for student with id : {}", eventDate, studentId);
+        log.debug("Request to get events with eventDate : {} for student with id : {}", eventDate, studentId);
         List<Event> result = null;
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         if(studentStandard != null) {
@@ -148,6 +148,24 @@ public class EventServiceImpl implements EventService {
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
 
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
+            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            Collections.sort(result, new EventDateAscComparator());
+        }
+
+        return eventMapper.toDto(result);
+    }
+
+    @Override
+    public List<EventDTO> findAllDiaryEventsForStudent(LocalDate eventDate, Long studentId) throws WitcurveException {
+        log.debug("Request to get diary events with eventDate : {} for student with id : {}", eventDate, studentId);
+        List<Event> result = null;
+        StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
+        if(studentStandard != null) {
+            Long standardId = studentStandard.getStandard().getId();
+            Grade grade = studentStandard.getStandard().getGrade();
+            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
+
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
