@@ -16,7 +16,8 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator", initialValue = 1000, allocationSize = 1)
+    //TODO remove the above initialValue when db is refreshed.
     private Long id;
 
     @NotNull
