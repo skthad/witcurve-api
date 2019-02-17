@@ -23,7 +23,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @Column(length = 50)

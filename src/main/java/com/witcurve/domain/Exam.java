@@ -46,7 +46,7 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     private Grade grade;
 
     @NotNull
-    @Column(name = "status", nullable = false, length = 50)
+    @Column(name = "status", nullable = false, length = 50, columnDefinition = "varchar(50) default 'DRAFT'")
     @Enumerated(EnumType.STRING)
     private ExamStatus status = ExamStatus.DRAFT;
 
