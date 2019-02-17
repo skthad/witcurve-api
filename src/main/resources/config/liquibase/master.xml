@@ -74,6 +74,7 @@
     <include file="config/liquibase/changelog/20190214172435_added_config_settings.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190217135358_refactored_grade_in_standard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190217144819_fixed_missing_constraints_and_default_values.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190217151137_student_standard_id_sequence_fix.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
