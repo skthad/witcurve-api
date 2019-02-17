@@ -167,7 +167,7 @@ public class EventServiceImpl implements EventService {
 
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
-            Collections.sort(result, new EventDateAscComparator());
+            Collections.sort(result, new EventDateDescComparator());
         }
 
         return eventMapper.toDto(result);

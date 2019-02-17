@@ -189,7 +189,7 @@ public class EventResource {
             if(eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for DAY view");
             }
-            result = eventService.findAllEventsOnGivenDateForStudent(eventDate, studentId);
+            result = eventService.findAllDiaryEventsForStudent(eventDate, studentId);
         }
         if(type.equals(ViewType.MONTH)) {
             if(month == null || year ==null) {
