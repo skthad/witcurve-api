@@ -107,7 +107,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             List<SlotCourseDetails> scds = slotCourseDetailsRepository.findByCourseTeacherId(id);
             if (scds.size() > 0) {
                 throw new WitcurveException("This teacher with this course is assigned to some slots," +
-                    "please un-assign them and try again");
+                    " please un-assign them and try again");
             }
         }
         return courseTeacherMapper.toDto(courseTeacher.get());

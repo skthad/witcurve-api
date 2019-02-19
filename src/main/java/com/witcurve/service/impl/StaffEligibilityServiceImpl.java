@@ -1,10 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
-import com.witcurve.domain.CourseTeacher;
-import com.witcurve.domain.MasterSubject;
-import com.witcurve.domain.SchoolInfo;
-import com.witcurve.domain.StaffEligibility;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.MasterSubjectRepository;
@@ -130,9 +127,13 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
             StaffEligibility se = staffEligibility.get();
             List<CourseTeacher> existingCourseTeachers = courseTeacherRepository.findByStaffAndSubjectAndGrade(se.getStaff().getId(),
                 se.getMasterSubject(), se.getGrade());
-            if (existingCourseTeachers.size() > 0) {
-                throw new WitcurveException("This staff currently teaches the subject " + se.getMasterSubject().getName()
-                    + " in grade " + se.getGrade()+", please remove them and try again");
+            for(CourseTeacher courseTeacher : existingCourseTeachers) {
+                if(courseTeacher.getActive()) {
+                    if (existingCourseTeachers.size() > 0) {
+                        throw new WitcurveException("This staff currently teaches the subject " + se.getMasterSubject().getName()
+                            + " in grade " + se.getGrade()+", please remove them and try again");
+                    }
+                }
             }
         }
         staffEligibilityRepository.delete(staffEligibility.get());
