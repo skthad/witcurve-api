@@ -132,7 +132,7 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
                 se.getMasterSubject(), se.getGrade());
             if (existingCourseTeachers.size() > 0) {
                 throw new WitcurveException("This staff currently teaches the subject " + se.getMasterSubject().getName()
-                    + " in grade " + se.getGrade());
+                    + " in grade " + se.getGrade()+", please remove them and try again");
             }
         }
         staffEligibilityRepository.delete(staffEligibility.get());
