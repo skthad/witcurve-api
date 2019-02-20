@@ -120,6 +120,10 @@ public class StaffResource {
         } else {
             staffService.getStaffById(staffDTO.getId());
         }
+        if (staffDTO.getUserId() == null) {
+            throw new WitcurveException("User Id is missing for this staff");
+        }
+
         try {
             StaffDTO result = staffService.update(staffDTO);
             return ResponseEntity.ok()

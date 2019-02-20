@@ -9,7 +9,7 @@ public interface StudentService {
 
     StudentDTO create(StudentDTO studentDTO);
 
-    StudentDTO update(StudentDTO studentDTO);
+    StudentDTO update(StudentDTO studentDTO) throws WitcurveException;
 
     StudentDTO getStudentById(Long studentId) throws WitcurveException;
 

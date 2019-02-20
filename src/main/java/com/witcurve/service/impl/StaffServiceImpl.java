@@ -52,8 +52,16 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO update(StaffDTO staffDTO) {
+    public StaffDTO update(StaffDTO staffDTO) throws WitcurveException {
         log.debug("Request to update staff : {}", staffDTO);
+        Optional<User> user = userRepository.findById(staffDTO.getUserId());
+        if(!user.isPresent()) {
+            throw new WitcurveException("There is no user with given id : "+staffDTO.getUserId());
+        }
+        user.get().setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        user.get().setFirstName(staffDTO.getFirstName());
+        user.get().setLastName(staffDTO.getLastName());
+        user.get().setType(UserType.STAFF);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff = staffRepository.save(staff);
         return staffMapper.toDto(staff);

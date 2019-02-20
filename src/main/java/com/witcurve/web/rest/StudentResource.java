@@ -54,6 +54,11 @@ public class StudentResource {
         log.debug("Request create standard");
         if (studentDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
+        } else {
+            studentService.getStudentById(studentDTO.getId());
+        }
+        if (studentDTO.getUserId() == null) {
+            throw new WitcurveException("User Id is missing for this student");
         }
         try {
             StudentDTO result = studentService.update(studentDTO);
