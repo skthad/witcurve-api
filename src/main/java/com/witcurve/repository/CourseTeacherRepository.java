@@ -25,13 +25,13 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
     @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findByStandardId(Long standardId);
 
-    @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true and ct.teacher.user.activated = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
+    @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findActiveCourseTeachersByStandardId(Long standardId);
 
-    @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = false and ct.teacher.user.activated = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
+    @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = false order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findInActiveCourseTeachersByStandardId(Long standardId);
 
-    @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true and ct.teacher.id != ?2 and ct.teacher.user.activated = true ")
+    @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true and ct.teacher.id != ?2")
     List<Long> findAvailableTeacherByStandardId(Long standardId, Long teacherId);
 
     @Query("select ct from CourseTeacher ct where ct.teacher.id = ?1 " +

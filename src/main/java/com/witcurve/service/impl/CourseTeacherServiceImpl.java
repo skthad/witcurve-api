@@ -101,7 +101,13 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             if (se.size() == 0) {
                 throw new WitcurveException("There is no staff eligibility for this staff for grade "
                     +courseTeacher.get().getCourse().getGrade()+" and subject "
-                    +courseTeacher.get().getCourse().getMasterSubject()+".");
+                    +courseTeacher.get().getCourse().getMasterSubject().getName()+".");
+            }
+        } else {
+            List<SlotCourseDetails> scds = slotCourseDetailsRepository.findByCourseTeacherId(id);
+            if (scds.size() > 0) {
+                throw new WitcurveException("This teacher with this course is assigned to some slots," +
+                    " please un-assign them and try again");
             }
         }
         return courseTeacherMapper.toDto(courseTeacher.get());

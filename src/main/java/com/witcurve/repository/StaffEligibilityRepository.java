@@ -10,22 +10,22 @@ import java.util.List;
 
 public interface StaffEligibilityRepository extends JpaRepository<StaffEligibility, Long> {
 
-    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.staff.user.activated = true")
+    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 ")
     List<StaffEligibility> findBySchoolInfo(Long schoolInfoId);
 
-    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.staff.user.activated = true and se.grade = ?2")
+    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2")
     List<StaffEligibility> findBySchoolInfoAndGrade(Long schoolInfoId, Grade grade);
 
-    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2 and se.staff.user.activated = true and se.staff.id != ?3")
+    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2 and se.staff.id != ?3")
     List<Long> findAvailableStaffInSchoolByGrade(Long schoolInfoId, Grade grade, Long staffId);
 
-    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.staff.user.activated = true")
+    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2")
     List<StaffEligibility> findBySchoolInfoAndSubject(Long schoolInfoId, MasterSubject masterSubject);
 
-    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 and se.staff.user.activated = true")
+    @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3")
     List<StaffEligibility> findBySchoolInfoAndSubjectAndGrade(Long schoolInfoId, MasterSubject masterSubject, Grade grade);
 
-    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 and se.staff.user.activated = true and se.staff.id != ?4")
+    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 and se.staff.id != ?4")
     List<Long> findAvailableStaffInSchoolBySubjectAndGrade(Long schoolInfoId, MasterSubject masterSubject, Grade grade, Long staffId);
 
     @Query("Select se from StaffEligibility se where se.staff.id = ?1")

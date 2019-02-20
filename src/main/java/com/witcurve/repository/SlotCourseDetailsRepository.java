@@ -29,4 +29,7 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
         "cast(scd.gsd.start as int) + scd.gsd.duration <= ?2)) and " +
         "scd.dayOfWeek = ?3 and scd.courseTeacher.teacher.schoolInfo.id = ?4")
     List<Long> findAllocatedTeachersList(Integer startTime, Integer endTime, DayOfWeek dayOfWeek, Long schoolInfoId);
+
+    @Query("select scd from SlotCourseDetails scd where scd.courseTeacher.id=?1")
+    List<SlotCourseDetails> findByCourseTeacherId(Long courseTeacherId);
 }

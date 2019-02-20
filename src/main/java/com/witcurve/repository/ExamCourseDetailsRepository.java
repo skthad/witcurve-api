@@ -21,7 +21,7 @@ public interface ExamCourseDetailsRepository extends JpaRepository<ExamCourseDet
     List<ExamCourseDetails> findByCoursesBetweenDateOrderByGsdStart(List<Long> courseId, LocalDate fromDate, LocalDate toDate);
 
     @Modifying
-    @Query("Delete from ExamCourseDetails ecd where ecd.gsd.exam.id=?1")
+    @Query("Delete from ExamCourseDetails ecd where ecd.gsd.id in (select gsd.id from GeneralSlotDetails gsd where gsd.exam.id =?1)")
     void deleteByExamId(Long examId);
 
     @Modifying
