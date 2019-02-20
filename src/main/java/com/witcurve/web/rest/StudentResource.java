@@ -66,8 +66,9 @@ public class StudentResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("student", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("admission_school_info_id_UK")) {
-                throw new WitcurveException("Unique constraint (admission_id, school_info_id) violated");
+            if (e.getMessage().contains("admission_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+                log.error("Unique constraint (admission_id, school_info_id) violated");
+                throw new WitcurveException("There already a student with given admission id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
