@@ -9,7 +9,7 @@ public interface StaffService {
 
     StaffDTO create(StaffDTO staffDTO);
 
-    StaffDTO update(StaffDTO staffDTO);
+    StaffDTO update(StaffDTO staffDTO) throws WitcurveException;
 
     StaffDTO getStaffById(Long staffId) throws WitcurveException;
 

@@ -60,8 +60,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentDTO update(StudentDTO studentDTO) {
+    public StudentDTO update(StudentDTO studentDTO) throws WitcurveException {
         log.debug("Request to update student : {}", studentDTO);
+        Optional<User> user = userRepository.findById(studentDTO.getUserId());
+        if(!user.isPresent()) {
+            throw new WitcurveException("There is no user with given id : "+studentDTO.getUserId());
+        }
+        user.get().setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId());
+        user.get().setFirstName(studentDTO.getFirstName());
+        user.get().setLastName(studentDTO.getLastName());
+        user.get().setType(UserType.PARENT);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
         return studentMapperLite.toDto(student);
@@ -118,7 +126,7 @@ public class StudentServiceImpl implements StudentService {
             String admissionId = username.substring(index + 1);
             Student student = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, admissionId.toLowerCase());
             if (student == null){
-                log.error("No student with given admission id : {} in the give school info id : {}", student.getId(), schoolInfoId);
+                log.error("No student with given admission id : {} in the give school info id : {}", admissionId, schoolInfoId);
                 throw  new WitcurveException("No student exists with given username ");
             }
 
