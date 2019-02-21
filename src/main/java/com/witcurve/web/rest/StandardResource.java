@@ -47,8 +47,8 @@ public class StandardResource {
                 .headers(HeaderUtil.createEntityCreationAlert("standard", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("grade_section_teacher_UK")) {
-                throw new WitcurveException("Unique constraint (grade, section, class_teacher) violated");
+            if (e.getMessage().contains("grade_section_schoolInfo_UK")) {
+                throw new WitcurveException("There already exists a standard with given grade and section for this board");
             } else if (e.getMessage().contains("uc_standardclass_teacher_id_col")) {
                 throw new WitcurveException("The staff is already assigned as a class teacher");
             } else if (e.getMessage().contains("constraint [FK")) {
@@ -76,8 +76,8 @@ public class StandardResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("standard", standardDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("grade_section_teacher_UK")) {
-                throw new WitcurveException("Unique constraint (grade, section, class_teacher) violated");
+            if (e.getMessage().contains("grade_section_schoolInfo_UK")) {
+                throw new WitcurveException("There already exists a standard with given grade and section for this board");
             } else if (e.getMessage().contains("uc_standardclass_teacher_id_col")) {
                 throw new WitcurveException("The staff is already assigned as a class teacher");
             } else if (e.getMessage().contains("constraint [FK")) {

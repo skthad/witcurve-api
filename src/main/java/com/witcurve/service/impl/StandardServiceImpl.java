@@ -48,6 +48,7 @@ public class StandardServiceImpl implements StandardService {
     @Override
     public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) throws WitcurveException {
         log.debug("Request to save or update Standard: {}", standardDTO);
+        standardDTO.setSection(standardDTO.getSection().toUpperCase());
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(standardDTO.getSchoolInfo().getId());
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("SchoolInfo does not exist with given id");

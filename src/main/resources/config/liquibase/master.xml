@@ -76,6 +76,7 @@
     <include file="config/liquibase/changelog/20190217144819_fixed_missing_constraints_and_default_values.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190217151137_student_standard_id_sequence_fix.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190221171416_message_thread_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190221204517_changed_unique_constraint_for_Standard.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>
