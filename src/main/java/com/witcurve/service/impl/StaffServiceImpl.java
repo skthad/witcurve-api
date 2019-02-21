@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.StaffService;
@@ -34,6 +35,9 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AuthorityRepository authorityRepository;
+
     @Override
     public StaffDTO create(StaffDTO staffDTO) {
         log.debug("Request to create staff : {}", staffDTO);
@@ -44,6 +48,7 @@ public class StaffServiceImpl implements StaffService {
         user.setLastName(staffDTO.getLastName());
         user.setType(UserType.STAFF);
         user.setActivated(false);
+        user.addAuthority(authorityRepository.findById("ROLE_TEACHING").get());
         user = userRepository.save(user);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff.setUser(user);
@@ -62,6 +67,7 @@ public class StaffServiceImpl implements StaffService {
         user.get().setFirstName(staffDTO.getFirstName());
         user.get().setLastName(staffDTO.getLastName());
         user.get().setType(UserType.STAFF);
+        user.get().addAuthority(authorityRepository.findById("ROLE_TEACHING").get());
         Staff staff = staffMapper.toEntity(staffDTO);
         staff = staffRepository.save(staff);
         return staffMapper.toDto(staff);

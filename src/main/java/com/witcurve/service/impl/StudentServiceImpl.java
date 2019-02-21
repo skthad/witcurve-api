@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.UserRepository;
@@ -43,6 +44,9 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AuthorityRepository authorityRepository;
+
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
         log.debug("Request to create student : {}", studentDTO);
@@ -52,6 +56,7 @@ public class StudentServiceImpl implements StudentService {
         user.setLastName(studentDTO.getLastName());
         user.setType(UserType.PARENT);
         user.setActivated(false);
+        user.addAuthority(authorityRepository.findById("ROLE_GUARDIAN").get());
         user = userRepository.save(user);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
@@ -70,6 +75,7 @@ public class StudentServiceImpl implements StudentService {
         user.get().setFirstName(studentDTO.getFirstName());
         user.get().setLastName(studentDTO.getLastName());
         user.get().setType(UserType.PARENT);
+        user.get().addAuthority(authorityRepository.findById("ROLE_GUARDIAN").get());
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
         return studentMapperLite.toDto(student);
