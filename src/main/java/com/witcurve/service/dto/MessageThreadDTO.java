@@ -1,6 +1,5 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.Message;
 import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 
@@ -9,7 +8,8 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 public class MessageThreadDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -31,6 +31,16 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     private Long toUserId;
 
+    @NotNull
+    private Integer fromUserUnreadCount=0;
+
+    @NotNull
+    private Integer toUserUnreadCount=1;
+
+    private Instant fromUserLastMessageDate;
+
+    private Instant toUserLastMessageDate;
+
     private String toUserName;
 
     private LocalDate meetingDate;
@@ -42,8 +52,6 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     @NotNull
     private List<MessageDTO> messageDTOs;
-
-    private Boolean read= false;
 
     public Long getId() {
         return id;
@@ -117,6 +125,38 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
         this.toUserName = toUserName;
     }
 
+    public Integer getFromUserUnreadCount() {
+        return fromUserUnreadCount;
+    }
+
+    public void setFromUserUnreadCount(Integer fromUserUnreadCount) {
+        this.fromUserUnreadCount = fromUserUnreadCount;
+    }
+
+    public Integer getToUserUnreadCount() {
+        return toUserUnreadCount;
+    }
+
+    public void setToUserUnreadCount(Integer toUserUnreadCount) {
+        this.toUserUnreadCount = toUserUnreadCount;
+    }
+
+    public Instant getFromUserLastMessageDate() {
+        return fromUserLastMessageDate;
+    }
+
+    public void setFromUserLastMessageDate(Instant fromUserLastMessageDate) {
+        this.fromUserLastMessageDate = fromUserLastMessageDate;
+    }
+
+    public Instant getToUserLastMessageDate() {
+        return toUserLastMessageDate;
+    }
+
+    public void setToUserLastMessageDate(Instant toUserLastMessageDate) {
+        this.toUserLastMessageDate = toUserLastMessageDate;
+    }
+
     public LocalDate getMeetingDate() {
         return meetingDate;
     }
@@ -146,25 +186,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     }
 
     public void setMessageDTOs(List<MessageDTO> messageDTOs) {
-        if(messageDTOs != null){
-            Collections.sort(messageDTOs, new Comparator<MessageDTO>() {
-                @Override
-                public int compare(MessageDTO o1, MessageDTO o2) {
-                    return o1.getCreatedDate().isBefore(o2.getCreatedDate()) ? -1
-                        : o1.getCreatedDate().isAfter(o2.getCreatedDate()) ? 1
-                        : 0;
-                }
-            });
-        }
         this.messageDTOs = messageDTOs;
-    }
-
-    public Boolean getRead() {
-        return read;
-    }
-
-    public void setRead(Boolean read) {
-        this.read = read;
     }
 
     @Override
@@ -190,14 +212,17 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
             ", leaveApplicationDTO=" + leaveApplicationDTO +
             ", guardianId=" + guardianId +
             ", fromUserId=" + fromUserId +
-            ", fromUserName=" + fromUserName +
+            ", fromUserName='" + fromUserName + '\'' +
             ", toUserId=" + toUserId +
-            ", toUserName=" + toUserName +
+            ", fromUserUnreadCount=" + fromUserUnreadCount +
+            ", toUserUnreadCount=" + toUserUnreadCount +
+            ", fromUserLastMessageDate=" + fromUserLastMessageDate +
+            ", toUserLastMessageDate=" + toUserLastMessageDate +
+            ", toUserName='" + toUserName + '\'' +
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
             ", status=" + status +
             ", messageDTOs=" + messageDTOs +
-            ", read=" + read +
             '}';
     }
 }

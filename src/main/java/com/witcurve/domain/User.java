@@ -213,6 +213,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
+    public void addAuthority(Authority authority) {
+        if(this.authorities == null) {
+            this.authorities = new HashSet<>();
+        }
+        this.authorities.add(authority);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
