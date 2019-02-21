@@ -84,6 +84,7 @@ public class UserService {
             String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
             user.setPassword(encryptedPassword);
         }
+        user.setType(userDTO.getType());
         user.setActivated(true);
         userRepository.save(user);
         this.clearUserCaches(user);
@@ -244,7 +245,7 @@ public class UserService {
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
-        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+        //Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
     }
 
     public List<String> getContactNumbersOfUser(String username, UserType type) throws WitcurveException{

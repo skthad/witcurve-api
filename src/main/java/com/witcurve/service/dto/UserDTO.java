@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -219,6 +220,13 @@ public class UserDTO {
 
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
+    }
+
+    public void addAuthority(String authority) {
+        if(this.authorities == null) {
+            this.authorities = new HashSet<>();
+        }
+        authorities.add(authority);
     }
 
     public StudentDTO getStudentDTO() {

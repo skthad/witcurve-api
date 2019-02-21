@@ -4,14 +4,16 @@ import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.StudentService;
+import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StudentDTO;
+import com.witcurve.service.dto.UserDTO;
 import com.witcurve.service.mapper.StudentMapper;
 import com.witcurve.service.mapper.StudentMapperLite;
+import com.witcurve.service.mapper.UserMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,19 +47,22 @@ public class StudentServiceImpl implements StudentService {
     UserRepository userRepository;
 
     @Autowired
-    AuthorityRepository authorityRepository;
+    UserService userService;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
         log.debug("Request to create student : {}", studentDTO);
-        User user = new User();
-        user.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId());
-        user.setFirstName(studentDTO.getFirstName());
-        user.setLastName(studentDTO.getLastName());
-        user.setType(UserType.PARENT);
-        user.setActivated(false);
-        user.addAuthority(authorityRepository.findById("ROLE_GUARDIAN").get());
-        user = userRepository.save(user);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId());
+        userDTO.setFirstName(studentDTO.getFirstName());
+        userDTO.setLastName(studentDTO.getLastName());
+        userDTO.setType(UserType.PARENT);
+        userDTO.setActivated(false);
+        userDTO.addAuthority("ROLE_GUARDIAN");
+        User user = userService.createUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
         student = studentRepository.save(student);
@@ -67,15 +72,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO update(StudentDTO studentDTO) throws WitcurveException {
         log.debug("Request to update student : {}", studentDTO);
-        Optional<User> user = userRepository.findById(studentDTO.getUserId());
-        if(!user.isPresent()) {
+        Optional<User> optionalUser = userRepository.findById(studentDTO.getUserId());
+        if(!optionalUser.isPresent()) {
             throw new WitcurveException("There is no user with given id : "+studentDTO.getUserId());
         }
-        user.get().setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId());
-        user.get().setFirstName(studentDTO.getFirstName());
-        user.get().setLastName(studentDTO.getLastName());
-        user.get().setType(UserType.PARENT);
-        user.get().addAuthority(authorityRepository.findById("ROLE_GUARDIAN").get());
+        UserDTO userDTO = userMapper.userToUserDTO(optionalUser.get());
+        userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId());
+        userDTO.setFirstName(studentDTO.getFirstName());
+        userDTO.setLastName(studentDTO.getLastName());
+        userDTO.addAuthority("ROLE_GUARDIAN");
+        userService.updateUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
         return studentMapperLite.toDto(student);

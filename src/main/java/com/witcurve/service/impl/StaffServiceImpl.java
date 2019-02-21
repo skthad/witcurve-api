@@ -4,12 +4,14 @@ import com.google.common.base.Strings;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.StaffService;
+import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StaffDTO;
+import com.witcurve.service.dto.UserDTO;
 import com.witcurve.service.mapper.StaffMapper;
+import com.witcurve.service.mapper.UserMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,20 +38,22 @@ public class StaffServiceImpl implements StaffService {
     UserRepository userRepository;
 
     @Autowired
-    AuthorityRepository authorityRepository;
+    UserService userService;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public StaffDTO create(StaffDTO staffDTO) {
         log.debug("Request to create staff : {}", staffDTO);
-
-        User user = new User();
-        user.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
-        user.setFirstName(staffDTO.getFirstName());
-        user.setLastName(staffDTO.getLastName());
-        user.setType(UserType.STAFF);
-        user.setActivated(false);
-        user.addAuthority(authorityRepository.findById("ROLE_TEACHING").get());
-        user = userRepository.save(user);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        userDTO.setFirstName(staffDTO.getFirstName());
+        userDTO.setLastName(staffDTO.getLastName());
+        userDTO.setType(UserType.STAFF);
+        userDTO.setActivated(false);
+        userDTO.addAuthority("ROLE_TEACHING");
+        User user = userService.createUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff.setUser(user);
         staff = staffRepository.save(staff);
@@ -63,11 +67,12 @@ public class StaffServiceImpl implements StaffService {
         if(!user.isPresent()) {
             throw new WitcurveException("There is no user with given id : "+staffDTO.getUserId());
         }
-        user.get().setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
-        user.get().setFirstName(staffDTO.getFirstName());
-        user.get().setLastName(staffDTO.getLastName());
-        user.get().setType(UserType.STAFF);
-        user.get().addAuthority(authorityRepository.findById("ROLE_TEACHING").get());
+        UserDTO userDTO = userMapper.userToUserDTO(user.get());
+        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        userDTO.setFirstName(staffDTO.getFirstName());
+        userDTO.setLastName(staffDTO.getLastName());
+        userDTO.addAuthority("ROLE_TEACHING");
+        userService.updateUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff = staffRepository.save(staff);
         return staffMapper.toDto(staff);
