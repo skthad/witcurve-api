@@ -2,12 +2,14 @@ package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
+import com.witcurve.service.util.InstantTimeConverter;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
@@ -46,6 +48,22 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @ManyToOne
     private User toUser;
 
+    @NotNull
+    @Column(nullable = false)
+    private Integer fromUserUnreadCount=0;
+
+    @NotNull
+    @Column(nullable = false)
+    private Integer toUserUnreadCount=1;
+
+    @Column
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant fromUserLastMessageDate;
+
+    @Column
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant toUserLastMessageDate;
+
     @Column
     @Convert(converter = LocalDateConverter.class)
     private LocalDate meetingDate;
@@ -58,12 +76,9 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
 
-    @NotNull
-    @Column(nullable = false)
-    private Boolean read = false;
-
     @OneToMany(orphanRemoval = true, fetch=FetchType.EAGER)
     @JoinColumn(name="message_thread_id")
+    @OrderBy("created_date ASC")
     private Set<Message> messages;
 
     public Long getId() {
@@ -122,6 +137,38 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.toUser = toUser;
     }
 
+    public Integer getFromUserUnreadCount() {
+        return fromUserUnreadCount;
+    }
+
+    public void setFromUserUnreadCount(Integer fromUserUnreadCount) {
+        this.fromUserUnreadCount = fromUserUnreadCount;
+    }
+
+    public Integer getToUserUnreadCount() {
+        return toUserUnreadCount;
+    }
+
+    public void setToUserUnreadCount(Integer toUserUnreadCount) {
+        this.toUserUnreadCount = toUserUnreadCount;
+    }
+
+    public Instant getFromUserLastMessageDate() {
+        return fromUserLastMessageDate;
+    }
+
+    public void setFromUserLastMessageDate(Instant fromUserLastMessageDate) {
+        this.fromUserLastMessageDate = fromUserLastMessageDate;
+    }
+
+    public Instant getToUserLastMessageDate() {
+        return toUserLastMessageDate;
+    }
+
+    public void setToUserLastMessageDate(Instant toUserLastMessageDate) {
+        this.toUserLastMessageDate = toUserLastMessageDate;
+    }
+
     public LocalDate getMeetingDate() {
         return meetingDate;
     }
@@ -144,14 +191,6 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
 
     public void setStatus(ApprovalStatus status) {
         this.status = status;
-    }
-
-    public Boolean getRead() {
-        return read;
-    }
-
-    public void setRead(Boolean read) {
-        this.read = read;
     }
 
     public Set<Message> getMessages() {
@@ -190,10 +229,13 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
             ", guardian=" + guardian +
             ", fromUser=" + fromUser +
             ", toUser=" + toUser +
+            ", fromUserUnreadCount=" + fromUserUnreadCount +
+            ", toUserUnreadCount=" + toUserUnreadCount +
+            ", fromUserLastMessageDate=" + fromUserLastMessageDate +
+            ", toUserLastMessageDate=" + toUserLastMessageDate +
             ", meetingDate=" + meetingDate +
             ", meetingTime='" + meetingTime + '\'' +
             ", status=" + status +
-            ", read=" + read +
             ", messages=" + messages +
             '}';
     }

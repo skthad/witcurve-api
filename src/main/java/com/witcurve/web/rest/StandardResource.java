@@ -161,7 +161,7 @@ public class StandardResource {
                 standardId.toString())).build();
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
+                throw new WitcurveException("This standard cannot be deleted as there are record assigned with this standard");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
