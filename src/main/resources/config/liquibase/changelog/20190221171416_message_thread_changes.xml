@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1550769265064-1">
+        <addColumn tableName="message_thread">
+            <column name="from_user_last_message_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1550769265064-2">
+        <addColumn tableName="message_thread">
+            <column name="from_user_unread_count" type="int4">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1550769265064-3">
+        <addColumn tableName="message_thread">
+            <column name="to_user_last_message_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1550769265064-4">
+        <addColumn tableName="message_thread">
+            <column name="to_user_unread_count" type="int4">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1550769265064-5">
+        <dropColumn columnName="read" tableName="message_thread"/>
+    </changeSet>
+</databaseChangeLog>

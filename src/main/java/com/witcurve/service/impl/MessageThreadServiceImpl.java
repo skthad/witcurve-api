@@ -58,6 +58,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         messageDTO.setMessageThreadId(messageThread.getId());
         Message message = messageMapper.toEntity(messageDTO);
         message = messageRepository.save(message);
+        messageThread.setFromUserLastMessageDate(message.getCreatedDate());
         Set<Message> messageSet = new HashSet<>();
         messageSet.add(message);
         messageThread.setMessages(messageSet);
@@ -74,7 +75,13 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             throw new WitcurveException("No Message Thread exists with given Id");
         }
         messageThread.get().addMessage(message);
-        messageThread.get().setRead(false);
+        if(messageThread.get().getToUser().equals(message.getToUser())) {
+            messageThread.get().setFromUserLastMessageDate(message.getCreatedDate());
+            messageThread.get().setToUserUnreadCount(messageThread.get().getToUserUnreadCount()+1);
+        } else {
+            messageThread.get().setToUserLastMessageDate(message.getCreatedDate());
+            messageThread.get().setFromUserUnreadCount(messageThread.get().getFromUserUnreadCount()+1);
+        }
         return messageThreadMapper.toDto(messageThread.get());
     }
 
@@ -89,7 +96,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
 
     public  void approveOrRejectMessageThread(Long threadId, Long staffId, ApprovalStatus status) throws WitcurveException {
-        log.debug("Change statu of meeting request with id : {} of status : {}", threadId, status);
+        log.debug("Change status of meeting request with id : {} of status : {}", threadId, status);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
         if (!messageThread.isPresent()) {
             throw new WitcurveException("No message thread with given id");
@@ -119,18 +126,18 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         if(!message.isPresent()) {
             throw new WitcurveException("No Message exists with given Id");
         }
-        message.get().setRead(true);;
-        Optional<MessageThread> messageThreadOptional = messageThreadRepository.findById(message.get().getMessageThread().getId());
-        if(!messageThreadOptional.isPresent()) {
-            throw new WitcurveException("No Message Thread exists with given Id");
-        }
-        Boolean isThreadRead = true;
-        for(Message existingMessage : messageThreadOptional.get().getMessages()) {
-            if(!existingMessage.getRead()) {
-                isThreadRead = false;
+        if(!message.get().getRead()) {
+            message.get().setRead(true);
+            Optional<MessageThread> messageThreadOptional = messageThreadRepository.findById(message.get().getMessageThread().getId());
+            if(!messageThreadOptional.isPresent()) {
+                throw new WitcurveException("No Message Thread exists with given Id");
+            }
+            if(messageThreadOptional.get().getToUser().equals(message.get().getToUser())) {
+                messageThreadOptional.get().setToUserUnreadCount(messageThreadOptional.get().getToUserUnreadCount()-1<0 ? 0 : messageThreadOptional.get().getToUserUnreadCount()-1);
+            } else {
+                messageThreadOptional.get().setFromUserUnreadCount(messageThreadOptional.get().getFromUserUnreadCount()-1<0 ? 0 : messageThreadOptional.get().getFromUserUnreadCount()-1);
             }
         }
-        messageThreadOptional.get().setRead(isThreadRead);
     }
 
     public Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
@@ -159,12 +166,8 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             } else if(status != null && read == null) {
                 messageThreads = messageThreadRepository.
                     findInboxMessageThreadsOfSubjectNoteWithStatus(standardId, messageType, status, pageable);
-            } else if(status == null && read != null) {
-                messageThreads = messageThreadRepository.
-                    findInboxMessageThreadsOfSubjectNoteWithRead(standardId, messageType, read, pageable);
             } else {
-                messageThreads = messageThreadRepository.
-                    findInboxMessageThreadsOfSubjectNoteWithStatusAndRead(standardId, messageType, status, read, pageable);
+                throw new WitcurveException("Subject Note message doesn't support read filter");
             }
         } else {
             if(status == null && read==null) {
@@ -185,6 +188,8 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     public Map<MessageType, Integer> unReadCount(Long userId) throws WitcurveException {
         log.debug("Get inbox unread message threads counts for user with id : {}", userId);
+
+        //refactor repo method to give details properly
         Map<MessageType, Integer> result = new HashMap<>();
         Integer count = 0;
         Student student = studentRepository.getStudentByUserId(userId);
@@ -199,7 +204,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
             }
             Long standardId = studentStandards.get(0).getStandard().getId();
-            count = messageThreadRepository.findUnReadInboxMessageThreadsOfSubjectNoteCount(standardId, MessageType.SUBJECT_NOTE);
+            count = messageThreadRepository.findInboxMessageThreadsOfSubjectNoteCount(standardId, MessageType.SUBJECT_NOTE);
             result.put(MessageType.SUBJECT_NOTE, count);
         }
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.LEAVE);
@@ -218,6 +223,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                                                                   ApprovalStatus status) throws WitcurveException {
         log.debug("Get inbox list of inbox message threads for user with id : {} of " +
             "type : {} with status : {}", userId, messageType, status);
+        //refactor repo method to give details properly
         Page<MessageThread> messageThreads = null;
         if(messageType.equals(MessageType.SUBJECT_NOTE)) {
             Student student = studentRepository.getStudentByUserId(userId);
