@@ -2,6 +2,7 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.StudentStandard;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.UserRepository;
@@ -105,8 +106,15 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     }
 
     @Override
-    public List<StudentStandardDTO> getBySchoolInfoId(Long schoolInfoId) {
-        return studentStandardMapper.toDto(studentStandardRepository.getBySchoolInfoId(schoolInfoId));
+    public List<StudentStandardDTO> getBySchoolInfoId(Long schoolInfoId, Grade grade, Long standardId) {
+        if(standardId == null && grade == null) {
+            return studentStandardMapper.toDto(studentStandardRepository.getBySchoolInfoId(schoolInfoId));
+        } else if(standardId != null) {
+            return studentStandardMapper.toDto(studentStandardRepository.getByStandardId(standardId));
+        } else {
+            return studentStandardMapper.toDto(studentStandardRepository.getBySchoolInfoIdAndGrade(schoolInfoId, grade));
+        }
+
     }
 
     @Override

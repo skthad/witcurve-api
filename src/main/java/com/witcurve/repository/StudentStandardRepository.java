@@ -2,6 +2,7 @@ package com.witcurve.repository;
 
 import com.witcurve.domain.Student;
 import com.witcurve.domain.StudentStandard;
+import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,6 +27,9 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getBySchoolInfoId(Long schoolInfoId);
+
+    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade = ?2 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
+    List<StudentStandard> getBySchoolInfoIdAndGrade(Long schoolInfoId, Grade grade);
 
     @Query("select ss.student.id from StudentStandard ss where ss.standard.id = ?1 and ss.active = true")
     List<Long> findStudentIdByStandardId(Long standardId);

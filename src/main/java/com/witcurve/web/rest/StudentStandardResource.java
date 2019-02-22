@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -93,9 +94,11 @@ public class StudentStandardResource {
 
     @GetMapping("/student-standard/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<StudentStandardDTO>> getBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+    public ResponseEntity<List<StudentStandardDTO>> getBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId,
+                                                                      @RequestParam(required = false)Grade grade,
+                                                                      @RequestParam(required = false) Long standardId) throws WitcurveException {
         log.debug("Request to get student-standard by schoolInfo id");
-        List<StudentStandardDTO> result = studentStandardService.getBySchoolInfoId(schoolInfoId);
+        List<StudentStandardDTO> result = studentStandardService.getBySchoolInfoId(schoolInfoId, grade, standardId);
         return ResponseEntity.ok(result);
     }
 
