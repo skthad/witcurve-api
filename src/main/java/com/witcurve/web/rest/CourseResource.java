@@ -42,12 +42,21 @@ public class CourseResource {
         if (courseDTO.getId() != null) {
             throw new WitcurveException("New course can't already have an id");
         }
-        CourseDTO result = courseService.saveOrUpdate(courseDTO);
-        return ResponseEntity.created(new URI("/api/course/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("course", result.getId().toString()))
-            .body(result);
+        try {
+            CourseDTO result = courseService.saveOrUpdate(courseDTO);
+            return ResponseEntity.created(new URI("/api/course/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("course", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("course_code_school_info_id_UK")) {
+                throw new WitcurveException("There already exists a subject code with given subject code details");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
-
     /**
      * update the given course
      * @param courseDTO
@@ -64,12 +73,21 @@ public class CourseResource {
         } else {
             courseService.getCourseById(courseDTO.getId());
         }
-        CourseDTO result = courseService.saveOrUpdate(courseDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("course", courseDTO.getId().toString()))
-            .body(result);
+        try {
+            CourseDTO result = courseService.saveOrUpdate(courseDTO);
+            return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("course", courseDTO.getId().toString()))
+                .body(result);
+        } catch(DataIntegrityViolationException e) {
+            if (e.getMessage().contains("course_code_school_info_id_UK")) {
+                throw new WitcurveException("There already exists a subject code with given subject code details");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
-
     /**
      * get course by id
      * @param courseId
