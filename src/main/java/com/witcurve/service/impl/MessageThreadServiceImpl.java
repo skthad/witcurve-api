@@ -207,8 +207,8 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             count = messageThreadRepository.findInboxMessageThreadsOfSubjectNoteCount(standardId, MessageType.SUBJECT_NOTE);
             result.put(MessageType.SUBJECT_NOTE, count);
         }
-        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.LEAVE);
-        result.put(MessageType.LEAVE, count);
+//        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.LEAVE);
+//        result.put(MessageType.LEAVE, count);
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.MEETING_REQUEST);
         result.put(MessageType.MEETING_REQUEST, count);
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.PERSONAL);
