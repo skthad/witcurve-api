@@ -83,12 +83,12 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     @Override
     public String toString() {
-        return "SlotCourseDetailsDTO{" +
+        return "ExamCourseDetailsDTO{" +
             "id=" + id +
             ", gsd=" + gsd +
             ", date=" + date +
+            ", course=" + course +
             ", fullMarks=" + fullMarks +
-            ", courseId=" + course.getId() +
             '}';
     }
 }
