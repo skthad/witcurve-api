@@ -9,8 +9,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="course", uniqueConstraints = {
-    @UniqueConstraint( name= "course_code_school_info_id_UK",
-        columnNames = {"course_code", "school_info_id"})
+    @UniqueConstraint( name= "course_code_grade_school_info_id_UK",
+        columnNames = {"course_code", "grade", "school_info_id"})
 })
 public class Course extends AbstractAuditingEntity implements Serializable {
 
@@ -45,6 +45,10 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     @JoinColumn(nullable = false)
     private SchoolInfo schoolInfo;
+
+    @NotNull
+    @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
+    private Boolean active = true;
 
     public Long getId() {
         return id;
@@ -102,6 +106,14 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.schoolInfo = schoolInfo;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -120,6 +132,7 @@ public class Course extends AbstractAuditingEntity implements Serializable {
             ", grade=" + grade +
             ", masterSubject=" + masterSubject +
             ", schoolInfo=" + schoolInfo +
+            ", active=" + active +
             '}';
     }
 

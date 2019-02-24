@@ -11,7 +11,10 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2")
+    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.active=true")
     List<Course> findBySchoolInfoAndGrade(Long schoolInfoId, Grade grade);
+
+    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseCode = ?3")
+    Course findBySchoolInfoAndGradeAndCourseCode(Long schoolInfoId, Grade grade, String courseCode);
 
 }

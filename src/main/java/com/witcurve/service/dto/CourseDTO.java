@@ -25,6 +25,9 @@ public class CourseDTO extends AbstractAuditingDTO {
     @NotNull
     private Long schoolInfoId;
 
+    @NotNull
+    private Boolean active = true;
+
     public Long getId() {
         return id;
     }
@@ -81,6 +84,14 @@ public class CourseDTO extends AbstractAuditingDTO {
         this.schoolInfoId = schoolInfoId;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,6 +116,7 @@ public class CourseDTO extends AbstractAuditingDTO {
             ", grade=" + grade +
             ", masterSubject='" + masterSubject + '\'' +
             ", schoolInfoId=" + schoolInfoId +
+            ", active=" + active +
             '}';
     }
 }

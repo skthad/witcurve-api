@@ -1,8 +1,10 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseRepository;
+import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
 import com.witcurve.service.mapper.CourseMapper;
@@ -28,9 +30,22 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     CourseMapper courseMapper;
 
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
+
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
         log.debug("Request to save or update Course: {}", courseDTO);
+        if(courseDTO.getId() == null) {
+            Course existingCourse = courseRepository.findBySchoolInfoAndGradeAndCourseCode(courseDTO.getSchoolInfoId(),
+                courseDTO.getGrade(), courseDTO.getCourseCode());
+            if(existingCourse != null) {
+                if(existingCourse.getActive()) {
+                    throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
+                }
+                courseDTO.setId(existingCourse.getId());
+            }
+        }
         Course course = courseMapper.toEntity(courseDTO);
         course = courseRepository.save(course);
         return courseMapper.toDto(course);
@@ -52,6 +67,7 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
         return courseMapper.toDto(courses);
     }
+
     @Override
     public void deleteCourse(Long courseId) throws WitcurveException {
         log.debug("Request to delete course with id {}", courseId);
@@ -59,6 +75,10 @@ public class CourseServiceImpl implements CourseService {
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
-        courseRepository.delete(course.get());
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByCourseId(courseId);
+        if(courseTeachers.size() !=0) {
+            throw new WitcurveException("There are some faculty assigned to this course, please deactivate them and try again");
+        }
+        course.get().setActive(false);
     }
 }

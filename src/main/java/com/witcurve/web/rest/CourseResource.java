@@ -48,8 +48,8 @@ public class CourseResource {
                 .headers(HeaderUtil.createEntityCreationAlert("course", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("course_code_school_info_id_UK")) {
-                throw new WitcurveException("There already exists a subject code with given subject code details");
+            if (e.getMessage().contains("course_code_grade_school_info_id_UK")) {
+                throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -79,8 +79,8 @@ public class CourseResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("course", courseDTO.getId().toString()))
                 .body(result);
         } catch(DataIntegrityViolationException e) {
-            if (e.getMessage().contains("course_code_school_info_id_UK")) {
-                throw new WitcurveException("There already exists a subject code with given subject code details");
+            if (e.getMessage().contains("course_code_grade_school_info_id_UK")) {
+                throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
