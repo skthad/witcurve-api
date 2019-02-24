@@ -20,6 +20,9 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private SchoolInfoDTO schoolInfo;
 
+    @NotNull
+    private Boolean active=true;
+
     public Long getId() {
         return id;
     }
@@ -60,6 +63,14 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
         this.schoolInfo = schoolInfo;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,6 +92,7 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
             ", section='" + section + '\'' +
             ", classTeacherId=" + classTeacherId +
             ", schoolInfo=" + schoolInfo +
+            ", active=" + active +
             '}';
     }
 }

@@ -1,12 +1,7 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.SchoolInfo;
-import com.witcurve.domain.Staff;
-import com.witcurve.domain.Standard;
-import com.witcurve.repository.CourseTeacherRepository;
-import com.witcurve.repository.SchoolInfoRepository;
-import com.witcurve.repository.StaffRepository;
-import com.witcurve.repository.StandardRepository;
+import com.witcurve.domain.*;
+import com.witcurve.repository.*;
 import com.witcurve.service.StandardService;
 import com.witcurve.service.dto.StandardDTO;
 import com.witcurve.service.mapper.StandardMapper;
@@ -18,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -45,6 +43,12 @@ public class StandardServiceImpl implements StandardService {
     @Autowired
     StaffRepository staffRepository;
 
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    GeneralSlotDetailsRepository generalSlotDetailsRepository;
+
     @Override
     public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) throws WitcurveException {
         log.debug("Request to save or update Standard: {}", standardDTO);
@@ -67,6 +71,16 @@ public class StandardServiceImpl implements StandardService {
                 if(existingClassTeacherStandard != null && !existingClassTeacherStandard.getId().equals(standardDTO.getId())) {
                     throw new WitcurveException("There exists a standard with class teacher " + standardDTO.getClassTeacherId());
                 }
+            }
+        }
+        if(standardDTO.getId()== null) {
+            Standard existingStandard=standardRepository.findByGradeAndSectionAndSchoolInfoId(standardDTO.getGrade(),
+                standardDTO.getSection(), standardDTO.getSchoolInfo().getId());
+            if(existingStandard != null) {
+                if(existingStandard.getActive()) {
+                    throw new WitcurveException("There already exists a standard with given grade and section for this board");
+                }
+                standardDTO.setId(existingStandard.getId());
             }
         }
         Standard standard = standardMapper.toEntity(standardDTO);
@@ -134,6 +148,19 @@ public class StandardServiceImpl implements StandardService {
         if (!standard.isPresent()) {
             throw new WitcurveException("No standard exits with given id " + standardId);
         }
-        standardRepository.delete(standard.get());
+        standard.get().setActive(false);
+        standard.get().setClassTeacher(null);
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId);
+        List<Long> studentIds = studentStandards
+            .stream()
+            .map(StudentStandard::getStudent)
+            .map(s -> s.getId())
+            .collect(Collectors.toList());
+        if(studentIds.size()!=0){
+            studentStandardRepository.deactivateByStudentIds(studentIds);
+        }
+        Set<Long> standardsList = new HashSet<>();
+        standardsList.add(standardId);
+        generalSlotDetailsRepository.deactivateSlotDetailsForStandards(standardsList);
     }
 }
