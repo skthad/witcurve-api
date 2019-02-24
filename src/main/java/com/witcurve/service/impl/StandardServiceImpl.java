@@ -53,6 +53,22 @@ public class StandardServiceImpl implements StandardService {
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("SchoolInfo does not exist with given id");
         }
+        if(standardDTO.getClassTeacherId() != null) {
+            Optional<Staff> staffOptional = staffRepository.findById(standardDTO.getClassTeacherId());
+            if(!staffOptional.isPresent()) {
+                throw new WitcurveException("No staff exits with given id " + standardDTO.getClassTeacherId());
+            }
+            Standard existingClassTeacherStandard = standardRepository.findByClassTeacherId(standardDTO.getClassTeacherId());
+            if(standardDTO.getId() == null) {
+                if(existingClassTeacherStandard != null) {
+                    throw new WitcurveException("There exists a standard with class teacher " + standardDTO.getClassTeacherId());
+                }
+            } else {
+                if(existingClassTeacherStandard != null && !existingClassTeacherStandard.getId().equals(standardDTO.getId())) {
+                    throw new WitcurveException("There exists a standard with class teacher " + standardDTO.getClassTeacherId());
+                }
+            }
+        }
         Standard standard = standardMapper.toEntity(standardDTO);
         standard.setSchoolInfo(schoolInfo.get());
         standard = standardRepository.save(standard);
