@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface StudentStandardRepository extends JpaRepository<StudentStandard, Long> {
@@ -27,6 +28,15 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getBySchoolInfoId(Long schoolInfoId);
+
+    @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true")
+    Set<String> getActiveStudentPhoneNumbersBySchoolInfoId(Long schoolInfoId);
+
+    @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade in ?2 and ss.active = true")
+    Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndGradeList(Long schoolInfoId, List<String> grades);
+
+    @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.id in ?2 and ss.active = true")
+    Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndStandardIds(Long schoolInfoId, List<Long> standardIds);
 
     @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade = ?2 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getBySchoolInfoIdAndGrade(Long schoolInfoId, Grade grade);

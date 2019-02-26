@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
@@ -18,5 +19,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("select s from Student s where s.schoolInfo.id = ?1 and s.id not in (select distinct ss.student.id from StudentStandard ss where ss.student.schoolInfo.id = ?1 and ss.active = true)")
     List<Student> getUnallocatedStudentsBySchoolInfoId(Long schoolInfoId);
+
+    @Query("select distinct student.registeredMobileNumber from Student student where student.id in ?1")
+    Set<String> getPhoneNumbersByStudentIds(List<Long> studentIds);
 
 }

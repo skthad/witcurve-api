@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Strings;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.MailService;
@@ -9,20 +10,22 @@ import com.witcurve.service.SmsService;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import com.witcurve.web.rest.vm.LoginVM;
+import com.witcurve.web.rest.vm.SmsVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-public class OtpResource {
+public class SmsResource {
 
-    private final Logger log = LoggerFactory.getLogger(OtpResource.class);
+    private final Logger log = LoggerFactory.getLogger(SmsResource.class);
 
     @Autowired
     UserRepository userRepository;
@@ -52,7 +55,7 @@ public class OtpResource {
                 user.setOtpExpiry(Instant.now().plusSeconds(300));
                 userRepository.save(user);
             }
-            smsService.sendSms(contactNumber,String.valueOf(otp));
+            smsService.sendSms(contactNumber,"Hello User, Your OTP for logging in to Witcurve is " + otp);
             if (user.getEmail() != null) {
                 // mailService.sendOtpMail(user);
             }
@@ -61,5 +64,21 @@ public class OtpResource {
         }
 
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("OTP sent successfully" + username, username)).build();
+    }
+
+    @PostMapping("/send-sms/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<Void> sendBulkSMS(@Valid @RequestBody SmsVM smsVM, @PathVariable Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to send bulk SMS for schoolInfoId: " + schoolInfoId);
+
+        if (Strings.isNullOrEmpty(smsVM.getStudentList())
+            && Strings.isNullOrEmpty(smsVM.getStaffList())
+            && Strings.isNullOrEmpty(smsVM.getGradeList())
+            && Strings.isNullOrEmpty(smsVM.getStandardList())) {
+            throw new WitcurveException("At least one of student, staff, grade or standard must be provided");
+        }
+
+        smsService.sendBulkSMS(schoolInfoId, smsVM);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("SMS sent successfully", null)).build();
     }
 }
