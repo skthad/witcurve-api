@@ -1,7 +1,6 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
@@ -105,14 +104,10 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
                     +courseTeacher.get().getCourse().getMasterSubject().getName()+".");
             }
         } else {
-            List<GeneralSlotDetails> gsds = generalSlotDetailsRepository.findGSDsByStandardIdAndStatus(courseTeacher.get().getStandard().getId(),
-                GSDStatus.ACTIVE);
-            if(gsds.size() != 0) {
-                List<SlotCourseDetails> scds = slotCourseDetailsRepository.findByCourseTeacherId(id);
-                if (scds.size() > 0) {
-                    throw new WitcurveException("This teacher and course is assigned to some slots," +
-                        " please un-assign them and try again");
-                }
+            List<SlotCourseDetails> scds = slotCourseDetailsRepository.findByCourseTeacherId(id);
+            if (scds.size() > 0) {
+                throw new WitcurveException("This teacher and course is assigned to some slots," +
+                    " please un-assign them and try again");
             }
         }
         return courseTeacherMapper.toDto(courseTeacher.get());

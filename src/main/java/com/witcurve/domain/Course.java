@@ -29,7 +29,7 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     private String description;
 
     @Column
-    private Boolean eligibleForSubstitute;
+    private Boolean eligibleForSubstitute = true;
 
     @NotNull
     @Column(nullable = false)

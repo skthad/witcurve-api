@@ -7,6 +7,7 @@ import com.witcurve.repository.*;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.service.mapper.StudentMarksMapper;
+import com.witcurve.service.util.DateRangeUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +47,10 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
 
     @Override
-    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO) throws WitcurveException {
-        log.debug("Request to save or update Student Marks: {}", studentMarksDTO);
-        if(studentMarksDTO.size() !=0) {
-            List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTO);
+    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs) throws WitcurveException {
+        log.debug("Request to save or update Student Marks: {}", studentMarksDTOs);
+        if(studentMarksDTOs.size() !=0) {
+            List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
             studentMarks = studentMarksRepository.saveAll(studentMarks);
             return studentMarksMapper.toDto(studentMarks);
         } else{
@@ -107,9 +108,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     @Override
     public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
         log.debug("Request to get all {} marks for student {} in course {}", type, studentId, courseId);
-        if (startDate.isAfter(endDate)) {
-            throw new WitcurveException("StartDate cannot be after EndDate");
-        }
+        DateRangeUtil.correctDateFormat(startDate, endDate);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
@@ -129,9 +128,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     public List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
         log.debug("Request to get marks for all students {} in grade {} in course {}", type, grade, courseId);
-        if (startDate.isAfter(endDate)) {
-            throw new WitcurveException("StartDate cannot be after EndDate");
-        }
+        DateRangeUtil.correctDateFormat(startDate, endDate);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
@@ -151,9 +148,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     public List<StudentMarksDTO> getMarksForAllStudentsInAStandardAndCourse(Long standardId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
         log.debug("Request to get marks for all students {} in standard {} in course {}", type, standardId, courseId);
-        if (startDate.isAfter(endDate)) {
-            throw new WitcurveException("StartDate cannot be after EndDate");
-        }
+        DateRangeUtil.correctDateFormat(startDate, endDate);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);

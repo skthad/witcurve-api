@@ -90,11 +90,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO getStudentById(Long studentId) throws WitcurveException {
         log.debug("Request to get student with id : {}", studentId);
-        Student student = studentRepository.findById(studentId).get();
-        if (student ==  null) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (!student.isPresent()) {
             throw new WitcurveException("No student with given id");
         }
-        StudentDTO studentDTO = studentMapperLite.toDto(student);
+        StudentDTO studentDTO = studentMapperLite.toDto(student.get());
         return studentDTO;
     }
 

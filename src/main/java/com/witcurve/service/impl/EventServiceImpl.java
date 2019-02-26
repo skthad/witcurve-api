@@ -12,6 +12,7 @@ import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.EventMapper;
+import com.witcurve.service.util.DateRangeUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,7 +178,6 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
         List<Event> result = null;
-
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
         if(courseTeachers.size() !=0) {
             Set<Long> standardIds = new HashSet<>();
@@ -346,6 +346,7 @@ public class EventServiceImpl implements EventService {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
         //TODO find better logic condition to check if one more ids exist - use truth table;
+        DateRangeUtil.correctDateFormat(fromDate, toDate);
         List<Event> attendance;
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
@@ -362,6 +363,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
+        DateRangeUtil.correctDateFormat(startDate, endDate);
         Page<Event> result = null;
         Long schoolInfoId;
         if(studentId != null) {
@@ -439,7 +441,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findHolidaysInSchoolInfo(Long schoolInfoId, LocalDate startDate, LocalDate endDate) throws WitcurveException {
         log.debug("List of holidays for a schoolInfo with id : {}", schoolInfoId);
-
+        DateRangeUtil.correctDateFormat(startDate, endDate);
         List<Event> events = eventRepository.findByTypeAndSchoolInfoIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId, startDate, endDate);
         return eventMapper.toDto(events);
     }
