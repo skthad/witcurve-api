@@ -88,7 +88,7 @@ public class SmsService {
             } else {
                 List<Long> studentIds = Arrays.asList(smsVM.getStudentList().split(","))
                     .stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-                recipientsList.addAll(studentRepository.getPhoneNumbersByStudentIds(studentIds));
+                recipientsList.addAll(studentRepository.getPhoneNumbersBySchoolInfoAndStudentIds(schoolInfoId, studentIds));
             }
         }
         if (!Strings.isNullOrEmpty(smsVM.getStaffList())) {
@@ -97,7 +97,7 @@ public class SmsService {
             } else {
                 List<Long> staffIds = Arrays.asList(smsVM.getStaffList().split(","))
                     .stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-                recipientsList.addAll(staffRepository.getPhoneNumbersByStaffIds(staffIds));
+                recipientsList.addAll(staffRepository.getPhoneNumbersBySchoolInfoAndStaffIds(schoolInfoId, staffIds));
             }
         }
         if (!Strings.isNullOrEmpty(smsVM.getStandardList())) {
