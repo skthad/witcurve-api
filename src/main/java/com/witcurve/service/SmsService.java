@@ -1,6 +1,7 @@
 package com.witcurve.service;
 
 import com.google.common.base.Strings;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
@@ -17,10 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,11 +104,21 @@ public class SmsService {
             recipientsList.addAll(studentStandardRepository.getActiveStudentPhoneNumbersBySchoolInfoIdAndStandardIds(schoolInfoId, standardIds));
         }
         if (!Strings.isNullOrEmpty(smsVM.getGradeList())) {
-            List<String> gradeList = Arrays.asList(smsVM.getGradeList().split(","))
-                .stream().map(s -> s.trim()).collect(Collectors.toList());
+            List<Grade> gradeList= new ArrayList<>();
+            try {
+                 gradeList = Arrays.asList(smsVM.getGradeList().split(","))
+                    .stream().map(s -> Grade.valueOf(s.trim())).collect(Collectors.toList());
+            } catch (IllegalArgumentException e) {
+                throw new WitcurveException("Invalid grade value");
+            }
+
             recipientsList.addAll(studentStandardRepository.getActiveStudentPhoneNumbersBySchoolInfoIdAndGradeList(schoolInfoId, gradeList));
         }
-        String mobileNumbers = String.join(",91", recipientsList);
-        sendSms(mobileNumbers, smsVM.getBody());
+        if(recipientsList.size()!=0) {
+            String mobileNumbers = String.join(",91", recipientsList);
+            sendSms(mobileNumbers, smsVM.getBody());
+        } else {
+            throw new WitcurveException("There are no phone records available for given recipient list");
+        }
     }
 }

@@ -30,6 +30,6 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     List<Staff> findClassTeachersBySchoolInfoId(Long schoolInfoId);
 
     @Query("select distinct staff.primaryPhone from Staff staff where staff.schoolInfo.id = ?1 and staff.id in ?2")
-    Set<String> getPhoneNumbersBySchoolInfoAndStaffIds(Long schoolInfoid, List<Long> staffIds);
+    Set<String> getPhoneNumbersBySchoolInfoAndStaffIds(Long schoolInfoId, List<Long> staffIds);
 
 }

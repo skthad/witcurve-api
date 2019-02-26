@@ -33,7 +33,7 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     Set<String> getActiveStudentPhoneNumbersBySchoolInfoId(Long schoolInfoId);
 
     @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade in ?2 and ss.active = true")
-    Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndGradeList(Long schoolInfoId, List<String> grades);
+    Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndGradeList(Long schoolInfoId, List<Grade> grades);
 
     @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.id in ?2 and ss.active = true")
     Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndStandardIds(Long schoolInfoId, List<Long> standardIds);
