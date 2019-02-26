@@ -29,7 +29,7 @@ public class SmsService {
 
     private static String apiUrl="http://api.msg91.com/api/sendhttp.php?";
     private static final String authkey = "228729Ax0VORwQvEQ25b9cfff6";
-    private static final String senderId = "WITCURVE";
+    private static final String senderId = "WTCRVE";
     private static final String countryCode = "91";
     // route=4 is transactional
     private static final String route="4";
