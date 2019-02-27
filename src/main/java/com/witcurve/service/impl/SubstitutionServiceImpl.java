@@ -86,6 +86,14 @@ public class SubstitutionServiceImpl implements SubstitutionService {
 
         if (availableStaff.size() == 0) {
 
+            // look for a teacher who teaches the given master subject in the whole school
+            availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolBySubject(
+                schoolInfoId, masterSubject, teacherId);
+
+        }
+
+        if (availableStaff.size() == 0) {
+
             // look for a teacher who teaches a course with eligibleForSubstitute = true in the whole school
             availableStaff = courseTeacherRepository.findEligibleForSubstituteBySchoolInfoId(
                 teacherId, schoolInfoId);
