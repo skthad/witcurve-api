@@ -84,9 +84,10 @@ public class StudentMarksResource {
     @GetMapping("/student-marks/exams/{examId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getStudentMarksForExam(@PathVariable("examId")  Long examId,
-                                                                         @RequestParam(value = "ecdId", required = false) Long ecdId) throws WitcurveException {
-        log.debug("Request to get list of Student marks by course teacher id and event Id for test and assignment only .");
-        List<StudentMarksDTO> result = studentMarksService.getStudentMarksByExamId(examId, ecdId);
+                                                                         @RequestParam(value = "ecdId", required = false) Long ecdId,
+                                                                        @RequestParam(value = "standardId", required = false) Long standardId) throws WitcurveException {
+        log.debug("Request to get list of Student marks by exam id.");
+        List<StudentMarksDTO> result = studentMarksService.getStudentMarksByExamId(examId, ecdId, standardId);
         return ResponseEntity.ok(result);
     }
 

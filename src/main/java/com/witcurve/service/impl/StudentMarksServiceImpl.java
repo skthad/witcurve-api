@@ -85,15 +85,15 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId) throws WitcurveException {
+    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId, Long standardId) throws WitcurveException {
         log.debug("Request to get student Marks by examId id : {}", examId);
         Optional<Exam> exam = examRepository.findById(examId);
         if (!exam.isPresent()) {
             throw new WitcurveException("Exam does not exist with id: " + examId);
         }
-        if (ecdId == null) {
+        if (ecdId == null && standardId == null) {
             return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId));
-        } else {
+        } else if (ecdId != null) {
             Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(ecdId);
             if (!ecd.isPresent()) {
                 throw new WitcurveException("ExamCourseDetails does not exist with id: " + examId);
@@ -101,7 +101,13 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             if (!ecd.get().getGsd().getExam().getId().equals(examId)) {
                 throw new WitcurveException("ExamCourseDetails provided does not belong to the examId: " + examId);
             }
-            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, ecdId));
+            if (standardId == null) {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndEcdId(examId, ecdId));
+            } else {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecdId, standardId));
+            }
+        } else {
+            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId));
         }
     }
 
