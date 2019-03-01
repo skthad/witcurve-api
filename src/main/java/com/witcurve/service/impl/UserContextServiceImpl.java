@@ -93,14 +93,18 @@ public class UserContextServiceImpl implements UserContextService {
             schoolInfoId = staffDTO.getSchoolInfo().getId();
         } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
             StudentDTO studentDTO = studentService.getStudentByUserId(currentUser.getId());
-            contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(studentDTO.getId()));
-            List<CourseTeacherDTO> studentCourses = courseTeacherService.getCourseTeachersByStudentId(studentDTO.getId());
-            contextDTO.setStudentCourses(studentCourses);
-            if (Strings.isNullOrEmpty(currentUser.getPassword())) {
-                contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.FALSE);
-            } else {
-                contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.TRUE);
+            StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentDTO.getId());
+            if (studentStandard != null) {
+                contextDTO.setStudentStandardDTO(studentStandardService.getByStudentId(studentDTO.getId()));
+                List<CourseTeacherDTO> studentCourses = courseTeacherService.getCourseTeachersByStudentId(studentDTO.getId());
+                contextDTO.setStudentCourses(studentCourses);
+                if (Strings.isNullOrEmpty(currentUser.getPassword())) {
+                    contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.FALSE);
+                } else {
+                    contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.TRUE);
+                }
             }
+
             schoolInfoId = studentDTO.getSchoolInfo().getId();
         }
 
