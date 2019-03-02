@@ -9,6 +9,10 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     private Long studentId;
 
+    private String studentName;
+
+    private String rollNo;
+
     private EventDTO eventDTO;
 
     @NotNull
@@ -56,6 +60,22 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
         this.examCourseDetailsDTO = examCourseDetailsDTO;
     }
 
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,6 +95,8 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
         return "StudentMarksDTO{" +
             "id=" + id +
             ", studentId=" + studentId +
+            ", studentName='" + studentName + '\'' +
+            ", rollNo='" + rollNo + '\'' +
             ", eventDTO=" + eventDTO +
             ", marks=" + marks +
             ", examCourseDetailsDTO=" + examCourseDetailsDTO +
