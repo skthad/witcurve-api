@@ -102,8 +102,9 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "birth_place", length = 50)
     private String birthPlace;
 
-    @Column(name = "adhaar_no", length = 50)
-    private String adhaarNo;
+    @Pattern(regexp = "[0-9]{16}")
+    @Column(name = "aadhaar_no", length = 16)
+    private String aadhaarNo;
 
     @Column(name = "identification_mark1")
     private String identificationMark1;
@@ -324,12 +325,12 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.birthPlace = birthPlace;
     }
 
-    public String getAdhaarNo() {
-        return adhaarNo;
+    public String getAadhaarNo() {
+        return aadhaarNo;
     }
 
-    public void setAdhaarNo(String adhaarNo) {
-        this.adhaarNo = adhaarNo;
+    public void setAadhaarNo(String aadhaarNo) {
+        this.aadhaarNo = aadhaarNo;
     }
 
     public String getIdentificationMark1() {
@@ -459,7 +460,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
             ", country='" + country + '\'' +
             ", pincode='" + pincode + '\'' +
             ", birthPlace='" + birthPlace + '\'' +
-            ", adhaarNo='" + adhaarNo + '\'' +
+            ", aadhaarNo='" + aadhaarNo + '\'' +
             ", identificationMark1='" + identificationMark1 + '\'' +
             ", identificationMark2='" + identificationMark2 + '\'' +
             ", previousSchoolName='" + previousSchoolName + '\'' +

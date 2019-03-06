@@ -1,16 +1,20 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.StaffType;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StaffDTO extends AbstractAuditingDTO {
 
     private Long id;
@@ -66,9 +70,20 @@ public class StaffDTO extends AbstractAuditingDTO {
     private BloodGroup bloodGroup;
 
     @NotNull
+    @Pattern(regexp = "^[6-9]\\d{9}$")
     private String primaryPhone;
 
+    @Size(min = 16, max = 16)
+    @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
+
+    @Pattern(regexp = "[0-9]{16}")
+    @Size(min = 16, max = 16)
+    private String aadhaarNo;
+
+    @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}")
+    @Size(min = 10, max = 10)
+    private String panNo;
 
     private String accountName;
 

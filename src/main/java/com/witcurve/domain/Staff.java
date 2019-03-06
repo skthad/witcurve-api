@@ -18,6 +18,7 @@ import java.util.Objects;
     @UniqueConstraint(name = "staff_school_info_id_UK",
         columnNames = {"staff_id", "school_info_id"})
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Staff extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -100,10 +101,17 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String primaryPhone;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Column(length = 50)
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
+
+    @Pattern(regexp = "[0-9]{16}")
+    @Column(name = "aadhaar_no", length = 16)
+    private String aadhaarNo;
+
+    @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}")
+    @Column(name = "pan_no", length = 10)
+    private String panNo;
 
     @Column
     private String accountName;
@@ -280,6 +288,22 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getAadhaarNo() {
+        return aadhaarNo;
+    }
+
+    public void setAadhaarNo(String aadhaarNo) {
+        this.aadhaarNo = aadhaarNo;
+    }
+
+    public String getPanNo() {
+        return panNo;
+    }
+
+    public void setPanNo(String panNo) {
+        this.panNo = panNo;
     }
 
     public String getAccountName() {

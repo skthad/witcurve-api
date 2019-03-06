@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.Gender;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +74,9 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String birthPlace;
 
-    private String adhaarNo;
+    @Pattern(regexp = "[0-9]{16}")
+    @Size(min = 16, max = 16)
+    private String aadhaarNo;
 
     private String identificationMark1;
 
@@ -308,12 +311,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.birthPlace = birthPlace;
     }
 
-    public String getAdhaarNo() {
-        return adhaarNo;
+    public String getAadhaarNo() {
+        return aadhaarNo;
     }
 
-    public void setAdhaarNo(String adhaarNo) {
-        this.adhaarNo = adhaarNo;
+    public void setAadhaarNo(String aadhaarNo) {
+        this.aadhaarNo = aadhaarNo;
     }
 
     public String getIdentificationMark1() {
@@ -435,7 +438,7 @@ public class StudentDTO extends AbstractAuditingDTO {
             ", country='" + country + '\'' +
             ", pincode='" + pincode + '\'' +
             ", birthPlace='" + birthPlace + '\'' +
-            ", adhaarNo='" + adhaarNo + '\'' +
+            ", aadhaarNo='" + aadhaarNo + '\'' +
             ", identificationMark1='" + identificationMark1 + '\'' +
             ", identificationMark2='" + identificationMark2 + '\'' +
             ", previousSchoolName='" + previousSchoolName + '\'' +
