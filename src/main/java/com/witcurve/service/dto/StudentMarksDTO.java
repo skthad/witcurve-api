@@ -1,9 +1,12 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class StudentMarksDTO extends AbstractAuditingDTO {
+public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -20,6 +23,9 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     private ExamCourseDetailsDTO examCourseDetailsDTO;
 
+    @NotNull
+    private Boolean published = false;
+
     public Long getId() {
         return id;
     }
@@ -34,6 +40,22 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
 
     public void setStudentId(Long studentId) {
         this.studentId = studentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
     }
 
     public EventDTO getEventDTO() {
@@ -60,20 +82,12 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
         this.examCourseDetailsDTO = examCourseDetailsDTO;
     }
 
-    public String getStudentName() {
-        return studentName;
+    public Boolean getPublished() {
+        return published;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public String getRollNo() {
-        return rollNo;
-    }
-
-    public void setRollNo(String rollNo) {
-        this.rollNo = rollNo;
+    public void setPublished(Boolean published) {
+        this.published = published;
     }
 
     @Override
@@ -94,12 +108,6 @@ public class StudentMarksDTO extends AbstractAuditingDTO {
     public String toString() {
         return "StudentMarksDTO{" +
             "id=" + id +
-            ", studentId=" + studentId +
-            ", studentName='" + studentName + '\'' +
-            ", rollNo='" + rollNo + '\'' +
-            ", eventDTO=" + eventDTO +
-            ", marks=" + marks +
-            ", examCourseDetailsDTO=" + examCourseDetailsDTO +
             '}';
     }
 }

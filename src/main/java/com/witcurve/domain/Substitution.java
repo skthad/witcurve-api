@@ -22,18 +22,18 @@ public class Substitution extends AbstractAuditingEntity implements Serializable
     @SequenceGenerator(name = "substitutionIdSeq", sequenceName="substitution_id_seq", allocationSize = 0)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "scd_id", nullable = false)
-    private SlotCourseDetails scd;
+    @NotNull
+    @Convert(converter = LocalDateConverter.class)
+    @Column(name = "date", nullable = false)
+    private LocalDate date;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
     private Staff teacher;
 
-    @NotNull
-    @Convert(converter = LocalDateConverter.class)
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
+    @ManyToOne
+    @JoinColumn(name = "scd_id", nullable = false)
+    private SlotCourseDetails scd;
 
     public Long getId() {
         return id;
@@ -43,12 +43,12 @@ public class Substitution extends AbstractAuditingEntity implements Serializable
         this.id = id;
     }
 
-    public SlotCourseDetails getScd() {
-        return scd;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setScd(SlotCourseDetails scd) {
-        this.scd = scd;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Staff getTeacher() {
@@ -59,12 +59,12 @@ public class Substitution extends AbstractAuditingEntity implements Serializable
         this.teacher = teacher;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public SlotCourseDetails getScd() {
+        return scd;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setScd(SlotCourseDetails scd) {
+        this.scd = scd;
     }
 
     @Override

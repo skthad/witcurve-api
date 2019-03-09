@@ -117,11 +117,6 @@ public class PayrollCycle extends AbstractAuditingEntity implements Serializable
     public String toString() {
         return "PayrollCycle{" +
             "id=" + id +
-            ", schoolInfoId='" + schoolInfo.getId() + '\'' +
-            ", month='" + month + '\'' +
-            ", year='" + year + '\'' +
-            ", cycleStart='" + cycleStart + '\'' +
-            ", cycleEnd='" + cycleEnd + '\'' +
             '}';
     }
 }

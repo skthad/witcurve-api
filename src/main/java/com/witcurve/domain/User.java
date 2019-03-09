@@ -35,22 +35,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserType type;
+
+    @NotNull
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
     private String login;
-
-    @JsonIgnore
-    @Size(min = 60, max = 60)
-    @Column(name = "password_hash", length = 60)
-    private String password;
-
-    @Column(name = "otp")
-    private String otp;
-
-    @Column(name = "otp_expiry")
-    @JsonIgnore
-    @Convert(converter = InstantTimeConverter.class)
-    private Instant otpExpiry;
 
     @Size(max = 50)
     @Column(name = "first_name", length = 50)
@@ -65,10 +57,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 254, unique = true)
     private String email;
 
+    @JsonIgnore
+    @Size(min = 60, max = 60)
+    @Column(name = "password_hash", length = 60)
+    private String password;
+
     @NotNull
-    @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserType type;
+    @Column(nullable = false)
+    private Boolean firstTimeLogin = true;
 
     @NotNull
     @Column(nullable = false)
@@ -82,9 +78,13 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "image_url", length = 256)
     private String imageUrl;
 
-    @NotNull
-    @Column(nullable = false)
-    private Boolean firstTimeLogin = true;
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_expiry")
+    @JsonIgnore
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant otpExpiry;
 
     @JsonIgnore
     @ManyToMany
@@ -241,13 +241,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
+            "id='" + id + '\'' +
             "}";
     }
 }

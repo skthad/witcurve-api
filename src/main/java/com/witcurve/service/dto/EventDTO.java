@@ -1,27 +1,26 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.witcurve.domain.Keyword;
 import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-public class EventDTO extends AbstractAuditingDTO {
+public class EventDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
-    @NotNull
-    private String name;
-
-    private String description;
+    private String bindingId;
 
     @NotNull
     private EventType type;
@@ -36,28 +35,33 @@ public class EventDTO extends AbstractAuditingDTO {
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventEndTime;
 
-    private Long studentId;
+    @NotNull
+    private String name;
 
-    private String studentName;
-
-    private Long standardId;
+    private String description;
 
     private Long staffId;
 
     private String staffName;
 
-    private Grade grade;
+    private Long studentId;
 
-    private Long schoolInfoId;
+    private String studentName;
 
     private SlotCourseDetailsDTO scd;
 
+    private Long standardId;
+
+    private Grade grade;
+
     private CourseTeacherDTO courseTeacher;
 
-    private String bindingId;
+    private Long schoolInfoId;
 
+    @NotNull
     private Boolean sendSms = false;
 
+    @NotNull
     private AttendanceType attendanceType = AttendanceType.PRESENT;
 
     private Integer fullMarks;
@@ -76,20 +80,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getBindingId() {
+        return bindingId;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     public EventType getType() {
@@ -124,28 +120,20 @@ public class EventDTO extends AbstractAuditingDTO {
         this.eventEndTime = eventEndTime;
     }
 
-    public Long getStudentId() {
-        return studentId;
+    public String getName() {
+        return name;
     }
 
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getStudentName() {
-        return studentName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public Long getStandardId() {
-        return standardId;
-    }
-
-    public void setStandardId(Long standardId) {
-        this.standardId = standardId;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getStaffId() {
@@ -164,20 +152,20 @@ public class EventDTO extends AbstractAuditingDTO {
         this.staffName = staffName;
     }
 
-    public Grade getGrade() {
-        return grade;
+    public Long getStudentId() {
+        return studentId;
     }
 
-    public void setGrade(Grade grade) {
-        this.grade = grade;
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
-    public Long getSchoolInfoId() {
-        return schoolInfoId;
+    public String getStudentName() {
+        return studentName;
     }
 
-    public void setSchoolInfoId(Long schoolInfoId) {
-        this.schoolInfoId = schoolInfoId;
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public SlotCourseDetailsDTO getScd() {
@@ -188,6 +176,22 @@ public class EventDTO extends AbstractAuditingDTO {
         this.scd = scd;
     }
 
+    public Long getStandardId() {
+        return standardId;
+    }
+
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
     public CourseTeacherDTO getCourseTeacher() {
         return courseTeacher;
     }
@@ -196,12 +200,12 @@ public class EventDTO extends AbstractAuditingDTO {
         this.courseTeacher = courseTeacher;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public Long getSchoolInfoId() {
+        return schoolInfoId;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setSchoolInfoId(Long schoolInfoId) {
+        this.schoolInfoId = schoolInfoId;
     }
 
     public Boolean getSendSms() {
@@ -269,28 +273,6 @@ public class EventDTO extends AbstractAuditingDTO {
     public String toString() {
         return "EventDTO{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", type=" + type +
-            ", date=" + date +
-            ", eventStartTime='" + eventStartTime + '\'' +
-            ", eventEndTime='" + eventEndTime + '\'' +
-            ", studentId=" + studentId +
-            ", studentName='" + studentName + '\'' +
-            ", standardId=" + standardId +
-            ", staffId=" + staffId +
-            ", staffName='" + staffName + '\'' +
-            ", grade=" + grade +
-            ", schoolInfoId=" + schoolInfoId +
-            ", scd=" + scd +
-            ", courseTeacher=" + courseTeacher +
-            ", bindingId='" + bindingId + '\'' +
-            ", sendSms=" + sendSms +
-            ", attendanceType=" + attendanceType +
-            ", fullMarks=" + fullMarks +
-            ", keywords=" + keywords +
-            ", standardName='" + standardName + '\'' +
-            ", signature='" + signature + '\'' +
             '}';
     }
 }

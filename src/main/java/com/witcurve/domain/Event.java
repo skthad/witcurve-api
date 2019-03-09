@@ -27,12 +27,8 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "eventIdSeq", sequenceName="event_id_seq", allocationSize = 0)
     private Long id;
 
-    @NotNull
-    @Column(name = "name",nullable = false)
-    private String name;
-
-    @Column(name = "description")
-    private String description;
+    @Column(name = "binding_id")
+    private String bindingId;
 
     @NotNull
     @Column(name = "type", nullable = false)
@@ -52,38 +48,43 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventEndTime;
 
-    @ManyToOne
-    private Student student;
+    @NotNull
+    @Column(name = "name",nullable = false)
+    private String name;
 
-    @ManyToOne
-    private Standard standard;
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne
     private Staff staff;
 
-    @Column(name = "grade", length = 50)
-    @Enumerated(EnumType.STRING)
-    private Grade grade;
-
     @ManyToOne
-    private SchoolInfo schoolInfo;
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "scd_id")
     private SlotCourseDetails scd;
 
     @ManyToOne
+    private Standard standard;
+
+    @Column(name = "grade", length = 50)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
+
+    @ManyToOne
     @JoinColumn(name = "course_teacher_id")
     private CourseTeacher courseTeacher;
 
-    @Column(name = "binding_id")
-    private String bindingId;
+    @ManyToOne
+    private SchoolInfo schoolInfo;
 
     @NotNull
-    @Column(name = "send_sms", nullable = false)
+    @Column(name = "send_sms", nullable = false, columnDefinition = "boolean default false")
     private Boolean sendSms = false;
 
-    @Column
+    @NotNull
+    @Column(name = "attendance_type", nullable = false, length = 50, columnDefinition = "varchar(50) default 'PRESENT'")
     @Enumerated(EnumType.STRING)
     private AttendanceType attendanceType = AttendanceType.PRESENT;
 
@@ -109,20 +110,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getBindingId() {
+        return bindingId;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     public EventType getType() {
@@ -157,20 +150,20 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.eventEndTime = eventEndTime;
     }
 
-    public Student getStudent() {
-        return student;
+    public String getName() {
+        return name;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Standard getStandard() {
-        return standard;
+    public String getDescription() {
+        return description;
     }
 
-    public void setStandard(Standard standard) {
-        this.standard = standard;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Staff getStaff() {
@@ -181,20 +174,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.staff = staff;
     }
 
-    public Grade getGrade() {
-        return grade;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setGrade(Grade grade) {
-        this.grade = grade;
-    }
-
-    public SchoolInfo getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfo schoolInfo) {
-        this.schoolInfo = schoolInfo;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public SlotCourseDetails getScd() {
@@ -205,6 +190,22 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.scd = scd;
     }
 
+    public Standard getStandard() {
+        return standard;
+    }
+
+    public void setStandard(Standard standard) {
+        this.standard = standard;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
     public CourseTeacher getCourseTeacher() {
         return courseTeacher;
     }
@@ -213,12 +214,12 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.courseTeacher = courseTeacher;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Boolean getSendSms() {
@@ -279,25 +280,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Event{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", description='" + description + '\'' +
-            ", type=" + type +
-            ", date=" + date +
-            ", eventStartTime='" + eventStartTime + '\'' +
-            ", eventEndTime='" + eventEndTime + '\'' +
-            ", student=" + student +
-            ", standard=" + standard +
-            ", staff=" + staff +
-            ", grade=" + grade +
-            ", schoolInfo=" + schoolInfo +
-            ", scd=" + scd +
-            ", courseTeacher=" + courseTeacher +
-            ", bindingId='" + bindingId + '\'' +
-            ", sendSms=" + sendSms +
-            ", attendanceType=" + attendanceType +
-            ", fullMarks=" + fullMarks +
-            ", signature='" + signature + '\'' +
-            ", keywords=" + keywords +
             '}';
     }
 }

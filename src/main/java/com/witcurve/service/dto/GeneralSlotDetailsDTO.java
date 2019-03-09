@@ -10,7 +10,18 @@ import java.util.Objects;
 
 public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
+
+    private String bindingId;
+
+    @NotNull
+    private GSDStatus status;
+
+    private StandardDTO standard;
+
+    private Grade grade;
 
     @NotNull
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
@@ -21,15 +32,6 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     @NotNull
     private Boolean recess;
-
-    private StandardDTO standard;
-
-    private Grade grade;
-
-    @NotNull
-    private GSDStatus status;
-
-    private String bindingId;
 
     private Long examId;
 
@@ -43,30 +45,20 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.id = id;
     }
 
-    public String getStart() {
-        return start;
+    public String getBindingId() {
+        return bindingId;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
-    @NotNull
-    public Integer getDuration() {
-        return duration;
+    public GSDStatus getStatus() {
+        return status;
     }
 
-    public void setDuration(@NotNull Integer duration) {
-        this.duration = duration;
-    }
-
-    @NotNull
-    public Boolean getRecess() {
-        return recess;
-    }
-
-    public void setRecess(@NotNull Boolean recess) {
-        this.recess = recess;
+    public void setStatus(GSDStatus status) {
+        this.status = status;
     }
 
     public StandardDTO getStandard() {
@@ -85,20 +77,28 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.grade = grade;
     }
 
-    public GSDStatus getStatus() {
-        return status;
+    public String getStart() {
+        return start;
     }
 
-    public void setStatus(GSDStatus status) {
-        this.status = status;
+    public void setStart(String start) {
+        this.start = start;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public Integer getDuration() {
+        return duration;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public Boolean getRecess() {
+        return recess;
+    }
+
+    public void setRecess(Boolean recess) {
+        this.recess = recess;
     }
 
     public Long getExamId() {
@@ -134,12 +134,6 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     public String toString() {
         return "GeneralSlotDetailsDTO{" +
             "id=" + id +
-            ", start='" + start + '\'' +
-            ", duration=" + duration +
-            ", recess=" + recess +
-            (examId == null ? (", standard=" + standard) : "") +
-            (examId != null ? (", grade=" + grade) : "") +
-            (examId != null ? (", examId=" + examId) : "") +
             '}';
     }
 }

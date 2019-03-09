@@ -5,14 +5,26 @@ import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-public class ExamDTO extends AbstractAuditingDTO {
+public class ExamDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    @NotNull
+    private Long schoolInfoId;
+
+    @NotNull
+    private Grade grade;
+
+    @NotNull
+    private ExamStatus status = ExamStatus.DRAFT;
 
     @NotNull
     private String name;
@@ -25,45 +37,12 @@ public class ExamDTO extends AbstractAuditingDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate endDate;
 
-    @NotNull
-    private Long schoolInfoId;
-
-    @NotNull
-    private Grade grade;
-
-    @NotNull
-    private ExamStatus status = ExamStatus.DRAFT;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     public Long getSchoolInfoId() {
@@ -90,6 +69,30 @@ public class ExamDTO extends AbstractAuditingDTO {
         this.status = status;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,11 +111,6 @@ public class ExamDTO extends AbstractAuditingDTO {
     public String toString() {
         return "ExamDTO{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", startDate=" + startDate +
-            ", endDate=" + endDate +
-            ", schoolInfoId=" + schoolInfoId +
-            ", grade=" + grade +
             '}';
     }
 }

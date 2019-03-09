@@ -15,9 +15,8 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator", initialValue = 1000, allocationSize = 1)
-    //TODO remove the above initialValue when db is refreshed.
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studentStandardIdSeq")
+    @SequenceGenerator(name = "studentStandardIdSeq", sequenceName="student_standard_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
@@ -35,7 +34,7 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
     private String rollNo;
 
     @NotNull
-    @Column(name = "active", nullable = false)
+    @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
 
     public Long getId() {
@@ -96,10 +95,6 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
     public String toString() {
         return "StudentStandard{" +
             "id=" + id +
-            ", student=" + student +
-            ", standard=" + standard +
-            ", rollNo=" + rollNo +
-            ", active='" + active + '\'' +
             '}';
     }
 }

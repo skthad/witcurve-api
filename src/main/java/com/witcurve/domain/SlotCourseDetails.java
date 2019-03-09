@@ -84,9 +84,6 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     public String toString() {
         return "SlotCourseDetails{" +
             "id=" + id +
-            ", gsd=" + gsd +
-            ", dayOfWeek=" + dayOfWeek +
-            ", courseTeacher=" + courseTeacher +
             '}';
     }
 }

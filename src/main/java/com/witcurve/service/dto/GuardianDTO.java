@@ -1,11 +1,16 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class GuardianDTO extends AbstractAuditingDTO{
+public class GuardianDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    private Long studentId;
 
     @NotNull
     private String firstName;
@@ -16,7 +21,7 @@ public class GuardianDTO extends AbstractAuditingDTO{
     private String lastName;
 
     @NotNull
-    private String type;
+    private String relationWithStudent;
 
     private String qualification;
 
@@ -51,14 +56,20 @@ public class GuardianDTO extends AbstractAuditingDTO{
 
     private String rationCardNo;
 
-    private Long studentId;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
     public String getFirstName() {
@@ -85,12 +96,12 @@ public class GuardianDTO extends AbstractAuditingDTO{
         this.lastName = lastName;
     }
 
-    public String getType() {
-        return type;
+    public String getRelationWithStudent() {
+        return relationWithStudent;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setRelationWithStudent(String relationWithStudent) {
+        this.relationWithStudent = relationWithStudent;
     }
 
     public String getQualification() {
@@ -221,14 +232,6 @@ public class GuardianDTO extends AbstractAuditingDTO{
         this.rationCardNo = rationCardNo;
     }
 
-    public Long getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -239,7 +242,6 @@ public class GuardianDTO extends AbstractAuditingDTO{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(getId());
     }
 
@@ -247,27 +249,6 @@ public class GuardianDTO extends AbstractAuditingDTO{
     public String toString() {
         return "GuardianDTO{" +
             "id=" + id +
-            ", firstName='" + firstName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", type='" + type + '\'' +
-            ", qualification='" + qualification + '\'' +
-            ", occupation='" + occupation + '\'' +
-            ", annualIncome=" + annualIncome +
-            ", mobileNo='" + mobileNo + '\'' +
-            ", emailId='" + emailId + '\'' +
-            ", residenceAddress1='" + residenceAddress1 + '\'' +
-            ", residenceAddress2='" + residenceAddress2 + '\'' +
-            ", residenceCity='" + residenceCity + '\'' +
-            ", residenceState='" + residenceState + '\'' +
-            ", residencePincode='" + residencePincode + '\'' +
-            ", officeAddress1='" + officeAddress1 + '\'' +
-            ", officeAddress2='" + officeAddress2 + '\'' +
-            ", officeCity='" + officeCity + '\'' +
-            ", officeState='" + officeState + '\'' +
-            ", officePincode='" + officePincode + '\'' +
-            ", rationCardNo='" + rationCardNo + '\'' +
-            ", studentId=" + studentId +
             '}';
     }
 }

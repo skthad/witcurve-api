@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
     @NotNull
@@ -67,9 +69,6 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     public String toString() {
         return "SlotCourseDetailsDTO{" +
             "id=" + id +
-            ", gsd=" + gsd +
-            ", dayOfWeek=" + dayOfWeek +
-            ", courseTeacher=" + courseTeacher +
             '}';
     }
 }

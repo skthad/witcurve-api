@@ -20,6 +20,22 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @SequenceGenerator(name = "generalSlotDetailsIdSeq", sequenceName="general_slot_details_seq", allocationSize = 0)
     private Long id;
 
+    @Column
+    private String bindingId;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private GSDStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "standard_id")
+    private Standard standard;
+
+    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
+
     @NotNull
     @Column(name = "start", nullable = false)
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
@@ -32,22 +48,6 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @NotNull
     @Column(name = "is_recess", nullable = false)
     private Boolean recess = false;
-
-    @ManyToOne
-    @JoinColumn(name = "standard_id")
-    private Standard standard;
-
-    @Column(length = 50)
-    @Enumerated(EnumType.STRING)
-    private Grade grade;
-
-    @NotNull
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private GSDStatus status;
-
-    @Column
-    private String bindingId;
 
     @ManyToOne
     @JoinColumn
@@ -143,12 +143,6 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     public String toString() {
         return "GeneralSlotDetails{" +
             "id=" + id +
-            ", start='" + start + '\'' +
-            ", duration=" + duration +
-            ", recess=" + recess +
-            (exam == null ? (", standard=" + standard) : "") +
-            (exam != null ? (", grade=" + grade) : "") +
-            (exam != null ? (", exam=" + exam) : "") +
             '}';
     }
 }

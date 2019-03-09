@@ -15,8 +15,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="staff", uniqueConstraints = {
-    @UniqueConstraint(name = "staff_school_info_id_UK",
-        columnNames = {"staff_id", "school_info_id"})
+    @UniqueConstraint(name = "employee_school_info_id_UK",
+        columnNames = {"employee_id", "school_info_id"})
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Staff extends AbstractAuditingEntity implements Serializable {
@@ -29,8 +29,33 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "staff_id", nullable = false)
-    private String staffId;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private SchoolInfo schoolInfo;
+
+    @NotNull
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private User user;
+
+    @NotNull
+    @Column(name = "employee_id", nullable = false)
+    private String employeeId;
+
+    @NotNull
+    @Column
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate joiningDate;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private StaffType type;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
 
     @NotNull
     @Column(name = "first_name", nullable = false, length = 50)
@@ -43,20 +68,9 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(nullable = false)
-    private User user;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private SchoolInfo schoolInfo;
-
-    @NotNull
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private StaffType type;
+    @Column
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate dateOfBirth;
 
     @Column
     private  String address1;
@@ -74,23 +88,10 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private String state;
 
     @Column(length = 50)
-    private String pincode;
-
-    @Column(length = 50)
     private String country;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
-    private Gender gender;
-
-    @Column
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate joiningDate;
-
-    @Column
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate dateOfBirth;
+    @Column(length = 50)
+    private String pincode;
 
     @Column(name = "blood_group")
     @Enumerated(EnumType.STRING)
@@ -130,12 +131,52 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getStaffId() {
-        return staffId;
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public LocalDate getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(LocalDate joiningDate) {
+        this.joiningDate = joiningDate;
+    }
+
+    public StaffType getType() {
+        return type;
+    }
+
+    public void setType(StaffType type) {
+        this.type = type;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getFirstName() {
@@ -162,28 +203,12 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
         this.lastName = lastName;
     }
 
-    public User getUser() {
-        return user;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public SchoolInfo getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfo schoolInfo) {
-        this.schoolInfo = schoolInfo;
-    }
-
-    public StaffType getType() {
-        return type;
-    }
-
-    public void setType(StaffType type) {
-        this.type = type;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getAddress1() {
@@ -240,30 +265,6 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getJoiningDate() {
-        return joiningDate;
-    }
-
-    public void setJoiningDate(LocalDate joiningDate) {
-        this.joiningDate = joiningDate;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
     }
 
     public BloodGroup getBloodGroup() {
@@ -348,28 +349,6 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Staff{" +
             "id=" + id +
-            ", staffId='" + staffId + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", user=" + user +
-            ", schoolInfo=" + schoolInfo +
-            ", type=" + type +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", country='" + country + '\'' +
-            ", joiningDate=" + joiningDate +
-            ", dateOfBirth=" + dateOfBirth +
-            ", bloodGroup='" + bloodGroup + '\'' +
-            ", primaryPhone='" + primaryPhone + '\'' +
-            ", secondaryPhone='" + secondaryPhone + '\'' +
-            ", accountName='" + accountName + '\'' +
-            ", accountNumber='" + accountNumber + '\'' +
-            ", ifscCode='" + ifscCode + '\'' +
             '}';
     }
 }
