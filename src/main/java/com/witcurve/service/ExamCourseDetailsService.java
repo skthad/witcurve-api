@@ -19,6 +19,8 @@ public interface ExamCourseDetailsService {
 
     List<ExamCourseDetailsDTO> getUpcomingExamCourseDetailsForStudent(Long studentId, LocalDate date) throws WitcurveException;
 
+    List<ExamCourseDetailsDTO> getDairyCourseDetailsForStudent(Long studentId, LocalDate date) throws WitcurveException;
+
     List<ExamCourseDetailsDTO> getExamCourseDetailsForStaffOnDate(Long staffId, LocalDate date) throws WitcurveException;
 
     List<ExamCourseDetailsDTO> getExamCourseDetailsOnAGivenMonthForStaff(Long staffId, Integer month, Integer year) throws WitcurveException;
