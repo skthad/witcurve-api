@@ -1,13 +1,10 @@
 package com.witcurve.service.mapper;
 
-import com.witcurve.domain.Message;
 import com.witcurve.domain.MessageThread;
 import com.witcurve.domain.User;
 import com.witcurve.service.dto.MessageThreadDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
-import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {MessageMapper.class, LeaveApplicationMapper.class,
 CourseTeacherMapper.class, GuardianMapper.class})
@@ -18,7 +15,6 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
     @Mapping(source = "toUser.id", target = "toUserId")
     @Mapping(source = "courseTeacher", target = "courseTeacherDTO")
     @Mapping(source = "leaveApplication", target = "leaveApplicationDTO")
-    @Mapping(source = "guardian.id", target = "guardianId")
     @Mapping(target = "fromUserName", expression = "java(getUserName(messageThread.getFromUser()))")
     @Mapping(target = "toUserName", expression = "java(getUserName(messageThread.getToUser()))")
     MessageThreadDTO toDto(MessageThread messageThread);
@@ -28,7 +24,6 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
     @Mapping(source = "toUserId", target = "toUser")
     @Mapping(source = "courseTeacherDTO", target = "courseTeacher")
     @Mapping(source = "leaveApplicationDTO", target = "leaveApplication")
-    @Mapping(source = "guardianId", target = "guardian")
     MessageThread toEntity(MessageThreadDTO messageThreadDTO);
 
     default MessageThread fromId(Long id) {

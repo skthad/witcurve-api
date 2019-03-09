@@ -57,7 +57,6 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Institute{" +
             "id=" + id +
-            ", name='" + name + '\'' +
             '}';
     }
 }

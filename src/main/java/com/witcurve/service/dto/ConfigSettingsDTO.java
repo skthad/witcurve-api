@@ -5,9 +5,12 @@ import com.witcurve.domain.enumeration.ConfigFieldType;
 import com.witcurve.domain.enumeration.ConfigType;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class ConfigSettingsDTO extends AbstractAuditingDTO {
+public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 

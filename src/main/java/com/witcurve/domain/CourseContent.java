@@ -19,9 +19,6 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
     @SequenceGenerator(name = "courseContentIdSeq", sequenceName="course_content_id_seq", allocationSize = 0)
     private Long id;
 
-    @Column
-    private String contentName;
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
@@ -36,6 +33,9 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
     private Integer contentOrder;
 
     @Column
+    private String contentName;
+
+    @Column
     private String description;
 
     public Long getId() {
@@ -44,14 +44,6 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getContentName() {
-        return contentName;
-    }
-
-    public void setContentName(String contentName) {
-        this.contentName = contentName;
     }
 
     public Course getCourse() {
@@ -76,6 +68,14 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     public void setContentOrder(Integer contentOrder) {
         this.contentOrder = contentOrder;
+    }
+
+    public String getContentName() {
+        return contentName;
+    }
+
+    public void setContentName(String contentName) {
+        this.contentName = contentName;
     }
 
     public String getDescription() {

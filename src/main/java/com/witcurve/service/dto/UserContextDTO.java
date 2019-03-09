@@ -12,6 +12,8 @@ import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserContextDTO {
 
+    private static final long serialVersionUID = 1L;
+
     private UserDTO currentUser;
 
     private TermDTO currentTerm;

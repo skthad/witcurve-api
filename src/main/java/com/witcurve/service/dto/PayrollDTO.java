@@ -4,22 +4,25 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.ModeOfPayment;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-public class PayrollDTO extends AbstractAuditingDTO {
+public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
     private PayrollDetailsDTO payrollDetails;
 
-    private Integer checkNumber;
-
     @NotNull
     private ModeOfPayment modeOfPayment;
+
+    private Integer checkNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate initiatedOn;
@@ -46,20 +49,20 @@ public class PayrollDTO extends AbstractAuditingDTO {
         this.payrollDetails = payrollDetails;
     }
 
-    public Integer getCheckNumber() {
-        return checkNumber;
-    }
-
-    public void setCheckNumber(Integer checkNumber) {
-        this.checkNumber = checkNumber;
-    }
-
     public ModeOfPayment getModeOfPayment() {
         return modeOfPayment;
     }
 
     public void setModeOfPayment(ModeOfPayment modeOfPayment) {
         this.modeOfPayment = modeOfPayment;
+    }
+
+    public Integer getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(Integer checkNumber) {
+        this.checkNumber = checkNumber;
     }
 
     public LocalDate getInitiatedOn() {

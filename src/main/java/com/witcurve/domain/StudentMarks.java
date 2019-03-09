@@ -32,7 +32,9 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     private ExamCourseDetails examCourseDetails;
 
-    private Boolean published;
+    @NotNull
+    @Column(name = "published", nullable = false, columnDefinition = "boolean default false")
+    private Boolean published = false;
 
     public Long getId() {
         return id;
@@ -58,20 +60,20 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
         this.event = event;
     }
 
-    public ExamCourseDetails getExamCourseDetails() {
-        return examCourseDetails;
-    }
-
-    public void setExamCourseDetails(ExamCourseDetails examCourseDetails) {
-        this.examCourseDetails = examCourseDetails;
-    }
-
     public Integer getMarks() {
         return marks;
     }
 
     public void setMarks(Integer marks) {
         this.marks = marks;
+    }
+
+    public ExamCourseDetails getExamCourseDetails() {
+        return examCourseDetails;
+    }
+
+    public void setExamCourseDetails(ExamCourseDetails examCourseDetails) {
+        this.examCourseDetails = examCourseDetails;
     }
 
     public Boolean getPublished() {
@@ -100,11 +102,6 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     public String toString() {
         return "StudentMarks{" +
             "id=" + id +
-            ", student=" + student +
-            ", event=" + event +
-            ", marks=" + marks +
-            ", examCourseDetails=" + examCourseDetails +
-            ", published=" + published +
             '}';
     }
 }

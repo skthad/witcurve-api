@@ -1,13 +1,14 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.AbstractAuditingEntity;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class StaffEligibilityDTO extends AbstractAuditingEntity implements Serializable {
+public class StaffEligibilityDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 

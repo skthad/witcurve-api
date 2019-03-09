@@ -17,8 +17,17 @@ public class School extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Institute institute;
+
+    @NotNull
     @Column(nullable = false)
     private String name;
+
+    @NotNull
+    @Column(name="affiliation_id", length = 50, unique = true, nullable = false)
+    private String affiliationId;
 
     @NotNull
     @Column(nullable = false)
@@ -43,10 +52,6 @@ public class School extends AbstractAuditingEntity implements Serializable {
     private String pincode;
 
     @NotNull
-    @Column(name="affiliation_id", length = 50, unique = true, nullable = false)
-    private String affiliationId;
-
-    @NotNull
     @Column(name="primary_phone", length = 50, nullable = false)
     private String primaryPhone;
 
@@ -63,11 +68,6 @@ public class School extends AbstractAuditingEntity implements Serializable {
     @Column(name="fax", length = 50)
     private String fax;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Institute institute;
-
     public Long getId() {
         return id;
     }
@@ -76,12 +76,28 @@ public class School extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
+    public Institute getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(Institute institute) {
+        this.institute = institute;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAffiliationId() {
+        return affiliationId;
+    }
+
+    public void setAffiliationId(String affiliationId) {
+        this.affiliationId = affiliationId;
     }
 
     public String getAddress1() {
@@ -140,14 +156,6 @@ public class School extends AbstractAuditingEntity implements Serializable {
         this.pincode = pincode;
     }
 
-    public String getAffiliationId() {
-        return affiliationId;
-    }
-
-    public void setAffiliationId(String affiliationId) {
-        this.affiliationId = affiliationId;
-    }
-
     public String getPrimaryPhone() {
         return primaryPhone;
     }
@@ -188,14 +196,6 @@ public class School extends AbstractAuditingEntity implements Serializable {
         this.fax = fax;
     }
 
-    public Institute getInstitute() {
-        return institute;
-    }
-
-    public void setInstitute(Institute institute) {
-        this.institute = institute;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -214,20 +214,6 @@ public class School extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "School{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", country='" + country + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", affiliationId='" + affiliationId + '\'' +
-            ", primaryPhone='" + primaryPhone + '\'' +
-            ", secondaryPhone='" + secondaryPhone + '\'' +
-            ", primaryEmail='" + primaryEmail + '\'' +
-            ", secondaryEmail='" + secondaryEmail + '\'' +
-            ", fax='" + fax + '\'' +
             '}';
     }
 }
