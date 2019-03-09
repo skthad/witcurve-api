@@ -63,12 +63,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private String password;
 
     @NotNull
-    @Column(name = "first_time_login", nullable = false, columnDefinition = "boolean default true")
+    @Column(nullable = false)
     private Boolean firstTimeLogin = true;
 
     @NotNull
-    @Column(name = "activated", nullable = false, columnDefinition = "boolean default false")
-    private Boolean activated = false;
+    @Column(nullable = false)
+    private boolean activated = false;
 
     @Size(min = 2, max = 6)
     @Column(name = "lang_key", length = 6)

@@ -36,8 +36,6 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private String employeeId;
 
-    private String highestEducationalQualification;
-
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate joiningDate;
@@ -154,14 +152,6 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public String getHighestEducationalQualification() {
-        return highestEducationalQualification;
-    }
-
-    public void setHighestEducationalQualification(String highestEducationalQualification) {
-        this.highestEducationalQualification = highestEducationalQualification;
     }
 
     public LocalDate getJoiningDate() {

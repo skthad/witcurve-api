@@ -42,9 +42,6 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(name = "employee_id", nullable = false)
     private String employeeId;
 
-    @Column
-    private String highestEducationalQualification;
-
     @NotNull
     @Column
     @Convert(converter = LocalDateConverter.class)
@@ -156,14 +153,6 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
-    }
-
-    public String getHighestEducationalQualification() {
-        return highestEducationalQualification;
-    }
-
-    public void setHighestEducationalQualification(String highestEducationalQualification) {
-        this.highestEducationalQualification = highestEducationalQualification;
     }
 
     public LocalDate getJoiningDate() {

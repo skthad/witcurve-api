@@ -1,7 +1,6 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.witcurve.domain.Keyword;
 import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
