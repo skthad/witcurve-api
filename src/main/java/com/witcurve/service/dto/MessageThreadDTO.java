@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
 
@@ -10,6 +11,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class MessageThreadDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -43,6 +46,7 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     private String toUserName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate meetingDate;
 
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")

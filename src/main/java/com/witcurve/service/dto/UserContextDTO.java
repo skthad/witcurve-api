@@ -1,10 +1,13 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserContextDTO {
@@ -25,9 +28,16 @@ public class UserContextDTO {
 
     private Map<Long, List<CourseDTO>> standardCourseMap;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentSessionStartDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentSessionEndDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentTermStartDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentTermEndDate;
 
     private long totalCalendarDaysInSession;

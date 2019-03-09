@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.Keyword;
 import com.witcurve.domain.enumeration.AttendanceType;
 import com.witcurve.domain.enumeration.EventType;
@@ -10,6 +11,8 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class EventDTO extends AbstractAuditingDTO {
 
@@ -24,6 +27,7 @@ public class EventDTO extends AbstractAuditingDTO {
     private EventType type;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate date;
 
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
@@ -59,6 +63,10 @@ public class EventDTO extends AbstractAuditingDTO {
     private Integer fullMarks;
 
     private List<Keyword> keywords;
+
+    private String standardName;
+
+    private String signature;
 
     public Long getId() {
         return id;
@@ -228,6 +236,22 @@ public class EventDTO extends AbstractAuditingDTO {
         this.keywords = keywords;
     }
 
+    public String getStandardName() {
+        return standardName;
+    }
+
+    public void setStandardName(String standardName) {
+        this.standardName = standardName;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -252,7 +276,7 @@ public class EventDTO extends AbstractAuditingDTO {
             ", eventStartTime='" + eventStartTime + '\'' +
             ", eventEndTime='" + eventEndTime + '\'' +
             ", studentId=" + studentId +
-            ", studentName=" + studentName +
+            ", studentName='" + studentName + '\'' +
             ", standardId=" + standardId +
             ", staffId=" + staffId +
             ", staffName='" + staffName + '\'' +
@@ -265,6 +289,8 @@ public class EventDTO extends AbstractAuditingDTO {
             ", attendanceType=" + attendanceType +
             ", fullMarks=" + fullMarks +
             ", keywords=" + keywords +
+            ", standardName='" + standardName + '\'' +
+            ", signature='" + signature + '\'' +
             '}';
     }
 }

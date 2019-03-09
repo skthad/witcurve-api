@@ -2,6 +2,7 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Event;
 import com.witcurve.domain.Staff;
+import com.witcurve.domain.Standard;
 import com.witcurve.domain.Student;
 import com.witcurve.service.dto.EventDTO;
 import org.mapstruct.Mapper;
@@ -24,6 +25,7 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(target = "staffName", expression = "java(getStaffName(event.getStaff()))")
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "studentName", expression = "java(getStudentName(event.getStudent()))")
+    @Mapping(target = "standardName", expression = "java(getStandardName(event.getStandard()))")
     EventDTO toDto(Event event);
 
     default Event fromId(Long id) {
@@ -57,6 +59,17 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
                 result += staff.getMiddleName() + " ";
             }
             result += staff.getLastName();
+            return result;
+        } else {
+            return null;
+        }
+    }
+
+    default String getStandardName(Standard standard) {
+        String result = "";
+        if(standard != null) {
+            result += standard.getGrade() + " ";
+            result += standard.getSection();
             return result;
         } else {
             return null;
