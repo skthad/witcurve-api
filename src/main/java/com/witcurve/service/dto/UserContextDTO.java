@@ -9,6 +9,8 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserContextDTO {
 
+    private static final long serialVersionUID = 1L;
+
     private UserDTO currentUser;
 
     private TermDTO currentTerm;

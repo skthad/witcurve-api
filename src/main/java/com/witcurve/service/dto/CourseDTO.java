@@ -3,18 +3,17 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CourseDTO extends AbstractAuditingDTO {
+public class CourseDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
-    private String courseCode;
-
-    private String description;
-
-    private Boolean eligibleForSubstitute;
+    private Long schoolInfoId;
 
     @NotNull
     private Grade grade;
@@ -23,7 +22,12 @@ public class CourseDTO extends AbstractAuditingDTO {
     private String masterSubject;
 
     @NotNull
-    private Long schoolInfoId;
+    private String courseCode;
+
+    private String description;
+
+    @NotNull
+    private Boolean eligibleForSubstitute = false;
 
     @NotNull
     private Boolean active = true;
@@ -34,6 +38,30 @@ public class CourseDTO extends AbstractAuditingDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getSchoolInfoId() {
+        return schoolInfoId;
+    }
+
+    public void setSchoolInfoId(Long schoolInfoId) {
+        this.schoolInfoId = schoolInfoId;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public String getMasterSubject() {
+        return masterSubject;
+    }
+
+    public void setMasterSubject(String masterSubject) {
+        this.masterSubject = masterSubject;
     }
 
     public String getCourseCode() {
@@ -58,30 +86,6 @@ public class CourseDTO extends AbstractAuditingDTO {
 
     public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
         this.eligibleForSubstitute = eligibleForSubstitute;
-    }
-
-    public Grade getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Grade grade) {
-        this.grade = grade;
-    }
-
-    public String getMasterSubject() {
-        return masterSubject;
-    }
-
-    public void setMasterSubject(String name) {
-        this.masterSubject = name;
-    }
-
-    public Long getSchoolInfoId() {
-        return schoolInfoId;
-    }
-
-    public void setSchoolInfoId(Long schoolInfoId) {
-        this.schoolInfoId = schoolInfoId;
     }
 
     public Boolean getActive() {
@@ -110,13 +114,6 @@ public class CourseDTO extends AbstractAuditingDTO {
     public String toString() {
         return "CourseDTO{" +
             "id=" + id +
-            ", courseCode='" + courseCode + '\'' +
-            ", description='" + description + '\'' +
-            ", eligibleForSubstitute=" + eligibleForSubstitute +
-            ", grade=" + grade +
-            ", masterSubject='" + masterSubject + '\'' +
-            ", schoolInfoId=" + schoolInfoId +
-            ", active=" + active +
             '}';
     }
 }

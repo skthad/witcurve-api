@@ -1,14 +1,14 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CourseContentDTO extends AbstractAuditingDTO {
+public class CourseContentDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
-
-    private String contentName;
 
     @NotNull
     private Long courseId;
@@ -18,11 +18,11 @@ public class CourseContentDTO extends AbstractAuditingDTO {
     @NotNull
     private Integer contentOrder;
 
-    private String index;
+    private String contentName;
 
     private String description;
 
-    private List<CourseContentDTO> subTopics;
+    private String index;
 
     public Long getId() {
         return id;
@@ -78,14 +78,6 @@ public class CourseContentDTO extends AbstractAuditingDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<CourseContentDTO> getSubTopics() {
-        return subTopics;
-    }
-
-    public void setSubTopics(List<CourseContentDTO> subTopics) {
-        this.subTopics = subTopics;
     }
 
     @Override

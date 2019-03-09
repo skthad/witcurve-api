@@ -5,24 +5,27 @@ import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.domain.Staff;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-public class SubstitutionDTO extends AbstractAuditingDTO {
+public class SubstitutionDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
-    private SlotCourseDetails scd;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate date;
 
     @NotNull
     private Staff teacher;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate date;
+    private SlotCourseDetails scd;
 
     public Long getId() {
         return id;
@@ -32,12 +35,12 @@ public class SubstitutionDTO extends AbstractAuditingDTO {
         this.id = id;
     }
 
-    public SlotCourseDetails getScd() {
-        return scd;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setScd(SlotCourseDetails scd) {
-        this.scd = scd;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Staff getTeacher() {
@@ -48,12 +51,12 @@ public class SubstitutionDTO extends AbstractAuditingDTO {
         this.teacher = teacher;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public SlotCourseDetails getScd() {
+        return scd;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setScd(SlotCourseDetails scd) {
+        this.scd = scd;
     }
 
     @Override

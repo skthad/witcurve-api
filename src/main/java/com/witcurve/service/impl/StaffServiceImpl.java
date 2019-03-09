@@ -47,7 +47,7 @@ public class StaffServiceImpl implements StaffService {
     public StaffDTO create(StaffDTO staffDTO) {
         log.debug("Request to create staff : {}", staffDTO);
         UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
         userDTO.setType(UserType.STAFF);
@@ -68,7 +68,7 @@ public class StaffServiceImpl implements StaffService {
             throw new WitcurveException("There is no user with given id : "+staffDTO.getUserId());
         }
         UserDTO userDTO = userMapper.userToUserDTO(user.get());
-        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
         userDTO.addAuthority("ROLE_TEACHING");

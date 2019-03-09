@@ -22,14 +22,9 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(nullable = false, length = 50, name = "course_code")
-    private String courseCode;
-
-    @Column
-    private String description;
-
-    @Column
-    private Boolean eligibleForSubstitute = true;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private SchoolInfo schoolInfo;
 
     @NotNull
     @Column(nullable = false)
@@ -42,9 +37,15 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     private MasterSubject masterSubject;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private SchoolInfo schoolInfo;
+    @Column(nullable = false, length = 50, name = "course_code")
+    private String courseCode;
+
+    @Column
+    private String description;
+
+    @NotNull
+    @Column(name = "eligible_for_substitute", nullable = false, columnDefinition = "boolean default false")
+    private Boolean eligibleForSubstitute = false;
 
     @NotNull
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
@@ -56,6 +57,30 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public MasterSubject getMasterSubject() {
+        return masterSubject;
+    }
+
+    public void setMasterSubject(MasterSubject masterSubject) {
+        this.masterSubject = masterSubject;
     }
 
     public String getCourseCode() {
@@ -80,30 +105,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
         this.eligibleForSubstitute = eligibleForSubstitute;
-    }
-
-    public MasterSubject getMasterSubject() {
-        return masterSubject;
-    }
-
-    public void setMasterSubject(MasterSubject masterSubject) {
-        this.masterSubject = masterSubject;
-    }
-
-    public Grade getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Grade grade) {
-        this.grade = grade;
-    }
-
-    public SchoolInfo getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfo schoolInfo) {
-        this.schoolInfo = schoolInfo;
     }
 
     public Boolean getActive() {

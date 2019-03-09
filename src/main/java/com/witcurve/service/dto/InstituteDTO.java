@@ -1,9 +1,12 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class InstituteDTO extends AbstractAuditingDTO {
+public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -47,7 +50,6 @@ public class InstituteDTO extends AbstractAuditingDTO {
     public String toString() {
         return "InstituteDTO{" +
             "id=" + id +
-            ", name='" + name + '\'' +
             '}';
     }
 }

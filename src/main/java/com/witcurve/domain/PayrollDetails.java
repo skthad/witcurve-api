@@ -254,7 +254,6 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     public String toString() {
         return "PayrollDetails{" +
             "id=" + id +
-            ", staffId='" + staff.getId() + '\'' +
             '}';
     }
 }

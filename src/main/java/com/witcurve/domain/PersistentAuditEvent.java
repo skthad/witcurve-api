@@ -1,5 +1,7 @@
 package com.witcurve.domain;
 
+import com.witcurve.service.util.InstantTimeConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -29,6 +31,7 @@ public class PersistentAuditEvent implements Serializable {
     private String principal;
 
     @Column(name = "event_date")
+    @Convert(converter = InstantTimeConverter.class)
     private Instant auditEventDate;
 
     @Column(name = "event_type")
