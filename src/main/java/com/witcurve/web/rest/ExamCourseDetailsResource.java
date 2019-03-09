@@ -151,7 +151,13 @@ public class ExamCourseDetailsResource {
                 throw new WitcurveException("There should be eventDate param for Upcoming Events view");
             }
             result = examCourseDetailsService.getUpcomingExamCourseDetailsForStaff(staffId, eventDate);
+        } else if(ViewType.DIARY.equals(type)) {
+            if (eventDate == null) {
+                throw new WitcurveException("There should be eventDate param for Upcoming Events view");
+            }
+            result = examCourseDetailsService.getUpcomingExamCourseDetailsForStaff(staffId, eventDate);
         }
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

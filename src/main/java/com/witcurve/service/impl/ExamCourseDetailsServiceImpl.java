@@ -120,7 +120,7 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
 
     @Override
     public List<ExamCourseDetailsDTO> getDairyCourseDetailsForStudent(Long studentId, LocalDate date) throws WitcurveException {
-        log.debug("Request to get list of a upcoming examCourseDetails for given student with id : {} and from date : {}", studentId, date);
+        log.debug("Request to get list of a diary examCourseDetails for given student with id : {} and from date : {}", studentId, date);
         StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
         Grade grade = studentStandardDTO.getStandard().getGrade();
         LocalDate startDate = date.minusDays(6);
@@ -165,7 +165,7 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
 
     @Override
     public List<ExamCourseDetailsDTO> getUpcomingExamCourseDetailsForStaff(Long staffId, LocalDate date) throws WitcurveException {
-        log.debug("Request to get list of a week examCourseDetails for given staff with id : {} and from date : {}", staffId, date);
+        log.debug("Request to get list of a upcoming examCourseDetails for given staff with id : {} and from date : {}", staffId, date);
         LocalDate endDate = date.plusDays(6);
         List<ExamCourseDetails> result = new ArrayList<>();
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
@@ -176,6 +176,23 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
             result = examCourseDetailsRepository.findByCoursesBetweenDateOrderByGsdStart(new ArrayList<>(couseIds), date, endDate);
+        }
+        return examCourseDetailsMapper.toDto(result);
+    }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getDiaryExamCourseDetailsForStaff(Long staffId, LocalDate date) throws WitcurveException {
+        log.debug("Request to get list of a diary examCourseDetails for given staff with id : {} and from date : {}", staffId, date);
+        LocalDate startDate = date.minusDays(6);
+        List<ExamCourseDetails> result = new ArrayList<>();
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if(courseTeachers.size()!=0) {
+            Set<Long> couseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+            result = examCourseDetailsRepository.findByCoursesBetweenDateOrderByGsdStart(new ArrayList<>(couseIds), startDate, date);
         }
         return examCourseDetailsMapper.toDto(result);
     }
