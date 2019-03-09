@@ -110,12 +110,23 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
 
     @Override
     public List<ExamCourseDetailsDTO> getUpcomingExamCourseDetailsForStudent(Long studentId, LocalDate date) throws WitcurveException {
-        log.debug("Request to get list of a week examCourseDetails for given student with id : {} and from date : {}", studentId, date);
+        log.debug("Request to get list of a upcoming examCourseDetails for given student with id : {} and from date : {}", studentId, date);
         StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
         Grade grade = studentStandardDTO.getStandard().getGrade();
         LocalDate endDate = date.plusDays(6);
         List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, endDate);
         return examCourseDetailsMapper.toDto(examCourseDetails);
+    }
+
+    @Override
+    public List<ExamCourseDetailsDTO> getDairyCourseDetailsForStudent(Long studentId, LocalDate date) throws WitcurveException {
+        log.debug("Request to get list of a upcoming examCourseDetails for given student with id : {} and from date : {}", studentId, date);
+        StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
+        Grade grade = studentStandardDTO.getStandard().getGrade();
+        LocalDate startDate = date.minusDays(6);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, startDate, date);
+        return examCourseDetailsMapper.toDto(examCourseDetails);
+
     }
 
     @Override
