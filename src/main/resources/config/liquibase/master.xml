@@ -80,6 +80,7 @@
     <include file="config/liquibase/changelog/20190224132109_added_active_to_course_and_changed_unique_constraint.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190224145753_added_active_in_standard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190306122140_added_aadhaar_and_pan.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190309141701_added_signature_to_Event.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

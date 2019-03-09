@@ -373,6 +373,8 @@ public class EventServiceImpl implements EventService {
                 Long standardId = studentStandard.getStandard().getId();
                 Grade grade = studentStandard.getStandard().getGrade();
                 result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, startDate, endDate, pageable);
+            } else {
+                throw new WitcurveException("This student doesn't belong to any standard"+ studentId);
             }
         }
         if (staffId != null) {
