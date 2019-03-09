@@ -89,6 +89,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     private Integer fullMarks;
 
+    @Column
+    private String signature;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "event_keyword",
@@ -250,6 +253,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
         this.keywords = keywords;
     }
 
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -285,6 +296,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
             ", sendSms=" + sendSms +
             ", attendanceType=" + attendanceType +
             ", fullMarks=" + fullMarks +
+            ", signature='" + signature + '\'' +
             ", keywords=" + keywords +
             '}';
     }

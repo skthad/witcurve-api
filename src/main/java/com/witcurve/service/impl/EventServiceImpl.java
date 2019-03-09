@@ -539,6 +539,9 @@ public class EventServiceImpl implements EventService {
                     if(!standard.isPresent()) {
                         throw new WitcurveException("No standard found with id :" + eventDTO.getStandardId());
                     }
+                    if(eventDTO.getSignature() == null) {
+                        throw new WitcurveException("Please enter the signature field");
+                    }
                 }
             }
         }

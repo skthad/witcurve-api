@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.Reason;
 
@@ -8,6 +9,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -30,9 +33,11 @@ public class LeaveApplicationDTO extends AbstractAuditingDTO implements Serializ
     private Long appliedStudentId;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate fromLeaveDate;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate toLeaveDate;
 
     private List<Long> eventIds;
