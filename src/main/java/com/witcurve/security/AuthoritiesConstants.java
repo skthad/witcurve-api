@@ -1,15 +1,30 @@
 package com.witcurve.security;
 
 /**
- * Constants for Spring Security authorities.
+ * Constants for WitCurve authorities used in Spring Security.
  */
 public final class AuthoritiesConstants {
 
-    public static final String ADMIN = "ROLE_ADMIN";
+    // never visible in UI. One user across the whole database will have this role.
+    public static final String SUPER_ADMIN = "SuperAdmin";
 
-    public static final String USER = "ROLE_USER";
+    // never visible in UI. One InstituteAdmin per institute.
+    public static final String INSTITUTE_ADMIN = "InstituteAdmin";
 
-    public static final String ANONYMOUS = "ROLE_ANONYMOUS";
+    // never visible in UI. Automatically for students, this role will be assigned.
+    public static final String PARENT = "Parent";
+
+    // never visible on UI. Automatically for Staff type 'TEACHING', this role should be assigned
+    public static final String FACULTY = "Faculty";
+
+    // no permission can be assigned to user with this authority. Such users are not supposed to access the application anyways
+    public static final String GROUND_STAFF = "GroundStaff";
+
+    // non-editable list of authorities visible in all institutes
+    public static final String HR_MANAGER = "HRManager";
+    public static final String STUDENT_MANAGER = "StudentManager";
+    public static final String ACADEMICS_MANAGER = "AcademicsManager";
+    public static final String CURRICULUM_MANAGER = "CurriculumManager";
 
     private AuthoritiesConstants() {
     }

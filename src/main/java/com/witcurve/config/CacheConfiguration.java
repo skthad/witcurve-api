@@ -40,7 +40,9 @@ public class CacheConfiguration {
             cm.createCache(com.witcurve.domain.Event.class.getName(), jcacheConfiguration);
             cm.createCache(com.witcurve.domain.Keyword.class.getName(), jcacheConfiguration);
             cm.createCache(com.witcurve.domain.Authority.class.getName(), jcacheConfiguration);
+            cm.createCache(com.witcurve.domain.Permission.class.getName(), jcacheConfiguration);
             cm.createCache(com.witcurve.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(com.witcurve.domain.Authority.class.getName() + ".permissions", jcacheConfiguration);
             cm.createCache(com.witcurve.domain.Event.class.getName() + ".keywords", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
