@@ -63,6 +63,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     SlotCourseDetailsService slotCourseDetailsService;
 
+    @Autowired
+    KeywordRepository keywordRepository;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
 
@@ -87,8 +90,20 @@ public class EventServiceImpl implements EventService {
             String bindingId = UUID.randomUUID().toString();
             for(EventDTO eventDTO : eventDTOs) {
                 eventDTO.setBindingId(bindingId);
+                if(eventDTO.getKeywords()!= null) {
+                    for (String keyword : eventDTO.getKeywords()) {
+                        keywordRepository.save(new Keyword(keyword));
+                    }
+                }
+            }
+        } else {
+            if(eventDTOs.get(0).getKeywords()!= null) {
+                for (String keyword : eventDTOs.get(0).getKeywords()) {
+                    keywordRepository.save(new Keyword(keyword));
+                }
             }
         }
+
         List<Event> events = eventMapper.toEntity(eventDTOs);
         events = eventRepository.saveAll(events);
         for(int i=0;i<events.size();i++){

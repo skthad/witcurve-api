@@ -62,7 +62,7 @@ public class EventDTO extends AbstractAuditingDTO {
 
     private Integer fullMarks;
 
-    private List<Keyword> keywords;
+    private List<String> keywords;
 
     private String standardName;
 
@@ -228,11 +228,11 @@ public class EventDTO extends AbstractAuditingDTO {
         this.fullMarks = fullMarks;
     }
 
-    public List<Keyword> getKeywords() {
+    public List<String> getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(List<Keyword> keywords) {
+    public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
     }
 

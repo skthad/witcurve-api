@@ -89,6 +89,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     private Integer fullMarks;
 
+    @ManyToMany(cascade = CascadeType.MERGE)
     @Column
     private String signature;
 

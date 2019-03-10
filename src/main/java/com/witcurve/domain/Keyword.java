@@ -1,5 +1,8 @@
 package com.witcurve.domain;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,9 +13,17 @@ import java.util.Objects;
 
 @Entity
 @Table(name="keyword")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Keyword implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public Keyword(@NotNull String name) {
+        this.name = name;
+    }
+
+    public Keyword() {
+    }
 
     @Id
     @NotNull

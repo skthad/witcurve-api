@@ -1,12 +1,15 @@
 package com.witcurve.service.mapper;
 
-import com.witcurve.domain.Event;
-import com.witcurve.domain.Staff;
-import com.witcurve.domain.Standard;
-import com.witcurve.domain.Student;
+import com.witcurve.domain.*;
+import com.witcurve.domain.Keyword;
 import com.witcurve.service.dto.EventDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {StandardMapper.class, StaffMapper.class,
     AcademicSessionMapper.class, StudentMapperLite.class, SlotCourseDetailsMapper.class,
@@ -17,6 +20,7 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(source = "standardId", target = "standard")
     @Mapping(source = "staffId", target = "staff")
     @Mapping(source = "studentId", target = "student")
+    @Mapping(target = "keywords", expression = "java(getKeywords(eventDTO.getKeywords()))")
     Event toEntity(EventDTO eventDTO);
 
     @Mapping(target = "schoolInfoId", source = "schoolInfo.id")
@@ -26,6 +30,7 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "studentName", expression = "java(getStudentName(event.getStudent()))")
     @Mapping(target = "standardName", expression = "java(getStandardName(event.getStandard()))")
+    @Mapping(target = "keywords", expression = "java(getKeywordNames(event.getKeywords()))")
     EventDTO toDto(Event event);
 
     default Event fromId(Long id) {
@@ -74,5 +79,27 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
         } else {
             return null;
         }
+    }
+
+    default Set<Keyword> getKeywords(List<String> keywords) {
+        if(keywords == null || keywords.size()==0) {
+            return null;
+        }
+        Set<Keyword> result = new HashSet<>();
+        for(String keyword : keywords) {
+            result.add(new Keyword(keyword));
+        }
+        return result;
+    }
+
+    default List<String> getKeywordNames(Set<Keyword> keywords) {
+        if(keywords == null || keywords.size()==0) {
+            return null;
+        }
+        List<String> result = new ArrayList<>();
+        for(Keyword keyword : keywords) {
+            result.add(keyword.getName());
+        }
+        return result;
     }
 }
