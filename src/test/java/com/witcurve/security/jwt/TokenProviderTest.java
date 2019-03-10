@@ -82,7 +82,7 @@ public class TokenProviderTest {
 
     private Authentication createAuthentication() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.ANONYMOUS));
+        authorities.add(new SimpleGrantedAuthority(AuthoritiesConstants.PARENT));
         return new UsernamePasswordAuthenticationToken("anonymous", "anonymous", authorities);
     }
 

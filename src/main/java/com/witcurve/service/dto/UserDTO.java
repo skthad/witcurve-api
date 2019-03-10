@@ -48,6 +48,7 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Boolean firstTimeLogin = true;
 
+    @NotNull
     private boolean activated = false;
 
     @Size(min = 2, max = 6)
