@@ -55,7 +55,6 @@ public class UserJWTController {
 
         if(otp!= null && otp) {
             authentication = this.otpAuthenticationProvider.authenticate(authenticationToken);
-
         } else {
             authentication = this.authenticationManager.authenticate(authenticationToken);
         }

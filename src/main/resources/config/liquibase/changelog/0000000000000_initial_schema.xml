@@ -1558,4 +1558,9 @@
                   tableName="wc_authority_permission">
         </loadData>
     </changeSet>
+    <changeSet author="srujankumar (generated)" id="1552141030122-205">
+        <addColumn tableName="event">
+            <column name="signature" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
