@@ -1,102 +1,110 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="WitCurve (generated)" id="1552129645125-1">
+
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--<changeSet id="0000000000000" author="WitCurve">
+        <createSequence sequenceName="hibernate_sequence" startValue="1000" incrementBy="1"/>
+    </changeSet>-->
+    
+    <changeSet author="WitCurve (generated)" id="0000000000001-1">
         <createSequence sequenceName="academic_session_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-2">
+    <changeSet author="WitCurve (generated)" id="0000000000001-2">
         <createSequence sequenceName="config_settings_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-3">
+    <changeSet author="WitCurve (generated)" id="0000000000001-3">
         <createSequence sequenceName="course_content_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-4">
+    <changeSet author="WitCurve (generated)" id="0000000000001-4">
         <createSequence sequenceName="course_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-5">
+    <changeSet author="WitCurve (generated)" id="0000000000001-5">
         <createSequence sequenceName="course_teacher_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-6">
+    <changeSet author="WitCurve (generated)" id="0000000000001-6">
         <createSequence sequenceName="event_content_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-7">
+    <changeSet author="WitCurve (generated)" id="0000000000001-7">
         <createSequence sequenceName="event_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-8">
+    <changeSet author="WitCurve (generated)" id="0000000000001-8">
         <createSequence sequenceName="exam_course_details_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-9">
+    <changeSet author="WitCurve (generated)" id="0000000000001-9">
         <createSequence sequenceName="exam_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-10">
+    <changeSet author="WitCurve (generated)" id="0000000000001-10">
         <createSequence sequenceName="general_slot_details_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-11">
+    <changeSet author="WitCurve (generated)" id="0000000000001-11">
         <createSequence sequenceName="guardian_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-12">
+    <changeSet author="WitCurve (generated)" id="0000000000001-12">
         <createSequence sequenceName="instititute_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-13">
+    <changeSet author="WitCurve (generated)" id="0000000000001-13">
         <createSequence sequenceName="leave_application_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-14">
+    <changeSet author="WitCurve (generated)" id="0000000000001-14">
         <createSequence sequenceName="message_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-15">
+    <changeSet author="WitCurve (generated)" id="0000000000001-15">
         <createSequence sequenceName="message_thread_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-16">
+    <changeSet author="WitCurve (generated)" id="0000000000001-16">
         <createSequence sequenceName="payroll_cycle_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-17">
+    <changeSet author="WitCurve (generated)" id="0000000000001-17">
         <createSequence sequenceName="payroll_details_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-18">
+    <changeSet author="WitCurve (generated)" id="0000000000001-18">
         <createSequence sequenceName="payroll_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-19">
+    <changeSet author="WitCurve (generated)" id="0000000000001-19">
         <createSequence sequenceName="school_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-20">
+    <changeSet author="WitCurve (generated)" id="0000000000001-20">
         <createSequence sequenceName="school_info_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-21">
+    <changeSet author="WitCurve (generated)" id="0000000000001-21">
         <createSequence sequenceName="sibling_info_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-22">
+    <changeSet author="WitCurve (generated)" id="0000000000001-22">
         <createSequence sequenceName="slot_course_details_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-23">
+    <changeSet author="WitCurve (generated)" id="0000000000001-23">
         <createSequence sequenceName="staff_eligibility_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-24">
+    <changeSet author="WitCurve (generated)" id="0000000000001-24">
         <createSequence sequenceName="staff_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-25">
+    <changeSet author="WitCurve (generated)" id="0000000000001-25">
         <createSequence sequenceName="standard_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-26">
+    <changeSet author="WitCurve (generated)" id="0000000000001-26">
         <createSequence sequenceName="student_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-27">
+    <changeSet author="WitCurve (generated)" id="0000000000001-27">
         <createSequence sequenceName="student_marks_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-28">
+    <changeSet author="WitCurve (generated)" id="0000000000001-28">
         <createSequence sequenceName="student_standard_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-29">
+    <changeSet author="WitCurve (generated)" id="0000000000001-29">
         <createSequence sequenceName="substitution_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-30">
+    <changeSet author="WitCurve (generated)" id="0000000000001-30">
         <createSequence sequenceName="term_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-31">
+    <changeSet author="WitCurve (generated)" id="0000000000001-31">
         <createSequence sequenceName="user_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-32">
+    <changeSet author="WitCurve (generated)" id="0000000000001-32">
         <createSequence sequenceName="wc_persistent_audit_event_id_seq"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-33">
+    <changeSet author="WitCurve (generated)" id="0000000000001-33">
         <createTable tableName="academic_session">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -120,7 +128,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-34">
+    <changeSet author="WitCurve (generated)" id="0000000000001-34">
         <createTable tableName="config_settings">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -151,7 +159,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-35">
+    <changeSet author="WitCurve (generated)" id="0000000000001-35">
         <createTable tableName="course">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -185,7 +193,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-36">
+    <changeSet author="WitCurve (generated)" id="0000000000001-36">
         <createTable tableName="course_content">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -201,7 +209,7 @@
             <column name="description" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-37">
+    <changeSet author="WitCurve (generated)" id="0000000000001-37">
         <createTable tableName="course_teacher">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -228,7 +236,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-38">
+    <changeSet author="WitCurve (generated)" id="0000000000001-38">
         <createTable tableName="event">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -270,7 +278,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-39">
+    <changeSet author="WitCurve (generated)" id="0000000000001-39">
         <createTable tableName="event_content">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -291,7 +299,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-40">
+    <changeSet author="WitCurve (generated)" id="0000000000001-40">
         <createTable tableName="event_keyword">
             <column name="event_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -301,7 +309,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-41">
+    <changeSet author="WitCurve (generated)" id="0000000000001-41">
         <createTable tableName="exam">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -334,7 +342,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-42">
+    <changeSet author="WitCurve (generated)" id="0000000000001-42">
         <createTable tableName="exam_course_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -361,7 +369,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-43">
+    <changeSet author="WitCurve (generated)" id="0000000000001-43">
         <createTable tableName="general_slot_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -384,7 +392,7 @@
             <column name="exam_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-44">
+    <changeSet author="WitCurve (generated)" id="0000000000001-44">
         <createTable tableName="guardian">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -422,7 +430,7 @@
             <column name="ration_card_no" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-45">
+    <changeSet author="WitCurve (generated)" id="0000000000001-45">
         <createTable tableName="institute">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -440,14 +448,14 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-46">
+    <changeSet author="WitCurve (generated)" id="0000000000001-46">
         <createTable tableName="keyword">
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-47">
+    <changeSet author="WitCurve (generated)" id="0000000000001-47">
         <createTable tableName="leave_application">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -481,7 +489,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-48">
+    <changeSet author="WitCurve (generated)" id="0000000000001-48">
         <createTable tableName="leave_event">
             <column name="leave_application_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -491,14 +499,14 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-49">
+    <changeSet author="WitCurve (generated)" id="0000000000001-49">
         <createTable tableName="master_subject">
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-50">
+    <changeSet author="WitCurve (generated)" id="0000000000001-50">
         <createTable tableName="message">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -529,7 +537,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-51">
+    <changeSet author="WitCurve (generated)" id="0000000000001-51">
         <createTable tableName="message_thread">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -562,7 +570,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-52">
+    <changeSet author="WitCurve (generated)" id="0000000000001-52">
         <createTable tableName="payroll">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -586,7 +594,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-53">
+    <changeSet author="WitCurve (generated)" id="0000000000001-53">
         <createTable tableName="payroll_cycle">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -616,7 +624,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-54">
+    <changeSet author="WitCurve (generated)" id="0000000000001-54">
         <createTable tableName="payroll_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -659,7 +667,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-55">
+    <changeSet author="WitCurve (generated)" id="0000000000001-55">
         <createTable tableName="school">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -701,7 +709,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-56">
+    <changeSet author="WitCurve (generated)" id="0000000000001-56">
         <createTable tableName="school_info">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -725,7 +733,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-57">
+    <changeSet author="WitCurve (generated)" id="0000000000001-57">
         <createTable tableName="sibling_info">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -751,7 +759,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-58">
+    <changeSet author="WitCurve (generated)" id="0000000000001-58">
         <createTable tableName="slot_course_details">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -775,7 +783,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-59">
+    <changeSet author="WitCurve (generated)" id="0000000000001-59">
         <createTable tableName="staff">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -833,7 +841,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-60">
+    <changeSet author="WitCurve (generated)" id="0000000000001-60">
         <createTable tableName="staff_eligibility">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -857,7 +865,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-61">
+    <changeSet author="WitCurve (generated)" id="0000000000001-61">
         <createTable tableName="standard">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -883,7 +891,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-62">
+    <changeSet author="WitCurve (generated)" id="0000000000001-62">
         <createTable tableName="student">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -952,7 +960,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-63">
+    <changeSet author="WitCurve (generated)" id="0000000000001-63">
         <createTable tableName="student_marks">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -978,7 +986,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-64">
+    <changeSet author="WitCurve (generated)" id="0000000000001-64">
         <createTable tableName="student_standard">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1005,7 +1013,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-65">
+    <changeSet author="WitCurve (generated)" id="0000000000001-65">
         <createTable tableName="substitution">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1029,7 +1037,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-66">
+    <changeSet author="WitCurve (generated)" id="0000000000001-66">
         <createTable tableName="term">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1050,7 +1058,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-67">
+    <changeSet author="WitCurve (generated)" id="0000000000001-67">
         <createTable tableName="wc_authority">
             <column name="name" type="VARCHAR(50)">
                 <constraints nullable="false"/>
@@ -1058,7 +1066,7 @@
             <column name="display_name" type="VARCHAR(100)"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-68">
+    <changeSet author="WitCurve (generated)" id="0000000000001-68">
         <createTable tableName="wc_persistent_audit_event">
             <column name="event_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1070,7 +1078,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-69">
+    <changeSet author="WitCurve (generated)" id="0000000000001-69">
         <createTable tableName="wc_persistent_audit_evt_data">
             <column name="event_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1081,7 +1089,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-70">
+    <changeSet author="WitCurve (generated)" id="0000000000001-70">
         <createTable tableName="wc_user">
             <column name="id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1116,7 +1124,7 @@
             <column name="last_modified_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-71">
+    <changeSet author="WitCurve (generated)" id="0000000000001-71">
         <createTable tableName="wc_user_authority">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -1126,385 +1134,382 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-72">
+    <changeSet author="WitCurve (generated)" id="0000000000001-72">
         <addPrimaryKey columnNames="event_id, keyword_name" tableName="event_keyword"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-73">
+    <changeSet author="WitCurve (generated)" id="0000000000001-73">
         <addPrimaryKey columnNames="leave_application_id, event_id" tableName="leave_event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-74">
+    <changeSet author="WitCurve (generated)" id="0000000000001-74">
         <addPrimaryKey columnNames="event_id, name" tableName="wc_persistent_audit_evt_data"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-75">
+    <changeSet author="WitCurve (generated)" id="0000000000001-75">
         <addPrimaryKey columnNames="user_id, authority_name" tableName="wc_user_authority"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-76">
+    <changeSet author="WitCurve (generated)" id="0000000000001-76">
         <addPrimaryKey columnNames="id" constraintName="academic_sessionPK" tableName="academic_session"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-77">
+    <changeSet author="WitCurve (generated)" id="0000000000001-77">
         <addPrimaryKey columnNames="id" constraintName="config_settingsPK" tableName="config_settings"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-78">
+    <changeSet author="WitCurve (generated)" id="0000000000001-78">
         <addPrimaryKey columnNames="id" constraintName="coursePK" tableName="course"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-79">
+    <changeSet author="WitCurve (generated)" id="0000000000001-79">
         <addPrimaryKey columnNames="id" constraintName="course_contentPK" tableName="course_content"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-80">
+    <changeSet author="WitCurve (generated)" id="0000000000001-80">
         <addPrimaryKey columnNames="id" constraintName="course_teacherPK" tableName="course_teacher"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-81">
+    <changeSet author="WitCurve (generated)" id="0000000000001-81">
         <addPrimaryKey columnNames="id" constraintName="eventPK" tableName="event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-82">
+    <changeSet author="WitCurve (generated)" id="0000000000001-82">
         <addPrimaryKey columnNames="id" constraintName="event_contentPK" tableName="event_content"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-83">
+    <changeSet author="WitCurve (generated)" id="0000000000001-83">
         <addPrimaryKey columnNames="id" constraintName="examPK" tableName="exam"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-84">
+    <changeSet author="WitCurve (generated)" id="0000000000001-84">
         <addPrimaryKey columnNames="id" constraintName="exam_course_detailsPK" tableName="exam_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-85">
+    <changeSet author="WitCurve (generated)" id="0000000000001-85">
         <addPrimaryKey columnNames="id" constraintName="general_slot_detailsPK" tableName="general_slot_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-86">
+    <changeSet author="WitCurve (generated)" id="0000000000001-86">
         <addPrimaryKey columnNames="id" constraintName="guardianPK" tableName="guardian"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-87">
+    <changeSet author="WitCurve (generated)" id="0000000000001-87">
         <addPrimaryKey columnNames="id" constraintName="institutePK" tableName="institute"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-88">
+    <changeSet author="WitCurve (generated)" id="0000000000001-88">
         <addPrimaryKey columnNames="name" constraintName="keywordPK" tableName="keyword"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-89">
+    <changeSet author="WitCurve (generated)" id="0000000000001-89">
         <addPrimaryKey columnNames="id" constraintName="leave_applicationPK" tableName="leave_application"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-90">
+    <changeSet author="WitCurve (generated)" id="0000000000001-90">
         <addPrimaryKey columnNames="name" constraintName="master_subjectPK" tableName="master_subject"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-91">
+    <changeSet author="WitCurve (generated)" id="0000000000001-91">
         <addPrimaryKey columnNames="id" constraintName="messagePK" tableName="message"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-92">
+    <changeSet author="WitCurve (generated)" id="0000000000001-92">
         <addPrimaryKey columnNames="id" constraintName="message_threadPK" tableName="message_thread"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-93">
+    <changeSet author="WitCurve (generated)" id="0000000000001-93">
         <addPrimaryKey columnNames="id" constraintName="payrollPK" tableName="payroll"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-94">
+    <changeSet author="WitCurve (generated)" id="0000000000001-94">
         <addPrimaryKey columnNames="id" constraintName="payroll_cyclePK" tableName="payroll_cycle"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-95">
+    <changeSet author="WitCurve (generated)" id="0000000000001-95">
         <addPrimaryKey columnNames="id" constraintName="payroll_detailsPK" tableName="payroll_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-96">
+    <changeSet author="WitCurve (generated)" id="0000000000001-96">
         <addPrimaryKey columnNames="id" constraintName="schoolPK" tableName="school"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-97">
+    <changeSet author="WitCurve (generated)" id="0000000000001-97">
         <addPrimaryKey columnNames="id" constraintName="school_infoPK" tableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-98">
+    <changeSet author="WitCurve (generated)" id="0000000000001-98">
         <addPrimaryKey columnNames="id" constraintName="sibling_infoPK" tableName="sibling_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-99">
+    <changeSet author="WitCurve (generated)" id="0000000000001-99">
         <addPrimaryKey columnNames="id" constraintName="slot_course_detailsPK" tableName="slot_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-100">
+    <changeSet author="WitCurve (generated)" id="0000000000001-100">
         <addPrimaryKey columnNames="id" constraintName="staffPK" tableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-101">
+    <changeSet author="WitCurve (generated)" id="0000000000001-101">
         <addPrimaryKey columnNames="id" constraintName="staff_eligibilityPK" tableName="staff_eligibility"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-102">
+    <changeSet author="WitCurve (generated)" id="0000000000001-102">
         <addPrimaryKey columnNames="id" constraintName="standardPK" tableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-103">
+    <changeSet author="WitCurve (generated)" id="0000000000001-103">
         <addPrimaryKey columnNames="id" constraintName="studentPK" tableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-104">
+    <changeSet author="WitCurve (generated)" id="0000000000001-104">
         <addPrimaryKey columnNames="id" constraintName="student_marksPK" tableName="student_marks"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-105">
+    <changeSet author="WitCurve (generated)" id="0000000000001-105">
         <addPrimaryKey columnNames="id" constraintName="student_standardPK" tableName="student_standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-106">
+    <changeSet author="WitCurve (generated)" id="0000000000001-106">
         <addPrimaryKey columnNames="id" constraintName="substitutionPK" tableName="substitution"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-107">
+    <changeSet author="WitCurve (generated)" id="0000000000001-107">
         <addPrimaryKey columnNames="id" constraintName="termPK" tableName="term"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-108">
+    <changeSet author="WitCurve (generated)" id="0000000000001-108">
         <addPrimaryKey columnNames="name" constraintName="wc_authorityPK" tableName="wc_authority"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-109">
+    <changeSet author="WitCurve (generated)" id="0000000000001-109">
         <addPrimaryKey columnNames="event_id" constraintName="wc_persistent_audit_eventPK" tableName="wc_persistent_audit_event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-110">
+    <changeSet author="WitCurve (generated)" id="0000000000001-110">
         <addPrimaryKey columnNames="id" constraintName="wc_userPK" tableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-111">
+    <changeSet author="WitCurve (generated)" id="0000000000001-111">
         <addUniqueConstraint columnNames="leave_application_id" constraintName="UC_MESSAGE_THREADLEAVE_APPLICATION_ID_COL" tableName="message_thread"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-112">
+    <changeSet author="WitCurve (generated)" id="0000000000001-112">
         <addUniqueConstraint columnNames="affiliation_id" constraintName="UC_SCHOOLAFFILIATION_ID_COL" tableName="school"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-113">
+    <changeSet author="WitCurve (generated)" id="0000000000001-113">
         <addUniqueConstraint columnNames="class_teacher_id" constraintName="UC_STANDARDCLASS_TEACHER_ID_COL" tableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-114">
+    <changeSet author="WitCurve (generated)" id="0000000000001-114">
         <addUniqueConstraint columnNames="email" constraintName="UC_WC_USEREMAIL_COL" tableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-115">
+    <changeSet author="WitCurve (generated)" id="0000000000001-115">
         <addUniqueConstraint columnNames="login" constraintName="UC_WC_USERLOGIN_COL" tableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-116">
+    <changeSet author="WitCurve (generated)" id="0000000000001-116">
         <addUniqueConstraint columnNames="admission_id, school_info_id" constraintName="admission_school_info_id_UK" tableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-117">
+    <changeSet author="WitCurve (generated)" id="0000000000001-117">
         <addUniqueConstraint columnNames="board, medium, school_id" constraintName="board_medium_school_UK" tableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-118">
+    <changeSet author="WitCurve (generated)" id="0000000000001-118">
         <addUniqueConstraint columnNames="course_code, grade, school_info_id" constraintName="course_code_grade_school_info_id_UK" tableName="course"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-119">
+    <changeSet author="WitCurve (generated)" id="0000000000001-119">
         <addUniqueConstraint columnNames="course_id, parent_content_id, content_order" constraintName="course_parent_content_order_UK" tableName="course_content"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-120">
+    <changeSet author="WitCurve (generated)" id="0000000000001-120">
         <addUniqueConstraint columnNames="course_id, teacher_id, standard_id" constraintName="course_teacher_standard_UK" tableName="course_teacher"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-121">
+    <changeSet author="WitCurve (generated)" id="0000000000001-121">
         <addUniqueConstraint columnNames="gsd_id, date, course_id" constraintName="ecd_slot_date_course_UK" tableName="exam_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-122">
+    <changeSet author="WitCurve (generated)" id="0000000000001-122">
         <addUniqueConstraint columnNames="event_id, course_content_id" constraintName="event_content_id_UK" tableName="event_content"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-123">
+    <changeSet author="WitCurve (generated)" id="0000000000001-123">
         <addUniqueConstraint columnNames="grade, section, school_info_id" constraintName="grade_section_schoolInfo_UK" tableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-124">
+    <changeSet author="WitCurve (generated)" id="0000000000001-124">
         <addUniqueConstraint columnNames="name" constraintName="institute_name_UK" tableName="institute"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-125">
+    <changeSet author="WitCurve (generated)" id="0000000000001-125">
         <addUniqueConstraint columnNames="school_info_id, month, year" constraintName="payroll_cycle_school_info_month_year_UK" tableName="payroll_cycle"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-126">
+    <changeSet author="WitCurve (generated)" id="0000000000001-126">
         <addUniqueConstraint columnNames="scd_id, date" constraintName="scd_date_id_UK" tableName="substitution"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-127">
+    <changeSet author="WitCurve (generated)" id="0000000000001-127">
         <addUniqueConstraint columnNames="gsd_id, day_of_week" constraintName="scd_slot_day_UK" tableName="slot_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-128">
+    <changeSet author="WitCurve (generated)" id="0000000000001-128">
         <addUniqueConstraint columnNames="start_date, school_info_id" constraintName="session_start_date_school_info_id_UK" tableName="academic_session"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-129">
+    <changeSet author="WitCurve (generated)" id="0000000000001-129">
         <addUniqueConstraint columnNames="master_subject_name, staff_id, grade" constraintName="staff_eligibility_subject_staff_grade_UK" tableName="staff_eligibility"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-130">
+    <changeSet author="WitCurve (generated)" id="0000000000001-130">
         <addUniqueConstraint columnNames="staff_id, payroll_cycle_id" constraintName="staff_payroll_cycle_UK" tableName="payroll_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-131">
+    <changeSet author="WitCurve (generated)" id="0000000000001-131">
         <addUniqueConstraint columnNames="employee_id, school_info_id" constraintName="employee_school_info_id_UK" tableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-132">
+    <changeSet author="WitCurve (generated)" id="0000000000001-132">
         <addUniqueConstraint columnNames="student_id, standard_id" constraintName="student_standard_UK" tableName="student_standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-133">
+    <changeSet author="WitCurve (generated)" id="0000000000001-133">
         <addUniqueConstraint columnNames="start_date, session_id" constraintName="term_start_date_session_id_UK" tableName="term"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-134">
+    <changeSet author="WitCurve (generated)" id="0000000000001-134">
         <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="payroll_details" constraintName="FK1k2b8w88iroh77btb9uxfcih7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-135">
+    <changeSet author="WitCurve (generated)" id="0000000000001-135">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="wc_user_authority" constraintName="FK21ky41nj8qtpgknqt1f0plyjk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-136">
+    <changeSet author="WitCurve (generated)" id="0000000000001-136">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="academic_session" constraintName="FK2eu7xrd5gykudxd2chg0i32lp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-137">
+    <changeSet author="WitCurve (generated)" id="0000000000001-137">
         <addForeignKeyConstraint baseColumnNames="message_thread_id" baseTableName="message" constraintName="FK34fio3ckeu9d8o6nhgk8k3kxq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="message_thread"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-138">
+    <changeSet author="WitCurve (generated)" id="0000000000001-138">
         <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="course_teacher" constraintName="FK36p7krf88xq4n6rare0g23k2n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-139">
+    <changeSet author="WitCurve (generated)" id="0000000000001-139">
         <addForeignKeyConstraint baseColumnNames="exam_course_details_id" baseTableName="student_marks" constraintName="FK3m9k1yr3pbkrkkvg6jfehwvit" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-140">
+    <changeSet author="WitCurve (generated)" id="0000000000001-140">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="standard" constraintName="FK3wxoja42l83bnj2vu00vi93fr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-141">
+    <changeSet author="WitCurve (generated)" id="0000000000001-141">
         <addForeignKeyConstraint baseColumnNames="authority_name" baseTableName="wc_user_authority" constraintName="FK424xaxg1ma636j5ivmtt9jwi9" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="wc_authority"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-142">
+    <changeSet author="WitCurve (generated)" id="0000000000001-142">
         <addForeignKeyConstraint baseColumnNames="payroll_cycle_id" baseTableName="payroll_details" constraintName="FK48fensxrr27vtfa9ipgiqraye" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_cycle"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-143">
+    <changeSet author="WitCurve (generated)" id="0000000000001-143">
         <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="message" constraintName="FK4tatqxf6if2ubj6ackme8uqtc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-144">
+    <changeSet author="WitCurve (generated)" id="0000000000001-144">
         <addForeignKeyConstraint baseColumnNames="keyword_name" baseTableName="event_keyword" constraintName="FK5xxg1fejxxk596wg2l4gjpiah" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="keyword"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-145">
+    <changeSet author="WitCurve (generated)" id="0000000000001-145">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="event" constraintName="FK60ua7upltt4d7k4uqrg6b0vhq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-146">
+    <changeSet author="WitCurve (generated)" id="0000000000001-146">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_standard" constraintName="FK66sifxvykufthsqqmxn361ess" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-147">
+    <changeSet author="WitCurve (generated)" id="0000000000001-147">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="substitution" constraintName="FK6cu37sn92c14d7g17rw6lt5w2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-148">
+    <changeSet author="WitCurve (generated)" id="0000000000001-148">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="guardian" constraintName="FK6se6uphr11hxnhh62rrrymto6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-149">
+    <changeSet author="WitCurve (generated)" id="0000000000001-149">
         <addForeignKeyConstraint baseColumnNames="applied_student_id" baseTableName="leave_application" constraintName="FK6vqsed9cy9vs457hyqw05333" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-150">
+    <changeSet author="WitCurve (generated)" id="0000000000001-150">
         <addForeignKeyConstraint baseColumnNames="payroll_details_id" baseTableName="payroll" constraintName="FK7xbcnin67n2c6308pdi0uvf35" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-151">
-        <addForeignKeyConstraint baseColumnNames="guardian_id" baseTableName="message_thread" constraintName="FK8mw5pnu97iycrcu3a6yakyo0m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="guardian"/>
-    </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-152">
+    <changeSet author="WitCurve (generated)" id="0000000000001-151">
         <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="slot_course_details" constraintName="FK9y0yt7d4g5x592m3mv7ert0pc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-153">
+    <changeSet author="WitCurve (generated)" id="0000000000001-152">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="sibling_info" constraintName="FKa8rdoywjipg3yg66mb22w6krk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-154">
+    <changeSet author="WitCurve (generated)" id="0000000000001-153">
         <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="event" constraintName="FKacuuvjn9xmvvjtl0kx1lkkdlh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-155">
+    <changeSet author="WitCurve (generated)" id="0000000000001-154">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="exam" constraintName="FKb3atfb980yit73nespxeruiq8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-156">
+    <changeSet author="WitCurve (generated)" id="0000000000001-155">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="leave_event" constraintName="FKbexxlwmcx5aksx9lkj8v6n340" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-157">
+    <changeSet author="WitCurve (generated)" id="0000000000001-156">
         <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="message_thread" constraintName="FKbgrahylbbqkg2de7a1ifx93ih" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-158">
+    <changeSet author="WitCurve (generated)" id="0000000000001-157">
         <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="general_slot_details" constraintName="FKbrtr1a33b97h23t8wejdphfo8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-159">
+    <changeSet author="WitCurve (generated)" id="0000000000001-158">
         <addForeignKeyConstraint baseColumnNames="approved_by_id" baseTableName="leave_application" constraintName="FKc5cucs02up7abbrqjrmkj7jhf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-160">
+    <changeSet author="WitCurve (generated)" id="0000000000001-159">
         <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="slot_course_details" constraintName="FKc6gligqh1aqmbak2qmda72d75" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-161">
+    <changeSet author="WitCurve (generated)" id="0000000000001-160">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="payroll_cycle" constraintName="FKc7m7so9ik7ey3iscr2i5x6ebm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-162">
+    <changeSet author="WitCurve (generated)" id="0000000000001-161">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="student" constraintName="FKcrr73quao254gb90itdygl8qd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-163">
+    <changeSet author="WitCurve (generated)" id="0000000000001-162">
         <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="event" constraintName="FKd2wl2tdsomrp5th0jhp5nr6gr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-164">
+    <changeSet author="WitCurve (generated)" id="0000000000001-163">
         <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course_teacher" constraintName="FKddm8d9rfgge8fdpk76tesgi1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-165">
+    <changeSet author="WitCurve (generated)" id="0000000000001-164">
         <addForeignKeyConstraint baseColumnNames="scd_id" baseTableName="substitution" constraintName="FKdsr2lx6h5k45wl1hayx3d2v8p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-166">
+    <changeSet author="WitCurve (generated)" id="0000000000001-165">
         <addForeignKeyConstraint baseColumnNames="parent_content_id" baseTableName="course_content" constraintName="FKe58pa5d9nbtl8xqyjqsdy7opg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_content"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-167">
+    <changeSet author="WitCurve (generated)" id="0000000000001-166">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="event" constraintName="FKea2nmp8m2b8u3bckpl2x08unn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-168">
+    <changeSet author="WitCurve (generated)" id="0000000000001-167">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="leave_application" constraintName="FKebwqwt2jnes65ua7spxvfox8j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-169">
+    <changeSet author="WitCurve (generated)" id="0000000000001-168">
         <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="staff_eligibility" constraintName="FKecfpqxuyqcegslvtvijgnjwmw" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-170">
+    <changeSet author="WitCurve (generated)" id="0000000000001-169">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="course" constraintName="FKegxywtkptju795vsy3f18glo2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-171">
+    <changeSet author="WitCurve (generated)" id="0000000000001-170">
         <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="term" constraintName="FKfa37vnb6yypg7osr3wcqf3odg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-172">
+    <changeSet author="WitCurve (generated)" id="0000000000001-171">
         <addForeignKeyConstraint baseColumnNames="course_content_id" baseTableName="event_content" constraintName="FKfuoxk6ep853qdug81ov183awq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_content"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-173">
+    <changeSet author="WitCurve (generated)" id="0000000000001-172">
         <addForeignKeyConstraint baseColumnNames="applied_staff_id" baseTableName="leave_application" constraintName="FKg7g6k6e38pc29cbbfo596dj19" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-174">
+    <changeSet author="WitCurve (generated)" id="0000000000001-173">
         <addForeignKeyConstraint baseColumnNames="leave_application_id" baseTableName="leave_event" constraintName="FKgdckuvwa3ettys896sqrvpsg9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="leave_application"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-175">
+    <changeSet author="WitCurve (generated)" id="0000000000001-174">
         <addForeignKeyConstraint baseColumnNames="leave_application_id" baseTableName="message_thread" constraintName="FKgnssdc59lafqw2pcv7bs1sp5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="leave_application"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-176">
+    <changeSet author="WitCurve (generated)" id="0000000000001-175">
         <addForeignKeyConstraint baseColumnNames="scd_id" baseTableName="event" constraintName="FKhlxo94ac3s2ng8e3ot142coso" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot_course_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-177">
+    <changeSet author="WitCurve (generated)" id="0000000000001-176">
         <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="school_info" constraintName="FKj04lleyrvp6l6k1fg3ew0f0bd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-178">
+    <changeSet author="WitCurve (generated)" id="0000000000001-177">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_keyword" constraintName="FKjj6x75xwnt9b02shxjvfxkxyg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-179">
+    <changeSet author="WitCurve (generated)" id="0000000000001-178">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="student_marks" constraintName="FKjvaeekk7twhbugmqy56u7w9im" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-180">
+    <changeSet author="WitCurve (generated)" id="0000000000001-179">
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_content" constraintName="FKknr61ctevkwqhoxi6wpem4dk6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-181">
+    <changeSet author="WitCurve (generated)" id="0000000000001-180">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="student" constraintName="FKknya7m8erxyg8i1uwna24g5to" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-182">
+    <changeSet author="WitCurve (generated)" id="0000000000001-181">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="staff" constraintName="FKl5t2bilqa83t0xpj5seluwi3c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-183">
+    <changeSet author="WitCurve (generated)" id="0000000000001-182">
         <addForeignKeyConstraint baseColumnNames="class_teacher_id" baseTableName="standard" constraintName="FKlabdi8wgp9u6yabqmxq2jx3n2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-184">
+    <changeSet author="WitCurve (generated)" id="0000000000001-183">
         <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="message" constraintName="FKlgohkk9qg53mg7q5s2bpaa2a9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-185">
+    <changeSet author="WitCurve (generated)" id="0000000000001-184">
         <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="exam_course_details" constraintName="FKlqudtt9lpcj958aofwjaoiwyk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-186">
+    <changeSet author="WitCurve (generated)" id="0000000000001-185">
         <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="event" constraintName="FKnpjm01180erflii53u3dqx5cf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-187">
+    <changeSet author="WitCurve (generated)" id="0000000000001-186">
         <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="student_standard" constraintName="FKoihv1q043fm2w1r7nl2fmnf9a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-188">
+    <changeSet author="WitCurve (generated)" id="0000000000001-187">
         <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="wc_persistent_audit_evt_data" constraintName="FKpfgsj7qgspl2sdg9m1gi3yoy1" deferrable="false" initiallyDeferred="false" referencedColumnNames="event_id" referencedTableName="wc_persistent_audit_event"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-189">
+    <changeSet author="WitCurve (generated)" id="0000000000001-188">
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="exam_course_details" constraintName="FKpp70w86kxm992wp0ognh0enrt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-190">
+    <changeSet author="WitCurve (generated)" id="0000000000001-189">
         <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="staff_eligibility" constraintName="FKq70xgtv2m6r2uhvnxvnjswsan" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-191">
+    <changeSet author="WitCurve (generated)" id="0000000000001-190">
         <addForeignKeyConstraint baseColumnNames="institute_id" baseTableName="school" constraintName="FKrh24djgqkiw9hjmlwphpf8wvy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="institute"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-192">
+    <changeSet author="WitCurve (generated)" id="0000000000001-191">
         <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_teacher" constraintName="FKrna6ik293g84mo3rslnkk7m1a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-193">
+    <changeSet author="WitCurve (generated)" id="0000000000001-192">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="staff" constraintName="FKruxs9808bivxikwn2hydnoemd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-194">
+    <changeSet author="WitCurve (generated)" id="0000000000001-193">
         <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_marks" constraintName="FKrwo5tmg1dbm4vm2ywmmufmiwi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-195">
+    <changeSet author="WitCurve (generated)" id="0000000000001-194">
         <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="message_thread" constraintName="FKsgfa069ojxn4upg129vi8wncb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-196">
+    <changeSet author="WitCurve (generated)" id="0000000000001-195">
         <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="message_thread" constraintName="FKsnmwber7vy0li4b7c0761myrx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-197">
+    <changeSet author="WitCurve (generated)" id="0000000000001-196">
         <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="general_slot_details" constraintName="FKt2cmdy4f0qmk0jrythjpr2b9g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="1552129645125-198">
+    <changeSet author="WitCurve (generated)" id="0000000000001-197">
         <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="course" constraintName="FKthbyd7ay47e8m5obfrdd7efpe" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
     </changeSet>
 </databaseChangeLog>
