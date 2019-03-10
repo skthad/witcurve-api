@@ -89,11 +89,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     private Integer fullMarks;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
     @Column
     private String signature;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
         name = "event_keyword",
         joinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")},

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,9 +44,15 @@ public class KeywordResource {
      */
     @GetMapping("/keywords")
     @Timed
-    public ResponseEntity<List<Keyword>> searchKeywords(@RequestParam("search") String search) {
+    public ResponseEntity<List<Keyword>> searchKeywords(@RequestParam(value = "search", required = false) String search) {
         log.debug("Request to search keywords: {}", search);
-        List<Keyword> result = keywordRepository.searchKeywords(search.toLowerCase());
+
+        List<Keyword> result = new ArrayList<>();
+        if(search!=null) {
+            result = keywordRepository.searchKeywords(search.toLowerCase());
+        } else {
+            result = keywordRepository.findAll();
+        }
         return ResponseEntity.ok(result);
     }
 

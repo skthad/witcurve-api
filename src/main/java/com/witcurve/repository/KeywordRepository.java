@@ -13,4 +13,5 @@ public interface KeywordRepository extends JpaRepository<Keyword, String> {
     @Query("select kw from Keyword kw where lower(kw.name) like concat('%', ?1, '%')")
     List<Keyword> searchKeywords(String search);
 
+
 }
