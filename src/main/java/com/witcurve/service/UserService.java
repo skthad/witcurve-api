@@ -253,7 +253,7 @@ public class UserService {
         Optional<User> user = userRepository.findOneByLogin(username);
         if (user.isPresent()) {
             if (type.equals(user.get().getType())) {
-                if(type.equals(UserType.STAFF)) {
+                if(type.equals(UserType.TEACHING_STAFF)) {
                     Staff staff = staffRepository.getStaffByUserId(user.get().getId());
                     if (staff != null) {
                         result = new ArrayList<>();

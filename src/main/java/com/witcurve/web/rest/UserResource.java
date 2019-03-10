@@ -115,7 +115,7 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException, WitcurveException {
         log.debug("REST request to save User : {}", userDTO);
 
@@ -147,7 +147,7 @@ public class UserResource {
      */
     @PutMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws WitcurveException{
         log.debug("REST request to update User : {}", userDTO);
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
@@ -175,7 +175,7 @@ public class UserResource {
      */
     @PutMapping("/users/{userId}")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId,
                                               @RequestParam Boolean activate) {
         log.debug("REST request to " + (activate ? "" : "de") + "activate user : {}", userId);
@@ -206,7 +206,7 @@ public class UserResource {
      */
     @GetMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
@@ -218,7 +218,7 @@ public class UserResource {
      */
     @GetMapping("/users/authorities")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }
@@ -246,7 +246,7 @@ public class UserResource {
      */
     @DeleteMapping("/users/{login}")
     @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);

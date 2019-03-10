@@ -4,10 +4,6 @@
     <property name="now" value="now()" dbms="h2"/>
     <property name="now" value="current_timestamp" dbms="postgresql"/>
 
-    <!--<changeSet id="0000000000000" author="WitCurve">
-        <createSequence sequenceName="hibernate_sequence" startValue="1000" incrementBy="1"/>
-    </changeSet>-->
-    
     <changeSet author="WitCurve (generated)" id="0000000000001-1">
         <createSequence sequenceName="academic_session_id_seq"/>
     </changeSet>
@@ -797,6 +793,7 @@
             <column name="employee_id" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="highest_educational_qualification" type="VARCHAR(255)"/>
             <column name="joining_date" type="date">
                 <constraints nullable="false"/>
             </column>
@@ -1064,6 +1061,8 @@
                 <constraints nullable="false"/>
             </column>
             <column name="display_name" type="VARCHAR(100)"/>
+            <column name="institute_id" type="BIGINT"/>
+            <column name="can_delete" type="BOOLEAN"/>
         </createTable>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-68">
@@ -1511,5 +1510,52 @@
     </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-197">
         <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="course" constraintName="FKthbyd7ay47e8m5obfrdd7efpe" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-198">
+        <createTable tableName="wc_authority_permission">
+            <column name="authority_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-199">
+        <createTable tableName="wc_permission">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-200">
+        <addPrimaryKey columnNames="authority_name, permission_name" tableName="wc_authority_permission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-201">
+        <addPrimaryKey columnNames="name" constraintName="wc_permissionPK" tableName="wc_permission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-202">
+        <addForeignKeyConstraint baseColumnNames="permission_name" baseTableName="wc_authority_permission" constraintName="FKhybt5200sypcopj8i4w09ktxv" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="wc_permission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1551622886736-203">
+        <addForeignKeyConstraint baseColumnNames="authority_name" baseTableName="wc_authority_permission" constraintName="FKi7g4hrifxiubaftxllqt0oa4n" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="wc_authority"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1551622886736-204">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_permissions.csv"
+                  separator=";"
+                  tableName="wc_permission">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_authorities.csv"
+                  separator=";"
+                  tableName="wc_authority">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_authorities_permissions.csv"
+                  separator=";"
+                  tableName="wc_authority_permission">
+        </loadData>
     </changeSet>
 </databaseChangeLog>

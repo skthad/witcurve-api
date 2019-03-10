@@ -50,7 +50,7 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.setType(UserType.STAFF);
+        userDTO.setType(UserType.TEACHING_STAFF);
         userDTO.setActivated(false);
         userDTO.addAuthority("ROLE_TEACHING");
         User user = userService.createUser(userDTO);
