@@ -16,8 +16,8 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generalSlotDetailsIdSeq")
-    @SequenceGenerator(name = "generalSlotDetailsIdSeq", sequenceName="general_slot_details_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "generalSlotDetailsIdSeq", sequenceName="general_slot_details_seq", allocationSize = 0)
     private Long id;
 
     @Column
@@ -46,7 +46,7 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     private Integer duration;
 
     @NotNull
-    @Column(name = "is_recess", nullable = false)
+    @Column(name = "is_recess", nullable = false, columnDefinition = "boolean default false")
     private Boolean recess = false;
 
     @ManyToOne

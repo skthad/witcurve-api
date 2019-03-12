@@ -21,8 +21,8 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "messageThreadIdSeq")
-    @SequenceGenerator(name = "messageThreadIdSeq", sequenceName = "message_thread_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "messageThreadIdSeq", sequenceName = "message_thread_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

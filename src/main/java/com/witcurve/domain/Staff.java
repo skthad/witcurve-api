@@ -24,8 +24,8 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "staffIdSeq")
-    @SequenceGenerator(name = "staffIdSeq", sequenceName="staff_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "staffIdSeq", sequenceName="staff_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
@@ -46,7 +46,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     private String highestEducationalQualification;
 
     @NotNull
-    @Column
+    @Column(name = "joining_date", nullable = false)
     @Convert(converter = LocalDateConverter.class)
     private LocalDate joiningDate;
 

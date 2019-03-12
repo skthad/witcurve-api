@@ -18,8 +18,8 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "examCourseDetailsIdSeq")
-    @SequenceGenerator(name = "examCourseDetailsIdSeq", sequenceName="exam_course_details_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "examCourseDetailsIdSeq", sequenceName="exam_course_details_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

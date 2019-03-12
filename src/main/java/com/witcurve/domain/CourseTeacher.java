@@ -15,8 +15,8 @@ public class CourseTeacher extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "courseTeacherIdSeq")
-    @SequenceGenerator(name = "courseTeacherIdSeq", sequenceName="course_teacher_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "courseTeacherIdSeq", sequenceName="course_teacher_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
