@@ -17,7 +17,6 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "payrollIdSeq", sequenceName="payroll_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

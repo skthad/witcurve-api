@@ -19,7 +19,6 @@ public class Substitution extends AbstractAuditingEntity implements Serializable
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "substitutionIdSeq", sequenceName="substitution_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

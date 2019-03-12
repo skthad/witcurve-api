@@ -18,7 +18,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "standardIdSeq", sequenceName="standard_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

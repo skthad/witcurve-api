@@ -16,7 +16,6 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "instituteIdSeq", sequenceName="instititute_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

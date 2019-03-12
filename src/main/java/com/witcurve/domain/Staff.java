@@ -25,7 +25,6 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "staffIdSeq", sequenceName="staff_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

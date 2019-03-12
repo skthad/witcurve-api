@@ -22,7 +22,6 @@ public class PayrollCycle extends AbstractAuditingEntity implements Serializable
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "payrollCycleIdSeq", sequenceName="payroll_cycle_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

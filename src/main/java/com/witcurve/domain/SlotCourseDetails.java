@@ -17,7 +17,6 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "slotCourseDetailsIdSeq", sequenceName="slot_course_details_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

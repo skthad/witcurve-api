@@ -21,7 +21,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "leaveApplicationIdSeq", sequenceName="leave_application_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

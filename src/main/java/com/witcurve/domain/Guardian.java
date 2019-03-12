@@ -13,7 +13,6 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "guardianIdSeq", sequenceName="guardian_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
