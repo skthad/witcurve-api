@@ -15,8 +15,8 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "siblingInfoIdSeq")
-    @SequenceGenerator(name = "siblingInfoIdSeq", sequenceName="sibling_info_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "siblingInfoIdSeq", sequenceName="sibling_info_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

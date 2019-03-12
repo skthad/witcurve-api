@@ -15,8 +15,8 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studentStandardIdSeq")
-    @SequenceGenerator(name = "studentStandardIdSeq", sequenceName="student_standard_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@SequenceGenerator(name = "studentStandardIdSeq", sequenceName="student_standard_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
