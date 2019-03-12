@@ -4,7 +4,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.UserRepository;
-import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.MailService;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.StudentService;
@@ -27,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -115,7 +113,7 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
+    //@PreAuthorize("hasAuthority('InstituteFullAccess')")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException, WitcurveException {
         log.debug("REST request to save User : {}", userDTO);
 
@@ -147,18 +145,16 @@ public class UserResource {
      */
     @PutMapping("/users")
     @Timed
-    @Secured("SuperAccess")
+    //@PreAuthorize("hasAuthority('SuperAccess')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws WitcurveException{
         log.debug("REST request to update User : {}", userDTO);
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new WitcurveException("Email is already in use!");
-//            throw new EmailAlreadyUsedException();
         }
         existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new WitcurveException("Login name already used!");
-//            throw new LoginAlreadyUsedException();
         }
         Optional<UserDTO> updatedUser = userService.updateUser(userDTO);
 
@@ -175,7 +171,7 @@ public class UserResource {
      */
     @PutMapping("/users/{userId}")
     @Timed
-    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
+    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId,
                                               @RequestParam Boolean activate) {
         log.debug("REST request to " + (activate ? "" : "de") + "activate user : {}", userId);
@@ -206,7 +202,7 @@ public class UserResource {
      */
     @GetMapping("/users")
     @Timed
-    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
+    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
@@ -218,7 +214,7 @@ public class UserResource {
      */
     @GetMapping("/users/authorities")
     @Timed
-    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
+    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }
@@ -246,7 +242,7 @@ public class UserResource {
      */
     @DeleteMapping("/users/{login}")
     @Timed
-    @Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
+    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);

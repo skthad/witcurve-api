@@ -264,6 +264,7 @@
             <column name="staff_id" type="BIGINT"/>
             <column name="standard_id" type="BIGINT"/>
             <column name="student_id" type="BIGINT"/>
+            <column name="signature" type="VARCHAR(255)"/>
             <column name="created_by" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
@@ -1557,10 +1558,5 @@
                   separator=";"
                   tableName="wc_authority_permission">
         </loadData>
-    </changeSet>
-    <changeSet author="srujankumar (generated)" id="1552141030122-205">
-        <addColumn tableName="event">
-            <column name="signature" type="varchar(255)"/>
-        </addColumn>
     </changeSet>
 </databaseChangeLog>

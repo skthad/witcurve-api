@@ -15,10 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -51,11 +48,11 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
         }
 
         Set<Authority> authorities = user.getAuthorities();
-        List<Permission> permissions = null;
+        Set<Permission> permissions = null;
         for (Authority authority : authorities) {
             if (authority.getPermissions().size() != 0) {
                 if (permissions == null) {
-                    permissions = new ArrayList<>();
+                    permissions = new HashSet<>();
                 }
                 permissions.addAll(authority.getPermissions());
             }
@@ -64,13 +61,6 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             .map(permission -> new SimpleGrantedAuthority(permission.getName()))
             .collect(Collectors.toList());
 
-
-        /*List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        SimpleGrantedAuthority simpleGrantedAuthority = null;
-        for(Authority authority : user.getAuthorities()) {
-            simpleGrantedAuthority= new SimpleGrantedAuthority(authority.getName());
-            authorities.add(simpleGrantedAuthority);
-        }*/
         user.setOtp(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
