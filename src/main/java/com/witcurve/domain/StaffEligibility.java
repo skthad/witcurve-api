@@ -18,7 +18,6 @@ public class StaffEligibility extends AbstractAuditingEntity implements Serializ
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "staffEligibilityIdSeq", sequenceName="staff_eligibility_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

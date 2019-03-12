@@ -17,7 +17,6 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "generalSlotDetailsIdSeq", sequenceName="general_slot_details_seq", allocationSize = 0)
     private Long id;
 
     @Column

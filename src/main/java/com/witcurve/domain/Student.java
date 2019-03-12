@@ -26,7 +26,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "studentIdSeq", sequenceName="student_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

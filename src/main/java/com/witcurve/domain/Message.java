@@ -13,7 +13,6 @@ public class Message extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "messageIdSeq", sequenceName="message_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull

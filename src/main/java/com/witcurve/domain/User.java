@@ -31,7 +31,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@TableGenerator(name = "userIdSeq", initialValue = 1000, allocationSize = 1)
     private Long id;
 
     @NotNull

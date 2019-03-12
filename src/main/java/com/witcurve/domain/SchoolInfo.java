@@ -16,7 +16,6 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "schoolInfoIdSeq", sequenceName="school_info_id_seq", allocationSize = 0)
     private Long id;
 
     @NotNull
