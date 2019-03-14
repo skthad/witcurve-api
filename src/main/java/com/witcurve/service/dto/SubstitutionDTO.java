@@ -2,7 +2,6 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.SlotCourseDetails;
-import com.witcurve.domain.Staff;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -18,7 +17,7 @@ public class SubstitutionDTO extends AbstractAuditingDTO {
     private SlotCourseDetails scd;
 
     @NotNull
-    private Staff teacher;
+    private StaffDTO teacher;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
@@ -40,11 +39,11 @@ public class SubstitutionDTO extends AbstractAuditingDTO {
         this.scd = scd;
     }
 
-    public Staff getTeacher() {
+    public StaffDTO getTeacher() {
         return teacher;
     }
 
-    public void setTeacher(Staff teacher) {
+    public void setTeacher(StaffDTO teacher) {
         this.teacher = teacher;
     }
 

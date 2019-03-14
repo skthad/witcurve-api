@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -141,8 +142,22 @@ public class SubstitutionServiceImpl implements SubstitutionService {
     }
 
     public SubstitutionDTO substitute(SubstitutionDTO substitutionDTO) {
+        Optional<Staff> teacher = staffRepository.findById(substitutionDTO.getTeacher().getId());
+        if(!teacher.isPresent()) {
+            throw new WitcurveException("There is no staff with given id "+substitutionDTO.getTeacher().getId());
+        }
+        Optional<SlotCourseDetails> slotCourseDetails = slotCourseDetailsRepository.findById(substitutionDTO.getScd().getId());
+        if(!slotCourseDetails.isPresent()) {
+            throw new WitcurveException("There is no slot course details with given id "+substitutionDTO.getTeacher().getId());
+        }
+        if(!slotCourseDetails.get().getDayOfWeek().equals(substitutionDTO.getDate().getDayOfWeek())) {
+            throw new WitcurveException("Weekday of slot and date doesn't match");
+        }
         Substitution substitution = substitutionRepository.save(substitutionMapper.toEntity(substitutionDTO));
-        return substitutionMapper.toDto(substitution);
+        SubstitutionDTO result = substitutionMapper.toDto(substitution);
+        result.getTeacher().setFirstName(teacher.get().getFirstName());
+        result.getTeacher().setLastName(teacher.get().getLastName());
+        return result;
     }
 
 }
