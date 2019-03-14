@@ -1,5 +1,7 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.Gender;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -18,7 +20,7 @@ public class SiblingInfoDTO extends AbstractAuditingDTO implements Serializable 
     private String name;
 
     @NotNull
-    private String relationship;
+    private Gender gender;
 
     private String standardDuringAdmission;
 
@@ -48,12 +50,12 @@ public class SiblingInfoDTO extends AbstractAuditingDTO implements Serializable 
         this.name = name;
     }
 
-    public String getRelationship() {
-        return relationship;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getStandardDuringAdmission() {

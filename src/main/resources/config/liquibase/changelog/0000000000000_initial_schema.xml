@@ -731,7 +731,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="relationship" type="VARCHAR(255)">
+            <column name="gender" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="standard_during_admission" type="VARCHAR(50)"/>
@@ -791,7 +791,7 @@
             <column name="type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="gender" type="VARCHAR(255)">
+            <column name="gender" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="first_name" type="VARCHAR(50)">
@@ -801,8 +801,12 @@
             <column name="last_name" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
-            <column name="date_of_birth" type="date"/>
-            <column name="address1" type="VARCHAR(255)"/>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address1" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="address2" type="VARCHAR(255)"/>
             <column name="city" type="VARCHAR(50)"/>
             <column name="district" type="VARCHAR(50)"/>
@@ -816,6 +820,7 @@
             <column name="secondary_phone" type="VARCHAR(50)"/>
             <column name="aadhaar_no" type="VARCHAR(16)"/>
             <column name="pan_no" type="VARCHAR(10)"/>
+            <column name="bank_name" type="VARCHAR(255)"/>
             <column name="account_name" type="VARCHAR(255)"/>
             <column name="account_number" type="VARCHAR(255)"/>
             <column name="ifsc_code" type="VARCHAR(255)"/>
@@ -896,7 +901,7 @@
             <column name="admission_date" type="date">
                 <constraints nullable="false"/>
             </column>
-            <column name="gender" type="VARCHAR(255)">
+            <column name="gender" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="first_name" type="VARCHAR(255)">
@@ -1053,9 +1058,6 @@
             </column>
             <column name="display_name" type="VARCHAR(100)"/>
             <column name="institute_id" type="BIGINT"/>
-            <column name="can_delete" type="TINYINT(1)" defaultValueBoolean="false">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-40">

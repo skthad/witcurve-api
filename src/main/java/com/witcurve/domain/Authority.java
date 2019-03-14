@@ -38,10 +38,6 @@ public class Authority implements Serializable {
     @Column
     private Long instituteId;
 
-    @NotNull
-    @Column(name = "can_delete", nullable = false, columnDefinition = "boolean default false")
-    private Boolean canDelete = false;
-
     @ManyToMany
     @JoinTable(
         name = "wc_authority_permission",
@@ -71,14 +67,6 @@ public class Authority implements Serializable {
 
     public void setInstituteId(Long instituteId) {
         this.instituteId = instituteId;
-    }
-
-    public Boolean getCanDelete() {
-        return canDelete;
-    }
-
-    public void setCanDelete(Boolean canDelete) {
-        this.canDelete = canDelete;
     }
 
     public Set<Permission> getPermissions() {

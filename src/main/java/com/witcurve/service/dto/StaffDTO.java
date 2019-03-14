@@ -56,9 +56,11 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private String lastName;
 
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
 
+    @NotNull
     private String address1;
 
     private String address2;
@@ -90,6 +92,8 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}")
     @Size(min = 10, max = 10)
     private String panNo;
+
+    private String bankName;
 
     private String accountName;
 
@@ -314,6 +318,14 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setPanNo(String panNo) {
         this.panNo = panNo;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
     public String getAccountName() {

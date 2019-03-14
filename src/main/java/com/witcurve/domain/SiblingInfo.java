@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
@@ -28,8 +29,9 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
     private String name;
 
     @NotNull
-    @Column(name = "relationship", nullable = false)
-    private String relationship;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
 
     @Column(name = "standard_during_admission", length = 50)
     private String standardDuringAdmission;
@@ -62,12 +64,12 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
         this.name = name;
     }
 
-    public String getRelationship() {
-        return relationship;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getStandardDuringAdmission() {

@@ -21,6 +21,7 @@ public class ConfigSettingsResource {
 
     @Autowired
     ConfigSettingsService configSettingsService;
+
     /**
       * creates or updates config settings
       * @param configSettings

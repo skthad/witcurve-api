@@ -70,12 +70,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
-    @Column
+    @NotNull
+    @Column(name = "date_of_birth", nullable = false)
     @Convert(converter = LocalDateConverter.class)
     private LocalDate dateOfBirth;
 
-    @Column
-    private  String address1;
+    @NotNull
+    @Column(nullable = false)
+    private String address1;
 
     @Column
     private String address2;
@@ -115,6 +117,9 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}")
     @Column(name = "pan_no", length = 10)
     private String panNo;
+
+    @Column
+    private String bankName;
 
     @Column
     private String accountName;
@@ -315,6 +320,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setPanNo(String panNo) {
         this.panNo = panNo;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
     public String getAccountName() {

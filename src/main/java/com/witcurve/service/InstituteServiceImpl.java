@@ -1,6 +1,8 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.Authority;
 import com.witcurve.domain.Institute;
+import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.InstituteRepository;
 import com.witcurve.service.dto.InstituteDTO;
 import com.witcurve.service.mapper.InstituteMapper;
@@ -25,6 +27,9 @@ public class InstituteServiceImpl implements InstituteService {
 
     @Autowired
     InstituteMapper instituteMapper;
+
+    @Autowired
+    AuthorityRepository authorityRepository;
 
     @Override
     public InstituteDTO saveOrUpdate(InstituteDTO instituteDTO) {
@@ -59,6 +64,32 @@ public class InstituteServiceImpl implements InstituteService {
             throw new WitcurveException("No Institute with given id " + instituteId);
         }
         instituteRepository.delete(institute.get());
+    }
+
+    @Override
+    public Authority saveOrUpdateCustomAuthority(Long instituteId, Authority authority) {
+        // check if current logged in user belongs to the input institute
+        // create custom dto later used to show default vs custom authorities separately
+
+
+        authority.setInstituteId(instituteId);
+        if (authority.getName() == null) {
+            authority.setName(instituteId + "-ROLE_" + authority.getDisplayName().toUpperCase().replaceAll("[ ]+", "_"));
+        }
+
+        return authorityRepository.save(authority);
+    }
+
+    @Override
+    public void deleteCustomAuthority(Long instituteId, String name) {
+        if (name.startsWith(instituteId + "-")) {
+            authorityRepository.deleteByName(name);
+        }
+    }
+
+    @Override
+    public List<Authority> getAuthorities(Long instituteId) {
+        return authorityRepository.getByInstituteId(instituteId);
     }
 
 }
