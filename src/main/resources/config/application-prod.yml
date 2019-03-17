@@ -27,7 +27,7 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://witcurve-qa.cyjmhkroztgc.us-east-2.rds.amazonaws.com:5432/witcurve_new
+        url: jdbc:mysql://witcurve-remote.cyjmhkroztgc.us-east-2.rds.amazonaws.com:3306/witcurve
         username: witcurve
         password: witcurve
     jpa:

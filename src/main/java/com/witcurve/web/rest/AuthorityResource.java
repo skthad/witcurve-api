@@ -37,7 +37,7 @@ public class AuthorityResource {
      * @throws URISyntaxException
      */
     @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
-    @PostMapping("/institutes/{instituteId}/authorities")
+    @PostMapping("/authorities/institutes/{instituteId}")
     @Timed
     public ResponseEntity<Authority> saveOrUpdateInstituteAuthority(@RequestBody Authority authority,
                                                                    @PathVariable Long instituteId) throws WitcurveException, URISyntaxException {
@@ -60,7 +60,7 @@ public class AuthorityResource {
      * @throws URISyntaxException
      */
     @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
-    @GetMapping("/institutes")
+    @GetMapping("/authorities")
     @Timed
     public ResponseEntity<List<Authority>> getAuthorities(@RequestParam Long instituteId) throws WitcurveException, URISyntaxException {
         log.debug("Request to get authorites for institute");
@@ -77,7 +77,7 @@ public class AuthorityResource {
      * @throws URISyntaxException
      */
     @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
-    @DeleteMapping("/institutes/{instituteId}/authorities/{")
+    @DeleteMapping("/authorities/institutes/{instituteId}/")
     @Timed
     public ResponseEntity<Authority> sdeleteInstituteAuthority(@PathVariable Long instituteId,
                                                                 @RequestParam String name) throws WitcurveException, URISyntaxException {
