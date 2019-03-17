@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.security.PermissionsConstants;
 import com.witcurve.service.SchoolService;
 import com.witcurve.service.dto.SchoolDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,6 +36,8 @@ public class SchoolResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS +
+        ") or hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
     @PostMapping("/schools")
     @Timed
     public ResponseEntity<SchoolDTO> createSchool(@RequestBody @Valid SchoolDTO schoolDTO) throws WitcurveException, URISyntaxException {
@@ -54,6 +58,8 @@ public class SchoolResource {
      * @throws WitcurveException
      */
 
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS +
+        ") or hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
     @PutMapping("/schools")
     @Timed
     public ResponseEntity<SchoolDTO> updateSchool(@RequestBody @Valid SchoolDTO schoolDTO) throws WitcurveException {
@@ -75,7 +81,6 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
-
     @GetMapping("/schools/{schoolId}")
     @Timed
     public ResponseEntity<SchoolDTO> getSchoolById(@PathVariable("schoolId") Long schoolId) throws WitcurveException {
@@ -105,6 +110,8 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS +
+        ") or hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
     @DeleteMapping("/schools/{schoolId}")
     @Timed
     public ResponseEntity<Void> deleteSchool(@PathVariable Long schoolId) throws WitcurveException {

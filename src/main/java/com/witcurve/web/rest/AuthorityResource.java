@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.Authority;
+import com.witcurve.security.PermissionsConstants;
 import com.witcurve.service.InstituteService;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
@@ -35,7 +36,7 @@ public class AuthorityResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PreAuthorize("hasAuthority('InstituteFullAccess')")
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
     @PostMapping("/institutes/{instituteId}/authorities")
     @Timed
     public ResponseEntity<Authority> saveOrUpdateInstituteAuthority(@RequestBody Authority authority,
@@ -58,6 +59,7 @@ public class AuthorityResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
     @GetMapping("/institutes")
     @Timed
     public ResponseEntity<List<Authority>> getAuthorities(@RequestParam Long instituteId) throws WitcurveException, URISyntaxException {
@@ -74,7 +76,7 @@ public class AuthorityResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PreAuthorize("hasAuthority('InstituteFullAccess')")
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
     @DeleteMapping("/institutes/{instituteId}/authorities/{")
     @Timed
     public ResponseEntity<Authority> sdeleteInstituteAuthority(@PathVariable Long instituteId,
@@ -83,7 +85,7 @@ public class AuthorityResource {
         try {
             instituteService.deleteCustomAuthority(instituteId, name);
             return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("Authority is deleted",
-                name.toString())).build();
+                name)).build();
         } catch (DataIntegrityViolationException e) {
             throw new WitcurveException("DataIntegrityViolationException occurred.");
         }
