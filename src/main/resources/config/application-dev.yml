@@ -34,12 +34,12 @@ spring:
         serialization.indent_output: true
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/witcurve
+        url: jdbc:mysql://localhost:3306/witcurve
         username: witcurve
-        password: witcurve
+        password: WitcurveAdmin@123
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
-        database: POSTGRESQL
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
         show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true

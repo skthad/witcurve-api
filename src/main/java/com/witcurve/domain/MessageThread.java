@@ -21,48 +21,13 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "messageThreadIdSeq")
-    @SequenceGenerator(name = "messageThreadIdSeq", sequenceName = "message_thread_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
     @Column
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
-
-    @ManyToOne
-    private CourseTeacher courseTeacher;
-
-    @OneToOne
-    @JoinColumn(unique = true)
-    private LeaveApplication leaveApplication;
-
-    @ManyToOne
-    private Guardian guardian;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private User fromUser;
-
-    @ManyToOne
-    private User toUser;
-
-    @NotNull
-    @Column(nullable = false)
-    private Integer fromUserUnreadCount=0;
-
-    @NotNull
-    @Column(nullable = false)
-    private Integer toUserUnreadCount=1;
-
-    @Column
-    @Convert(converter = InstantTimeConverter.class)
-    private Instant fromUserLastMessageDate;
-
-    @Column
-    @Convert(converter = InstantTimeConverter.class)
-    private Instant toUserLastMessageDate;
 
     @Column
     @Convert(converter = LocalDateConverter.class)
@@ -72,9 +37,40 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String meetingTime;
 
+    @ManyToOne
+    private CourseTeacher courseTeacher;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User fromUser;
+
+    @NotNull
+    @Column(nullable = false)
+    private Integer fromUserUnreadCount=0;
+
+    @Column
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant fromUserLastMessageDate;
+
+    @ManyToOne
+    private User toUser;
+
+    @NotNull
+    @Column(nullable = false)
+    private Integer toUserUnreadCount=1;
+
+    @Column
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant toUserLastMessageDate;
+
     @Column
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private LeaveApplication leaveApplication;
 
     @OneToMany(orphanRemoval = true, fetch=FetchType.EAGER)
     @JoinColumn(name="message_thread_id")
@@ -97,78 +93,6 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.messageType = messageType;
     }
 
-    public CourseTeacher getCourseTeacher() {
-        return courseTeacher;
-    }
-
-    public void setCourseTeacher(CourseTeacher courseTeacher) {
-        this.courseTeacher = courseTeacher;
-    }
-
-    public LeaveApplication getLeaveApplication() {
-        return leaveApplication;
-    }
-
-    public void setLeaveApplication(LeaveApplication leaveApplication) {
-        this.leaveApplication = leaveApplication;
-    }
-
-    public Guardian getGuardian() {
-        return guardian;
-    }
-
-    public void setGuardian(Guardian guardian) {
-        this.guardian = guardian;
-    }
-
-    public User getFromUser() {
-        return fromUser;
-    }
-
-    public void setFromUser(User fromUser) {
-        this.fromUser = fromUser;
-    }
-
-    public User getToUser() {
-        return toUser;
-    }
-
-    public void setToUser(User toUser) {
-        this.toUser = toUser;
-    }
-
-    public Integer getFromUserUnreadCount() {
-        return fromUserUnreadCount;
-    }
-
-    public void setFromUserUnreadCount(Integer fromUserUnreadCount) {
-        this.fromUserUnreadCount = fromUserUnreadCount;
-    }
-
-    public Integer getToUserUnreadCount() {
-        return toUserUnreadCount;
-    }
-
-    public void setToUserUnreadCount(Integer toUserUnreadCount) {
-        this.toUserUnreadCount = toUserUnreadCount;
-    }
-
-    public Instant getFromUserLastMessageDate() {
-        return fromUserLastMessageDate;
-    }
-
-    public void setFromUserLastMessageDate(Instant fromUserLastMessageDate) {
-        this.fromUserLastMessageDate = fromUserLastMessageDate;
-    }
-
-    public Instant getToUserLastMessageDate() {
-        return toUserLastMessageDate;
-    }
-
-    public void setToUserLastMessageDate(Instant toUserLastMessageDate) {
-        this.toUserLastMessageDate = toUserLastMessageDate;
-    }
-
     public LocalDate getMeetingDate() {
         return meetingDate;
     }
@@ -185,6 +109,62 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.meetingTime = meetingTime;
     }
 
+    public CourseTeacher getCourseTeacher() {
+        return courseTeacher;
+    }
+
+    public void setCourseTeacher(CourseTeacher courseTeacher) {
+        this.courseTeacher = courseTeacher;
+    }
+
+    public User getFromUser() {
+        return fromUser;
+    }
+
+    public void setFromUser(User fromUser) {
+        this.fromUser = fromUser;
+    }
+
+    public Integer getFromUserUnreadCount() {
+        return fromUserUnreadCount;
+    }
+
+    public void setFromUserUnreadCount(Integer fromUserUnreadCount) {
+        this.fromUserUnreadCount = fromUserUnreadCount;
+    }
+
+    public Instant getFromUserLastMessageDate() {
+        return fromUserLastMessageDate;
+    }
+
+    public void setFromUserLastMessageDate(Instant fromUserLastMessageDate) {
+        this.fromUserLastMessageDate = fromUserLastMessageDate;
+    }
+
+    public User getToUser() {
+        return toUser;
+    }
+
+    public void setToUser(User toUser) {
+        this.toUser = toUser;
+    }
+
+    public Integer getToUserUnreadCount() {
+        return toUserUnreadCount;
+    }
+
+    public void setToUserUnreadCount(Integer toUserUnreadCount) {
+        this.toUserUnreadCount = toUserUnreadCount;
+    }
+
+    public Instant getToUserLastMessageDate() {
+        return toUserLastMessageDate;
+    }
+
+    public void setToUserLastMessageDate(Instant toUserLastMessageDate) {
+        this.toUserLastMessageDate = toUserLastMessageDate;
+    }
+
     public ApprovalStatus getStatus() {
         return status;
     }
@@ -193,16 +173,24 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
         this.status = status;
     }
 
+    public LeaveApplication getLeaveApplication() {
+        return leaveApplication;
+    }
+
+    public void setLeaveApplication(LeaveApplication leaveApplication) {
+        this.leaveApplication = leaveApplication;
+    }
+
     public Set<Message> getMessages() {
         return messages;
     }
 
-    public void addMessage(Message message) {
-        this.messages.add(message);
-    }
-
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
+    }
+
+    public void addMessage(Message message) {
+        this.messages.add(message);
     }
 
     @Override
@@ -223,20 +211,6 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     public String toString() {
         return "MessageThread{" +
             "id=" + id +
-            ", messageType=" + messageType +
-            ", courseTeacher=" + courseTeacher +
-            ", leaveApplication=" + leaveApplication +
-            ", guardian=" + guardian +
-            ", fromUser=" + fromUser +
-            ", toUser=" + toUser +
-            ", fromUserUnreadCount=" + fromUserUnreadCount +
-            ", toUserUnreadCount=" + toUserUnreadCount +
-            ", fromUserLastMessageDate=" + fromUserLastMessageDate +
-            ", toUserLastMessageDate=" + toUserLastMessageDate +
-            ", meetingDate=" + meetingDate +
-            ", meetingTime='" + meetingTime + '\'' +
-            ", status=" + status +
-            ", messages=" + messages +
             '}';
     }
 }

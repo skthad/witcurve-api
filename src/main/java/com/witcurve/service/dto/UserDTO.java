@@ -9,6 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
@@ -19,17 +20,18 @@ import java.util.stream.Collectors;
  * A DTO representing a user, with his authorities.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class UserDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    @NotNull
+    private UserType type;
 
     @NotBlank
     @Size(min = 1, max = 50)
     private String login;
-
-    private String otp;
-
-    private Instant otpExpiry;
 
     @Size(max = 50)
     private String firstName;
@@ -41,16 +43,23 @@ public class UserDTO {
     @Size(min = 5, max = 254)
     private String email;
 
+    private String password;
+
     @NotNull
-    private UserType type;
+    private Boolean firstTimeLogin = true;
 
-    @Size(max = 256)
-    private String imageUrl;
-
+    @NotNull
     private boolean activated = false;
 
     @Size(min = 2, max = 6)
     private String langKey;
+
+    private String otp;
+
+    private Instant otpExpiry;
+
+    @Size(max = 256)
+    private String imageUrl;
 
     private String createdBy;
 
@@ -65,11 +74,6 @@ public class UserDTO {
     private StudentDTO studentDTO;
 
     private StaffDTO staffDTO;
-
-    private String password;
-
-    @NotNull
-    private Boolean firstTimeLogin = true;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -280,23 +284,6 @@ public class UserDTO {
     public String toString() {
         return "UserDTO{" +
             "id=" + id +
-            ", login='" + login + '\'' +
-            ", otp='" + otp + '\'' +
-            ", otpExpiry=" + otpExpiry +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", type=" + type +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy='" + createdBy + '\'' +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            ", studentDTO=" + studentDTO +
-            ", staffDTO=" + staffDTO +
             '}';
     }
 }

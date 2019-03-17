@@ -1,14 +1,23 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SchoolDTO extends AbstractAuditingDTO {
+public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
+    private InstituteDTO institute;
+
+    @NotNull
     private String name;
+
+    @NotNull
+    private String affiliationId;
 
     @NotNull
     private String address1;
@@ -23,25 +32,19 @@ public class SchoolDTO extends AbstractAuditingDTO {
 
     private String country;
 
-    @NotNull
-    private String affiliationId;
+    private String pincode;
 
     @NotNull
     private String primaryPhone;
 
     private String secondaryPhone;
 
-    private String fax;
-
-    private String pincode;
-
     @NotNull
     private String primaryEmail;
 
     private String secondaryEmail;
 
-    @NotNull
-    private InstituteDTO institute;
+    private String fax;
 
     public SchoolDTO() {
     }
@@ -54,12 +57,28 @@ public class SchoolDTO extends AbstractAuditingDTO {
         this.id = id;
     }
 
+    public InstituteDTO getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(InstituteDTO institute) {
+        this.institute = institute;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAffiliationId() {
+        return affiliationId;
+    }
+
+    public void setAffiliationId(String affiliationId) {
+        this.affiliationId = affiliationId;
     }
 
     public String getAddress1() {
@@ -110,12 +129,12 @@ public class SchoolDTO extends AbstractAuditingDTO {
         this.country = country;
     }
 
-    public String getAffiliationId() {
-        return affiliationId;
+    public String getPincode() {
+        return pincode;
     }
 
-    public void setAffiliationId(String affiliationId) {
-        this.affiliationId = affiliationId;
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
     }
 
     public String getPrimaryPhone() {
@@ -134,22 +153,6 @@ public class SchoolDTO extends AbstractAuditingDTO {
         this.secondaryPhone = secondaryPhone;
     }
 
-    public String getFax() {
-        return fax;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
-    public String getPincode() {
-        return pincode;
-    }
-
-    public void setPincode(String pincode) {
-        this.pincode = pincode;
-    }
-
     public String getPrimaryEmail() {
         return primaryEmail;
     }
@@ -166,12 +169,12 @@ public class SchoolDTO extends AbstractAuditingDTO {
         this.secondaryEmail = secondaryEmail;
     }
 
-    public InstituteDTO getInstitute() {
-        return institute;
+    public String getFax() {
+        return fax;
     }
 
-    public void setInstitute(InstituteDTO institute) {
-        this.institute = institute;
+    public void setFax(String fax) {
+        this.fax = fax;
     }
 
     @Override
@@ -192,20 +195,6 @@ public class SchoolDTO extends AbstractAuditingDTO {
     public String toString() {
         return "SchoolDTO{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", country='" + country + '\'' +
-            ", affiliationId='" + affiliationId + '\'' +
-            ", primaryPhone='" + primaryPhone + '\'' +
-            ", secondaryPhone='" + secondaryPhone + '\'' +
-            ", fax='" + fax + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", primaryEmail='" + primaryEmail + '\'' +
-            ", secondaryEmail='" + secondaryEmail + '\'' +
             '}';
     }
 }

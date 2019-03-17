@@ -26,7 +26,6 @@ public class Keyword implements Serializable {
     }
 
     @Id
-    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 

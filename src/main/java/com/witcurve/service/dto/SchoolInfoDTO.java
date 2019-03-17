@@ -1,19 +1,23 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SchoolInfoDTO extends AbstractAuditingDTO {
+public class SchoolInfoDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    @NotNull
+    private SchoolDTO school;
 
     @NotNull
     private String board;
 
     @NotNull
     private String medium;
-
-    private SchoolDTO school;
 
     public SchoolInfoDTO() {
     }
@@ -24,6 +28,14 @@ public class SchoolInfoDTO extends AbstractAuditingDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public SchoolDTO getSchool() {
+        return school;
+    }
+
+    public void setSchool(SchoolDTO school) {
+        this.school = school;
     }
 
     public String getBoard() {
@@ -40,14 +52,6 @@ public class SchoolInfoDTO extends AbstractAuditingDTO {
 
     public void setMedium(String medium) {
         this.medium = medium;
-    }
-
-    public SchoolDTO getSchool() {
-        return school;
-    }
-
-    public void setSchool(SchoolDTO school) {
-        this.school = school;
     }
 
     @Override
@@ -68,9 +72,6 @@ public class SchoolInfoDTO extends AbstractAuditingDTO {
     public String toString() {
         return "SchoolInfoDTO{" +
             "id=" + id +
-            ", board='" + board + '\'' +
-            ", medium='" + medium + '\'' +
-            ", school='" + school + '\'' +
             '}';
     }
 }

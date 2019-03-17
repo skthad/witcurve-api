@@ -18,8 +18,7 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "academicSessionIdSeq")
-    @SequenceGenerator(name = "academicSessionIdSeq", sequenceName="academic_session_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -33,6 +32,7 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
     private SchoolInfo schoolInfo;
 
     @NotNull
+    @Column(name = "active", nullable = false, columnDefinition = "default boolean true")
     private Boolean active = true;
 
     public Long getId() {

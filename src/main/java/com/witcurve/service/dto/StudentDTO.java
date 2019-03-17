@@ -7,28 +7,21 @@ import com.witcurve.domain.enumeration.Gender;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-public class StudentDTO extends AbstractAuditingDTO {
+public class StudentDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
-    private String admissionId;
-
-    private String rollNo;
-
-    @NotNull
-    private String firstName;
-
-    @NotNull
-    private String lastName;
-
-    private String middleName;
+    private SchoolInfoDTO schoolInfo;
 
     private Long userId;
 
@@ -39,23 +32,27 @@ public class StudentDTO extends AbstractAuditingDTO {
     private Boolean hasPassword;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate dateOfBirth;
+    private String admissionId;
 
-    private BloodGroup bloodGroup;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate admissionDate;
+
+    private String rollNo;
 
     @NotNull
-    private String nationality;
+    private Gender gender;
 
-    private String religion;
+    @NotNull
+    private String firstName;
 
-    private String motherTongue;
+    private String middleName;
 
-    private String caste;
+    @NotNull
+    private String lastName;
 
-    private String subCaste;
-
-    private String category;
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate dateOfBirth;
 
     @NotNull
     private String address1;
@@ -72,11 +69,32 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String pincode;
 
-    private String birthPlace;
+    private BloodGroup bloodGroup;
+
+    @NotNull
+    @Pattern(regexp = "^[6-9]\\d{9}$")
+    private String registeredMobileNumber;
+
+    private List<String> alternateMobileNumbers;
 
     @Pattern(regexp = "[0-9]{16}")
     @Size(min = 16, max = 16)
     private String aadhaarNo;
+
+    @NotNull
+    private String nationality;
+
+    private String religion;
+
+    private String motherTongue;
+
+    private String caste;
+
+    private String subCaste;
+
+    private String category;
+
+    private String birthPlace;
 
     private String identificationMark1;
 
@@ -88,29 +106,6 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     private String previousSchoolStandard;
 
-    @NotNull
-    private SchoolInfoDTO schoolInfo;
-
-    @NotNull
-    @Pattern(regexp = "^[6-9]\\d{9}$")
-    private String registeredMobileNumber;
-
-    private List<String> alternateMobileNumbers;
-
-    @NotNull
-    private Gender gender;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate admissionDate;
-
-    public String getRollNo() {
-        return rollNo;
-    }
-
-    public void setRollNo(String rollNo) {
-        this.rollNo = rollNo;
-    }
-
     public Long getId() {
         return id;
     }
@@ -119,36 +114,12 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.id = id;
     }
 
-    public String getAdmissionId() {
-        return admissionId;
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setAdmissionId(String admissionId) {
-        this.admissionId = admissionId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Long getUserId() {
@@ -183,68 +154,68 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.hasPassword = hasPassword;
     }
 
+    public String getAdmissionId() {
+        return admissionId;
+    }
+
+    public void setAdmissionId(String admissionId) {
+        this.admissionId = admissionId;
+    }
+
+    public LocalDate getAdmissionDate() {
+        return admissionDate;
+    }
+
+    public void setAdmissionDate(LocalDate admissionDate) {
+        this.admissionDate = admissionDate;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public BloodGroup getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public void setBloodGroup(BloodGroup bloodGroup) {
-        this.bloodGroup = bloodGroup;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getReligion() {
-        return religion;
-    }
-
-    public void setReligion(String religion) {
-        this.religion = religion;
-    }
-
-    public String getMotherTongue() {
-        return motherTongue;
-    }
-
-    public void setMotherTongue(String motherTongue) {
-        this.motherTongue = motherTongue;
-    }
-
-    public String getCaste() {
-        return caste;
-    }
-
-    public void setCaste(String caste) {
-        this.caste = caste;
-    }
-
-    public String getSubCaste() {
-        return subCaste;
-    }
-
-    public void setSubCaste(String subCaste) {
-        this.subCaste = subCaste;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public String getAddress1() {
@@ -303,12 +274,28 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.pincode = pincode;
     }
 
-    public String getBirthPlace() {
-        return birthPlace;
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
     }
 
-    public void setBirthPlace(String birthPlace) {
-        this.birthPlace = birthPlace;
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    public String getRegisteredMobileNumber() {
+        return registeredMobileNumber;
+    }
+
+    public void setRegisteredMobileNumber(String registeredMobileNumber) {
+        this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public List<String> getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public String getAadhaarNo() {
@@ -317,6 +304,62 @@ public class StudentDTO extends AbstractAuditingDTO {
 
     public void setAadhaarNo(String aadhaarNo) {
         this.aadhaarNo = aadhaarNo;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getReligion() {
+        return religion;
+    }
+
+    public void setReligion(String religion) {
+        this.religion = religion;
+    }
+
+    public String getMotherTongue() {
+        return motherTongue;
+    }
+
+    public void setMotherTongue(String motherTongue) {
+        this.motherTongue = motherTongue;
+    }
+
+    public String getCaste() {
+        return caste;
+    }
+
+    public void setCaste(String caste) {
+        this.caste = caste;
+    }
+
+    public String getSubCaste() {
+        return subCaste;
+    }
+
+    public void setSubCaste(String subCaste) {
+        this.subCaste = subCaste;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getBirthPlace() {
+        return birthPlace;
+    }
+
+    public void setBirthPlace(String birthPlace) {
+        this.birthPlace = birthPlace;
     }
 
     public String getIdentificationMark1() {
@@ -359,46 +402,6 @@ public class StudentDTO extends AbstractAuditingDTO {
         this.previousSchoolStandard = previousSchoolStandard;
     }
 
-    public SchoolInfoDTO getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
-        this.schoolInfo = schoolInfo;
-    }
-
-    public String getRegisteredMobileNumber() {
-        return registeredMobileNumber;
-    }
-
-    public void setRegisteredMobileNumber(String registeredMobileNumber) {
-        this.registeredMobileNumber = registeredMobileNumber;
-    }
-
-    public List<String> getAlternateMobileNumbers() {
-        return alternateMobileNumbers;
-    }
-
-    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
-        this.alternateMobileNumbers = alternateMobileNumbers;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getAdmissionDate() {
-        return admissionDate;
-    }
-
-    public void setAdmissionDate(LocalDate admissionDate) {
-        this.admissionDate = admissionDate;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -417,38 +420,6 @@ public class StudentDTO extends AbstractAuditingDTO {
     public String toString() {
         return "StudentDTO{" +
             "id=" + id +
-            ", admissionId='" + admissionId + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", userId=" + userId +
-            ", dateOfBirth=" + dateOfBirth +
-            ", bloodGroup='" + bloodGroup + '\'' +
-            ", nationality='" + nationality + '\'' +
-            ", religion='" + religion + '\'' +
-            ", motherTongue='" + motherTongue + '\'' +
-            ", caste='" + caste + '\'' +
-            ", subCaste='" + subCaste + '\'' +
-            ", category='" + category + '\'' +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", country='" + country + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", birthPlace='" + birthPlace + '\'' +
-            ", aadhaarNo='" + aadhaarNo + '\'' +
-            ", identificationMark1='" + identificationMark1 + '\'' +
-            ", identificationMark2='" + identificationMark2 + '\'' +
-            ", previousSchoolName='" + previousSchoolName + '\'' +
-            ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
-            ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
-            ", schoolInfo=" + schoolInfo +
-            ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
-            ", alternateMobileNumbers=" + alternateMobileNumbers +
-            ", gender=" + gender +
-            ", admissionDate=" + admissionDate +
             '}';
     }
 }

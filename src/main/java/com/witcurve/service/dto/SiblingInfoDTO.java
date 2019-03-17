@@ -1,43 +1,29 @@
-package com.witcurve.domain;
+package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.Gender;
-import com.witcurve.service.util.LocalDateConverter;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
-@Table(name="sibling_info")
-public class SiblingInfo extends AbstractAuditingEntity implements Serializable {
+public class SiblingInfoDTO extends AbstractAuditingDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Student student;
+    private StudentDTO student;
 
     @NotNull
-    @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "standard_during_admission", length = 50)
     private String standardDuringAdmission;
 
-    @Column
-    @Convert(converter = LocalDateConverter.class)
     private LocalDate studyingSince;
 
     public Long getId() {
@@ -48,11 +34,11 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
         this.id = id;
     }
 
-    public Student getStudent() {
+    public StudentDTO getStudent() {
         return student;
     }
 
-    public void setStudent(Student student) {
+    public void setStudent(StudentDTO student) {
         this.student = student;
     }
 
@@ -91,19 +77,20 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SiblingInfo that = (SiblingInfo) o;
-        return Objects.equals(id, that.id);
+        if (!(o instanceof SiblingInfoDTO)) return false;
+        SiblingInfoDTO siblingInfoDTO = (SiblingInfoDTO) o;
+        return Objects.equals(getId(), siblingInfoDTO.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+
+        return Objects.hash(getId());
     }
 
     @Override
     public String toString() {
-        return "SiblingInfo{" +
+        return "SiblingInfoDTO{" +
             "id=" + id +
             '}';
     }

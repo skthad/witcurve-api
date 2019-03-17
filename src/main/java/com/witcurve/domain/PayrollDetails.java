@@ -18,8 +18,7 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payrollDetailsIdSeq")
-    @SequenceGenerator(name = "payrollDetailsIdSeq", sequenceName="payroll_details_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -254,7 +253,6 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     public String toString() {
         return "PayrollDetails{" +
             "id=" + id +
-            ", staffId='" + staff.getId() + '\'' +
             '}';
     }
 }

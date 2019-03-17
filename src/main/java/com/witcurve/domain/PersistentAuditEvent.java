@@ -1,5 +1,7 @@
 package com.witcurve.domain;
 
+import com.witcurve.service.util.InstantTimeConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -19,8 +21,7 @@ public class PersistentAuditEvent implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wcPersistentAuditEventIdSeq")
-    @SequenceGenerator(name = "wcPersistentAuditEventIdSeq", sequenceName="wc_persistent_audit_event_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
     private Long id;
 
@@ -29,6 +30,7 @@ public class PersistentAuditEvent implements Serializable {
     private String principal;
 
     @Column(name = "event_date")
+    @Convert(converter = InstantTimeConverter.class)
     private Instant auditEventDate;
 
     @Column(name = "event_type")

@@ -6,13 +6,11 @@ import java.util.Objects;
 
 public class MessageDTO extends AbstractAuditingDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
 
-    @NotNull
-    private String subject;
-
-    @NotNull
-    private String body;
+    private Long messageThreadId;
 
     @NotNull
     private Long fromUserId;
@@ -23,7 +21,11 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
 
     private String toUserName;
 
-    private Long messageThreadId;
+    @NotNull
+    private String subject;
+
+    @NotNull
+    private String body;
 
     @NotNull
     private Boolean read = false;
@@ -36,20 +38,12 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
         this.id = id;
     }
 
-    public String getSubject() {
-        return subject;
+    public Long getMessageThreadId() {
+        return messageThreadId;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
+    public void setMessageThreadId(Long messageThreadId) {
+        this.messageThreadId = messageThreadId;
     }
 
     public Long getFromUserId() {
@@ -84,12 +78,20 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
         this.toUserName = toUserName;
     }
 
-    public Long getMessageThreadId() {
-        return messageThreadId;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setMessageThreadId(Long messageThreadId) {
-        this.messageThreadId = messageThreadId;
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public Boolean getRead() {
@@ -118,14 +120,6 @@ public class MessageDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "MessageDTO{" +
             "id=" + id +
-            ", subject='" + subject + '\'' +
-            ", body='" + body + '\'' +
-            ", fromUserId=" + fromUserId +
-            ", fromUserName=" + fromUserName +
-            ", toUserId=" + toUserId +
-            ", toUserName=" + toUserName +
-            ", messageThreadId=" + messageThreadId +
-            ", read=" + read +
             '}';
     }
 }

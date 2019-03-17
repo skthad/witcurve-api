@@ -12,9 +12,13 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "guardianIdSeq")
-    @SequenceGenerator(name = "guardianIdSeq", sequenceName="guardian_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Student student;
 
     @NotNull
     @Column(name = "first_name", nullable = false)
@@ -28,8 +32,8 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
     private String lastName;
 
     @NotNull
-    @Column(name = "type", length = 50, nullable = false)
-    private String type;
+    @Column(name = "relation_with_student", length = 50, nullable = false)
+    private String relationWithStudent;
 
     @Column(name = "qualification", length = 50)
     private String qualification;
@@ -80,17 +84,20 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
     @Column(name = "ration_card_no", length = 50)
     private String rationCardNo;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Student student;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public String getFirstName() {
@@ -117,12 +124,12 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getType() {
-        return type;
+    public String getRelationWithStudent() {
+        return relationWithStudent;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setRelationWithStudent(String relationWithStudent) {
+        this.relationWithStudent = relationWithStudent;
     }
 
     public String getQualification() {
@@ -253,14 +260,6 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
         this.rationCardNo = rationCardNo;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -279,27 +278,6 @@ public class Guardian extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Guardian{" +
             "id=" + id +
-            ", firstName='" + firstName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", type='" + type + '\'' +
-            ", qualification='" + qualification + '\'' +
-            ", occupation='" + occupation + '\'' +
-            ", annualIncome=" + annualIncome +
-            ", mobileNo='" + mobileNo + '\'' +
-            ", emailId='" + emailId + '\'' +
-            ", residenceAddress1='" + residenceAddress1 + '\'' +
-            ", residenceAddress2='" + residenceAddress2 + '\'' +
-            ", residenceCity='" + residenceCity + '\'' +
-            ", residenceState='" + residenceState + '\'' +
-            ", residencePincode=" + residencePincode +
-            ", officeAddress1='" + officeAddress1 + '\'' +
-            ", officeAddress2='" + officeAddress2 + '\'' +
-            ", officeCity='" + officeCity + '\'' +
-            ", officeState='" + officeState + '\'' +
-            ", officePincode=" + officePincode +
-            ", rationCardNo='" + rationCardNo + '\'' +
-            ", student=" + student +
             '}';
     }
 }

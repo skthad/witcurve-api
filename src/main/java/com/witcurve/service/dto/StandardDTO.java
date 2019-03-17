@@ -8,7 +8,12 @@ import java.util.Objects;
 
 public class StandardDTO extends AbstractAuditingDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
+
+    @NotNull
+    private SchoolInfoDTO schoolInfo;
 
     @NotNull
     private Grade grade;
@@ -16,9 +21,6 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
     private String section;
 
     private Long classTeacherId;
-
-    @NotNull
-    private SchoolInfoDTO schoolInfo;
 
     @NotNull
     private Boolean active=true;
@@ -29,6 +31,14 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Grade getGrade() {
@@ -53,14 +63,6 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setClassTeacherId(Long classTeacherId) {
         this.classTeacherId = classTeacherId;
-    }
-
-    public SchoolInfoDTO getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
-        this.schoolInfo = schoolInfo;
     }
 
     public Boolean getActive() {
@@ -88,11 +90,6 @@ public class StandardDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "StandardDTO{" +
             "id=" + id +
-            ", grade=" + grade +
-            ", section='" + section + '\'' +
-            ", classTeacherId=" + classTeacherId +
-            ", schoolInfo=" + schoolInfo +
-            ", active=" + active +
             '}';
     }
 }

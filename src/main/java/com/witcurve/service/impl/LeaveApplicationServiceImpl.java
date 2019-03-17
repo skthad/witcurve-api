@@ -143,7 +143,6 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         }
         leaveApplication.get().setStatus(status);
         leaveApplication.get().setApprovedBy(staff.get());
-        leaveApplication.get().setNote(note);
 
         LeaveApplicationDTO leaveApplicationDTO= leaveApplicationMapper.toDto(leaveApplication.get());
         leaveApplicationDTO.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(),

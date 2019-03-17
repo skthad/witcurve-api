@@ -21,8 +21,7 @@ public class PayrollCycle extends AbstractAuditingEntity implements Serializable
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payrollCycleIdSeq")
-    @SequenceGenerator(name = "payrollCycleIdSeq", sequenceName="payroll_cycle_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -117,11 +116,6 @@ public class PayrollCycle extends AbstractAuditingEntity implements Serializable
     public String toString() {
         return "PayrollCycle{" +
             "id=" + id +
-            ", schoolInfoId='" + schoolInfo.getId() + '\'' +
-            ", month='" + month + '\'' +
-            ", year='" + year + '\'' +
-            ", cycleStart='" + cycleStart + '\'' +
-            ", cycleEnd='" + cycleEnd + '\'' +
             '}';
     }
 }

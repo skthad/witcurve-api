@@ -47,8 +47,8 @@ public class StaffResource {
                 .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("staff_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
-                log.debug("Unique constraint (staff_id, school_info_id) violated");
+            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+                log.debug("Unique constraint (employee_id, school_info_id) violated");
                 throw new WitcurveException("There already a staff with given staff id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
@@ -130,8 +130,8 @@ public class StaffResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("staff_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
-                log.debug("Unique constraint (staff_id, school_info_id) violated");
+            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+                log.debug("Unique constraint (employee_id, school_info_id) violated");
                 throw new WitcurveException("There already a student with given staff id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");

@@ -1,5 +1,7 @@
 package com.witcurve.security;
 
+import com.witcurve.domain.Authority;
+import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
@@ -52,8 +54,18 @@ public class DomainUserDetailsService implements UserDetailsService {
         if (!user.getActivated()) {
             throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated, you can activate by otp login process");
         }
-        List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-            .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+        Set<Authority> authorities = user.getAuthorities();
+        List<Permission> permissions = null;
+        for (Authority authority : authorities) {
+            if (authority.getPermissions().size() != 0) {
+                if (permissions == null) {
+                    permissions = new ArrayList<>();
+                }
+                permissions.addAll(authority.getPermissions());
+            }
+        }
+        List<GrantedAuthority> grantedAuthorities = permissions.stream()
+            .map(permission -> new SimpleGrantedAuthority(permission.getName()))
             .collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(user.getLogin(),
             user.getPassword(),

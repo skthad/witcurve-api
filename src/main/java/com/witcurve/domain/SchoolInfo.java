@@ -15,9 +15,13 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "schoolInfoIdSeq")
-    @SequenceGenerator(name = "schoolInfoIdSeq", sequenceName="school_info_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private School school;
 
     @NotNull
     @Column(length = 50, nullable = false)
@@ -27,17 +31,20 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
     @Column(length = 50, nullable = false)
     private String medium;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private School school;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
     }
 
     public String getBoard() {
@@ -54,14 +61,6 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
 
     public void setMedium(String medium) {
         this.medium = medium;
-    }
-
-    public School getSchool() {
-        return school;
-    }
-
-    public void setSchool(School school) {
-        this.school = school;
     }
 
     @Override
@@ -82,9 +81,6 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "SchoolInfo{" +
             "id=" + id +
-            ", board='" + board + '\'' +
-            ", medium='" + medium + '\'' +
-            ", school=" + school +
             '}';
     }
 }

@@ -1,0 +1,10 @@
+name;display_name
+SUPER_ADMIN;Super Admin
+INSTITUTE_ADMIN;Administrator for all modules
+PARENT;Parent of enrolled students
+FACULTY;Teaching faculty
+GROUND_STAFF;Ground Staff
+HR_MANAGER;Human Resource Manager
+STUDENT_MANAGER;Student Module Manager
+ACADEMICS_MANAGER;Academics Module Manager
+CURRICULUM_MANAGER;Curriculum Manager

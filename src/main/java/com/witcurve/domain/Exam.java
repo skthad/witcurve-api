@@ -17,23 +17,8 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "examIdSeq")
-    @SequenceGenerator(name = "examIdSeq", sequenceName="exam_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @NotNull
-    @Column(name = "start_date", nullable = false)
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate startDate;
-
-    @NotNull
-    @Column(name = "end_date", nullable = false)
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate endDate;
 
     @NotNull
     @ManyToOne
@@ -50,36 +35,26 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private ExamStatus status = ExamStatus.DRAFT;
 
+    @NotNull
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @NotNull
+    @Column(name = "start_date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate startDate;
+
+    @NotNull
+    @Column(name = "end_date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate endDate;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
     }
 
     public SchoolInfo getSchoolInfo() {
@@ -106,6 +81,30 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
         this.status = status;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -124,11 +123,6 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Exam{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", startDate=" + startDate +
-            ", endDate=" + endDate +
-            ", schoolInfo=" + schoolInfo +
-            ", grade=" + grade +
             '}';
     }
 }
