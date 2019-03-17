@@ -32,7 +32,7 @@ public class AcademicSession extends AbstractAuditingEntity implements Serializa
     private SchoolInfo schoolInfo;
 
     @NotNull
-    @Column(name = "active", nullable = false, columnDefinition = "default boolean true")
+    @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
 
     public Long getId() {
