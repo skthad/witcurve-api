@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.google.common.base.Strings;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,15 +46,22 @@ public class StaffServiceImpl implements StaffService {
     UserMapper userMapper;
 
     @Override
-    public StaffDTO create(StaffDTO staffDTO) {
+    public StaffDTO create(StaffDTO staffDTO, UserType type, List<String> authorities) {
         log.debug("Request to create staff : {}", staffDTO);
         UserDTO userDTO = new UserDTO();
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.setType(UserType.TEACHING_STAFF);
         userDTO.setActivated(false);
-        userDTO.addAuthority("ROLE_TEACHING");
+        userDTO.setType(type);
+        if(type.equals(UserType.TEACHING_STAFF)) {
+            staffDTO.setType(StaffType.TEACHING);
+        } else {
+            staffDTO.setType(StaffType.NON_TEACHING);
+        }
+        if(authorities != null && authorities.size() != 0) {
+            userDTO.setAuthorities(new HashSet<>(authorities));
+        }
         User user = userService.createUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff.setUser(user);
@@ -61,7 +70,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO update(StaffDTO staffDTO) throws WitcurveException {
+    public StaffDTO update(StaffDTO staffDTO, UserType type, List<String> authorities) throws WitcurveException {
         log.debug("Request to update staff : {}", staffDTO);
         Optional<User> user = userRepository.findById(staffDTO.getUserId());
         if(!user.isPresent()) {
@@ -71,7 +80,15 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.addAuthority("ROLE_TEACHING");
+        userDTO.setType(type);
+        if(type.equals(UserType.TEACHING_STAFF)) {
+            staffDTO.setType(StaffType.TEACHING);
+        } else {
+            staffDTO.setType(StaffType.NON_TEACHING);
+        }
+        if(authorities != null && authorities.size() != 0) {
+            userDTO.setAuthorities(new HashSet<>(authorities));
+        }
         userService.updateUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff = staffRepository.save(staff);

@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -36,18 +37,18 @@ public class StaffResource {
      */
     @PostMapping("/staff")
     @Timed
-    public ResponseEntity<StaffDTO> createStaff(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<StaffDTO> createStaff(@RequestBody @Valid StaffDTO staffDTO, @RequestParam UserType type, @RequestParam(required = false) List<String> authorities) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Staff");
         if (staffDTO.getId() != null) {
             throw new WitcurveException("New Staff can't already have an id");
         }
         try {
-            StaffDTO result = staffService.create(staffDTO);
+            StaffDTO result = staffService.create(staffDTO, type, authorities);
             return ResponseEntity.created(new URI("/api/staff/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
                 log.debug("Unique constraint (employee_id, school_info_id) violated");
                 throw new WitcurveException("There already a staff with given staff id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
@@ -113,7 +114,7 @@ public class StaffResource {
 
     @PutMapping("/staff")
     @Timed
-    public ResponseEntity<StaffDTO> updateStaff(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException {
+    public ResponseEntity<StaffDTO> updateStaff(@RequestBody @Valid StaffDTO staffDTO, @RequestParam UserType type, @RequestParam(required = false) List<String> authorities) throws WitcurveException {
         log.debug("Request to update Staff");
         if (staffDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
@@ -125,14 +126,14 @@ public class StaffResource {
         }
 
         try {
-            StaffDTO result = staffService.update(staffDTO);
+            StaffDTO result = staffService.update(staffDTO, type, authorities);
             return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
                 log.debug("Unique constraint (employee_id, school_info_id) violated");
-                throw new WitcurveException("There already a student with given staff id for this board");
+                throw new WitcurveException("There is already a staff with given employee id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {

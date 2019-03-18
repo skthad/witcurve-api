@@ -66,6 +66,7 @@ public class UserContextServiceImpl implements UserContextService {
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
 
         Long schoolInfoId = null;
+        // TODO need changes for other user types
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
             List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
