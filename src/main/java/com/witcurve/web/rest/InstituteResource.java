@@ -37,7 +37,7 @@ public class InstituteResource {
      * @throws URISyntaxException
      */
     @PostMapping("/institutes")
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @Timed
     public ResponseEntity<InstituteDTO> createInstitute(@RequestBody @Valid InstituteDTO instituteDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save institute");
@@ -66,7 +66,7 @@ public class InstituteResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @PutMapping("/institutes")
     @Timed
     public ResponseEntity<InstituteDTO> updateInstitute(@RequestBody @Valid InstituteDTO instituteDTO) throws WitcurveException {
@@ -98,7 +98,7 @@ public class InstituteResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @GetMapping("/institutes/{instituteId}")
     @Timed
     public ResponseEntity<InstituteDTO> getInstituteById(@PathVariable("instituteId") Long instituteId) throws WitcurveException {
@@ -112,7 +112,7 @@ public class InstituteResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @GetMapping("/institutes")
     @Timed
     public ResponseEntity<List<InstituteDTO>> getAllInsitutes() throws WitcurveException {
@@ -127,7 +127,7 @@ public class InstituteResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @DeleteMapping("/institutes/{instituteId}")
     @Timed
     public ResponseEntity<Void> deleteInstitute(@PathVariable Long instituteId) throws WitcurveException {
