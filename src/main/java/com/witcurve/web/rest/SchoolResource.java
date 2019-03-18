@@ -36,8 +36,8 @@ public class SchoolResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS +
-        ") or hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @PostMapping("/schools")
     @Timed
     public ResponseEntity<SchoolDTO> createSchool(@RequestBody @Valid SchoolDTO schoolDTO) throws WitcurveException, URISyntaxException {
@@ -58,8 +58,8 @@ public class SchoolResource {
      * @throws WitcurveException
      */
 
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS +
-        ") or hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @PutMapping("/schools")
     @Timed
     public ResponseEntity<SchoolDTO> updateSchool(@RequestBody @Valid SchoolDTO schoolDTO) throws WitcurveException {
@@ -110,8 +110,8 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS +
-        ") or hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @DeleteMapping("/schools/{schoolId}")
     @Timed
     public ResponseEntity<Void> deleteSchool(@PathVariable Long schoolId) throws WitcurveException {
