@@ -1,7 +1,13 @@
 authority_name;permission_name
 SUPER_ADMIN;SuperAccess
-INSTITUTE_ADMIN;InstituteFullAccess
-PARENT;ParentFullAccess
+INSTITUTE_ADMIN;InstituteAccess
+PARENT;ParentAccess
+FACULTY;StudentDirectoryReadOnlyAccess
+FACULTY;StudentNotificationFullAccess
+FACULTY;StudentAttendanceFullAccess
+FACULTY;CourseReadOnlyAccess
+FACULTY;ResultEntryAccess
+FACULTY;CurriculumReadOnlyAccess
 HR_MANAGER;StaffDirectoryFullAccess
 HR_MANAGER;StaffNotificationFullAccess
 HR_MANAGER;StaffAttendanceFullAccess
@@ -17,9 +23,3 @@ ACADEMICS_MANAGER;ResultEntryAccess
 CURRICULUM_MANAGER;CourseReadOnlyAccess
 CURRICULUM_MANAGER;CurriculumFullAccess
 CURRICULUM_MANAGER;ResultPublishAccess
-FACULTY;StudentDirectoryReadOnlyAccess
-FACULTY;StudentNotificationFullAccess
-FACULTY;StudentAttendanceFullAccess
-FACULTY;CourseReadOnlyAccess
-FACULTY;ResultEntryAccess
-FACULTY;CurriculumReadOnlyAccess
