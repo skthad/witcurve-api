@@ -124,4 +124,7 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+    sms:
+        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        sender-id: WCURVE

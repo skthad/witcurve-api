@@ -1,6 +1,7 @@
 package com.witcurve.service;
 
 import com.google.common.base.Strings;
+import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.StudentRepository;
@@ -18,19 +19,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class SmsService {
     private static final Logger log = LoggerFactory.getLogger("SmsService");
-
-    private static String apiUrl="http://api.msg91.com/api/sendhttp.php?";
-    private static final String authkey = "228729Ax0VORwQvEQ25b9cfff6";
-    private static final String senderId = "WCURVE";
-    private static final String countryCode = "91";
-    // route=4 is transactional
-    private static final String route="4";
 
     @Autowired
     StudentStandardRepository studentStandardRepository;
@@ -41,8 +36,17 @@ public class SmsService {
     @Autowired
     StaffRepository staffRepository;
 
+    @Autowired
+    ApplicationProperties applicationProperties;
+
+    private static String API_URL="http://api.msg91.com/api/sendhttp.php?";
+
+    private static final String COUNTRY_CODE = "91";
+    // route=4 is transactional
+    private static final String ROUTE="4";
+
     @Async
-    public static void sendSms(String mobileNumber, String body) throws WitcurveException {
+    public void sendSms(String mobileNumber, String body) throws WitcurveException {
 
         URLConnection myURLConnection;
         URL myURL;
@@ -50,18 +54,18 @@ public class SmsService {
 
         //Send SMS API
         //Prepare parameter string
-        StringBuilder sbPostData= new StringBuilder(apiUrl);
-        sbPostData.append("authkey="+authkey);
-        sbPostData.append("&mobiles="+countryCode+mobileNumber);
-        sbPostData.append("&message="+ body);
-        sbPostData.append("&route="+route);
-        sbPostData.append("&sender="+senderId);
+        StringBuilder sbPostData= new StringBuilder(API_URL);
+        sbPostData.append("authkey="+ applicationProperties.getSms().getAuthKey());
+        sbPostData.append("&mobiles="+COUNTRY_CODE+mobileNumber);
+        sbPostData.append("&message="+ URLEncoder.encode(body));
+        sbPostData.append("&route="+ROUTE);
+        sbPostData.append("&sender="+applicationProperties.getSms().getSenderId());
         sbPostData.append("&country="+0);
 
-        apiUrl = sbPostData.toString();
+        String finalApiUrl = sbPostData.toString();
         try
         {
-            myURL = new URL(apiUrl);
+            myURL = new URL(finalApiUrl);
             myURLConnection = myURL.openConnection();
             myURLConnection.connect();
             reader= new BufferedReader(new InputStreamReader(myURLConnection.getInputStream()));
