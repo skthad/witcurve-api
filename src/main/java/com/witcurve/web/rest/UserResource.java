@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.UserRepository;
+import com.witcurve.security.PermissionsConstants;
 import com.witcurve.service.MailService;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.StudentService;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -111,6 +113,7 @@ public class UserResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      * @throws BadRequestAlertException 400 (Bad Request) if the login or email is already in use
      */
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @PostMapping("/users")
     @Timed
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException, WitcurveException {
@@ -143,7 +146,6 @@ public class UserResource {
      */
     @PutMapping("/users")
     @Timed
-    //@PreAuthorize("hasAuthority('SuperAccess')")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws WitcurveException{
         log.debug("REST request to update User : {}", userDTO);
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
@@ -169,7 +171,6 @@ public class UserResource {
      */
     @PutMapping("/users/{userId}")
     @Timed
-    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId,
                                               @RequestParam Boolean activate) {
         log.debug("REST request to " + (activate ? "" : "de") + "activate user : {}", userId);
@@ -212,7 +213,6 @@ public class UserResource {
      */
     @GetMapping("/users/authorities")
     @Timed
-    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }
@@ -240,7 +240,7 @@ public class UserResource {
      */
     @DeleteMapping("/users/{login}")
     @Timed
-    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
