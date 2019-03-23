@@ -110,7 +110,7 @@ public class UserContextServiceImpl implements UserContextService {
             if (UserType.SUPER_USER.equals(contextDTO.getCurrentUser().getType())) {
                 return contextDTO;
             } else {
-                schoolInfoId = Long.parseLong(user.getUsername().substring(user.getUsername().indexOf("-") + 1));
+                schoolInfoId = Long.parseLong(user.getUsername().substring(0, user.getUsername().indexOf("-")));
             }
         }
 

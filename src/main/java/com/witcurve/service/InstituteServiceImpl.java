@@ -74,7 +74,7 @@ public class InstituteServiceImpl implements InstituteService {
 
         authority.setInstituteId(instituteId);
         if (authority.getName() == null) {
-            authority.setName(instituteId + "-ROLE_" + authority.getDisplayName().toUpperCase().replaceAll("[ ]+", "_"));
+            authority.setName(instituteId + "-ROLE_" + authority.getDisplayName().trim().toUpperCase().replaceAll("[ ]+", "_"));
         }
 
         return authorityRepository.save(authority);

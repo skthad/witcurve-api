@@ -36,7 +36,7 @@ public class AuthorityResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
     @PostMapping("/authorities/institutes/{instituteId}")
     @Timed
     public ResponseEntity<Authority> saveOrUpdateInstituteAuthority(@RequestBody Authority authority,
@@ -59,7 +59,7 @@ public class AuthorityResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PreAuthorize("hasAuthority(" + PermissionsConstants.INSTITUTE_FULL_ACCESS + ")")
+    @PreAuthorize("hasAuthority(" + PermissionsConstants.SUPER_ACCESS + ")")
     @GetMapping("/authorities")
     @Timed
     public ResponseEntity<List<Authority>> getAuthorities(@RequestParam Long instituteId) throws WitcurveException, URISyntaxException {
