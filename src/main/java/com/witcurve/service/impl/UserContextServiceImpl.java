@@ -58,14 +58,13 @@ public class UserContextServiceImpl implements UserContextService {
     EventService eventService;
 
     @Override
-    public UserContextDTO getCurrentUserContext() throws WitcurveException {
+    public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User currentUser = userService.getUserWithAuthoritiesByLogin(user.getUsername()).get();
 
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
 
-        Long schoolInfoId = null;
         // TODO need changes for other user types
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
@@ -107,11 +106,15 @@ public class UserContextServiceImpl implements UserContextService {
             }
 
             schoolInfoId = studentDTO.getSchoolInfo().getId();
-        } else {
-            schoolInfoId = Long.parseLong(user.getUsername().substring(user.getUsername().indexOf("-") + 1));
+        } else if (schoolInfoId == null) {
+            if (UserType.SUPER_USER.equals(contextDTO.getCurrentUser().getType())) {
+                return contextDTO;
+            } else {
+                schoolInfoId = Long.parseLong(user.getUsername().substring(user.getUsername().indexOf("-") + 1));
+            }
         }
 
-        if (schoolInfoId == null && !user.getUsername().equals("wcadmin")) {
+        if (schoolInfoId == null) {
             throw new WitcurveException("No schoolInfoId could be found for the current user");
         }
 

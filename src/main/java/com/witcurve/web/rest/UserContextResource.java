@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URISyntaxException;
@@ -32,9 +33,10 @@ public class UserContextResource {
      */
     @GetMapping("/user-context")
     @Timed
-    public ResponseEntity<UserContextDTO> getCurrentUserContext() throws WitcurveException {
+    public ResponseEntity<UserContextDTO> getCurrentUserContext(
+        @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get current user context");
-        UserContextDTO result = userContextService.getCurrentUserContext();
+        UserContextDTO result = userContextService.getCurrentUserContext(schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
