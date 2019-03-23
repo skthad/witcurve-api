@@ -66,7 +66,8 @@ public class InstituteResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+    "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @PutMapping("/institutes")
     @Timed
     public ResponseEntity<InstituteDTO> updateInstitute(@RequestBody @Valid InstituteDTO instituteDTO) throws WitcurveException {

@@ -66,7 +66,9 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
+
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @PutMapping("/schools")
     @Timed
     public ResponseEntity<SchoolDTO> updateSchool(@RequestBody @Valid SchoolDTO schoolDTO) throws WitcurveException {
@@ -98,6 +100,8 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @GetMapping("/schools/{schoolId}")
     @Timed
     public ResponseEntity<SchoolDTO> getSchoolById(@PathVariable("schoolId") Long schoolId) throws WitcurveException {
@@ -113,9 +117,11 @@ public class SchoolResource {
      * @throws WitcurveException
      */
 
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @GetMapping("/schools/institutes/{instituteId}")
     @Timed
-    public ResponseEntity<List<SchoolDTO>> getSchoolsInstituteId(@PathVariable("instituteId") Long instituteId) throws WitcurveException {
+    public ResponseEntity<List<SchoolDTO>> getSchoolsByInstituteId(@PathVariable("instituteId") Long instituteId) throws WitcurveException {
         log.debug("Request to get Schools with instituteId {}", instituteId);
         List<SchoolDTO> result = schoolService.getSchoolByInstituteId(instituteId);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -127,8 +133,7 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
-        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @DeleteMapping("/schools/{schoolId}")
     @Timed
     public ResponseEntity<Void> deleteSchool(@PathVariable Long schoolId) throws WitcurveException {
