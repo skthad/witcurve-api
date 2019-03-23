@@ -107,9 +107,11 @@ public class UserContextServiceImpl implements UserContextService {
             }
 
             schoolInfoId = studentDTO.getSchoolInfo().getId();
+        } else {
+            schoolInfoId = Long.parseLong(user.getUsername().substring(user.getUsername().indexOf("-") + 1));
         }
 
-        if (schoolInfoId == null) {
+        if (schoolInfoId == null && !user.getUsername().equals("wcadmin")) {
             throw new WitcurveException("No schoolInfoId could be found for the current user");
         }
 
