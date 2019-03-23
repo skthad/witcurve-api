@@ -1,6 +1,6 @@
 authority_name;permission_name
 SUPER_ADMIN;SuperAccess
-INSTITUTE_ADMIN;InstituteAccess
+INSTITUTE_ADMIN;InstituteFullAccess
 PARENT;ParentAccess
 FACULTY;StudentDirectoryReadOnlyAccess
 FACULTY;StudentNotificationFullAccess

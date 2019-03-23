@@ -425,6 +425,15 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="primary_phone" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_phone" type="VARCHAR(50)"/>
+            <column name="primary_email" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_email" type="VARCHAR(50)"/>
+            <column name="fax" type="VARCHAR(50)"/>
             <column name="created_by" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>

@@ -113,7 +113,6 @@ public class UserResource {
      */
     @PostMapping("/users")
     @Timed
-    //@PreAuthorize("hasAuthority('InstituteFullAccess')")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException, WitcurveException {
         log.debug("REST request to save User : {}", userDTO);
 

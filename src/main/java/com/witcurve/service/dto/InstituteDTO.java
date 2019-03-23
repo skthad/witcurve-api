@@ -13,6 +13,18 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private String name;
 
+    @NotNull
+    private String primaryPhone;
+
+    private String secondaryPhone;
+
+    @NotNull
+    private String primaryEmail;
+
+    private String secondaryEmail;
+
+    private String fax;
+
     public InstituteDTO() {
     }
 
@@ -30,6 +42,46 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPrimaryPhone() {
+        return primaryPhone;
+    }
+
+    public void setPrimaryPhone(String primaryPhone) {
+        this.primaryPhone = primaryPhone;
+    }
+
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    public void setSecondaryPhone(String secondaryPhone) {
+        this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    public void setPrimaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+    }
+
+    public String getSecondaryEmail() {
+        return secondaryEmail;
+    }
+
+    public void setSecondaryEmail(String secondaryEmail) {
+        this.secondaryEmail = secondaryEmail;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
     }
 
     @Override

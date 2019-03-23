@@ -22,6 +22,23 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    @NotNull
+    @Column(name="primary_phone", length = 50, nullable = false)
+    private String primaryPhone;
+
+    @Column(name="secondary_phone", length = 50)
+    private String secondaryPhone;
+
+    @NotNull
+    @Column(name = "primary_email", nullable = false, length = 50)
+    private String primaryEmail;
+
+    @Column(name = "secondary_email", length = 50)
+    private String secondaryEmail;
+
+    @Column(name="fax", length = 50)
+    private String fax;
+
     public Long getId() {
         return id;
     }
@@ -36,6 +53,46 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPrimaryPhone() {
+        return primaryPhone;
+    }
+
+    public void setPrimaryPhone(String primaryPhone) {
+        this.primaryPhone = primaryPhone;
+    }
+
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    public void setSecondaryPhone(String secondaryPhone) {
+        this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    public void setPrimaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+    }
+
+    public String getSecondaryEmail() {
+        return secondaryEmail;
+    }
+
+    public void setSecondaryEmail(String secondaryEmail) {
+        this.secondaryEmail = secondaryEmail;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
     }
 
     @Override
