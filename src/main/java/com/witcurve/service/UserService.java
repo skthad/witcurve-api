@@ -85,7 +85,6 @@ public class UserService {
             user.setPassword(encryptedPassword);
         }
         user.setType(userDTO.getType());
-        user.setActivated(true);
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);

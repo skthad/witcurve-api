@@ -125,9 +125,6 @@ public class UserResource {
         } else if (userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).isPresent()) {
             throw new WitcurveException("Login name already used!");
 //            throw new LoginAlreadyUsedException();
-        } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
-            throw new WitcurveException("Email is already in use!");
-//            throw new EmailAlreadyUsedException();
         } else {
             User newUser = userService.createUser(userDTO);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))

@@ -1128,9 +1128,6 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-53">
         <addUniqueConstraint columnNames="class_teacher_id" constraintName="UC_STANDARDCLASS_TEACHER_ID_COL" tableName="standard"/>
     </changeSet>
-    <changeSet author="WitCurve (generated)" id="0000000000001-54">
-        <addUniqueConstraint columnNames="email" constraintName="UC_WC_USEREMAIL_COL" tableName="wc_user"/>
-    </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-55">
         <addUniqueConstraint columnNames="login" constraintName="UC_WC_USERLOGIN_COL" tableName="wc_user"/>
     </changeSet>
@@ -1413,14 +1410,4 @@
                   tableName="wc_user_authority">
         </loadData>
     </changeSet>
-    <!--<changeSet author="WitCurve (generated)" id="0000000000001-141">
-        <sql>
-            INSERT INTO witcurve.wc_user (id, type, login, first_name, last_name, email,
-            password_hash, first_time_login, activated, created_by, created_date)
-            VALUES (1, 'SUPER_USER', 'wcadmin', 'Witcurve', 'Admin', 'admin@witcurve.com',
-            '$2a$10$GIlaOaiTzyZY8OBHfycY9edc9z2Z8d/Fnn08Earu/4saqFMvCJPZ6',false, true, 'System', '2019-03-10');
-            INSERT INTO witcurve.wc_user_authority(user_id, authority_name)
-            VALUES (1, 'SUPER_ADMIN');
-        </sql>
-    </changeSet>-->
 </databaseChangeLog>
