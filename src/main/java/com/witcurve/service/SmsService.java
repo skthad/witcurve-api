@@ -95,7 +95,7 @@ public class SmsService {
         }
         if (!Strings.isNullOrEmpty(smsVM.getStaffList())) {
             if (smsVM.getStaffList().equals("-1")) {
-                recipientsList.addAll(staffRepository.findStaffPhoneNumbersInSchoolInfoId(schoolInfoId));
+                recipientsList.addAll(staffRepository.findActiveStaffPhoneNumbersInSchoolInfoId(schoolInfoId));
             } else {
                 List<Long> staffIds = Arrays.asList(smsVM.getStaffList().split(","))
                     .stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
