@@ -1,14 +1,11 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
-import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.MailService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.PasswordChangeDTO;
 import com.witcurve.service.dto.UserDTO;
-import com.witcurve.web.rest.errors.EmailAlreadyUsedException;
 import com.witcurve.web.rest.errors.InvalidPasswordException;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ManagedUserVM;
@@ -17,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.
@@ -68,30 +63,6 @@ public class AccountResource {
             .map(UserDTO::new)
             .orElseThrow(() -> new WitcurveException("User could not be found"));
     }
-
-    /**
-     * POST  /account : update the current user information.
-     *
-     * @param userDTO the current user information
-     * @throws EmailAlreadyUsedException 400 (Bad Request) if the email is already used
-     * @throws RuntimeException 500 (Internal Server Error) if the user login wasn't found
-     */
-    @PostMapping("/account")
-    @Timed
-    public void saveAccount(@Valid @RequestBody UserDTO userDTO) throws WitcurveException {
-        final String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new WitcurveException("Current user login not found"));
-        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userLogin))) {
-            throw new WitcurveException("Email is already in use!");
-            //throw new EmailAlreadyUsedException();
-        }
-        Optional<User> user = userRepository.findOneByLogin(userLogin);
-        if (!user.isPresent()) {
-            throw new WitcurveException("User could not be found");
-        }
-        userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
-            userDTO.getLangKey(), userDTO.getImageUrl());
-   }
 
     /**
      * POST  /account/change-password : changes the current user's password

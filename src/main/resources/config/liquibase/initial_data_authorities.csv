@@ -5,6 +5,7 @@ PARENT;Parent
 FACULTY;Teaching Faculty
 NON_TEACHING;Non-Teaching Staff
 HR_MANAGER;Human Resource Manager
+PAYROLL_MANAGER;Payroll Manager
 STUDENT_MANAGER;Student Manager
 ACADEMICS_MANAGER;Academics Manager
 CURRICULUM_MANAGER;Curriculum Manager

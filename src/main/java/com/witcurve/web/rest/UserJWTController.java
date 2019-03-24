@@ -62,7 +62,7 @@ public class UserJWTController {
         String username = authentication.getName();
 
         Optional<User> result = userRepository.findOneWithAuthoritiesByLogin(username);
-        if (result.get().isFirstTimeLogin()) {
+        if (result.get().getFirstTimeLogin()) {
             result.get().setActivated(true);
             result.get().setFirstTimeLogin(false);
             userRepository.save(result.get());

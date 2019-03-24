@@ -7,7 +7,6 @@ import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.UserRepository;
-import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StudentDTO;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,8 +60,7 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
-        userDTO.setActivated(false);
-        userDTO.addAuthority(AuthoritiesConstants.PARENT);
+        userDTO.setFirstTimeLogin(false);
         User user = userService.createUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
@@ -83,8 +80,6 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
-        userDTO.setAuthorities(new HashSet<>());
-        userDTO.addAuthority(AuthoritiesConstants.PARENT);
         userService.updateUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);

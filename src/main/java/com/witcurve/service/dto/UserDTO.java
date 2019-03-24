@@ -52,15 +52,12 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private boolean activated = false;
 
-    @Size(min = 2, max = 6)
-    private String langKey;
+    @NotNull
+    private Boolean forcePassword = true;
 
     private String otp;
 
     private Instant otpExpiry;
-
-    @Size(max = 256)
-    private String imageUrl;
 
     private String createdBy;
 
@@ -90,9 +87,7 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.getActivated();
-        this.firstTimeLogin = user.isFirstTimeLogin();
-        this.imageUrl = user.getImageUrl();
-        this.langKey = user.getLangKey();
+        this.firstTimeLogin = user.getFirstTimeLogin();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
@@ -121,28 +116,20 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.id = id;
     }
 
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
+    }
+
     public String getLogin() {
         return login;
     }
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
-    }
-
-    public Instant getOtpExpiry() {
-        return otpExpiry;
-    }
-
-    public void setOtpExpiry(Instant otpExpiry) {
-        this.otpExpiry = otpExpiry;
     }
 
     public String getFirstName() {
@@ -169,22 +156,6 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.email = email;
     }
 
-    public UserType getType() {
-        return type;
-    }
-
-    public void setType(UserType type) {
-        this.type = type;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public boolean isActivated() {
         return activated;
     }
@@ -193,42 +164,66 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.activated = activated;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public Boolean getForcePassword() {
+        return forcePassword;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setForcePassword(Boolean forcePassword) {
+        this.forcePassword = forcePassword;
     }
 
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public Instant getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(Instant otpExpiry) {
+        this.otpExpiry = otpExpiry;
+    }
+
+    @Override
     public String getCreatedBy() {
         return createdBy;
     }
 
+    @Override
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
+    @Override
     public Instant getCreatedDate() {
         return createdDate;
     }
 
+    @Override
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
+    @Override
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
+    @Override
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    @Override
     public Instant getLastModifiedDate() {
         return lastModifiedDate;
     }
 
+    @Override
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }

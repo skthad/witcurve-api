@@ -25,6 +25,8 @@ public final class PermissionsConstants {
     public static final String COURSE_READ_ONLY_ACCESS = "CourseReadOnlyAccess";
     public static final String CURRICULUM_FULL_ACCESS = "CurriculumFullAccess";
     public static final String CURRICULUM_READ_ONLY_ACCESS = "CurriculumReadOnlyAccess";
+    public static final String EXAM_FULL_ACCESS = "ExamFullAccess";
+    public static final String EXAM_READ_ONLY_ACCESS = "ExamReadOnlyAccess";
     public static final String RESULT_ENTRY_ACCESS = "ResultEntryAccess";
     public static final String RESULT_PUBLISH_ACCESS = "ResultPublishAccess";
 

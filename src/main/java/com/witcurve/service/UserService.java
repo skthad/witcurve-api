@@ -1,10 +1,7 @@
 package com.witcurve.service;
 
 import com.google.common.base.Strings;
-import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
-import com.witcurve.domain.Staff;
-import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.AuthorityRepository;
@@ -19,15 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +59,6 @@ public class UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
-        user.setImageUrl(userDTO.getImageUrl());
         if (UserType.SUPER_USER.equals(userDTO.getType())) {
             throw new WitcurveException("Invalid User Type");
         } else if (UserType.INSTITUTE_MANAGER.equals(userDTO.getType())) {
@@ -119,9 +110,7 @@ public class UserService {
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
                 user.setEmail(userDTO.getEmail());
-                user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
-                user.setLangKey(userDTO.getLangKey());
                 if (UserType.SUPER_USER.equals(userDTO.getType())) {
                     throw new WitcurveException("Invalid User Type");
                 } else if (UserType.INSTITUTE_MANAGER.equals(userDTO.getType())) {
@@ -150,29 +139,6 @@ public class UserService {
                 return user;
             })
             .map(UserDTO::new);
-    }
-
-    /**
-     * Update basic information (first name, last name, email, language) for the current user.
-     *
-     * @param firstName first name of user
-     * @param lastName last name of user
-     * @param email email id of user
-     * @param langKey language key
-     * @param imageUrl image URL of user
-     */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
-        SecurityUtils.getCurrentUserLogin()
-            .flatMap(userRepository::findOneByLogin)
-            .ifPresent(user -> {
-                user.setFirstName(firstName);
-                user.setLastName(lastName);
-                user.setEmail(email);
-                user.setLangKey(langKey);
-                user.setImageUrl(imageUrl);
-                this.clearUserCaches(user);
-                log.debug("Changed Information for User: {}", user);
-            });
     }
 
     public void deleteUser(String login) {
@@ -227,38 +193,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAllByLoginNot(pageable, Constants.ANONYMOUS_USER).map(UserDTO::new);
-    }
-
-    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneWithAuthoritiesByLogin(login.toLowerCase());
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthorities(Long id) {
-        return userRepository.findOneWithAuthoritiesById(id);
-    }
-
-    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
-    }
-
-    /**
-     * Not activated users should be automatically deleted after 3 days.
-     * <p>
-     * This is scheduled to get fired everyday, at 01:00 (am).
-     */
-    @Scheduled(cron = "0 0 1 * * ?")
-    public void removeNotActivatedUsers() {
-        List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS));
-        for (User user : users) {
-            log.debug("Deleting not activated user {}", user.getLogin());
-            userRepository.delete(user);
-            this.clearUserCaches(user);
-        }
     }
 
     /**
@@ -270,42 +211,6 @@ public class UserService {
 
     private void clearUserCaches(User user) {
         Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
-        //Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
     }
 
-    public List<String> getContactNumbersOfUser(String username, UserType type) throws WitcurveException{
-        List<String> result = null;
-        Optional<User> user = userRepository.findOneByLogin(username);
-        if (user.isPresent()) {
-            if (type.equals(user.get().getType())) {
-                if(type.equals(UserType.TEACHING_STAFF)) {
-                    Staff staff = staffRepository.getStaffByUserId(user.get().getId());
-                    if (staff != null) {
-                        result = new ArrayList<>();
-                        result.add(staff.getPrimaryPhone());
-                        if (staff.getSecondaryPhone() != null) {
-                            result.add(staff.getSecondaryPhone());
-                        }
-                    } else {
-                        throw new WitcurveException("There is not staff related to given user");
-                    }
-
-                } else if(type.equals(UserType.PARENT)) {
-                    Student student = studentRepository.getStudentByUserId(user.get().getId());
-                    if (student != null) {
-                        result= new ArrayList<>();
-                        result.add(student.getRegisteredMobileNumber());
-                        if (student.getAlternateMobileNumbers() != null && student.getAlternateMobileNumbers().size() > 0) {
-                            result.addAll(student.getAlternateMobileNumbers());
-                        }
-                    } else {
-                        throw new WitcurveException("There is not student related to given user");
-                    }
-                }
-            } else {
-               throw new WitcurveException("No user with given login and type exists");
-            }
-        }
-        return result;
-    }
 }

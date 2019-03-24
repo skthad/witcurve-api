@@ -53,7 +53,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
         if (!user.getActivated()) {
-            if (user.isFirstTimeLogin() &&
+            if (user.getFirstTimeLogin() &&
                 (UserType.PARENT.equals(user.getType())
                     || UserType.TEACHING_STAFF.equals(user.getType()))) {
                 throw new UserNotActivatedException("User account " + lowercaseLogin + " is not yet activated, use OTP for first time login.");

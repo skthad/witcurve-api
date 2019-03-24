@@ -18,6 +18,8 @@ StudentAllocationFullAccess;Read/write access to student allocation to classes a
 CourseFullAccess;Read/write access to courses
 CourseReadOnlyAccess;Read-only access to courses
 CurriculumFullAccess;Read/write access to curriculum setup
-CurriculumReadOnlyAccess;Read-only access to curriculumn
+CurriculumReadOnlyAccess;Read-only access to curriculum
+ExamFullAccess;Read/write access access to exam information
+ExamReadOnlyAccess;Read-only access to exam information
 ResultEntryAccess;Read/write access to results and marks for tests, assignments and exams
 ResultPublishAccess;Permission to publish and lock the results for tests, assignments and exams

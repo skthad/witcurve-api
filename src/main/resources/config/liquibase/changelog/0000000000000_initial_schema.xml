@@ -24,8 +24,9 @@
             <column name="activated" type="TINYINT(1)" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="lang_key" type="VARCHAR(6)"/>
-            <column name="image_url" type="VARCHAR(256)"/>
+            <column name="force_password" type="TINYINT(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
             <column name="otp" type="VARCHAR(255)"/>
             <column name="otp_expiry" type="TIMESTAMP"/>
             <column name="created_by" type="VARCHAR(50)">

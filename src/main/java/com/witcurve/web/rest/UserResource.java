@@ -17,15 +17,10 @@ import com.witcurve.web.rest.errors.EmailAlreadyUsedException;
 import com.witcurve.web.rest.errors.LoginAlreadyUsedException;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
-import com.witcurve.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -181,34 +176,6 @@ public class UserResource {
         userRepository.activateOrDeactivateByUserId(userId, activate);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( (activate ? "" : "de")
             + "activated user with ID " + userId, null)).build();
-    }
-
-    /**
-     * GET /users/{username}/contact-numbers : get all contact numbers associated with a username.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all users
-     */
-    // not using as of now
-    //@GetMapping("/users/contact-numbers/{username}")
-    @Timed
-    public ResponseEntity<List<String>> getContactNumbersOfUser(@PathVariable (name = "username") String username, @RequestParam(name = "type") UserType type) throws WitcurveException {
-        final List<String> contactNumbers = userService.getContactNumbersOfUser(username, type);
-        return new ResponseEntity<>(contactNumbers, HttpStatus.OK);
-    }
-
-    /**
-     * GET /users : get all users.
-     *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and with body all users
-     */
-    @GetMapping("/users")
-    @Timed
-    //@Secured(AuthoritiesConstants.INSTITUTE_ADMIN)
-    public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
-        final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**

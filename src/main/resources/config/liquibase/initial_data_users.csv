@@ -1,2 +1,2 @@
-id;type;login;first_name;last_name;email;password_hash;first_time_login;activated;created_by
-1;SUPER_USER;wcadmin;Witcurve;Admin;admin@witcurve.com;$2a$10$GIlaOaiTzyZY8OBHfycY9edc9z2Z8d/Fnn08Earu/4saqFMvCJPZ6;0;1;System
+id;type;login;first_name;last_name;email;password_hash;first_time_login;activated;force_password;created_by
+1;SUPER_USER;wcadmin;Witcurve;Admin;admin@witcurve.com;$2a$10$GIlaOaiTzyZY8OBHfycY9edc9z2Z8d/Fnn08Earu/4saqFMvCJPZ6;0;1;0;System

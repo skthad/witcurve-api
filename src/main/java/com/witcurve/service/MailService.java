@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.config.Constants;
 import com.witcurve.domain.User;
 import io.github.jhipster.config.JHipsterProperties;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class MailService {
 
     @Async
     public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
         Context context = new Context(locale);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());

@@ -9,7 +9,6 @@ import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StaffEligibilityRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.UserRepository;
-import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StaffDTO;
@@ -56,13 +55,11 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.setActivated(false);
+        userDTO.setFirstTimeLogin(false);
         if (StaffType.TEACHING.equals(staffDTO.getType())) {
             userDTO.setType(UserType.TEACHING_STAFF);
-            userDTO.addAuthority(AuthoritiesConstants.FACULTY);
         } else {
             userDTO.setType(UserType.NON_TEACHING_STAFF);
-            userDTO.addAuthority(AuthoritiesConstants.NON_TEACHING);
         }
         User user = userService.createUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
@@ -84,12 +81,8 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLastName(staffDTO.getLastName());
         if (StaffType.TEACHING.equals(staffDTO.getType())) {
             userDTO.setType(UserType.TEACHING_STAFF);
-            userDTO.setAuthorities(new HashSet<>());
-            userDTO.addAuthority(AuthoritiesConstants.FACULTY);
         } else {
             userDTO.setType(UserType.NON_TEACHING_STAFF);
-            userDTO.setAuthorities(new HashSet<>());
-            userDTO.addAuthority(AuthoritiesConstants.NON_TEACHING);
         }
         userService.updateUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
