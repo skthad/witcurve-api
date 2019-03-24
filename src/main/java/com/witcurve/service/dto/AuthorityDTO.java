@@ -9,6 +9,7 @@ public class AuthorityDTO implements Serializable {
     @NotNull
     private String displayName;
 
+    @NotNull
     Set<String> permissions;
 
     public String getDisplayName() {
