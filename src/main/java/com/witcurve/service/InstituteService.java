@@ -1,6 +1,7 @@
 package com.witcurve.service;
 
 import com.witcurve.domain.Authority;
+import com.witcurve.service.dto.AuthorityDTO;
 import com.witcurve.service.dto.InstituteDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -16,7 +17,7 @@ public interface InstituteService {
 
     void deleteInstitute(Long instituteId) throws WitcurveException;
 
-    Authority saveOrUpdateCustomAuthority(Long instituteId, Authority authority);
+    Authority saveOrUpdateCustomAuthority(Long instituteId, AuthorityDTO authorityDTO);
 
     void deleteCustomAuthority(Long instituteId, String name);
 

@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.Authority;
 import com.witcurve.security.PermissionsConstants;
 import com.witcurve.service.InstituteService;
+import com.witcurve.service.dto.AuthorityDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class AuthorityResource {
     /**
      * creates/updates custom authority for an institute
      * @param instituteId
-     * @param authority
+     * @param authorityDTO
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
@@ -39,11 +40,11 @@ public class AuthorityResource {
     @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @PostMapping("/authorities/institutes/{instituteId}")
     @Timed
-    public ResponseEntity<Authority> saveOrUpdateInstituteAuthority(@RequestBody Authority authority,
+    public ResponseEntity<Authority> saveOrUpdateInstituteAuthority(@RequestBody AuthorityDTO authorityDTO,
                                                                    @PathVariable Long instituteId) throws WitcurveException, URISyntaxException {
         log.debug("Request to save custom authority for institute id: " + instituteId);
         try {
-            Authority result = instituteService.saveOrUpdateCustomAuthority(instituteId, authority);
+            Authority result = instituteService.saveOrUpdateCustomAuthority(instituteId, authorityDTO);
             return ResponseEntity.created(new URI("/api/institutes/" + instituteId))
                 .headers(HeaderUtil.createEntityCreationAlert("institute", instituteId.toString()))
                 .body(result);

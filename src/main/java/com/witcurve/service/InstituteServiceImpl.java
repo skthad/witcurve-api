@@ -2,8 +2,10 @@ package com.witcurve.service;
 
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.Institute;
+import com.witcurve.domain.Permission;
 import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.InstituteRepository;
+import com.witcurve.service.dto.AuthorityDTO;
 import com.witcurve.service.dto.InstituteDTO;
 import com.witcurve.service.mapper.InstituteMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -13,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -67,12 +71,17 @@ public class InstituteServiceImpl implements InstituteService {
     }
 
     @Override
-    public Authority saveOrUpdateCustomAuthority(Long instituteId, Authority authority) {
+    public Authority saveOrUpdateCustomAuthority(Long instituteId, AuthorityDTO authorityDTO) {
         // check if current logged in user belongs to the input institute
         // create custom dto later used to show default vs custom authorities separately
-
-
+        Authority authority = new Authority();
+        authority.setDisplayName(authorityDTO.getDisplayName());
         authority.setInstituteId(instituteId);
+        Set<Permission> permissions = new HashSet<>();
+        for(String permssion : authorityDTO.getPermissions()) {
+            permissions.add(new Permission(permssion));
+        }
+        authority.setPermissions(permissions);
         if (authority.getName() == null) {
             authority.setName(instituteId + "-ROLE_" + authority.getDisplayName().trim().toUpperCase().replaceAll("[ ]+", "_"));
         }
