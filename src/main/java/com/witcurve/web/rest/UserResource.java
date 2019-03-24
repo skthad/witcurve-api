@@ -146,11 +146,10 @@ public class UserResource {
     @Timed
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) throws WitcurveException{
         log.debug("REST request to update User : {}", userDTO);
-        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
-            throw new WitcurveException("Email is already in use!");
+        if (userDTO.getId() == null) {
+            throw new WitcurveException("An existing user must have an ID");
         }
-        existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
+        Optional<User> existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new WitcurveException("Login name already used!");
         }
