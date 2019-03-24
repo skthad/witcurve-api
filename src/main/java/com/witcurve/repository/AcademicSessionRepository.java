@@ -31,8 +31,8 @@ public interface AcademicSessionRepository extends JpaRepository<AcademicSession
     AcademicSession nearestActiveSessionToDate(Long schoolInfoId, LocalDate date);
 
     @Query("select a from AcademicSession a where a.schoolInfo.id = ?1 and a.startDate = ( " +
-        "select min(a.startDate) from AcademicSession a where a.active = true and a.schoolInfo.id = ?1 and a.startDate > ?2)")
-    AcademicSession nextActiveSessionAfterDate(Long schoolInfoId, LocalDate date);
+        "select min(a.startDate) from AcademicSession a where a.schoolInfo.id = ?1 and a.startDate > ?2)")
+    AcademicSession nextSessionAfterDate(Long schoolInfoId, LocalDate date);
 
     @Modifying
     @Query("update AcademicSession a set a.active = false where a.schoolInfo.id = ?1")

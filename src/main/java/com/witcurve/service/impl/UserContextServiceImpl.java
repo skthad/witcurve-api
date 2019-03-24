@@ -127,7 +127,7 @@ public class UserContextServiceImpl implements UserContextService {
 
             LocalDate sessionStartDate = currentSession.getStartDate();
             LocalDate sessionEndDate = sessionStartDate.plusYears(1).minusDays(1);
-            AcademicSessionDTO nextSession = academicSessionService.getNextActiveSessionAfterDate(schoolInfoId, currentSession.getStartDate());
+            AcademicSessionDTO nextSession = academicSessionService.getNextSessionSessionAfterDate(schoolInfoId, currentSession.getStartDate());
             if (nextSession != null) {
                 sessionEndDate = nextSession.getStartDate().minusDays(1);
             }
