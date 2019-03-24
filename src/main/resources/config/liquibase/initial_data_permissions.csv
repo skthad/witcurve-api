@@ -21,5 +21,6 @@ CurriculumFullAccess;Read/write access to curriculum setup
 CurriculumReadOnlyAccess;Read-only access to curriculum
 ExamFullAccess;Read/write access access to exam information
 ExamReadOnlyAccess;Read-only access to exam information
+ConfigFullAccess;Read/write access to config settings
 ResultEntryAccess;Read/write access to results and marks for tests, assignments and exams
 ResultPublishAccess;Permission to publish and lock the results for tests, assignments and exams
