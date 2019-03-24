@@ -1,7 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -114,7 +113,7 @@ public class StaffResource {
 
     @PutMapping("/staff")
     @Timed
-    public ResponseEntity<StaffDTO> updateStaff(@RequestBody @Valid StaffDTO staffDTO, @RequestParam UserType type, @RequestParam(required = false) List<String> authorities) throws WitcurveException {
+    public ResponseEntity<StaffDTO> updateStaff(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException {
         log.debug("Request to update Staff");
         if (staffDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
