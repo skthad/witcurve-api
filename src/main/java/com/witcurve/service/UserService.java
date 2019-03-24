@@ -59,6 +59,7 @@ public class UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
+        user.setActivated(userDTO.isActivated());
         if (UserType.SUPER_USER.equals(userDTO.getType())) {
             throw new WitcurveException("Invalid User Type");
         } else if (UserType.INSTITUTE_MANAGER.equals(userDTO.getType())) {
