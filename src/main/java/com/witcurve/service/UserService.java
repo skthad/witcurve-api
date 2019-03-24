@@ -11,6 +11,7 @@ import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.UserRepository;
+import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -67,6 +68,22 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setImageUrl(userDTO.getImageUrl());
+        if (UserType.SUPER_USER.equals(userDTO.getType())) {
+            throw new WitcurveException("Invalid User Type");
+        } else if (UserType.INSTITUTE_MANAGER.equals(userDTO.getType())) {
+            userDTO.setAuthorities(new HashSet<>());
+            userDTO.addAuthority(AuthoritiesConstants.INSTITUTE_ADMIN);
+        } else if (UserType.PARENT.equals(userDTO.getType())) {
+            userDTO.setAuthorities(new HashSet<>());
+            userDTO.addAuthority(AuthoritiesConstants.PARENT);
+        } else if (UserType.TEACHING_STAFF.equals(userDTO.getType())) {
+            userDTO.setAuthorities(new HashSet<>());
+            userDTO.addAuthority(AuthoritiesConstants.FACULTY);
+        } else if (UserType.NON_TEACHING_STAFF.equals(userDTO.getType())) {
+            userDTO.setAuthorities(new HashSet<>());
+            userDTO.addAuthority(AuthoritiesConstants.NON_TEACHING);
+        }
+        user.setType(userDTO.getType());
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO.getAuthorities().stream()
                 .map(authorityRepository::findById)
@@ -79,11 +96,60 @@ public class UserService {
             String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
             user.setPassword(encryptedPassword);
         }
-        user.setType(userDTO.getType());
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
         return user;
+    }
+
+    /**
+     * Update all information for a specific user, and return the modified user.
+     *
+     * @param userDTO user to update
+     * @return updated user
+     */
+    public Optional<UserDTO> updateUser(UserDTO userDTO) {
+        return Optional.of(userRepository
+            .findById(userDTO.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(user -> {
+                this.clearUserCaches(user);
+                user.setLogin(userDTO.getLogin().toLowerCase());
+                user.setFirstName(userDTO.getFirstName());
+                user.setLastName(userDTO.getLastName());
+                user.setEmail(userDTO.getEmail());
+                user.setImageUrl(userDTO.getImageUrl());
+                user.setActivated(userDTO.isActivated());
+                user.setLangKey(userDTO.getLangKey());
+                if (UserType.SUPER_USER.equals(userDTO.getType())) {
+                    throw new WitcurveException("Invalid User Type");
+                } else if (UserType.INSTITUTE_MANAGER.equals(userDTO.getType())) {
+                    userDTO.setAuthorities(new HashSet<>());
+                    userDTO.addAuthority(AuthoritiesConstants.INSTITUTE_ADMIN);
+                } else if (UserType.PARENT.equals(userDTO.getType())) {
+                    userDTO.setAuthorities(new HashSet<>());
+                    userDTO.addAuthority(AuthoritiesConstants.PARENT);
+                } else if (UserType.TEACHING_STAFF.equals(userDTO.getType())) {
+                    userDTO.setAuthorities(new HashSet<>());
+                    userDTO.addAuthority(AuthoritiesConstants.FACULTY);
+                } else if (UserType.NON_TEACHING_STAFF.equals(userDTO.getType())) {
+                    userDTO.setAuthorities(new HashSet<>());
+                    userDTO.addAuthority(AuthoritiesConstants.NON_TEACHING);
+                }
+                user.setType(userDTO.getType());
+                Set<Authority> managedAuthorities = user.getAuthorities();
+                managedAuthorities.clear();
+                userDTO.getAuthorities().stream()
+                    .map(authorityRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .forEach(managedAuthorities::add);
+                this.clearUserCaches(user);
+                log.debug("Changed Information for User: {}", user);
+                return user;
+            })
+            .map(UserDTO::new);
     }
 
     /**
@@ -107,40 +173,6 @@ public class UserService {
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });
-    }
-
-    /**
-     * Update all information for a specific user, and return the modified user.
-     *
-     * @param userDTO user to update
-     * @return updated user
-     */
-    public Optional<UserDTO> updateUser(UserDTO userDTO) {
-        return Optional.of(userRepository
-            .findById(userDTO.getId()))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(user -> {
-                this.clearUserCaches(user);
-                user.setLogin(userDTO.getLogin().toLowerCase());
-                user.setFirstName(userDTO.getFirstName());
-                user.setLastName(userDTO.getLastName());
-                user.setEmail(userDTO.getEmail());
-                user.setImageUrl(userDTO.getImageUrl());
-                user.setActivated(userDTO.isActivated());
-                user.setLangKey(userDTO.getLangKey());
-                Set<Authority> managedAuthorities = user.getAuthorities();
-                managedAuthorities.clear();
-                userDTO.getAuthorities().stream()
-                    .map(authorityRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(managedAuthorities::add);
-                this.clearUserCaches(user);
-                log.debug("Changed Information for User: {}", user);
-                return user;
-            })
-            .map(UserDTO::new);
     }
 
     public void deleteUser(String login) {
@@ -192,7 +224,6 @@ public class UserService {
         } else {
             throw new WitcurveException("Error getting user name from session!");
         }
-
     }
 
     @Transactional(readOnly = true)

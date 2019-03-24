@@ -2,11 +2,14 @@ package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
 import com.witcurve.domain.Staff;
+import com.witcurve.domain.StaffEligibility;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.StaffEligibilityRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.UserRepository;
+import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StaffDTO;
@@ -20,9 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -45,22 +46,23 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    StaffEligibilityRepository staffEligibilityRepository;
+
     @Override
-    public StaffDTO create(StaffDTO staffDTO, UserType type, List<String> authorities) {
+    public StaffDTO create(StaffDTO staffDTO) {
         log.debug("Request to create staff : {}", staffDTO);
         UserDTO userDTO = new UserDTO();
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
         userDTO.setActivated(false);
-        userDTO.setType(type);
-        if(type.equals(UserType.TEACHING_STAFF)) {
-            staffDTO.setType(StaffType.TEACHING);
+        if (StaffType.TEACHING.equals(staffDTO.getType())) {
+            userDTO.setType(UserType.TEACHING_STAFF);
+            userDTO.addAuthority(AuthoritiesConstants.FACULTY);
         } else {
-            staffDTO.setType(StaffType.NON_TEACHING);
-        }
-        if(authorities != null && authorities.size() != 0) {
-            userDTO.setAuthorities(new HashSet<>(authorities));
+            userDTO.setType(UserType.NON_TEACHING_STAFF);
+            userDTO.addAuthority(AuthoritiesConstants.NON_TEACHING);
         }
         User user = userService.createUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
@@ -70,7 +72,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO update(StaffDTO staffDTO, UserType type, List<String> authorities) throws WitcurveException {
+    public StaffDTO update(StaffDTO staffDTO) throws WitcurveException {
         log.debug("Request to update staff : {}", staffDTO);
         Optional<User> user = userRepository.findById(staffDTO.getUserId());
         if(!user.isPresent()) {
@@ -80,14 +82,14 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.setType(type);
-        if(type.equals(UserType.TEACHING_STAFF)) {
-            staffDTO.setType(StaffType.TEACHING);
+        if (StaffType.TEACHING.equals(staffDTO.getType())) {
+            userDTO.setType(UserType.TEACHING_STAFF);
+            userDTO.setAuthorities(new HashSet<>());
+            userDTO.addAuthority(AuthoritiesConstants.FACULTY);
         } else {
-            staffDTO.setType(StaffType.NON_TEACHING);
-        }
-        if(authorities != null && authorities.size() != 0) {
-            userDTO.setAuthorities(new HashSet<>(authorities));
+            userDTO.setType(UserType.NON_TEACHING_STAFF);
+            userDTO.setAuthorities(new HashSet<>());
+            userDTO.addAuthority(AuthoritiesConstants.NON_TEACHING);
         }
         userService.updateUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
@@ -168,15 +170,22 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher) {
+    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId) {
         log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId);
-        List<Staff> staffList = null;
-        if(areClassTeacher) {
-            staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
-        } else {
-            staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+        List<Staff> staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+        List<StaffEligibility> staffEligibility = staffEligibilityRepository.findBySchoolInfo(schoolInfoId);
+        Map<Long, Set<String>> subjectMap = new HashMap<>();
+        for (StaffEligibility se : staffEligibility) {
+            Long staffId = se.getStaff().getId();
+            if (subjectMap.get(staffId) == null) {
+                subjectMap.put(staffId, new HashSet<>());
+            }
+            subjectMap.get(staffId).add(se.getMasterSubject().getName());
         }
         List<StaffDTO> result = staffMapper.toDto(staffList);
+        for (StaffDTO staff : result) {
+            staff.setSubjects(subjectMap.get(staff.getId()));
+        }
         return result;
     }
 }

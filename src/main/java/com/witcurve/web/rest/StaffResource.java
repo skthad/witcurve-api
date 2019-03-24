@@ -37,13 +37,13 @@ public class StaffResource {
      */
     @PostMapping("/staff")
     @Timed
-    public ResponseEntity<StaffDTO> createStaff(@RequestBody @Valid StaffDTO staffDTO, @RequestParam UserType type, @RequestParam(required = false) List<String> authorities) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<StaffDTO> createStaff(@RequestBody @Valid StaffDTO staffDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request Save Staff");
         if (staffDTO.getId() != null) {
             throw new WitcurveException("New Staff can't already have an id");
         }
         try {
-            StaffDTO result = staffService.create(staffDTO, type, authorities);
+            StaffDTO result = staffService.create(staffDTO);
             return ResponseEntity.created(new URI("/api/staff/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
                 .body(result);
@@ -99,9 +99,9 @@ public class StaffResource {
 
     @GetMapping("/staff/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(required = false) Boolean areClassTeacher) throws WitcurveException {
-        log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {}", schoolInfoId, areClassTeacher);
-        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher);
+    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {}", schoolInfoId);
+        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -126,7 +126,7 @@ public class StaffResource {
         }
 
         try {
-            StaffDTO result = staffService.update(staffDTO, type, authorities);
+            StaffDTO result = staffService.update(staffDTO);
             return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
                 .body(result);

@@ -3,6 +3,7 @@ package com.witcurve.security;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.UserRepository;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
@@ -52,7 +53,13 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
         if (!user.getActivated()) {
-            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated, you can activate by otp login process");
+            if (user.isFirstTimeLogin() &&
+                (UserType.PARENT.equals(user.getType())
+                    || UserType.TEACHING_STAFF.equals(user.getType()))) {
+                throw new UserNotActivatedException("User account " + lowercaseLogin + " is not yet activated, use OTP for first time login.");
+            } else {
+                throw new UserNotActivatedException("User account " + lowercaseLogin + " is inactive, contact your administrator");
+            }
         }
         Set<Authority> authorities = user.getAuthorities();
         List<Permission> permissions = null;

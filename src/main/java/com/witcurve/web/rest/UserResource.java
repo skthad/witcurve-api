@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,8 +80,10 @@ public class UserResource {
     @Autowired
     private StaffService staffService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    private static final List<UserType> VALID_USER_TYPES = new ArrayList<>(
+        Arrays.asList(UserType.INSTITUTE_MANAGER, UserType.SCHOOL_MANAGER, UserType.SCHOOL_BOARD_MANAGER));
 
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
@@ -118,9 +122,11 @@ public class UserResource {
     @Timed
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException, WitcurveException {
         log.debug("REST request to save User : {}", userDTO);
-
+        UserType userType = userDTO.getType();
         if (userDTO.getId() != null) {
             throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
+        } else if (VALID_USER_TYPES.indexOf(userType) == -1) {
+            throw new WitcurveException("Invalid user type");
             // Lowercase the user login before comparing with database
         } else if (userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).isPresent()) {
             throw new WitcurveException("Login name already used!");

@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
@@ -42,6 +43,7 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate joiningDate;
 
+    @NotNull
     private StaffType type;
 
     @NotNull
@@ -99,6 +101,8 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     private String accountNumber;
 
     private String ifscCode;
+
+    private Set<String> subjects;
 
     public StaffDTO() {
     }
@@ -349,6 +353,14 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setIfscCode(String ifscCode) {
         this.ifscCode = ifscCode;
+    }
+
+    public Set<String> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<String> subjects) {
+        this.subjects = subjects;
     }
 
     @Override

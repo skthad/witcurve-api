@@ -7,6 +7,7 @@ import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.UserRepository;
+import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StudentDTO;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +63,7 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
         userDTO.setActivated(false);
-        userDTO.addAuthority("ROLE_GUARDIAN");
+        userDTO.addAuthority(AuthoritiesConstants.PARENT);
         User user = userService.createUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
@@ -77,9 +79,12 @@ public class StudentServiceImpl implements StudentService {
             throw new WitcurveException("There is no user with given id : "+studentDTO.getUserId());
         }
         UserDTO userDTO = userMapper.userToUserDTO(optionalUser.get());
+        userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId().toLowerCase());
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
-        userDTO.addAuthority("ROLE_GUARDIAN");
+        userDTO.setType(UserType.PARENT);
+        userDTO.setAuthorities(new HashSet<>());
+        userDTO.addAuthority(AuthoritiesConstants.PARENT);
         userService.updateUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);

@@ -1,6 +1,5 @@
 package com.witcurve.service;
 
-import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -8,9 +7,9 @@ import java.util.List;
 
 public interface StaffService {
 
-    StaffDTO create(StaffDTO staffDTO, UserType type, List<String> authorities);
+    StaffDTO create(StaffDTO staffDTO);
 
-    StaffDTO update(StaffDTO staffDTO, UserType type, List<String> authorities) throws WitcurveException;
+    StaffDTO update(StaffDTO staffDTO) throws WitcurveException;
 
     StaffDTO getStaffById(Long staffId) throws WitcurveException;
 
@@ -20,7 +19,7 @@ public interface StaffService {
 
     List<StaffDTO> getStaffBySchoolId(Long schoolId);
 
-    List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher);
+    List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId);
 
     StaffDTO getStaffByUsername(String username) throws WitcurveException;
 }

@@ -1,10 +1,10 @@
 name;display_name
 SUPER_ADMIN;Super Admin
-INSTITUTE_ADMIN;Administrator for all modules
-PARENT;Parent of enrolled students
-FACULTY;Teaching faculty
-NON_TEACHING;Non-teaching/ground staff
+INSTITUTE_ADMIN;Institute Admin
+PARENT;Parent
+FACULTY;Teaching Faculty
+NON_TEACHING;Non-Teaching Staff
 HR_MANAGER;Human Resource Manager
-STUDENT_MANAGER;Student Module Manager
-ACADEMICS_MANAGER;Academics Module Manager
+STUDENT_MANAGER;Student Manager
+ACADEMICS_MANAGER;Academics Manager
 CURRICULUM_MANAGER;Curriculum Manager
