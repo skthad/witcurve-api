@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.Authority;
+import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 
@@ -71,6 +72,8 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
 
     private Set<String> authorities;
 
+    private Set<String> permissions;
+
     private StudentDTO studentDTO;
 
     private StaffDTO staffDTO;
@@ -97,6 +100,17 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
+        for (Authority authority : user.getAuthorities()) {
+            if (authority.getPermissions().size() != 0) {
+                if (this.permissions == null) {
+                    this.permissions = new HashSet<>();
+                }
+                for (Permission permission : authority.getPermissions()) {
+                    this.permissions.add(permission.getName());
+                }
+            }
+        }
+
     }
 
     public Long getId() {
@@ -232,6 +246,14 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
             this.authorities = new HashSet<>();
         }
         authorities.add(authority);
+    }
+
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        this.permissions = permissions;
     }
 
     public StudentDTO getStudentDTO() {
