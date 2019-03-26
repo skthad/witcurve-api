@@ -37,7 +37,7 @@ public class Message extends AbstractAuditingEntity implements Serializable {
     private String body;
 
     @NotNull
-    @Column(name = "read", nullable = false, columnDefinition = "boolean default false")
+    @Column(name = "is_read", nullable = false, columnDefinition = "boolean default false")
     private Boolean read = false;
 
     public Long getId() {
