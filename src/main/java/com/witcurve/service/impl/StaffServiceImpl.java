@@ -163,9 +163,14 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId) {
-        log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId);
-        List<Staff> staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher) {
+        log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId, areClassTeacher);
+        List<Staff> staffList = null;
+        if(areClassTeacher) {
+            staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
+        } else {
+            staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+        }
         List<StaffEligibility> staffEligibility = staffEligibilityRepository.findBySchoolInfo(schoolInfoId);
         Map<Long, Set<String>> subjectMap = new HashMap<>();
         for (StaffEligibility se : staffEligibility) {

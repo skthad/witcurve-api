@@ -95,12 +95,11 @@ public class StaffResource {
      * @return
      * @throws WitcurveException
      */
-
     @GetMapping("/staff/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
-        log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {}", schoolInfoId);
-        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId);
+    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(defaultValue = "false") Boolean areClassTeacher) throws WitcurveException {
+        log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {}", schoolInfoId, areClassTeacher);
+        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
