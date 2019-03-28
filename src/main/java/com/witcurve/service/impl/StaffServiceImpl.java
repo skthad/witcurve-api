@@ -1,11 +1,13 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.StaffEligibility;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StaffEligibilityRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.UserRepository;
@@ -47,6 +49,9 @@ public class StaffServiceImpl implements StaffService {
 
     @Autowired
     StaffEligibilityRepository staffEligibilityRepository;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
 
     @Override
     public StaffDTO create(StaffDTO staffDTO) {
@@ -166,6 +171,10 @@ public class StaffServiceImpl implements StaffService {
     public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher) {
         log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId, areClassTeacher);
         List<Staff> staffList = null;
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
+        }
         if(areClassTeacher) {
             staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
         } else {
