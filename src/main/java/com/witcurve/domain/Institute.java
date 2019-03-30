@@ -39,6 +39,9 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     @Column(name="fax", length = 50)
     private String fax;
 
+    @Column(name="sms_signature", length = 6)
+    private String smsSignature;
+
     public Long getId() {
         return id;
     }
@@ -93,6 +96,14 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setFax(String fax) {
         this.fax = fax;
+    }
+
+    public String getSmsSignature() {
+        return smsSignature;
+    }
+
+    public void setSmsSignature(String smsSignature) {
+        this.smsSignature = smsSignature;
     }
 
     @Override

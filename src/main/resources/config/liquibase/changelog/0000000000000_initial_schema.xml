@@ -1411,4 +1411,19 @@
                   tableName="wc_user_authority">
         </loadData>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-141">
+        <addColumn tableName="institute">
+            <column name="sms_signature" type="VARCHAR(6)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-142">
+        <addColumn tableName="student">
+            <column name="house" type="VARCHAR(50)" afterColumn="category"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-143">
+        <addColumn tableName="student">
+            <column name="day_scholar" type="TINYINT(1)" afterColumn="category"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
