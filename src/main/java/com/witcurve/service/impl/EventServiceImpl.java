@@ -377,7 +377,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
+    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId,List<Long> standardIds,List<String> keywords, Pageable pageable) throws WitcurveException {
         DateRangeUtil.correctDateFormat(startDate, endDate);
         Page<Event> result = null;
         Long schoolInfoId;
@@ -410,7 +410,17 @@ public class EventServiceImpl implements EventService {
             // TODO: look for user role, not for staff type. 'ADMIN' is a role. It is no more a staff type
             //TODO check if admin notices work properly
             if(staff.get().getType().equals(StaffType.NON_TEACHING)) {
-                  result= eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable); //pr1
+                //result= eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable); //pr1
+                if(keywords == null && standardIds == null) {
+                    result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+                } else if(keywords !=null && standardIds !=null) {
+                    result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
+                } else if( keywords!= null){
+                    result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate,keywords,pageable);
+
+                } else if(standardIds != null ){
+                    result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate,standardIds,pageable);
+                }
 //                Collections.sort(results, (o1, o2) -> o1.getDate().isAfter(o2.getDate()) ? -1 : 0);
 //
 //                Integer resultSize = results.size();
