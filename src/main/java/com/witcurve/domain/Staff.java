@@ -82,22 +82,26 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column
     private String address2;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String city;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String district;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String state;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String country;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     private String pincode;
 
-    @Column(name = "blood_group")
+    @Column(name = "blood_group", length = 50)
     @Enumerated(EnumType.STRING)
     private BloodGroup bloodGroup;
 

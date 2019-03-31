@@ -60,12 +60,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private String password;
 
     @NotNull
-    @Column(name = "first_time_login", nullable = false, columnDefinition = "boolean default true")
-    private Boolean firstTimeLogin = true;
-
-    @NotNull
-    @Column(name = "activated", nullable = false, columnDefinition = "boolean default false")
-    private Boolean activated = false;
+    @Column(name = "activated", nullable = false, columnDefinition = "boolean default true")
+    private Boolean activated = true;
 
     @NotNull
     @Column(name = "force_password", nullable = false, columnDefinition = "boolean default true")
@@ -143,14 +139,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Boolean getFirstTimeLogin() {
-        return firstTimeLogin;
-    }
-
-    public void setFirstTimeLogin(Boolean firstTimeLogin) {
-        this.firstTimeLogin = firstTimeLogin;
     }
 
     public Boolean getActivated() {

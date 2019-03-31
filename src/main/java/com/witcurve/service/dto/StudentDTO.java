@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.BloodGroup;
+import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
 
 import javax.validation.constraints.NotNull;
@@ -59,14 +60,19 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
 
     private String address2;
 
+    @NotNull
     private String city;
 
+    @NotNull
     private String district;
 
+    @NotNull
     private String state;
 
+    @NotNull
     private String country;
 
+    @NotNull
     private String pincode;
 
     private BloodGroup bloodGroup;
@@ -92,7 +98,15 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
 
     private String subCaste;
 
-    private String category;
+    @NotNull
+    private Category category = Category.NA;
+
+    private String subCategory;
+
+    @NotNull
+    private Boolean dayScholar = true;
+
+    private Category house;
 
     private String birthPlace;
 
@@ -346,12 +360,36 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
         this.subCaste = subCaste;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public Boolean getDayScholar() {
+        return dayScholar;
+    }
+
+    public void setDayScholar(Boolean dayScholar) {
+        this.dayScholar = dayScholar;
+    }
+
+    public Category getHouse() {
+        return house;
+    }
+
+    public void setHouse(Category house) {
+        this.house = house;
     }
 
     public String getBirthPlace() {

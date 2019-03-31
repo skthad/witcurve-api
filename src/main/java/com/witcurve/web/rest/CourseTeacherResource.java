@@ -166,27 +166,4 @@ public class CourseTeacherResource {
         List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByStudentId(studentId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
-    /**
-     * delete the courseTeacher
-     * @param courseTeacherId
-     * @return
-     * @throws WitcurveException
-     */
-    @DeleteMapping("/course-teacher/{courseTeacherId}")
-    @Timed
-    public ResponseEntity<Void> deleteCourseTeacher(@PathVariable Long courseTeacherId) throws WitcurveException {
-        log.debug("REST request to delete CourseTeacher: {}", courseTeacherId);
-        try {
-            courseTeacherService.deleteCourseTeacher(courseTeacherId);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A courseTeacher is deleted with identifier " + courseTeacherId,
-                courseTeacherId.toString())).build();
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
-    }
 }

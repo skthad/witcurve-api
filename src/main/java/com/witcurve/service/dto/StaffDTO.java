@@ -66,14 +66,19 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     private String address2;
 
+    @NotNull
     private String city;
 
+    @NotNull
     private String district;
 
+    @NotNull
     private String state;
 
+    @NotNull
     private String country;
 
+    @NotNull
     private String pincode;
 
     private BloodGroup bloodGroup;

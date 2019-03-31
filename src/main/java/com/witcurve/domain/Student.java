@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.BloodGroup;
+import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
@@ -75,19 +76,24 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column
     private String address2;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String city;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String district;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String state;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String country;
 
-    @Column(length = 50)
+    @NotNull
+    @Column(nullable = false, length = 50)
     private String pincode;
 
     @Column(name = "blood_group", length = 50)
@@ -123,8 +129,19 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "sub_caste", length = 50)
     private String subCaste;
 
-    @Column(name = "category", length = 50)
-    private String category;
+    @NotNull
+    @Column(nullable = false, length = 50, columnDefinition = "varchar(50) default 'NA'")
+    private Category category = Category.NA;
+
+    @NotNull
+    @Column(name = "day_scholar", nullable = false, columnDefinition = "boolean default true")
+    private Boolean dayScholar = true;
+
+    @Column(length = 50)
+    private Category house;
+
+    @Column(name = "sub_category", length = 50)
+    private String subCategory;
 
     @Column(name = "birth_place", length = 50)
     private String birthPlace;
@@ -357,12 +374,36 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.subCaste = subCaste;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Boolean getDayScholar() {
+        return dayScholar;
+    }
+
+    public void setDayScholar(Boolean dayScholar) {
+        this.dayScholar = dayScholar;
+    }
+
+    public Category getHouse() {
+        return house;
+    }
+
+    public void setHouse(Category house) {
+        this.house = house;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
     }
 
     public String getBirthPlace() {

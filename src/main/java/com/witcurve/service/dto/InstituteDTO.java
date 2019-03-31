@@ -25,6 +25,9 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     private String fax;
 
+    @NotNull
+    private String smsSignature;
+
     public InstituteDTO() {
     }
 
@@ -82,6 +85,14 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFax(String fax) {
         this.fax = fax;
+    }
+
+    public String getSmsSignature() {
+        return smsSignature;
+    }
+
+    public void setSmsSignature(String smsSignature) {
+        this.smsSignature = smsSignature;
     }
 
     @Override

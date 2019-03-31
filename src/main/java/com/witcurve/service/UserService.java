@@ -59,7 +59,6 @@ public class UserService {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
-        user.setActivated(userDTO.isActivated());
         if (UserType.SUPER_USER.equals(userDTO.getType())) {
             throw new WitcurveException("Invalid User Type");
         } else if (UserType.INSTITUTE_MANAGER.equals(userDTO.getType())) {
@@ -164,6 +163,8 @@ public class UserService {
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
                 user.get().setPassword(encryptedPassword);
+                user.get().setActivated(Boolean.TRUE);
+                user.get().setForcePassword(Boolean.FALSE);
                 this.clearUserCaches(user.get());
                 log.debug("Set password for User: {}", user.get());
             } else {
@@ -185,6 +186,8 @@ public class UserService {
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
                 user.get().setPassword(encryptedPassword);
+                user.get().setActivated(Boolean.TRUE);
+                user.get().setForcePassword(Boolean.FALSE);
                 this.clearUserCaches(user.get());
                 log.debug("Set password for User: {}", user.get());
             } else {

@@ -4,6 +4,7 @@ import com.witcurve.domain.MasterSubject;
 import com.witcurve.domain.StaffEligibility;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -43,4 +44,7 @@ public interface StaffEligibilityRepository extends JpaRepository<StaffEligibili
     @Query("Select se from StaffEligibility se where se.staff.id = ?1 and se.masterSubject = ?2 and se.grade = ?3")
     List<StaffEligibility> findByStaffAndSubjectAndGrade(Long staffId, MasterSubject masterSubject, Grade grade);
 
+    @Modifying
+    @Query("delete from StaffEligibility se where se.staff.id = ?1")
+    void deleteByStaffId(Long staffId);
 }

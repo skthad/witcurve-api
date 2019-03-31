@@ -163,14 +163,4 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
         return courseTeacherMapper.toDto(courseTeachers);
     }
-
-    @Override
-    public void deleteCourseTeacher(Long courseTeacherId) throws WitcurveException {
-        log.debug("Request to delete course teacher by id : {}", courseTeacherId);
-        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(courseTeacherId);
-        if (!courseTeacher.isPresent()) {
-            throw new WitcurveException("No course teacher with given id " + courseTeacherId);
-        }
-        courseTeacherRepository.delete(courseTeacher.get());
-    }
 }
