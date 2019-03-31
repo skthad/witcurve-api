@@ -18,11 +18,11 @@ public class EventKeyword implements Serializable{
 
     @Id
     @NotNull
-    @Column(name = "event_id",nullable = false)
+    @Column(name="event_id",nullable = false)
     private Long eventId;
 
     @NotNull
-    @Column(name = "keyword_name",nullable = false)
+    @Column(name="keyword_name",nullable = false)
     private String keywordName;
 
     public Long getEventId() {

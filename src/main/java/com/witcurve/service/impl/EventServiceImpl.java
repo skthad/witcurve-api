@@ -387,8 +387,13 @@ public class EventServiceImpl implements EventService {
                 schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
                 Long standardId = studentStandard.getStandard().getId();
                 Grade grade = studentStandard.getStandard().getGrade();
-                result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, startDate, endDate, pageable);
-            } else {
+                if(keywords != null)
+                {
+                    result = eventRepository.findStudentNoticesByKeywords(standardId, grade, schoolInfoId, startDate, endDate,keywords, pageable);
+                } else {
+                    result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
+                }
+                } else {
                 throw new WitcurveException("This student doesn't belong to any standard"+ studentId);
             }
         }
@@ -401,10 +406,30 @@ public class EventServiceImpl implements EventService {
             if(staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
                 if(standard != null) {
-                   result = eventRepository.findClassTeacherNotices(standard.getId(),
-                       standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
+                    if(keywords == null && standardIds == null) {
+                        result = eventRepository.findClassTeacherNotices(standard.getId(),
+                            standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
+                    } else if(keywords !=null && standardIds !=null) {
+                        result = eventRepository.findClassTeacherNoticesByKeywordsAndStandardIds(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
+                    } else if( keywords!= null){
+                        List<Long> eventIds= Arrays.asList(1L,2L);
+                        //                       List<Long> eventIds= eventKeywordRepository.findEventIdsByKeywords(keywords1);
+                        result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate,keywords,pageable);
+                    } else if(standardIds != null ){
+                        result = eventRepository.findClassTeacherNoticesByStandardIds(standard.getId(),standard.getGrade(),schoolInfoId, startDate,   endDate, standardIds,pageable);
+                    }
+                   //result = eventRepository.findClassTeacherNotices(standard.getId(),
+                      // standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
                 } else {
-                    result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
+
+                    if(keywords == null && standardIds == null) {
+                        result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
+                    } else if(keywords !=null && standardIds !=null) {
+                        result = eventRepository.findTeacherNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
+                    } else if( keywords!= null){
+                        result = eventRepository.findTeacherNoticesByKeywords(schoolInfoId, startDate, endDate,keywords,pageable);
+                    }
+                    //result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
                 }
             }
             // TODO: look for user role, not for staff type. 'ADMIN' is a role. It is no more a staff type
