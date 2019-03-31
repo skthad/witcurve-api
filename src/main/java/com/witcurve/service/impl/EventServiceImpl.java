@@ -66,6 +66,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     KeywordRepository keywordRepository;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
 
@@ -377,10 +380,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId,List<Long> standardIds,List<String> keywords, Pageable pageable) throws WitcurveException {
+    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId,List<Long> standardIds,List<String> keywords,Long schoolInfoId1, Pageable pageable) throws WitcurveException {
         DateRangeUtil.correctDateFormat(startDate, endDate);
         Page<Event> result = null;
-        Long schoolInfoId;
+        Long schoolInfoId,studentId =null,staffId=null;
+        if(staffRepository.getStaffByUserId(userId) !=null){
+           staffId= staffRepository.getStaffByUserId(userId).getId();
+        } else if(studentRepository.getStudentByUserId(userId) != null) {
+            studentId = studentRepository.getStudentByUserId(userId).getId();
+        }
         if(studentId != null) {
             StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
             if(studentStandard != null) {
@@ -406,68 +414,31 @@ public class EventServiceImpl implements EventService {
             if(staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
                 if(standard != null) {
-                    if(keywords == null && standardIds == null) {
+                     if( keywords!= null){
+                        result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate,keywords,pageable);
+                    } else {
                         result = eventRepository.findClassTeacherNotices(standard.getId(),
                             standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
-                    } else if(keywords !=null && standardIds !=null) {
-                        result = eventRepository.findClassTeacherNoticesByKeywordsAndStandardIds(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
-                    } else if( keywords!= null){
-                        List<Long> eventIds= Arrays.asList(1L,2L);
-                        //                       List<Long> eventIds= eventKeywordRepository.findEventIdsByKeywords(keywords1);
-                        result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate,keywords,pageable);
-                    } else if(standardIds != null ){
-                        result = eventRepository.findClassTeacherNoticesByStandardIds(standard.getId(),standard.getGrade(),schoolInfoId, startDate,   endDate, standardIds,pageable);
-                    }
-                   //result = eventRepository.findClassTeacherNotices(standard.getId(),
-                      // standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
+                                            }
                 } else {
-
-                    if(keywords == null && standardIds == null) {
+                    if (keywords != null) {
+                        result = eventRepository.findTeacherNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+                    } else {
                         result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
-                    } else if(keywords !=null && standardIds !=null) {
-                        result = eventRepository.findTeacherNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
-                    } else if( keywords!= null){
-                        result = eventRepository.findTeacherNoticesByKeywords(schoolInfoId, startDate, endDate,keywords,pageable);
                     }
-                    //result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
                 }
             }
-            // TODO: look for user role, not for staff type. 'ADMIN' is a role. It is no more a staff type
-            //TODO check if admin notices work properly
-            if(staff.get().getType().equals(StaffType.NON_TEACHING)) {
-                //result= eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable); //pr1
-                if(keywords == null && standardIds == null) {
-                    result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
-                } else if(keywords !=null && standardIds !=null) {
-                    result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
-                } else if( keywords!= null){
-                    result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate,keywords,pageable);
+        } else if(staffId == null && studentId == null) {
+            schoolInfoId=schoolInfoId1;
+            if(keywords == null && standardIds == null) {
+                result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+            } else if(keywords !=null && standardIds !=null) {
+                result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds,pageable);
+            } else if( keywords!= null){
+                result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate,keywords,pageable);
 
-                } else if(standardIds != null ){
-                    result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate,standardIds,pageable);
-                }
-//                Collections.sort(results, (o1, o2) -> o1.getDate().isAfter(o2.getDate()) ? -1 : 0);
-//
-//                Integer resultSize = results.size();
-//                // offset  2, size 10
-//                // from = 20, to = 30
-//                // resultSize = 24, 30, 34
-//                // to========== 24, 30, 30
-//                // from======== 20, 20, 20
-//                Integer offset = Integer.parseInt(String.valueOf(pageable.getOffset()));
-//                Integer size = Integer.parseInt(String.valueOf(pageable.getPageSize()));
-//                Integer from =  offset * size;
-//                Integer to = from + size;
-//
-//                if (from >= resultSize) {
-//                    results = results.subList(0, 0);
-//                } else if (resultSize >= to) {
-//                    results = results.subList(from, to);
-//                } else {
-//                    results.subList(from, resultSize);
-//                }
-//
-//                return eventMapper.toDto(results);
+            } else if(standardIds != null ){
+                result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate,standardIds,pageable);
             }
         }
 
@@ -497,7 +468,6 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findByTypeAndSchoolInfoIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId, startDate, endDate);
         return eventMapper.toDto(events);
     }
-
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {

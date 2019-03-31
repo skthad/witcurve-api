@@ -44,7 +44,7 @@ public class KeywordResource {
      */
     @GetMapping("/keywords")
     @Timed
-    public ResponseEntity<List<Keyword>> searchKeywords(@RequestParam(value = "search", required = false) String search) {
+    public ResponseEntity<List<Keyword>> searchKeywords(@RequestParam(value = "search", required = false) String search, @RequestParam Long schoolInfoId) {
         log.debug("Request to search keywords: {}", search);
 
         List<Keyword> result = new ArrayList<>();

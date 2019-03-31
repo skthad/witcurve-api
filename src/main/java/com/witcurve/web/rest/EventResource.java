@@ -293,8 +293,7 @@ public class EventResource {
      *
      * @param startDate
      * @param endDate
-     * @param studentId
-     * @param staffId
+     * @param userId
      * @param pageable
      * @return
      */
@@ -303,18 +302,16 @@ public class EventResource {
     public ResponseEntity<Page<EventDTO>> getNotices(@ApiParam Pageable pageable,
                                                             @RequestParam(value = "startDate") LocalDate startDate,
                                                             @RequestParam(value = "endDate") LocalDate endDate,
-                                                            @RequestParam(required = false) Long studentId,
                                                             @RequestParam(required = false) List<String>  keywords,
                                                             @RequestParam(required = false) List<Long> standardIds,
-                                                            @RequestParam(required = false) Long staffId) throws WitcurveException, URISyntaxException {
-        if(staffId != null) {
-            log.debug("Request to get notices for staff id : {}", staffId);
-        } else if (studentId != null){
-            log.debug("Request to get notices for student id : {}", studentId);
+                                                            @RequestParam(required =false) Long schoolInfoId ,
+                                                            @RequestParam Long userId) throws WitcurveException, URISyntaxException {
+        if(userId != null) {
+            log.debug("Request to get notices for user id : {}", userId);
         } else {
-            throw new WitcurveException("Invalid request, there should be one of student id or staff id but not both");
+            throw new WitcurveException("Invalid request, there should be user id .");
         }
-        Page<EventDTO> result = eventService.getNotices(startDate, endDate, studentId, staffId,standardIds,keywords, pageable);
+        Page<EventDTO> result = eventService.getNotices(startDate, endDate, userId,standardIds,keywords,schoolInfoId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
@@ -342,6 +339,4 @@ public class EventResource {
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
-
-
 }
