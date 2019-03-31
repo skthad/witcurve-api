@@ -14,8 +14,6 @@ public interface CourseTeacherService {
 
     CourseTeacherDTO updateStatusForCourseTeacher(Long id, Boolean status) throws WitcurveException;
 
-    void deleteCourseTeacher(Long courseTeacherId) throws WitcurveException;
-
     List<CourseTeacherDTO> getCourseTeachersByTeacherId(Long teacherId);
 
     List<CourseTeacherDTO> getCoursesByStandardId(Long standardId, Boolean active);

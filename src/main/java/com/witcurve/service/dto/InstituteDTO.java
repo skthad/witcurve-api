@@ -25,6 +25,7 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     private String fax;
 
+    @NotNull
     private String smsSignature;
 
     public InstituteDTO() {

@@ -74,26 +74,7 @@ public class CourseContentServiceImpl implements CourseContentService {
             throw new WitcurveException("No Course with given id: " + courseId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
-        Map<Long, CourseContentDTO> parentContentMap = new HashMap<>();
-        for (CourseContentDTO courseContentDTO : courseContents) {
-            if (courseContentDTO.getParentContentId() == null) {
-                parentContentMap.put(courseContentDTO.getId(), courseContentDTO);
-            }
-        }
-        log.info("no. of course contents: " + courseContents.size());
-        log.info("no. of course contents in map: " + parentContentMap.keySet().size());
-        for (CourseContentDTO courseContentDTO : courseContents) {
-            if (courseContentDTO.getParentContentId() == null) {
-                log.info("index: " + courseContentDTO.getContentOrder().toString());
-                courseContentDTO.setIndex(courseContentDTO.getContentOrder().toString());
-            } else {
-                courseContentDTO.setIndex(
-                    parentContentMap.get(courseContentDTO.getParentContentId())
-                        .getContentOrder() + "." + courseContentDTO.getContentOrder());
-            }
-        }
-        log.info("no. of course contents: " + courseContents.size());
-        return courseContents.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
+        return addIndicesToCourseContents(courseContents);
     }
 
     @Override
@@ -103,8 +84,8 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!event.isPresent()) {
             throw new WitcurveException("No Event with given id " + eventId);
         }
-        List<CourseContent> courseContents = eventContentRepository.findCourseContentsByEventId(eventId);
-        return courseContentMapper.toDto(courseContents);
+        List<CourseContentDTO> courseContents = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEventId(eventId));
+        return addIndicesToCourseContents(courseContents);
     }
 
     @Override
@@ -127,5 +108,35 @@ public class CourseContentServiceImpl implements CourseContentService {
             courseContentRepository.findAllSubTopicsInCourse(courseId));
         courseContentRepository.deleteInBatch(
             courseContentRepository.findAllTopicsInCourse(courseId));
+    }
+
+    private List<CourseContentDTO> addIndicesToCourseContents(List<CourseContentDTO> contents) {
+        if (contents == null) {
+            return null;
+        } else if (contents.size() == 0) {
+            return contents;
+        } else {
+            Map<Long, CourseContentDTO> parentContentMap = new HashMap<>();
+            for (CourseContentDTO courseContentDTO : contents) {
+                if (courseContentDTO.getParentContentId() == null) {
+                    parentContentMap.put(courseContentDTO.getId(), courseContentDTO);
+                }
+            }
+            log.info("No. of course contents: " + contents.size());
+            log.info("No. of parent contents: " + parentContentMap.keySet().size());
+            for (CourseContentDTO courseContentDTO : contents) {
+                if (courseContentDTO.getParentContentId() == null) {
+                    log.info("Index of parent content: " + courseContentDTO.getContentOrder().toString());
+                    courseContentDTO.setIndex(courseContentDTO.getContentOrder().toString());
+                } else {
+                    log.info("Index of child content: " + courseContentDTO.getContentOrder().toString());
+                    courseContentDTO.setIndex(
+                        parentContentMap.get(courseContentDTO.getParentContentId())
+                            .getContentOrder() + "." + courseContentDTO.getContentOrder());
+                }
+            }
+            log.info("No. of course contents: " + contents.size());
+            return contents.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
+        }
     }
 }

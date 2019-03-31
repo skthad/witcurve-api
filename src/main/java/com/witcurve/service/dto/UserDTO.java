@@ -47,10 +47,10 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
     private String password;
 
     @NotNull
-    private Boolean firstTimeLogin = true;
+    private boolean activated = true;
 
     @NotNull
-    private boolean activated = false;
+    private Boolean hasPassword = false;
 
     @NotNull
     private Boolean forcePassword = true;
@@ -87,7 +87,8 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.getActivated();
-        this.firstTimeLogin = user.getFirstTimeLogin();
+        this.hasPassword = user.getPassword() == null ? Boolean.FALSE : Boolean.TRUE;
+        this.forcePassword = user.getForcePassword();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
@@ -162,6 +163,14 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+
+    public Boolean getHasPassword() {
+        return hasPassword;
+    }
+
+    public void setHasPassword(Boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 
     public Boolean getForcePassword() {
@@ -273,14 +282,6 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Boolean getFirstTimeLogin() {
-        return firstTimeLogin;
-    }
-
-    public void setFirstTimeLogin(Boolean firstTimeLogin) {
-        this.firstTimeLogin = firstTimeLogin;
     }
 
     @Override

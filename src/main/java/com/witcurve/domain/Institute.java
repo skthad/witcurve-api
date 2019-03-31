@@ -39,7 +39,8 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     @Column(name="fax", length = 50)
     private String fax;
 
-    @Column(name="sms_signature", length = 6)
+    @NotNull
+    @Column(name="sms_signature", length = 6, nullable = false)
     private String smsSignature;
 
     public Long getId() {

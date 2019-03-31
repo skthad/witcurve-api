@@ -1413,7 +1413,7 @@
     </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-141">
         <addColumn tableName="institute">
-            <column name="sms_signature" type="VARCHAR(6)"></column>
+            <column name="sms_signature" type="VARCHAR(6)" afterColumn="fax"></column>
         </addColumn>
     </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-142">
@@ -1423,7 +1423,69 @@
     </changeSet>
     <changeSet author="WitCurve (generated)" id="0000000000001-143">
         <addColumn tableName="student">
-            <column name="day_scholar" type="TINYINT(1)" afterColumn="category"></column>
+            <column name="day_scholar" type="TINYINT(1)" afterColumn="category" defaultValueBoolean="true"></column>
         </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-144">
+        <addColumn tableName="student">
+            <column name="sub_category" type="VARCHAR(50)" afterColumn="category"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-145">
+        <sql> update institute set sms_signature = substring(upper(replace(name, ' ', '')),1,6) </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-146">
+        <addNotNullConstraint columnDataType="VARCHAR(6)" tableName="institute" columnName="sms_signature"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-147">
+        <sql> update student set category =  'N/A' </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-148">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="category"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-149">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="city"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-150">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="district"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-151">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="state"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-152">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="country"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-153">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="pincode"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-154">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="city"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-155">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="district"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-156">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="state"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-157">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="country"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-158">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="pincode"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-159">
+        <addDefaultValue tableName="wc_user" columnName="activated" defaultValueBoolean="true"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-160">
+        <dropColumn tableName="wc_user" columnName="first_time_login"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-161">
+        <addNotNullConstraint columnDataType="TINYINT(1)" columnName="day_scholar" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-162">
+        <addDefaultValue columnDataType="varchar(50)" columnName="category" defaultValue="NA" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-163">
+        <addDefaultValue columnDataType="TINYINT(1)" columnName="day_scholar" defaultValueBoolean="true" tableName="student"/>
     </changeSet>
 </databaseChangeLog>

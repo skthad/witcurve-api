@@ -152,7 +152,7 @@ public class StaffResource {
     public ResponseEntity<Void> deleteStaff(@PathVariable Long staffId) throws WitcurveException {
         log.debug("REST request to delete Staff: {}", staffId);
         try {
-            staffService.deleteStaffById(staffId);
+            staffService.deactivate(staffId);
             return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A staff is deleted with identifier " + staffId,
                 staffId.toString())).build();
         } catch (DataIntegrityViolationException e) {

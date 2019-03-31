@@ -60,7 +60,6 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
-        userDTO.setFirstTimeLogin(false);
         User user = userService.createUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
