@@ -131,6 +131,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(nullable = false, length = 50, columnDefinition = "varchar(50) default 'NA'")
+    @Enumerated(EnumType.STRING)
     private Category category = Category.NA;
 
     @NotNull
