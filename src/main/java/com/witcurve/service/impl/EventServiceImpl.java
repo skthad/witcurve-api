@@ -380,10 +380,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId,List<Long> standardIds,List<String> keywords,Long schoolInfoId1, Pageable pageable) throws WitcurveException {
+    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId,List<Long> standardIds,List<String> keywords,Long schoolInfoId, Pageable pageable) throws WitcurveException {
         DateRangeUtil.correctDateFormat(startDate, endDate);
         Page<Event> result = null;
-        Long schoolInfoId,studentId =null,staffId=null;
+        Long studentId =null,staffId=null;
         if(staffRepository.getStaffByUserId(userId) !=null){
            staffId= staffRepository.getStaffByUserId(userId).getId();
         } else if(studentRepository.getStudentByUserId(userId) != null) {
@@ -392,7 +392,9 @@ public class EventServiceImpl implements EventService {
         if(studentId != null) {
             StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
             if(studentStandard != null) {
-                schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+                 if(studentStandard.getStandard().getSchoolInfo().getId()!=schoolInfoId){
+                     throw new WitcurveException("schoolInfo Id is worng for the userId");
+                 }
                 Long standardId = studentStandard.getStandard().getId();
                 Grade grade = studentStandard.getStandard().getGrade();
                 if(keywords != null)
@@ -410,7 +412,9 @@ public class EventServiceImpl implements EventService {
             if(!staff.isPresent()) {
                 throw new WitcurveException("No staff exists for id : "+ staffId);
             }
-            schoolInfoId = staff.get().getSchoolInfo().getId();
+            if(schoolInfoId != staff.get().getSchoolInfo().getId()){
+                throw new WitcurveException("SchoolInfoId does not match for the given Staff Id");
+            }
             if(staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
                 if(standard != null) {
@@ -429,7 +433,6 @@ public class EventServiceImpl implements EventService {
                 }
             }
         } else if(staffId == null && studentId == null) {
-            schoolInfoId=schoolInfoId1;
             if(keywords == null && standardIds == null) {
                 result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
             } else if(keywords !=null && standardIds !=null) {

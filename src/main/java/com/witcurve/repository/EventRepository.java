@@ -184,5 +184,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
     List<Event> findByTypeAndSchoolInfoIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
 
+    @Query("select ek.keywordName from EventKeyword ek left join Event e on e.id= ek.eventId where lower(ek.keywordName) like concat('%', ?1, '%') and e.schoolInfo.id= ?2")
+    List<String> searchKeywords(String search,Long schoolInfoId);
+
 }
 

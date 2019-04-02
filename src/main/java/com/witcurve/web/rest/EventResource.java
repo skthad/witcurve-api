@@ -1,7 +1,9 @@
 package com.witcurve.web.rest;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.ViewType;
+import com.witcurve.repository.EventRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -32,6 +34,9 @@ public class EventResource {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    EventRepository eventRepository;
 
     /**
      * creates events
@@ -304,11 +309,9 @@ public class EventResource {
                                                             @RequestParam(value = "endDate") LocalDate endDate,
                                                             @RequestParam(required = false) List<String>  keywords,
                                                             @RequestParam(required = false) List<Long> standardIds,
-                                                            @RequestParam(required =false) Long schoolInfoId ,
+                                                            @RequestParam Long schoolInfoId ,
                                                             @RequestParam Long userId) throws WitcurveException, URISyntaxException {
-        if(userId != null) {
-            log.debug("Request to get notices for user id : {}", userId);
-        } else {
+        if(userId == null) {
             throw new WitcurveException("Invalid request, there should be user id .");
         }
         Page<EventDTO> result = eventService.getNotices(startDate, endDate, userId,standardIds,keywords,schoolInfoId, pageable);
@@ -339,4 +342,25 @@ public class EventResource {
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
+
+    /**
+     * searches keywords
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @GetMapping("/event/tags")
+    @Timed
+    public ResponseEntity<List<String>> searchKeywords(@RequestParam String search, @RequestParam Long schoolInfoId) {
+        log.debug("Request to search keywords: {}", search);
+
+        List<String> result = new ArrayList<>();
+        if(search!=null) {
+            result = eventRepository.searchKeywords(search.toLowerCase(),schoolInfoId);
+        } else {
+            throw new WitcurveException("search keyword must be declared for a particular schoolInfo id");
+        }
+        return ResponseEntity.ok(result);
+    }
+
 }
