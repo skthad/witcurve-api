@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
@@ -15,17 +16,22 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "siblingInfoIdSeq")
-    @SequenceGenerator(name = "siblingInfoIdSeq", sequenceName="sibling_info_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Student student;
 
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
     @NotNull
-    @Column(name = "relationship", nullable = false)
-    private String relationship;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
 
     @Column(name = "standard_during_admission", length = 50)
     private String standardDuringAdmission;
@@ -34,17 +40,20 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
     @Convert(converter = LocalDateConverter.class)
     private LocalDate studyingSince;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Student student;
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public String getName() {
@@ -55,12 +64,12 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
         this.name = name;
     }
 
-    public String getRelationship() {
-        return relationship;
+    public Gender getGender() {
+        return gender;
     }
 
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getStandardDuringAdmission() {
@@ -77,14 +86,6 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
 
     public void setStudyingSince(LocalDate studyingSince) {
         this.studyingSince = studyingSince;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 
     @Override
@@ -104,11 +105,6 @@ public class SiblingInfo extends AbstractAuditingEntity implements Serializable 
     public String toString() {
         return "SiblingInfo{" +
             "id=" + id +
-            ", name='" + name + '\'' +
-            ", relationship='" + relationship + '\'' +
-            ", standardDuringAdmission='" + standardDuringAdmission + '\'' +
-            ", studyingSince=" + studyingSince +
-            ", student=" + student +
             '}';
     }
 }

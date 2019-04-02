@@ -16,8 +16,7 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payrollIdSeq")
-    @SequenceGenerator(name = "payrollIdSeq", sequenceName="payroll_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -25,13 +24,13 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private PayrollDetails payrollDetails;
 
-    @Column
-    private Integer checkNumber;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "mode_of_payment", nullable = false)
     private ModeOfPayment modeOfPayment;
+
+    @Column
+    private Integer checkNumber;
 
     @Column
     @Convert(converter = LocalDateConverter.class)
@@ -57,20 +56,20 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
         this.payrollDetails = payrollDetails;
     }
 
-    public Integer getCheckNumber() {
-        return checkNumber;
-    }
-
-    public void setCheckNumber(Integer checkNumber) {
-        this.checkNumber = checkNumber;
-    }
-
     public ModeOfPayment getModeOfPayment() {
         return modeOfPayment;
     }
 
     public void setModeOfPayment(ModeOfPayment modeOfPayment) {
         this.modeOfPayment = modeOfPayment;
+    }
+
+    public Integer getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(Integer checkNumber) {
+        this.checkNumber = checkNumber;
     }
 
     public LocalDate getInitiatedOn() {

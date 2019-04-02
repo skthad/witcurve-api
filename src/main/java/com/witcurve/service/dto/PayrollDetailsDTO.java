@@ -1,10 +1,11 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
-public class PayrollDetailsDTO extends AbstractAuditingDTO {
+public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -221,7 +222,6 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO {
     public String toString() {
         return "PayrollDetailsDTO{" +
             "id=" + id +
-            ", staffId='" + staff.getId() + '\'' +
             '}';
     }
 }

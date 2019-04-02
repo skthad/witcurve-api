@@ -26,19 +26,20 @@ spring:
         livereload:
             enabled: false
     datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://witcurve-qa.cyjmhkroztgc.us-east-2.rds.amazonaws.com:5432/witcurve_new
+        url: jdbc:mysql://witcurve-remote.cyjmhkroztgc.us-east-2.rds.amazonaws.com:3306/witcurve?useUnicode=true&characterEncoding=utf8&useSSL=false
         username: witcurve
         password: witcurve
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
-        database: POSTGRESQL
-        show-sql: false
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
+        show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true
             hibernate.cache.use_second_level_cache: true
             hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: false
+            hibernate.generate_statistics: true
             hibernate.cache.region.factory_class: io.github.jhipster.config.jcache.BeanClassLoaderAwareJCacheRegionFactory
     liquibase:
         contexts: prod
@@ -91,6 +92,13 @@ jhipster:
         ehcache: # Ehcache configuration
             time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache
             max-entries: 1000 # Number of objects in each cache entry
+    cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Authorization,Link,X-Total-Count"
+        allow-credentials: true
+        max-age: 1800
     security:
         authentication:
             jwt:
@@ -123,4 +131,7 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+    sms:
+        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        sender-id: WCURVE

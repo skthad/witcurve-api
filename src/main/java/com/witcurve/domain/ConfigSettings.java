@@ -16,8 +16,7 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "configSettingsIdSeq")
-    @SequenceGenerator(name = "configSettingsIdSeq", sequenceName="config_settings_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

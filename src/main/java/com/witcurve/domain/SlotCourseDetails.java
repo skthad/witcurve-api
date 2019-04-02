@@ -16,8 +16,7 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "slotCourseDetailsIdSeq")
-    @SequenceGenerator(name = "slotCourseDetailsIdSeq", sequenceName="slot_course_details_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -84,9 +83,6 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     public String toString() {
         return "SlotCourseDetails{" +
             "id=" + id +
-            ", gsd=" + gsd +
-            ", dayOfWeek=" + dayOfWeek +
-            ", courseTeacher=" + courseTeacher +
             '}';
     }
 }

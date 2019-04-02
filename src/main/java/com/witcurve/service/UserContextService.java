@@ -5,5 +5,5 @@ import com.witcurve.web.rest.errors.WitcurveException;
 
 public interface UserContextService {
 
-    UserContextDTO getCurrentUserContext() throws WitcurveException;
+    UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException;
 }

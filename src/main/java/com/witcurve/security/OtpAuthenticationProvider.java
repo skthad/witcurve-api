@@ -1,6 +1,7 @@
 package com.witcurve.security;
 
 import com.witcurve.domain.Authority;
+import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +10,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class OtpAuthenticationProvider implements AuthenticationProvider {
@@ -46,17 +47,25 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             }
         }
 
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        SimpleGrantedAuthority simpleGrantedAuthority = null;
-        for(Authority authority : user.getAuthorities()) {
-            simpleGrantedAuthority= new SimpleGrantedAuthority(authority.getName());
-            authorities.add(simpleGrantedAuthority);
+        Set<Authority> authorities = user.getAuthorities();
+        Set<Permission> permissions = null;
+        for (Authority authority : authorities) {
+            if (authority.getPermissions().size() != 0) {
+                if (permissions == null) {
+                    permissions = new HashSet<>();
+                }
+                permissions.addAll(authority.getPermissions());
+            }
         }
+        List<GrantedAuthority> grantedAuthorities = permissions.stream()
+            .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+            .collect(Collectors.toList());
+
         user.setOtp(null);
         user.setOtpExpiry(null);
         userRepository.save(user);
 
-        return new UsernamePasswordAuthenticationToken(user.getLogin(), password, authorities);
+        return new UsernamePasswordAuthenticationToken(user.getLogin(), password, grantedAuthorities);
     }
 
     @Override

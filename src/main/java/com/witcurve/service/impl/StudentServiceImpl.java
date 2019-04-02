@@ -60,8 +60,6 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
-        userDTO.setActivated(false);
-        userDTO.addAuthority("ROLE_GUARDIAN");
         User user = userService.createUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
@@ -77,9 +75,10 @@ public class StudentServiceImpl implements StudentService {
             throw new WitcurveException("There is no user with given id : "+studentDTO.getUserId());
         }
         UserDTO userDTO = userMapper.userToUserDTO(optionalUser.get());
+        userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId().toLowerCase());
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
-        userDTO.addAuthority("ROLE_GUARDIAN");
+        userDTO.setType(UserType.PARENT);
         userService.updateUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);

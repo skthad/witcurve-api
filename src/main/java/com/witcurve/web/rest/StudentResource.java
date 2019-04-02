@@ -38,7 +38,7 @@ public class StudentResource {
                 .headers(HeaderUtil.createEntityCreationAlert("student", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("admission_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+            if (e.getMessage().contains("admission_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
                log.error("Unique constraint (admission_id, school_info_id) violated");
                throw new WitcurveException("There already a student with given admission id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
@@ -66,7 +66,7 @@ public class StudentResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("student", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("admission_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
+            if (e.getMessage().contains("admission_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
                 log.error("Unique constraint (admission_id, school_info_id) violated");
                 throw new WitcurveException("There already a student with given admission id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {

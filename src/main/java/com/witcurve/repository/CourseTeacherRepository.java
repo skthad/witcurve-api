@@ -5,6 +5,7 @@ import com.witcurve.domain.MasterSubject;
 import com.witcurve.domain.Standard;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -44,5 +45,9 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
     @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.course.eligibleForSubstitute = true " +
         "and ct.teacher.id != ?1 and ct.teacher.schoolInfo.id = ?2")
     List<Long> findEligibleForSubstituteBySchoolInfoId(Long staffId, Long schoolInfoId);
+
+    @Modifying
+    @Query("update StudentStandard set active = false where student.id in ?1")
+    void deactivateByStudentIds(List<Long> studentIds);
 
 }

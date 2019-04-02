@@ -18,19 +18,18 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "examCourseDetailsIdSeq")
-    @SequenceGenerator(name = "examCourseDetailsIdSeq", sequenceName="exam_course_details_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private GeneralSlotDetails gsd;
 
     @NotNull
     @Convert(converter = LocalDateConverter.class)
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private GeneralSlotDetails gsd;
 
     @NotNull
     @ManyToOne
@@ -49,20 +48,20 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
         this.id = id;
     }
 
-    public GeneralSlotDetails getGsd() {
-        return gsd;
-    }
-
-    public void setGsd(GeneralSlotDetails gsd) {
-        this.gsd = gsd;
-    }
-
     public LocalDate getDate() {
         return date;
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public GeneralSlotDetails getGsd() {
+        return gsd;
+    }
+
+    public void setGsd(GeneralSlotDetails gsd) {
+        this.gsd = gsd;
     }
 
     public Course getCourse() {
@@ -97,12 +96,8 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
 
     @Override
     public String toString() {
-        return "SlotCourseDetails{" +
+        return "ExamCourseDetails{" +
             "id=" + id +
-            ", gsd=" + gsd +
-            ", date=" + date +
-            ", courseId=" + course.getId() +
-            ", fullMarks=" + fullMarks +
             '}';
     }
 }

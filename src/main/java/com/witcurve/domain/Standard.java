@@ -17,9 +17,13 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "standardIdSeq")
-    @SequenceGenerator(name = "standardIdSeq", sequenceName="standard_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private SchoolInfo schoolInfo;
 
     @NotNull
     @Column(nullable = false, length = 50)
@@ -33,11 +37,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
     private Staff classTeacher;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private SchoolInfo schoolInfo;
-
-    @NotNull
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
 
@@ -47,6 +46,14 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Grade getGrade() {
@@ -71,14 +78,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
 
     public void setClassTeacher(Staff classTeacher) {
         this.classTeacher = classTeacher;
-    }
-
-    public SchoolInfo getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfo schoolInfo) {
-        this.schoolInfo = schoolInfo;
     }
 
     public Boolean getActive() {
@@ -107,11 +106,6 @@ public class Standard extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Standard{" +
             "id=" + id +
-            ", grade=" + grade +
-            ", section='" + section + '\'' +
-            ", classTeacher=" + classTeacher +
-            ", schoolInfo=" + schoolInfo +
-            ", active=" + active +
             '}';
     }
 }

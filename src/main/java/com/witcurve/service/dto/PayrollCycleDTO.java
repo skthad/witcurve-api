@@ -5,13 +5,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Objects;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
-public class PayrollCycleDTO extends AbstractAuditingDTO {
+public class PayrollCycleDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -103,11 +106,6 @@ public class PayrollCycleDTO extends AbstractAuditingDTO {
     public String toString() {
         return "PayrollCycleDTO{" +
             "id=" + id +
-            ", schoolInfoId='" + schoolInfoId + '\'' +
-            ", month='" + month + '\'' +
-            ", year='" + year + '\'' +
-            ", cycleStart='" + cycleStart + '\'' +
-            ", cycleEnd='" + cycleEnd + '\'' +
             '}';
     }
 }

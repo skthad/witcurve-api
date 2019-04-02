@@ -9,26 +9,22 @@ import com.witcurve.domain.enumeration.StaffType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StaffDTO extends AbstractAuditingDTO {
+public class StaffDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
-    private String staffId;
-
-    @NotNull
-    private String firstName;
-
-    private String middleName;
-
-    @NotNull
-    private String lastName;
+    private SchoolInfoDTO schoolInfo;
 
     private Long userId;
 
@@ -39,33 +35,51 @@ public class StaffDTO extends AbstractAuditingDTO {
     private Boolean hasPassword;
 
     @NotNull
-    private SchoolInfoDTO schoolInfo;
+    private String employeeId;
+
+    private String highestEducationalQualification;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate joiningDate;
 
     @NotNull
     private StaffType type;
 
+    @NotNull
+    private Gender gender;
+
+    @NotNull
+    private String firstName;
+
+    private String middleName;
+
+    @NotNull
+    private String lastName;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate dateOfBirth;
+
+    @NotNull
     private String address1;
 
     private String address2;
 
+    @NotNull
     private String city;
 
+    @NotNull
     private String district;
 
+    @NotNull
     private String state;
 
+    @NotNull
     private String country;
 
-    private String pincode;
-
     @NotNull
-    private Gender gender;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate joiningDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate dateOfBirth;
+    private String pincode;
 
     private BloodGroup bloodGroup;
 
@@ -85,11 +99,15 @@ public class StaffDTO extends AbstractAuditingDTO {
     @Size(min = 10, max = 10)
     private String panNo;
 
+    private String bankName;
+
     private String accountName;
 
     private String accountNumber;
 
     private String ifscCode;
+
+    private Set<String> subjects;
 
     public StaffDTO() {
     }
@@ -102,36 +120,12 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.id = id;
     }
 
-    public String getStaffId() {
-        return staffId;
+    public SchoolInfoDTO getSchoolInfo() {
+        return schoolInfo;
     }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
+        this.schoolInfo = schoolInfo;
     }
 
     public Long getUserId() {
@@ -166,12 +160,28 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.hasPassword = hasPassword;
     }
 
-    public SchoolInfoDTO getSchoolInfo() {
-        return schoolInfo;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
-    public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
-        this.schoolInfo = schoolInfo;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public String getHighestEducationalQualification() {
+        return highestEducationalQualification;
+    }
+
+    public void setHighestEducationalQualification(String highestEducationalQualification) {
+        this.highestEducationalQualification = highestEducationalQualification;
+    }
+
+    public LocalDate getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(LocalDate joiningDate) {
+        this.joiningDate = joiningDate;
     }
 
     public StaffType getType() {
@@ -180,6 +190,46 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setType(StaffType type) {
         this.type = type;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getAddress1() {
@@ -238,30 +288,6 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.pincode = pincode;
     }
 
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getJoiningDate() {
-        return joiningDate;
-    }
-
-    public void setJoiningDate(LocalDate joiningDate) {
-        this.joiningDate = joiningDate;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     public BloodGroup getBloodGroup() {
         return bloodGroup;
     }
@@ -284,6 +310,30 @@ public class StaffDTO extends AbstractAuditingDTO {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getAadhaarNo() {
+        return aadhaarNo;
+    }
+
+    public void setAadhaarNo(String aadhaarNo) {
+        this.aadhaarNo = aadhaarNo;
+    }
+
+    public String getPanNo() {
+        return panNo;
+    }
+
+    public void setPanNo(String panNo) {
+        this.panNo = panNo;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
     public String getAccountName() {
@@ -310,6 +360,14 @@ public class StaffDTO extends AbstractAuditingDTO {
         this.ifscCode = ifscCode;
     }
 
+    public Set<String> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<String> subjects) {
+        this.subjects = subjects;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -328,31 +386,6 @@ public class StaffDTO extends AbstractAuditingDTO {
     public String toString() {
         return "StaffDTO{" +
             "id=" + id +
-            ", staffId='" + staffId + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", userId=" + userId +
-            ", userName='" + userName + '\'' +
-            ", active='" + active + '\'' +
-            ", hasPassword=" + hasPassword +
-            ", schoolInfo=" + schoolInfo +
-            ", type=" + type +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", country='" + country + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", joiningDate=" + joiningDate +
-            ", dateOfBirth=" + dateOfBirth +
-            ", bloodGroup='" + bloodGroup + '\'' +
-            ", primaryPhone='" + primaryPhone + '\'' +
-            ", secondaryPhone='" + secondaryPhone + '\'' +
-            ", accountName='" + accountName + '\'' +
-            ", accountNumber='" + accountNumber + '\'' +
-            ", ifscCode='" + ifscCode + '\'' +
             '}';
     }
 }

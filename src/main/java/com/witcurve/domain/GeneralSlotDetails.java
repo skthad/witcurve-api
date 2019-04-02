@@ -16,9 +16,24 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generalSlotDetailsIdSeq")
-    @SequenceGenerator(name = "generalSlotDetailsIdSeq", sequenceName="general_slot_details_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private String bindingId;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private GSDStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "standard_id")
+    private Standard standard;
+
+    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
+    private Grade grade;
 
     @NotNull
     @Column(name = "start", nullable = false)
@@ -30,24 +45,8 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     private Integer duration;
 
     @NotNull
-    @Column(name = "is_recess", nullable = false)
+    @Column(name = "is_recess", nullable = false, columnDefinition = "boolean default false")
     private Boolean recess = false;
-
-    @ManyToOne
-    @JoinColumn(name = "standard_id")
-    private Standard standard;
-
-    @Column(length = 50)
-    @Enumerated(EnumType.STRING)
-    private Grade grade;
-
-    @NotNull
-    @Column(nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private GSDStatus status;
-
-    @Column
-    private String bindingId;
 
     @ManyToOne
     @JoinColumn
@@ -143,12 +142,6 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     public String toString() {
         return "GeneralSlotDetails{" +
             "id=" + id +
-            ", start='" + start + '\'' +
-            ", duration=" + duration +
-            ", recess=" + recess +
-            (exam == null ? (", standard=" + standard) : "") +
-            (exam != null ? (", grade=" + grade) : "") +
-            (exam != null ? (", exam=" + exam) : "") +
             '}';
     }
 }

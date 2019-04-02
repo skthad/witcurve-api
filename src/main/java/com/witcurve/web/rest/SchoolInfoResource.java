@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.security.PermissionsConstants;
 import com.witcurve.service.SchoolInfoService;
 import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,6 +36,7 @@ public class SchoolInfoResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @PostMapping("/school-info")
     @Timed
     public ResponseEntity<SchoolInfoDTO> createSchoolInfo(@RequestBody @Valid SchoolInfoDTO schoolInfoDTO) throws WitcurveException, URISyntaxException {
@@ -64,6 +67,8 @@ public class SchoolInfoResource {
      * @throws WitcurveException
      */
 
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @PutMapping("/school-info")
     @Timed
     public ResponseEntity<SchoolInfoDTO> updateSchoolInfo(@RequestBody @Valid SchoolInfoDTO schoolInfoDTO) throws WitcurveException {
@@ -95,7 +100,8 @@ public class SchoolInfoResource {
      * @return
      * @throws WitcurveException
      */
-
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @GetMapping("/school-info/{schoolInfoId}")
     @Timed
     public ResponseEntity<SchoolInfoDTO> getSchoolInfoById(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {

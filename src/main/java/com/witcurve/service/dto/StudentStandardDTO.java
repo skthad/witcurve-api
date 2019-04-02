@@ -1,9 +1,12 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class StudentStandardDTO extends AbstractAuditingDTO {
+public class StudentStandardDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -16,6 +19,7 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
     @NotNull
     private String rollNo;
 
+    @NotNull
     private Boolean active = true;
 
     public Long getId() {
@@ -76,10 +80,6 @@ public class StudentStandardDTO extends AbstractAuditingDTO {
     public String toString() {
         return "StudentStandard{" +
             "id=" + id +
-            ", studentId=" + student.getId() +
-            (standard != null ? (", standardId=" + standard.getId()) : "") +
-            ", rollNo=" + rollNo +
-            ", active='" + active + '\'' +
             '}';
     }
 }

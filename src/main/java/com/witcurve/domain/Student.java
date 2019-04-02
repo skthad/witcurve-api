@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.BloodGroup;
+import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
@@ -25,13 +26,32 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "studentIdSeq")
-    @SequenceGenerator(name = "studentIdSeq", sequenceName="student_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private SchoolInfo schoolInfo;
+
+    @NotNull
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private User user;
 
     @NotNull
     @Column(name = "admission_id", nullable = false)
     private String admissionId;
+
+    @NotNull
+    @Column(name = "admission_date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate admissionDate;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", nullable = false)
+    private Gender gender;
 
     @NotNull
     @Column(name = "first_name", nullable = false)
@@ -45,18 +65,53 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     private String lastName;
 
     @NotNull
-    @OneToOne
-    @JoinColumn(nullable = false)
-    private User user;
-
-    @NotNull
     @Column(name = "date_of_birth", nullable = false)
     @Convert(converter = LocalDateConverter.class)
     private LocalDate dateOfBirth;
 
+    @NotNull
+    @Column(nullable = false)
+    private String address1;
+
+    @Column
+    private String address2;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    private String city;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    private String district;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    private String state;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    private String country;
+
+    @NotNull
+    @Column(nullable = false, length = 50)
+    private String pincode;
+
     @Column(name = "blood_group", length = 50)
     @Enumerated(EnumType.STRING)
     private BloodGroup bloodGroup;
+
+    @NotNull
+    @Column(length = 50, nullable = false)
+    @Pattern(regexp = "^[6-9]\\d{9}$")
+    private String registeredMobileNumber;
+
+    @Column
+    @Convert(converter = ListToStringConverter.class)
+    private List<@Pattern(regexp="^[6-9]\\d{9}$")String> alternateMobileNumbers;
+
+    @Pattern(regexp = "[0-9]{16}")
+    @Column(name = "aadhaar_no", length = 16)
+    private String aadhaarNo;
 
     @NotNull
     @Column(name = "nationality", length = 50, nullable = false)
@@ -74,37 +129,23 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "sub_caste", length = 50)
     private String subCaste;
 
-    @Column(name = "category", length = 50)
-    private String category;
+    @NotNull
+    @Column(nullable = false, length = 50, columnDefinition = "varchar(50) default 'NA'")
+    @Enumerated(EnumType.STRING)
+    private Category category = Category.NA;
 
     @NotNull
-    @Column(nullable = false)
-    private String address1;
-
-    @Column
-    private String address2;
+    @Column(name = "day_scholar", nullable = false, columnDefinition = "boolean default true")
+    private Boolean dayScholar = true;
 
     @Column(length = 50)
-    private String city;
+    private Category house;
 
-    @Column(length = 50)
-    private String district;
-
-    @Column(length = 50)
-    private String state;
-
-    @Column(length = 50)
-    private String country;
-
-    @Column(length = 50)
-    private String pincode;
+    @Column(name = "sub_category", length = 50)
+    private String subCategory;
 
     @Column(name = "birth_place", length = 50)
     private String birthPlace;
-
-    @Pattern(regexp = "[0-9]{16}")
-    @Column(name = "aadhaar_no", length = 16)
-    private String aadhaarNo;
 
     @Column(name = "identification_mark1")
     private String identificationMark1;
@@ -121,29 +162,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "previous_school_standard", length = 50)
     private String previousSchoolStandard;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private SchoolInfo schoolInfo;
-
-    @NotNull
-    @Column(length = 50, nullable = false)
-    @Pattern(regexp = "^[6-9]\\d{9}$")
-    private String registeredMobileNumber;
-
-    @Column
-    @Convert(converter = ListToStringConverter.class)
-    private List<@Pattern(regexp="^[6-9]\\d{9}$")String> alternateMobileNumbers;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "gender", nullable = false)
-    private Gender gender;
-
-    @Column(name = "admission_date")
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate admissionDate;
-
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="student_id", insertable = false, updatable = false)
     @Where(clause = "active=true")
@@ -157,12 +175,44 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
+    public SchoolInfo getSchoolInfo() {
+        return schoolInfo;
+    }
+
+    public void setSchoolInfo(SchoolInfo schoolInfo) {
+        this.schoolInfo = schoolInfo;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getAdmissionId() {
         return admissionId;
     }
 
     public void setAdmissionId(String admissionId) {
         this.admissionId = admissionId;
+    }
+
+    public LocalDate getAdmissionDate() {
+        return admissionDate;
+    }
+
+    public void setAdmissionDate(LocalDate admissionDate) {
+        this.admissionDate = admissionDate;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getFirstName() {
@@ -189,76 +239,12 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.lastName = lastName;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-
-    public BloodGroup getBloodGroup() {
-        return bloodGroup;
-    }
-
-    public void setBloodGroup(BloodGroup bloodGroup) {
-        this.bloodGroup = bloodGroup;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getReligion() {
-        return religion;
-    }
-
-    public void setReligion(String religion) {
-        this.religion = religion;
-    }
-
-    public String getMotherTongue() {
-        return motherTongue;
-    }
-
-    public void setMotherTongue(String motherTongue) {
-        this.motherTongue = motherTongue;
-    }
-
-    public String getCaste() {
-        return caste;
-    }
-
-    public void setCaste(String caste) {
-        this.caste = caste;
-    }
-
-    public String getSubCaste() {
-        return subCaste;
-    }
-
-    public void setSubCaste(String subCaste) {
-        this.subCaste = subCaste;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public String getAddress1() {
@@ -317,12 +303,28 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.pincode = pincode;
     }
 
-    public String getBirthPlace() {
-        return birthPlace;
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
     }
 
-    public void setBirthPlace(String birthPlace) {
-        this.birthPlace = birthPlace;
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    public String getRegisteredMobileNumber() {
+        return registeredMobileNumber;
+    }
+
+    public void setRegisteredMobileNumber(String registeredMobileNumber) {
+        this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public List<String> getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public String getAadhaarNo() {
@@ -331,6 +333,86 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setAadhaarNo(String aadhaarNo) {
         this.aadhaarNo = aadhaarNo;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getReligion() {
+        return religion;
+    }
+
+    public void setReligion(String religion) {
+        this.religion = religion;
+    }
+
+    public String getMotherTongue() {
+        return motherTongue;
+    }
+
+    public void setMotherTongue(String motherTongue) {
+        this.motherTongue = motherTongue;
+    }
+
+    public String getCaste() {
+        return caste;
+    }
+
+    public void setCaste(String caste) {
+        this.caste = caste;
+    }
+
+    public String getSubCaste() {
+        return subCaste;
+    }
+
+    public void setSubCaste(String subCaste) {
+        this.subCaste = subCaste;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Boolean getDayScholar() {
+        return dayScholar;
+    }
+
+    public void setDayScholar(Boolean dayScholar) {
+        this.dayScholar = dayScholar;
+    }
+
+    public Category getHouse() {
+        return house;
+    }
+
+    public void setHouse(Category house) {
+        this.house = house;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
+
+    public String getBirthPlace() {
+        return birthPlace;
+    }
+
+    public void setBirthPlace(String birthPlace) {
+        this.birthPlace = birthPlace;
     }
 
     public String getIdentificationMark1() {
@@ -373,46 +455,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.previousSchoolStandard = previousSchoolStandard;
     }
 
-    public SchoolInfo getSchoolInfo() {
-        return schoolInfo;
-    }
-
-    public void setSchoolInfo(SchoolInfo schoolInfo) {
-        this.schoolInfo = schoolInfo;
-    }
-
-    public String getRegisteredMobileNumber() {
-        return registeredMobileNumber;
-    }
-
-    public void setRegisteredMobileNumber(String registeredMobileNumber) {
-        this.registeredMobileNumber = registeredMobileNumber;
-    }
-
-    public List<String> getAlternateMobileNumbers() {
-        return alternateMobileNumbers;
-    }
-
-    public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
-        this.alternateMobileNumbers = alternateMobileNumbers;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public LocalDate getAdmissionDate() {
-        return admissionDate;
-    }
-
-    public void setAdmissionDate(LocalDate admissionDate) {
-        this.admissionDate = admissionDate;
-    }
-
     public Set<StudentStandard> getStudentStandards() {
         return studentStandards;
     }
@@ -439,38 +481,6 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Student{" +
             "id=" + id +
-            ", admissionId='" + admissionId + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", user=" + user +
-            ", dateOfBirth=" + dateOfBirth +
-            ", bloodGroup='" + bloodGroup + '\'' +
-            ", nationality='" + nationality + '\'' +
-            ", religion='" + religion + '\'' +
-            ", motherTongue='" + motherTongue + '\'' +
-            ", caste='" + caste + '\'' +
-            ", subCaste='" + subCaste + '\'' +
-            ", category='" + category + '\'' +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", country='" + country + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", birthPlace='" + birthPlace + '\'' +
-            ", aadhaarNo='" + aadhaarNo + '\'' +
-            ", identificationMark1='" + identificationMark1 + '\'' +
-            ", identificationMark2='" + identificationMark2 + '\'' +
-            ", previousSchoolName='" + previousSchoolName + '\'' +
-            ", previousSchoolAddress='" + previousSchoolAddress + '\'' +
-            ", previousSchoolStandard='" + previousSchoolStandard + '\'' +
-            ", schoolInfo=" + schoolInfo +
-            ", registeredMobileNumber='" + registeredMobileNumber + '\'' +
-            ", alternateMobileNumbers=" + alternateMobileNumbers +
-            ", gender=" + gender +
-            ", admissionDate=" + admissionDate +
             '}';
     }
 }

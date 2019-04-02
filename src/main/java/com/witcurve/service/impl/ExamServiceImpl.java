@@ -1,8 +1,10 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.AcademicSession;
 import com.witcurve.domain.Exam;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.repository.AcademicSessionRepository;
 import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.repository.ExamRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
@@ -36,6 +38,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     ExamCourseDetailsRepository examCourseDetailsRepository;
+
+    @Autowired
+    AcademicSessionRepository academicSessionRepository;
 
     @Autowired
     ExamMapper examMapper;
@@ -107,6 +112,18 @@ public class ExamServiceImpl implements ExamService {
             exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate, status);
         }
 
+        return examMapper.toDto(exams);
+    }
+
+    @Override
+    public List<ExamDTO> getExamsBySessionId(Long sessionId) throws WitcurveException {
+        log.debug("Get the list off exams in academic session with id : {}", sessionId);
+        Optional<AcademicSession> academicSession = academicSessionRepository.findById(sessionId);
+        if (!academicSession.isPresent()) {
+            throw new WitcurveException("No Academic Session with given id");
+        }
+        List<Exam> exams = examRepository.findAllBySchoolInfoAndDateRange(academicSession.get().getSchoolInfo().getId(),
+            academicSession.get().getStartDate(), academicSession.get().getStartDate().plusYears(1));
         return examMapper.toDto(exams);
     }
 

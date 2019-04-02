@@ -39,13 +39,13 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.staff_id = ?3 and e.type = 'ATTENDANCE') or \n" +
-        "(gsd.standard_id in ?4 and e.type in ?7) or \n" +
-        "(ct.standard_id in ?4 and e.type = 'ASSIGNMENT') OR \n" +
-        "(e.standard_id in ?4 and e.type = 'SCHOOL_EVENT') OR\n" +
-        "((e.grade is null or (e.grade is not null and e.grade in ?5)) \n" +
-        " and e.school_info_id = ?6 and (e.type in ('HOLIDAY', 'SCHOOL_EVENT'))))", nativeQuery = true)
+        "(scd.course_teacher_id in ?4 and e.type in ?8) or \n" +
+        "(e.course_teacher_id in ?4 and e.type = 'ASSIGNMENT') OR \n" +
+        "(e.standard_id in ?5 and e.type = 'SCHOOL_EVENT') OR\n" +
+        "((e.grade is null or (e.grade is not null and e.grade in ?6)) \n" +
+        " and e.school_info_id = ?7 and (e.type in ('HOLIDAY', 'SCHOOL_EVENT'))))", nativeQuery = true)
     List<BigInteger> findEventsByDateRangeForStaff(LocalDate startDate, LocalDate endDate,
-                                                   Long staffId, Set<Long> standardIds, Set<String> grades,
+                                                   Long staffId, Set<Long> courseTeacherIds, Set<Long> standardIds, Set<String> grades,
                                                    Long schoolInfoId, List<String> types);
 
     @Query("Select distinct e.date from Event e where e.date between ?1 and ?2 and" +

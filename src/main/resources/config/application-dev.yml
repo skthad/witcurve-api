@@ -33,13 +33,14 @@ spring:
     jackson:
         serialization.indent_output: true
     datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/witcurve
+        url: jdbc:mysql://localhost:3306/witcurve
         username: witcurve
-        password: witcurve
+        password: WitcurveAdmin@123
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
-        database: POSTGRESQL
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
         show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true
@@ -140,4 +141,7 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+    sms:
+        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        sender-id: WCURVE

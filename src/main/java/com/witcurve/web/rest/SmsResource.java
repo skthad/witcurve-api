@@ -75,7 +75,7 @@ public class SmsResource {
             && Strings.isNullOrEmpty(smsVM.getStaffList())
             && Strings.isNullOrEmpty(smsVM.getGradeList())
             && Strings.isNullOrEmpty(smsVM.getStandardList())) {
-            throw new WitcurveException("At least one of student, staff, grade or standard must be provided");
+            throw new WitcurveException("At least one of studentList, staffList, gradeList or standardList must be provided");
         }
 
         smsService.sendBulkSMS(schoolInfoId, smsVM);

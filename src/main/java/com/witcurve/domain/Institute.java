@@ -15,13 +15,33 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "instituteIdSeq")
-    @SequenceGenerator(name = "instituteIdSeq", sequenceName="instititute_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
     @Column(nullable = false)
     private String name;
+
+    @NotNull
+    @Column(name="primary_phone", length = 50, nullable = false)
+    private String primaryPhone;
+
+    @Column(name="secondary_phone", length = 50)
+    private String secondaryPhone;
+
+    @NotNull
+    @Column(name = "primary_email", nullable = false, length = 50)
+    private String primaryEmail;
+
+    @Column(name = "secondary_email", length = 50)
+    private String secondaryEmail;
+
+    @Column(name="fax", length = 50)
+    private String fax;
+
+    @NotNull
+    @Column(name="sms_signature", length = 6, nullable = false)
+    private String smsSignature;
 
     public Long getId() {
         return id;
@@ -37,6 +57,54 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPrimaryPhone() {
+        return primaryPhone;
+    }
+
+    public void setPrimaryPhone(String primaryPhone) {
+        this.primaryPhone = primaryPhone;
+    }
+
+    public String getSecondaryPhone() {
+        return secondaryPhone;
+    }
+
+    public void setSecondaryPhone(String secondaryPhone) {
+        this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getPrimaryEmail() {
+        return primaryEmail;
+    }
+
+    public void setPrimaryEmail(String primaryEmail) {
+        this.primaryEmail = primaryEmail;
+    }
+
+    public String getSecondaryEmail() {
+        return secondaryEmail;
+    }
+
+    public void setSecondaryEmail(String secondaryEmail) {
+        this.secondaryEmail = secondaryEmail;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getSmsSignature() {
+        return smsSignature;
+    }
+
+    public void setSmsSignature(String smsSignature) {
+        this.smsSignature = smsSignature;
     }
 
     @Override
@@ -57,7 +125,6 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Institute{" +
             "id=" + id +
-            ", name='" + name + '\'' +
             '}';
     }
 }

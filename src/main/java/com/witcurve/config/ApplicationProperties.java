@@ -11,4 +11,34 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
 
+    public final Sms sms = new Sms();
+
+    public static class Sms {
+
+        private String authKey;
+
+        private String senderId;
+
+        public String getAuthKey() {
+            return authKey;
+        }
+
+        public void setAuthKey(String authKey) {
+            this.authKey = authKey;
+        }
+
+        public String getSenderId() {
+            return senderId;
+        }
+
+        public void setSenderId(String senderId) {
+            this.senderId = senderId;
+        }
+
+
+    }
+
+    public Sms getSms() {
+        return sms;
+    }
 }

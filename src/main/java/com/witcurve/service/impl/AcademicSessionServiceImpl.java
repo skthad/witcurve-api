@@ -123,11 +123,11 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
     }
 
     @Override
-    public AcademicSessionDTO getNextActiveSessionAfterDate(Long schoolInfoId, LocalDate date) {
+    public AcademicSessionDTO getNextSessionSessionAfterDate(Long schoolInfoId, LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
-        AcademicSession currentSession = academicSessionRepository.nextActiveSessionAfterDate(schoolInfoId, date);
+        AcademicSession currentSession = academicSessionRepository.nextSessionAfterDate(schoolInfoId, date);
         return academicSessionMapper.toDto(currentSession);
     }
 }

@@ -17,25 +17,11 @@ import java.util.Set;
 @Table(name="leave_application")
 public class LeaveApplication extends AbstractAuditingEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "leaveApplicationIdSeq")
-    @SequenceGenerator(name = "leaveApplicationIdSeq", sequenceName="leave_application_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    @NotNull
-    private Reason reason;
-
-    @Column
-    private String description;
-
-    @NotNull
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ApprovalStatus status = ApprovalStatus.PENDING;
-
-    @ManyToOne
-    private Staff approvedBy;
 
     @NotNull
     @JoinColumn(nullable = false)
@@ -58,13 +44,25 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     @Convert(converter = LocalDateConverter.class)
     private LocalDate toLeaveDate;
 
+    @Column(nullable = false)
+    @NotNull
+    private Reason reason;
+
     @Column
-    private String note;
+    private String description;
+
+    @NotNull
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus status = ApprovalStatus.PENDING;
+
+    @ManyToOne
+    private Staff approvedBy;
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "event_leave_application",
+        name = "leave_event",
         joinColumns = {@JoinColumn(name = "leave_application_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "event_id", referencedColumnName = "id")})
     private Set<Event> events = new HashSet<>();
@@ -77,44 +75,12 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.id = id;
     }
 
-    public Reason getReason() {
-        return reason;
-    }
-
-    public void setReason(Reason reason) {
-        this.reason = reason;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ApprovalStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ApprovalStatus status) {
-        this.status = status;
-    }
-
     public SchoolInfo getSchoolInfo() {
         return schoolInfo;
     }
 
     public void setSchoolInfo(SchoolInfo schoolInfo) {
         this.schoolInfo = schoolInfo;
-    }
-
-    public Staff getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Staff approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public Staff getAppliedStaff() {
@@ -149,12 +115,36 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
         this.toLeaveDate = toLeaveDate;
     }
 
-    public String getNote() {
-        return note;
+    public Reason getReason() {
+        return reason;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setReason(Reason reason) {
+        this.reason = reason;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ApprovalStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ApprovalStatus status) {
+        this.status = status;
+    }
+
+    public Staff getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(Staff approvedBy) {
+        this.approvedBy = approvedBy;
     }
 
     public Set<Event> getEvents() {
@@ -189,17 +179,6 @@ public class LeaveApplication extends AbstractAuditingEntity implements Serializ
     public String toString() {
         return "LeaveApplication{" +
             "id=" + id +
-            ", reason=" + reason +
-            ", description='" + description + '\'' +
-            ", status=" + status +
-            ", approvedBy=" + approvedBy +
-            ", schoolInfo=" + schoolInfo +
-            ", appliedStaff=" + appliedStaff +
-            ", appliedStudent=" + appliedStudent +
-            ", fromLeaveDate=" + fromLeaveDate +
-            ", toLeaveDate=" + toLeaveDate +
-            ", note='" + note + '\'' +
-            ", events=" + events +
             '}';
     }
 }

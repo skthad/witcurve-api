@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.config.Constants;
 import com.witcurve.domain.User;
 import io.github.jhipster.config.JHipsterProperties;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class MailService {
 
     @Async
     public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
         Context context = new Context(locale);
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
@@ -83,23 +84,6 @@ public class MailService {
 
     }
 
-    @Async
-    public void sendActivationEmail(User user) {
-        log.debug("Sending activation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
-    }
-
-    @Async
-    public void sendCreationEmail(User user) {
-        log.debug("Sending creation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
-    }
-
-    @Async
-    public void sendPasswordResetMail(User user) {
-        log.debug("Sending password reset email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
-    }
 
     @Async
     public void sendOtpMail(User user) {

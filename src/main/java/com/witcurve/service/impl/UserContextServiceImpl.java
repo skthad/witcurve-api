@@ -58,15 +58,15 @@ public class UserContextServiceImpl implements UserContextService {
     EventService eventService;
 
     @Override
-    public UserContextDTO getCurrentUserContext() throws WitcurveException {
+    public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User currentUser = userService.getUserWithAuthoritiesByLogin(user.getUsername()).get();
 
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
 
-        Long schoolInfoId = null;
-        if (UserType.STAFF.equals(contextDTO.getCurrentUser().getType())) {
+        // TODO need changes for other user types
+        if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
             List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
             List<StandardDTO> staffStandards = null;
@@ -106,6 +106,12 @@ public class UserContextServiceImpl implements UserContextService {
             }
 
             schoolInfoId = studentDTO.getSchoolInfo().getId();
+        } else if (schoolInfoId == null) {
+            if (UserType.SUPER_USER.equals(contextDTO.getCurrentUser().getType())) {
+                return contextDTO;
+            } else {
+                schoolInfoId = Long.parseLong(user.getUsername().substring(0, user.getUsername().indexOf("-")));
+            }
         }
 
         if (schoolInfoId == null) {
@@ -121,7 +127,7 @@ public class UserContextServiceImpl implements UserContextService {
 
             LocalDate sessionStartDate = currentSession.getStartDate();
             LocalDate sessionEndDate = sessionStartDate.plusYears(1).minusDays(1);
-            AcademicSessionDTO nextSession = academicSessionService.getNextActiveSessionAfterDate(schoolInfoId, currentSession.getStartDate());
+            AcademicSessionDTO nextSession = academicSessionService.getNextSessionSessionAfterDate(schoolInfoId, currentSession.getStartDate());
             if (nextSession != null) {
                 sessionEndDate = nextSession.getStartDate().minusDays(1);
             }

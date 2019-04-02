@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.Authority;
+import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
@@ -19,17 +21,18 @@ import java.util.stream.Collectors;
  * A DTO representing a user, with his authorities.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class UserDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    @NotNull
+    private UserType type;
 
     @NotBlank
     @Size(min = 1, max = 50)
     private String login;
-
-    private String otp;
-
-    private Instant otpExpiry;
 
     @Size(max = 50)
     private String firstName;
@@ -41,16 +44,20 @@ public class UserDTO {
     @Size(min = 5, max = 254)
     private String email;
 
+    private String password;
+
     @NotNull
-    private UserType type;
+    private boolean activated = true;
 
-    @Size(max = 256)
-    private String imageUrl;
+    @NotNull
+    private Boolean hasPassword = false;
 
-    private boolean activated = false;
+    @NotNull
+    private Boolean forcePassword = true;
 
-    @Size(min = 2, max = 6)
-    private String langKey;
+    private String otp;
+
+    private Instant otpExpiry;
 
     private String createdBy;
 
@@ -62,14 +69,11 @@ public class UserDTO {
 
     private Set<String> authorities;
 
+    private Set<String> permissions;
+
     private StudentDTO studentDTO;
 
     private StaffDTO staffDTO;
-
-    private String password;
-
-    @NotNull
-    private Boolean firstTimeLogin = true;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -83,9 +87,8 @@ public class UserDTO {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.getActivated();
-        this.firstTimeLogin = user.isFirstTimeLogin();
-        this.imageUrl = user.getImageUrl();
-        this.langKey = user.getLangKey();
+        this.hasPassword = user.getPassword() == null ? Boolean.FALSE : Boolean.TRUE;
+        this.forcePassword = user.getForcePassword();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
@@ -93,6 +96,17 @@ public class UserDTO {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
+        for (Authority authority : user.getAuthorities()) {
+            if (authority.getPermissions().size() != 0) {
+                if (this.permissions == null) {
+                    this.permissions = new HashSet<>();
+                }
+                for (Permission permission : authority.getPermissions()) {
+                    this.permissions.add(permission.getName());
+                }
+            }
+        }
+
     }
 
     public Long getId() {
@@ -103,28 +117,20 @@ public class UserDTO {
         this.id = id;
     }
 
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
+    }
+
     public String getLogin() {
         return login;
     }
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
-    }
-
-    public Instant getOtpExpiry() {
-        return otpExpiry;
-    }
-
-    public void setOtpExpiry(Instant otpExpiry) {
-        this.otpExpiry = otpExpiry;
     }
 
     public String getFirstName() {
@@ -151,22 +157,6 @@ public class UserDTO {
         this.email = email;
     }
 
-    public UserType getType() {
-        return type;
-    }
-
-    public void setType(UserType type) {
-        this.type = type;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public boolean isActivated() {
         return activated;
     }
@@ -175,42 +165,74 @@ public class UserDTO {
         this.activated = activated;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public Boolean getHasPassword() {
+        return hasPassword;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setHasPassword(Boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 
+    public Boolean getForcePassword() {
+        return forcePassword;
+    }
+
+    public void setForcePassword(Boolean forcePassword) {
+        this.forcePassword = forcePassword;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public Instant getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(Instant otpExpiry) {
+        this.otpExpiry = otpExpiry;
+    }
+
+    @Override
     public String getCreatedBy() {
         return createdBy;
     }
 
+    @Override
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
+    @Override
     public Instant getCreatedDate() {
         return createdDate;
     }
 
+    @Override
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
+    @Override
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
+    @Override
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    @Override
     public Instant getLastModifiedDate() {
         return lastModifiedDate;
     }
 
+    @Override
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
@@ -228,6 +250,14 @@ public class UserDTO {
             this.authorities = new HashSet<>();
         }
         authorities.add(authority);
+    }
+
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        this.permissions = permissions;
     }
 
     public StudentDTO getStudentDTO() {
@@ -254,14 +284,6 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Boolean getFirstTimeLogin() {
-        return firstTimeLogin;
-    }
-
-    public void setFirstTimeLogin(Boolean firstTimeLogin) {
-        this.firstTimeLogin = firstTimeLogin;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -280,23 +302,6 @@ public class UserDTO {
     public String toString() {
         return "UserDTO{" +
             "id=" + id +
-            ", login='" + login + '\'' +
-            ", otp='" + otp + '\'' +
-            ", otpExpiry=" + otpExpiry +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", type=" + type +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy='" + createdBy + '\'' +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            ", studentDTO=" + studentDTO +
-            ", staffDTO=" + staffDTO +
             '}';
     }
 }

@@ -47,8 +47,8 @@ public class StaffResource {
                 .headers(HeaderUtil.createEntityCreationAlert("staff", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("staff_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
-                log.debug("Unique constraint (staff_id, school_info_id) violated");
+            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
+                log.debug("Unique constraint (employee_id, school_info_id) violated");
                 throw new WitcurveException("There already a staff with given staff id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
@@ -95,10 +95,9 @@ public class StaffResource {
      * @return
      * @throws WitcurveException
      */
-
     @GetMapping("/staff/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(required = false) Boolean areClassTeacher) throws WitcurveException {
+    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(defaultValue = "false") Boolean areClassTeacher) throws WitcurveException {
         log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {}", schoolInfoId, areClassTeacher);
         List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -130,9 +129,9 @@ public class StaffResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("staff", staffDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("staff_school_info_id_UK") || e.getMessage().contains("ux_user_login")) {
-                log.debug("Unique constraint (staff_id, school_info_id) violated");
-                throw new WitcurveException("There already a student with given staff id for this board");
+            if (e.getMessage().contains("employee_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
+                log.debug("Unique constraint (employee_id, school_info_id) violated");
+                throw new WitcurveException("There is already a staff with given employee id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -153,7 +152,7 @@ public class StaffResource {
     public ResponseEntity<Void> deleteStaff(@PathVariable Long staffId) throws WitcurveException {
         log.debug("REST request to delete Staff: {}", staffId);
         try {
-            staffService.deleteStaffById(staffId);
+            staffService.deactivate(staffId);
             return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A staff is deleted with identifier " + staffId,
                 staffId.toString())).build();
         } catch (DataIntegrityViolationException e) {

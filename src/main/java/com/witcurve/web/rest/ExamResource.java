@@ -119,9 +119,12 @@ public class ExamResource {
     }
 
     /**
-     * get exam by id
+     * get exam by school info id and grade
      * @param schoolInfoId
      * @param grade
+     * @param startDate
+     * @param endDate
+     * @param status
      *
      * @return
      * @throws WitcurveException
@@ -136,6 +139,22 @@ public class ExamResource {
                                                                       @RequestParam(value = "status", required = false) ExamStatus status) throws WitcurveException {
         log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
         List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate, status);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get exam by academic session
+     * @param sessionId
+     *
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/exams/session/{sessionId}")
+    @Timed
+    public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfo(@PathVariable("sessionId") Long sessionId) throws WitcurveException {
+        log.debug("Request to get Exams for academic session with id : {}", sessionId);
+        List<ExamDTO> result = examService.getExamsBySessionId(sessionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

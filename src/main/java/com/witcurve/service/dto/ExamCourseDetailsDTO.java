@@ -11,14 +11,16 @@ import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
-    private Long id;
+    private static final long serialVersionUID = 1L;
 
-    @NotNull
-    private GeneralSlotDetailsDTO gsd;
+    private Long id;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate date;
+
+    @NotNull
+    private GeneralSlotDetailsDTO gsd;
 
     @NotNull
     private CourseDTO course;
@@ -34,21 +36,20 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
         this.id = id;
     }
 
-    public GeneralSlotDetailsDTO getGsd() {
-        return gsd;
-    }
-
-    public void setGsd(GeneralSlotDetailsDTO gsd) {
-        this.gsd = gsd;
-    }
-
-    @NotNull
     public LocalDate getDate() {
         return date;
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public GeneralSlotDetailsDTO getGsd() {
+        return gsd;
+    }
+
+    public void setGsd(GeneralSlotDetailsDTO gsd) {
+        this.gsd = gsd;
     }
 
     public CourseDTO getCourse() {
@@ -84,11 +85,6 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @Override
     public String toString() {
         return "ExamCourseDetailsDTO{" +
-            "id=" + id +
-            ", gsd=" + gsd +
-            ", date=" + date +
-            ", course=" + course +
-            ", fullMarks=" + fullMarks +
             '}';
     }
 }

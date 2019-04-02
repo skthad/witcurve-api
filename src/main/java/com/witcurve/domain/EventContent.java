@@ -15,8 +15,7 @@ public class EventContent extends AbstractAuditingEntity implements Serializable
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "eventContentIdSeq")
-    @SequenceGenerator(name = "eventContentIdSeq", sequenceName="event_content_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull

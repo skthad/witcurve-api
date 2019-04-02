@@ -200,15 +200,17 @@ public class EventServiceImpl implements EventService {
         if(courseTeachers.size() !=0) {
             Set<Long> standardIds = new HashSet<>();
             Set<String> grades = new HashSet<>();
+            Set<Long> courseTeacherIds = new HashSet<>();
             for(CourseTeacher courseTeacher : courseTeachers) {
                 standardIds.add(courseTeacher.getStandard().getId());
                 grades.add(courseTeacher.getStandard().getGrade().toString());
+                courseTeacherIds.add(courseTeacher.getId());
             }
             Optional<Staff> staff = staffRepository.findById(staffId);
             if (!staff.isPresent()) {
                 throw new WitcurveException("No staff found with ID: " + staffId);
             }
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(eventDate, eventDate, staffId, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DAY);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(eventDate, eventDate, staffId, courseTeacherIds, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {
@@ -268,14 +270,20 @@ public class EventServiceImpl implements EventService {
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
 
+            Set<Long> courseTeacherIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getId)
+                .collect(Collectors.toSet());
+
             Set<String> grades = courseTeachers
                 .stream()
                 .map(CourseTeacher::getStandard)
                 .map(s -> s.getGrade().toString())
                 .collect(Collectors.toSet());
+
             LocalDate monthStart = LocalDate.of(year,month,1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, courseTeacherIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {
@@ -339,13 +347,18 @@ public class EventServiceImpl implements EventService {
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
 
+            Set<Long> courseTeacherIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getId)
+                .collect(Collectors.toSet());
+
             Set<String> grades = courseTeachers
                 .stream()
                 .map(CourseTeacher::getStandard)
                 .map(s -> s.getGrade().toString())
                 .collect(Collectors.toSet());
 
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, courseTeacherIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {

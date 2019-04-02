@@ -1,11 +1,14 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Staff;
+import com.witcurve.domain.StaffEligibility;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.StaffRepository;
-import com.witcurve.repository.UserRepository;
+import com.witcurve.repository.*;
+import com.witcurve.service.StaffEligibilityService;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StaffDTO;
@@ -19,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -43,16 +45,30 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    StaffEligibilityRepository staffEligibilityRepository;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
+
+    @Autowired
+    StaffEligibilityService staffEligibilityService;
+
     @Override
     public StaffDTO create(StaffDTO staffDTO) {
         log.debug("Request to create staff : {}", staffDTO);
         UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.setType(UserType.STAFF);
-        userDTO.setActivated(false);
-        userDTO.addAuthority("ROLE_TEACHING");
+        if (StaffType.TEACHING.equals(staffDTO.getType())) {
+            userDTO.setType(UserType.TEACHING_STAFF);
+        } else {
+            userDTO.setType(UserType.NON_TEACHING_STAFF);
+        }
         User user = userService.createUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff.setUser(user);
@@ -68,10 +84,14 @@ public class StaffServiceImpl implements StaffService {
             throw new WitcurveException("There is no user with given id : "+staffDTO.getUserId());
         }
         UserDTO userDTO = userMapper.userToUserDTO(user.get());
-        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getStaffId());
+        userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
-        userDTO.addAuthority("ROLE_TEACHING");
+        if (StaffType.TEACHING.equals(staffDTO.getType())) {
+            userDTO.setType(UserType.TEACHING_STAFF);
+        } else {
+            userDTO.setType(UserType.NON_TEACHING_STAFF);
+        }
         userService.updateUser(userDTO);
         Staff staff = staffMapper.toEntity(staffDTO);
         staff = staffRepository.save(staff);
@@ -97,16 +117,6 @@ public class StaffServiceImpl implements StaffService {
             throw new WitcurveException("No staff exists with given id");
         }
         return staffMapper.toDto(staff);
-    }
-
-    @Override
-    public void deleteStaffById(Long staffId) throws WitcurveException {
-        log.debug("Request to delete staff with id : {}", staffId);
-        Optional<Staff> staff = staffRepository.findById(staffId);
-        if (!staff.isPresent()) {
-            throw new WitcurveException("No staff exists with given id " + staffId);
-        }
-        staffRepository.delete(staff.get());
     }
 
     @Override
@@ -152,14 +162,43 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher) {
-        log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId);
+        log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId, areClassTeacher);
         List<Staff> staffList = null;
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
+        }
         if(areClassTeacher) {
             staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
         } else {
             staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
         }
+        List<StaffEligibility> staffEligibility = staffEligibilityRepository.findBySchoolInfo(schoolInfoId);
+        Map<Long, Set<String>> subjectMap = new HashMap<>();
+        for (StaffEligibility se : staffEligibility) {
+            Long staffId = se.getStaff().getId();
+            if (subjectMap.get(staffId) == null) {
+                subjectMap.put(staffId, new HashSet<>());
+            }
+            subjectMap.get(staffId).add(se.getMasterSubject().getName());
+        }
         List<StaffDTO> result = staffMapper.toDto(staffList);
+        for (StaffDTO staff : result) {
+            staff.setSubjects(subjectMap.get(staff.getId()));
+        }
         return result;
+    }
+
+    @Override
+    public void deactivate(Long staffId) {
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (staff.isPresent() && StaffType.TEACHING.equals(staff.get().getType())) {
+            int activeCourseTeacherCount = courseTeacherRepository.findByTeacherId(staffId).size();
+            if (activeCourseTeacherCount > 0) {
+                throw new WitcurveException("This staff is already linked to active courses. Please deactive before proceeding.");
+            }
+            staffEligibilityRepository.deleteByStaffId(staffId);
+        }
+        staff.get().getUser().setActivated(false);
     }
 }

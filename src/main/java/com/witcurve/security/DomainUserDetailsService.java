@@ -1,8 +1,9 @@
 package com.witcurve.security;
 
+import com.witcurve.domain.Authority;
+import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,12 +36,6 @@ public class DomainUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating {}", login);
 
-        if (new EmailValidator().isValid(login, null)) {
-            Optional<User> userByEmailFromDatabase = userRepository.findOneWithAuthoritiesByEmail(login);
-            return userByEmailFromDatabase.map(user -> createSpringSecurityUser(login, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + login + " was not found in the database"));
-        }
-
         String lowercaseLogin = login.toLowerCase(Locale.ENGLISH);
         Optional<User> userByLoginFromDatabase = userRepository.findOneWithAuthoritiesByLogin(lowercaseLogin);
         return userByLoginFromDatabase.map(user -> createSpringSecurityUser(lowercaseLogin, user))
@@ -50,10 +45,20 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {
         if (!user.getActivated()) {
-            throw new UserNotActivatedException("User " + lowercaseLogin + " was not activated, you can activate by otp login process");
+            throw new UserNotActivatedException("User account " + lowercaseLogin + " is inactive, contact your administrator");
         }
-        List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-            .map(authority -> new SimpleGrantedAuthority(authority.getName()))
+        Set<Authority> authorities = user.getAuthorities();
+        List<Permission> permissions = null;
+        for (Authority authority : authorities) {
+            if (authority.getPermissions().size() != 0) {
+                if (permissions == null) {
+                    permissions = new ArrayList<>();
+                }
+                permissions.addAll(authority.getPermissions());
+            }
+        }
+        List<GrantedAuthority> grantedAuthorities = permissions.stream()
+            .map(permission -> new SimpleGrantedAuthority(permission.getName()))
             .collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(user.getLogin(),
             user.getPassword(),

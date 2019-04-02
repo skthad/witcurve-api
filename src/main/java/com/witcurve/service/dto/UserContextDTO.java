@@ -3,6 +3,7 @@ package com.witcurve.service.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import java.util.Map;
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserContextDTO {
+public class UserContextDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private UserDTO currentUser;
 

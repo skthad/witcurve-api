@@ -12,17 +12,13 @@ public class Message extends AbstractAuditingEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "messageIdSeq")
-    @SequenceGenerator(name = "messageIdSeq", sequenceName="message_id_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
-    private String subject;
-
-    @NotNull
-    @Column(nullable = false)
-    private String body;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private MessageThread messageThread;
 
     @NotNull
     @ManyToOne
@@ -33,12 +29,15 @@ public class Message extends AbstractAuditingEntity implements Serializable {
     private User toUser;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private MessageThread messageThread;
+    @Column(nullable = false)
+    private String subject;
 
     @NotNull
     @Column(nullable = false)
+    private String body;
+
+    @NotNull
+    @Column(name = "is_read", nullable = false, columnDefinition = "boolean default false")
     private Boolean read = false;
 
     public Long getId() {
@@ -49,20 +48,12 @@ public class Message extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getSubject() {
-        return subject;
+    public MessageThread getMessageThread() {
+        return messageThread;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
+    public void setMessageThread(MessageThread messageThread) {
+        this.messageThread = messageThread;
     }
 
     public User getFromUser() {
@@ -81,12 +72,20 @@ public class Message extends AbstractAuditingEntity implements Serializable {
         this.toUser = toUser;
     }
 
-    public MessageThread getMessageThread() {
-        return messageThread;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setMessageThread(MessageThread messageThread) {
-        this.messageThread = messageThread;
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public Boolean getRead() {
@@ -115,12 +114,6 @@ public class Message extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Message{" +
             "id=" + id +
-            ", subject='" + subject + '\'' +
-            ", body='" + body + '\'' +
-            ", fromUser=" + fromUser +
-            ", toUser=" + toUser +
-            ", messageThread=" + messageThread +
-            ", read=" + read +
             '}';
     }
 
