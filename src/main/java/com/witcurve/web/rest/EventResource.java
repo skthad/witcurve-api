@@ -4,6 +4,7 @@ import ch.qos.logback.core.joran.conditional.IfAction;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.EventRepository;
+import com.witcurve.repository.KeywordRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -36,7 +37,7 @@ public class EventResource {
     EventService eventService;
 
     @Autowired
-    EventRepository eventRepository;
+    KeywordRepository keywordRepository;
 
     /**
      * creates events
@@ -311,9 +312,7 @@ public class EventResource {
                                                             @RequestParam(required = false) List<Long> standardIds,
                                                             @RequestParam Long schoolInfoId ,
                                                             @RequestParam Long userId) throws WitcurveException, URISyntaxException {
-        if(userId == null) {
-            throw new WitcurveException("Invalid request, there should be user id .");
-        }
+
         Page<EventDTO> result = eventService.getNotices(startDate, endDate, userId,standardIds,keywords,schoolInfoId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
@@ -356,7 +355,7 @@ public class EventResource {
 
         List<String> result = new ArrayList<>();
         if(search!=null) {
-            result = eventRepository.searchKeywords(search.toLowerCase(),schoolInfoId);
+            result = keywordRepository.searchKeywords(search.toLowerCase(),schoolInfoId);
         } else {
             throw new WitcurveException("search keyword must be declared for a particular schoolInfo id");
         }
