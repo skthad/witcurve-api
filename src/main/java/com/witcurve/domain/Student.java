@@ -3,6 +3,7 @@ package com.witcurve.domain;
 import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
+import com.witcurve.domain.enumeration.StudentType;
 import com.witcurve.service.util.ListToStringConverter;
 import com.witcurve.service.util.LocalDateConverter;
 import org.hibernate.annotations.Where;
@@ -135,8 +136,9 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     private Category category = Category.NA;
 
     @NotNull
-    @Column(name = "day_scholar", nullable = false, columnDefinition = "boolean default true")
-    private Boolean dayScholar = true;
+    @Column(nullable = false, length = 50, columnDefinition = "varchar(50) default 'DAY_SCHOLAR'")
+    @Enumerated(EnumType.STRING)
+    private StudentType type = StudentType.DAY_SCHOLAR;
 
     @Column(length = 50)
     private Category house;
@@ -383,12 +385,12 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.category = category;
     }
 
-    public Boolean getDayScholar() {
-        return dayScholar;
+    public StudentType getType() {
+        return type;
     }
 
-    public void setDayScholar(Boolean dayScholar) {
-        this.dayScholar = dayScholar;
+    public void setType(StudentType type) {
+        this.type = type;
     }
 
     public Category getHouse() {
