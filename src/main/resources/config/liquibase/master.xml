@@ -4,7 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-<<<<<<< HEAD
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180728103013_initial_tables_changelog.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180915101045_added_otp_in_user.xml" relativeToChangelogFile="false"/>
@@ -82,7 +81,6 @@
     <include file="config/liquibase/changelog/20190224145753_added_active_in_standard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190306122140_added_aadhaar_and_pan.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190309141701_added_signature_to_Event.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20190330110602_changelog_event_keyword_entity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/0000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190326222649_rename_column_name_read_in_Message.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->

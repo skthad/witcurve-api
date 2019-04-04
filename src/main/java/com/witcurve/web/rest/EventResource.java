@@ -337,29 +337,7 @@ public class EventResource {
             throw new WitcurveException("There should be month and year param for MONTH view");
         }
         List<LocalDate> result = eventService.findAllEventDatesOnGivenMonthForStudent(month, year, studentId);
-
-
         return new ResponseEntity<>(result,  HttpStatus.OK);
-    }
-
-    /**
-     * searches keywords
-     * @return
-     * @throws WitcurveException
-     * @throws URISyntaxException
-     */
-    @GetMapping("/event/tags")
-    @Timed
-    public ResponseEntity<List<String>> searchKeywords(@RequestParam String search, @RequestParam Long schoolInfoId) {
-        log.debug("Request to search keywords: {}", search);
-
-        List<String> result = new ArrayList<>();
-        if(search!=null) {
-            result = keywordRepository.searchKeywords(search.toLowerCase(),schoolInfoId);
-        } else {
-            throw new WitcurveException("search keyword must be declared for a particular schoolInfo id");
-        }
-        return ResponseEntity.ok(result);
     }
 
 }
