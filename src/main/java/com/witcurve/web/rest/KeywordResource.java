@@ -42,7 +42,7 @@ public class KeywordResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @GetMapping("/event/tags")
+    @GetMapping("/keywords/tags")
     @Timed
     public ResponseEntity<List<String>> searchKeywords(@RequestParam String search, @RequestParam Long schoolInfoId) {
         log.debug("Request to search keywords: {}", search);

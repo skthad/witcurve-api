@@ -417,7 +417,7 @@ public class EventServiceImpl implements EventService {
                     result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
                 }
                 } else {
-                throw new WitcurveException("This student doesn't belong to any standard"+ studentId);
+                throw new WitcurveException("Given student should belong to this board"+ studentId);
             }
         }
         if (staffId != null) {
@@ -426,7 +426,7 @@ public class EventServiceImpl implements EventService {
                 throw new WitcurveException("No staff exists for id : "+ staffId);
             }
             if(schoolInfoId != staff.get().getSchoolInfo().getId()){
-                throw new WitcurveException("SchoolInfoId does not match for the given Staff Id");
+                throw new WitcurveException("Given staff should belong to this board");
             }
             if(staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
