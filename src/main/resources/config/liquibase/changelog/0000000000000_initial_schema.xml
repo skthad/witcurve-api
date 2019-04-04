@@ -1488,4 +1488,18 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-163">
         <addDefaultValue columnDataType="TINYINT(1)" columnName="day_scholar" defaultValueBoolean="true" tableName="student"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-164">
+        <addColumn tableName="student">
+            <column name="type" type="varchar(50)" afterColumn="day_scholar" defaultValue="DAY_SCHOLAR"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-165">
+        <sql> update student set type = 'DAY_SCHOLAR' </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-166">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="type"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-167">
+        <dropColumn tableName="student" columnName="day_scholar"/>
+    </changeSet>
 </databaseChangeLog>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
+import com.witcurve.domain.enumeration.StudentType;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -104,7 +105,7 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     private String subCategory;
 
     @NotNull
-    private Boolean dayScholar = true;
+    private StudentType type = StudentType.DAY_SCHOLAR;
 
     private Category house;
 
@@ -376,12 +377,12 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
         this.subCategory = subCategory;
     }
 
-    public Boolean getDayScholar() {
-        return dayScholar;
+    public StudentType getType() {
+        return type;
     }
 
-    public void setDayScholar(Boolean dayScholar) {
-        this.dayScholar = dayScholar;
+    public void setType(StudentType type) {
+        this.type = type;
     }
 
     public Category getHouse() {
