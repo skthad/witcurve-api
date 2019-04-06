@@ -19,7 +19,12 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column
+    private Long instituteId;
+
+    @Column
+    private Long schoolId;
+
     @Column
     private Long schoolInfoId;
 
@@ -51,6 +56,22 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getInstituteId() {
+        return instituteId;
+    }
+
+    public void setInstituteId(Long instituteId) {
+        this.instituteId = instituteId;
+    }
+
+    public Long getSchoolId() {
+        return schoolId;
+    }
+
+    public void setSchoolId(Long schoolId) {
+        this.schoolId = schoolId;
     }
 
     public Long getSchoolInfoId() {
