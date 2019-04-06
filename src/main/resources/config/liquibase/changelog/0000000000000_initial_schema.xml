@@ -1502,4 +1502,7 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-167">
         <dropColumn tableName="student" columnName="day_scholar"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-168">
+        <addDefaultValue columnDataType="varchar(50)" columnName="type" defaultValue="DAY_SCHOLAR" tableName="student"/>
+    </changeSet>
 </databaseChangeLog>
