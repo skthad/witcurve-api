@@ -9,6 +9,8 @@ import com.witcurve.service.util.LocalDateConverter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -163,6 +165,17 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "previous_school_standard", length = 50)
     private String previousSchoolStandard;
+
+    @Min(0)
+    @Max(100)
+    @Column(name = "previous_school_percentage")
+    private Integer previousSchoolPercentage;
+
+    @Column(columnDefinition="Decimal(10,2)")
+    private Double feeAmount;
+
+    @Column(columnDefinition="Decimal(10,2)")
+    private Double adjustment;
 
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="student_id", insertable = false, updatable = false)
@@ -455,6 +468,30 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setPreviousSchoolStandard(String previousSchoolStandard) {
         this.previousSchoolStandard = previousSchoolStandard;
+    }
+
+    public Integer getPreviousSchoolPercentage() {
+        return previousSchoolPercentage;
+    }
+
+    public void setPreviousSchoolPercentage(Integer previousSchoolPercentage) {
+        this.previousSchoolPercentage = previousSchoolPercentage;
+    }
+
+    public Double getFeeAmount() {
+        return feeAmount;
+    }
+
+    public void setFeeAmount(Double feeAmount) {
+        this.feeAmount = feeAmount;
+    }
+
+    public Double getAdjustment() {
+        return adjustment;
+    }
+
+    public void setAdjustment(Double adjustment) {
+        this.adjustment = adjustment;
     }
 
     public Set<StudentStandard> getStudentStandards() {

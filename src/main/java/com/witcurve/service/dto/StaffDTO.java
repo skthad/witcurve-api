@@ -46,6 +46,8 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private StaffType type;
 
+    private String designation;
+
     @NotNull
     private Gender gender;
 
@@ -190,6 +192,14 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setType(StaffType type) {
         this.type = type;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 
     public Gender getGender() {

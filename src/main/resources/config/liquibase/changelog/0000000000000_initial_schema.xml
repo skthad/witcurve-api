@@ -1505,4 +1505,24 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-168">
         <addDefaultValue columnDataType="varchar(50)" columnName="type" defaultValue="DAY_SCHOLAR" tableName="student"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-169">
+        <addColumn tableName="staff">
+            <column name="designation" type="varchar(255)" afterColumn="type"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-170">
+        <addColumn tableName="student">
+            <column name="adjustment" type="Decimal(10, 2)" afterColumn="previous_school_standard"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-171">
+        <addColumn tableName="student">
+            <column name="fee_amount" type="Decimal(10, 2)" afterColumn="previous_school_standard"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-172">
+        <addColumn tableName="student">
+            <column name="previous_school_percentage" type="integer" afterColumn="previous_school_standard"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

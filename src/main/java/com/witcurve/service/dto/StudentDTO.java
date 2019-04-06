@@ -6,10 +6,10 @@ import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.StudentType;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -120,6 +120,14 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     private String previousSchoolAddress;
 
     private String previousSchoolStandard;
+
+    @Min(0)
+    @Max(100)
+    private Integer previousSchoolPercentage;
+
+    private Double feeAmount;
+
+    private Double adjustment;
 
     public Long getId() {
         return id;
@@ -439,6 +447,32 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setPreviousSchoolStandard(String previousSchoolStandard) {
         this.previousSchoolStandard = previousSchoolStandard;
+    }
+
+    public Integer getPreviousSchoolPercentage() {
+        return previousSchoolPercentage;
+    }
+
+    public void setPreviousSchoolPercentage(Integer previousSchoolPercentage) {
+        this.previousSchoolPercentage = previousSchoolPercentage;
+    }
+
+    public Double getFeeAmount() {
+        return feeAmount;
+    }
+
+    public void setFeeAmount(Double feeAmount) {
+        BigDecimal bd = new BigDecimal(feeAmount).setScale(2, RoundingMode.FLOOR);
+        this.feeAmount = bd.doubleValue();
+    }
+
+    public Double getAdjustment() {
+        return adjustment;
+    }
+
+    public void setAdjustment(Double adjustment) {
+        BigDecimal bd = new BigDecimal(adjustment).setScale(2, RoundingMode.FLOOR);
+        this.adjustment = bd.doubleValue();
     }
 
     @Override

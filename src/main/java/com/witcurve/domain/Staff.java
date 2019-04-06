@@ -54,6 +54,9 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private StaffType type;
 
+    @Column
+    private String designation;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
@@ -188,6 +191,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setType(StaffType type) {
         this.type = type;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 
     public Gender getGender() {
