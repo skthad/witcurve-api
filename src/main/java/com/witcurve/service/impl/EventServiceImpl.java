@@ -406,9 +406,6 @@ public class EventServiceImpl implements EventService {
             Optional<Student> student = studentRepository.findById(studentId);
             StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
             if (studentStandard != null) {
-                if (studentStandard.getStandard().getSchoolInfo().getId() != schoolInfoId) {
-                    throw new WitcurveException("schoolInfo Id is wrong for the userId");
-                }
                 if (schoolInfoId != student.get().getSchoolInfo().getId()) {
                     throw new WitcurveException("Given student does not belong to this board");
                 }
@@ -456,7 +453,7 @@ public class EventServiceImpl implements EventService {
             } else if (keywords != null) {
                 result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
 
-            } else if (standardIds != null) {
+            } else {
                 result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate, standardIds, pageable);
             }
         }
