@@ -44,14 +44,14 @@ public class KeywordResource {
      */
     @GetMapping("/keywords/tags")
     @Timed
-    public ResponseEntity<List<String>> searchKeywords(@RequestParam String search, @RequestParam Long schoolInfoId) {
+    public ResponseEntity<List<String>> searchKeywords(@RequestParam(required=false) String search, @RequestParam Long schoolInfoId) {
         log.debug("Request to search keywords: {}", search);
 
         List<String> result = new ArrayList<>();
         if(search!=null) {
             result = keywordRepository.searchKeywords(search.toLowerCase(),schoolInfoId);
         } else {
-            throw new WitcurveException("search keyword must be declared for a particular schoolInfo id");
+            result= keywordRepository.searchKeywordsInASchoolBoard(schoolInfoId);
         }
         return ResponseEntity.ok(result);
     }

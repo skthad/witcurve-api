@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface KeywordRepository extends JpaRepository<Keyword, String> {
 
-    @Query("select kw from Keyword kw where lower(kw.name) like concat('%', ?1, '%')")
-    List<Keyword> searchKeywords(String search);
+    @Query("select ek.keywordName from EventKeyword ek where ek.event.schoolInfo.id= ?2")
+    List<String> searchKeywordsInASchoolBoard(Long schoolInfoId);
 
     @Query("select ek.keywordName from EventKeyword ek where lower(ek.keywordName) like concat('%', ?1, '%') and ek.event.schoolInfo.id= ?2")
     List<String> searchKeywords(String search,Long schoolInfoId);
