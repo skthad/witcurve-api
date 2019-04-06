@@ -98,12 +98,38 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "order by e.date desc")
     Page<Event> findAdminNoticesBySchoolInfoId(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
+    @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where " +
+        "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
+        "and e.date between ?2 and ?3 and ek.keywordName in ?4 and e.standard.id in ?5 "+
+        "order by e.date desc")
+    Page<Event> findAdminNoticesByKeywordsAndStandardIds(Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords,List<Long> standardIds,Pageable pageable);
+
+    @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where " +
+        "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
+        "and e.date between ?2 and ?3 and ek.keywordName in ?4 "+
+        "order by e.date desc")
+    Page<Event> findAdminNoticesByKeywords(Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords,Pageable pageable);
+
+    @Query("Select e from Event e where " +
+        "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
+        "and e.date between ?2 and ?3 and e.standard.id in (?4) "+
+        "order by e.date desc")
+    Page<Event> findAdminNoticesByStandardIds(Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<Long> standardIds,Pageable pageable);
+
     @Query("Select e from Event e where e.type = 'NOTICE' and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
         "and e.date between ?4 and ?5 " +
         "order by e.date desc")
     Page<Event> findStudentNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where e.type = 'NOTICE' and " +
+        "(e.standard.id =?1 or " +
+        "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
+        "and e.date between ?4 and ?5 and ek.keywordName in ?6 " +
+        "order by e.date desc")
+    Page<Event> findStudentNoticesByKeywords(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords, Pageable pageable);
+
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "(e.standard.id =?1 or " +
@@ -113,10 +139,24 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     Page<Event> findClassTeacherNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
+        "(e.standard.id =?1 or " +
+        "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
+        "and e.date between ?4 and ?5 and e.id in (select eventId from EventKeyword where keywordName in ?6) " +
+        "order by e.date desc")
+    Page<Event> findClassTeacherNoticesByKeywords(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords, Pageable pageable);
+
+    @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "e.grade is null and e.standard.id is null and e.schoolInfo.id=?1 " +
         "and e.date between ?2 and ?3 "+
         "order by e.date desc")
     Page<Event> findTeacherNotices(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
+        "e.grade is null and e.standard.id is null and e.schoolInfo.id=?1 " +
+        "and e.date between ?2 and ?3 and e.id in (select eventId from EventKeyword where keywordName in ?4)"+
+        "order by e.date desc")
+    Page<Event> findTeacherNoticesByKeywords(Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords, Pageable pageable);
+
 
     @Query("Select count(e) from Event e where (e.date between ?1 and ?2) and e.type = 'HOLIDAY' and e.schoolInfo.id=?3")
     Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
@@ -129,5 +169,6 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
     List<Event> findByTypeAndSchoolInfoIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
+
 }
 

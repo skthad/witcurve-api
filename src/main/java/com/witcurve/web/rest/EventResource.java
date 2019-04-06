@@ -1,7 +1,10 @@
 package com.witcurve.web.rest;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.ViewType;
+import com.witcurve.repository.EventRepository;
+import com.witcurve.repository.KeywordRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -32,6 +35,9 @@ public class EventResource {
 
     @Autowired
     EventService eventService;
+
+    @Autowired
+    KeywordRepository keywordRepository;
 
     /**
      * creates events
@@ -293,8 +299,7 @@ public class EventResource {
      *
      * @param startDate
      * @param endDate
-     * @param studentId
-     * @param staffId
+     * @param userId
      * @param pageable
      * @return
      */
@@ -303,16 +308,12 @@ public class EventResource {
     public ResponseEntity<Page<EventDTO>> getNotices(@ApiParam Pageable pageable,
                                                             @RequestParam(value = "startDate") LocalDate startDate,
                                                             @RequestParam(value = "endDate") LocalDate endDate,
-                                                            @RequestParam(required = false) Long studentId,
-                                                            @RequestParam(required = false) Long staffId) throws WitcurveException, URISyntaxException {
-        if(staffId != null) {
-            log.debug("Request to get notices for staff id : {}", staffId);
-        } else if (studentId != null){
-            log.debug("Request to get notices for student id : {}", studentId);
-        } else {
-            throw new WitcurveException("Invalid request, there should be one of student id or staff id but not both");
-        }
-        Page<EventDTO> result = eventService.getNotices(startDate, endDate, studentId, staffId, pageable);
+                                                            @RequestParam(required = false) List<String>  keywords,
+                                                            @RequestParam(required = false) List<Long> standardIds,
+                                                            @RequestParam Long schoolInfoId ,
+                                                            @RequestParam Long userId) throws WitcurveException, URISyntaxException {
+
+        Page<EventDTO> result = eventService.getNotices(startDate, endDate, userId,standardIds,keywords,schoolInfoId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
@@ -336,10 +337,7 @@ public class EventResource {
             throw new WitcurveException("There should be month and year param for MONTH view");
         }
         List<LocalDate> result = eventService.findAllEventDatesOnGivenMonthForStudent(month, year, studentId);
-
-
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
-
 
 }
