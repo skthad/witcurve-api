@@ -141,7 +141,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     private StudentType type = StudentType.DAY_SCHOLAR;
 
     @Column(length = 50)
-    private Category house;
+    private String house;
 
     @Column(name = "sub_category", length = 50)
     private String subCategory;
@@ -393,11 +393,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.type = type;
     }
 
-    public Category getHouse() {
+    public String getHouse() {
         return house;
     }
 
-    public void setHouse(Category house) {
+    public void setHouse(String house) {
         this.house = house;
     }
 

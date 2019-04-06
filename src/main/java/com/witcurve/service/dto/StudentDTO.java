@@ -107,7 +107,7 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private StudentType type = StudentType.DAY_SCHOLAR;
 
-    private Category house;
+    private String house;
 
     private String birthPlace;
 
@@ -385,11 +385,11 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
         this.type = type;
     }
 
-    public Category getHouse() {
+    public String getHouse() {
         return house;
     }
 
-    public void setHouse(Category house) {
+    public void setHouse(String house) {
         this.house = house;
     }
 
