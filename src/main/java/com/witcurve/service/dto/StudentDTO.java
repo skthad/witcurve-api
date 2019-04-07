@@ -125,9 +125,9 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     @Max(100)
     private Integer previousSchoolPercentage;
 
-    private Double feeAmount;
+    private Double feeAmount = 0.00;
 
-    private Double adjustment;
+    private Double adjustment = 0.00;
 
     public Long getId() {
         return id;
