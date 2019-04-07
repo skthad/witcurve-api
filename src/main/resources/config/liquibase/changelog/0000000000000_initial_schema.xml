@@ -1525,4 +1525,14 @@
             <column name="previous_school_percentage" type="integer" afterColumn="previous_school_standard"/>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-173">
+        <addColumn tableName="config_settings">
+            <column name="institute_id" type="bigint" afterColumn="school_info_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-174">
+        <addColumn tableName="config_settings">
+            <column name="school_id" type="bigint" afterColumn="school_info_id"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -14,13 +14,10 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
 
     private Long id;
 
-    @NotNull
     private Long instituteId;
 
-    @NotNull
     private Long schoolId;
 
-    @NotNull
     private Long schoolInfoId;
 
     @NotNull
