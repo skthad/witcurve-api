@@ -11,7 +11,7 @@ import java.util.Set;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    @Query("select student from Student student where student.user is not null and student.user.id = ?1")
+    @Query("select student from Student student where student.user.id = ?1")
     Student getStudentByUserId(Long userId);
 
     @Query("select student from Student student where student.schoolInfo.id = ?1 and student.user.id in (select id from User where activated = true) and lower(student.admissionId) = ?2")

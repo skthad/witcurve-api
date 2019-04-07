@@ -462,6 +462,9 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     }
 
     public void setFeeAmount(Double feeAmount) {
+        if (feeAmount == null) {
+            feeAmount = 0.00;
+        }
         BigDecimal bd = new BigDecimal(feeAmount).setScale(2, RoundingMode.FLOOR);
         this.feeAmount = bd.doubleValue();
     }
@@ -471,6 +474,9 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     }
 
     public void setAdjustment(Double adjustment) {
+        if (adjustment == null) {
+            adjustment = 0.00;
+        }
         BigDecimal bd = new BigDecimal(adjustment).setScale(2, RoundingMode.FLOOR);
         this.adjustment = bd.doubleValue();
     }

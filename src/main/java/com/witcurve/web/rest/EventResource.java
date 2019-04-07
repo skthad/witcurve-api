@@ -1,9 +1,7 @@
 package com.witcurve.web.rest;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.ViewType;
-import com.witcurve.repository.EventRepository;
 import com.witcurve.repository.KeywordRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
@@ -312,7 +310,6 @@ public class EventResource {
                                                             @RequestParam(required = false) List<Long> standardIds,
                                                             @RequestParam Long schoolInfoId ,
                                                             @RequestParam Long userId) throws WitcurveException, URISyntaxException {
-
         Page<EventDTO> result = eventService.getNotices(startDate, endDate, userId,standardIds,keywords,schoolInfoId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
