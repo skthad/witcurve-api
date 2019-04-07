@@ -1,5 +1,7 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.Grade;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,6 +15,12 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
     private Long studentId;
 
     private String studentName;
+
+    private Long standardId;
+
+    private Grade grade;
+
+    private String section;
 
     private String rollNo;
 
@@ -48,6 +56,30 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
+    }
+
+    public Long getStandardId() {
+        return standardId;
+    }
+
+    public void setStandardId(Long standardId) {
+        this.standardId = standardId;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
     }
 
     public String getRollNo() {
