@@ -11,7 +11,7 @@ import java.util.Set;
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Long> {
 
-    @Query("select staff from Staff staff where staff.user.id = ?1")
+    @Query("select staff from Staff staff where staff.user is not null and staff.user.id = ?1")
     Staff getStaffByUserId(Long userId);
 
     @Query("select staff from Staff staff left join fetch staff.user usr where staff.schoolInfo.id = ?1 and lower(staff.employeeId) = ?2")

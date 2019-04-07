@@ -396,6 +396,7 @@ public class EventServiceImpl implements EventService {
     public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId, List<Long> standardIds, List<String> keywords, Long schoolInfoId, Pageable pageable) throws WitcurveException {
 
         DateRangeUtil.correctDateFormat(startDate, endDate);
+
         Page<Event> result = null;
 
         Student student = studentRepository.getStudentByUserId(userId);
