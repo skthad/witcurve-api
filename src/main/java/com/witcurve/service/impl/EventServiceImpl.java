@@ -66,6 +66,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     KeywordRepository keywordRepository;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
 
@@ -192,7 +195,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
-        List<Event> result = null;
+        List<Event> result = new ArrayList<>();
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
         if(courseTeachers.size() !=0) {
             Set<Long> standardIds = new HashSet<>();
@@ -213,7 +216,7 @@ public class EventServiceImpl implements EventService {
         } else {
             //need to get school info events
            // result =   eventRepository.findSchoolInfoEventsByDateRange(eventDate, eventDate, staffId, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DATE_RANGE);
-            Collections.sort(result, new EventDateAscComparator());
+          //  Collections.sort(result, new EventDateAscComparator());
         }
 
         return eventMapper.toDto(result);
@@ -390,62 +393,68 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long studentId, Long staffId, Pageable pageable) throws WitcurveException {
+    public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId, List<Long> standardIds, List<String> keywords, Long schoolInfoId, Pageable pageable) throws WitcurveException {
         DateRangeUtil.correctDateFormat(startDate, endDate);
         Page<Event> result = null;
-        Long schoolInfoId;
-        if(studentId != null) {
+        Long studentId = null, staffId = null;
+        if (staffRepository.getStaffByUserId(userId) != null) {
+            staffId = staffRepository.getStaffByUserId(userId).getId();
+        } else if (studentRepository.getStudentByUserId(userId) != null) {
+            studentId = studentRepository.getStudentByUserId(userId).getId();
+        }
+        if (studentId != null) {
+            Optional<Student> student = studentRepository.findById(studentId);
             StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
-            if(studentStandard != null) {
-                schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+            if (studentStandard != null) {
+                if (schoolInfoId != student.get().getSchoolInfo().getId()) {
+                    throw new WitcurveException("Given student does not belong to this board");
+                }
                 Long standardId = studentStandard.getStandard().getId();
                 Grade grade = studentStandard.getStandard().getGrade();
-                result = eventRepository.findStudentNotices(standardId, grade ,schoolInfoId, startDate, endDate, pageable);
+                if (keywords != null) {
+                    result = eventRepository.findStudentNoticesByKeywords(standardId, grade, schoolInfoId, startDate, endDate, keywords, pageable);
+                } else {
+                    result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
+                }
             } else {
-                throw new WitcurveException("This student doesn't belong to any standard"+ studentId);
+                throw new WitcurveException("Given student does not belong to this board" + studentId);
             }
         }
         if (staffId != null) {
             Optional<Staff> staff = staffRepository.findById(staffId);
-            if(!staff.isPresent()) {
-                throw new WitcurveException("No staff exists for id : "+ staffId);
+            if (!staff.isPresent()) {
+                throw new WitcurveException("No staff exists for id : " + staffId);
             }
-            schoolInfoId = staff.get().getSchoolInfo().getId();
-            if(staff.get().getType().equals(StaffType.TEACHING)) {
+            if (schoolInfoId != staff.get().getSchoolInfo().getId()) {
+                throw new WitcurveException("Given staff should belong to this board");
+            }
+            if (staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
-                if(standard != null) {
-                   result = eventRepository.findClassTeacherNotices(standard.getId(),
-                       standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
+                if (standard != null) {
+                    if (keywords != null) {
+                        result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, pageable);
+                    } else {
+                        result = eventRepository.findClassTeacherNotices(standard.getId(),
+                            standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
+                    }
                 } else {
-                    result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
+                    if (keywords != null) {
+                        result = eventRepository.findTeacherNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+                    } else {
+                        result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
+                    }
                 }
             }
-            // TODO: look for user role, not for staff type. 'ADMIN' is a role. It is no more a staff type
-            //TODO check if admin notices work properly
-            if(staff.get().getType().equals(StaffType.NON_TEACHING)) {
-                  result= eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable); //pr1
-//                Collections.sort(results, (o1, o2) -> o1.getDate().isAfter(o2.getDate()) ? -1 : 0);
-//
-//                Integer resultSize = results.size();
-//                // offset  2, size 10
-//                // from = 20, to = 30
-//                // resultSize = 24, 30, 34
-//                // to========== 24, 30, 30
-//                // from======== 20, 20, 20
-//                Integer offset = Integer.parseInt(String.valueOf(pageable.getOffset()));
-//                Integer size = Integer.parseInt(String.valueOf(pageable.getPageSize()));
-//                Integer from =  offset * size;
-//                Integer to = from + size;
-//
-//                if (from >= resultSize) {
-//                    results = results.subList(0, 0);
-//                } else if (resultSize >= to) {
-//                    results = results.subList(from, to);
-//                } else {
-//                    results.subList(from, resultSize);
-//                }
-//
-//                return eventMapper.toDto(results);
+        } else {
+            if (keywords == null && standardIds == null) {
+                result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+            } else if (keywords != null && standardIds != null) {
+                result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds, pageable);
+            } else if (keywords != null) {
+                result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+
+            } else {
+                result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate, standardIds, pageable);
             }
         }
 
@@ -475,7 +484,6 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findByTypeAndSchoolInfoIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId, startDate, endDate);
         return eventMapper.toDto(events);
     }
-
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {
