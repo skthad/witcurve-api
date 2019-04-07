@@ -11,9 +11,9 @@ import java.util.List;
 public interface KeywordRepository extends JpaRepository<Keyword, String> {
 
     @Query("select distinct ek.keywordName from EventKeyword ek join Event e on e.id=ek.eventId where e.schoolInfo.id= ?1")
-    List<String> searchKeywordsInASchoolBoard(Long schoolInfoId);
+    List<String> searchKeywords(Long schoolInfoId);
 
-    @Query("select distinct ek.keywordName from EventKeyword ek join Event e on e.id=ek.eventId where lower(ek.keywordName) like concat('%', ?1, '%') and e.schoolInfo.id= ?2")
-    List<String> searchKeywords(String search,Long schoolInfoId);
+    @Query("select distinct ek.keywordName from EventKeyword ek join Event e on e.id=ek.eventId where e.schoolInfo.id= ?1 and lower(ek.keywordName) like concat('%', ?2, '%')")
+    List<String> searchKeywords(Long schoolInfoId, String search);
 
 }

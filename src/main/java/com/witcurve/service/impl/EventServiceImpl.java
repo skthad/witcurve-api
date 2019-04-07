@@ -404,18 +404,14 @@ public class EventServiceImpl implements EventService {
             StudentStandardDTO studentStandard = studentStandardService.getByStudentId(student.getId());
             if (studentStandard != null) {
                 if (!schoolInfoId.equals(student.getSchoolInfo().getId())) {
-                    throw new WitcurveException("Given user does not belong to this board");
-                }
-                Long standardId = studentStandard.getStandard().getId();
-                Grade grade = studentStandard.getStandard().getGrade();
-                if (keywords != null) {
-                    result = eventRepository.findStudentNoticesByKeywords(standardId, grade, schoolInfoId, startDate, endDate, keywords, pageable);
-                } else {
-                    result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
-                }
-            } else {
-                throw new WitcurveException("Given user does not belong to any standard");
+                throw new WitcurveException("Given user does not belong to this board");
             }
+            Long standardId = studentStandard.getStandard().getId();
+            Grade grade = studentStandard.getStandard().getGrade();
+            result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
+        } else {
+            throw new WitcurveException("Given user does not belong to any standard");
+        }
             return result.map(eventMapper::toDto);
         }
 
@@ -425,33 +421,27 @@ public class EventServiceImpl implements EventService {
                 throw new WitcurveException("Given user does not belong to this board");
             }
             if (staff.getType().equals(StaffType.TEACHING)) {
-                Standard standard = standardRepository.findByClassTeacherId(staff.getId());
-                if (standard != null) {
-                    if (keywords != null) {
-                        result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, pageable);
-                    } else {
-                        result = eventRepository.findClassTeacherNotices(standard.getId(),
-                            standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
-                    }
+                if (keywords != null && keywords.size() > 0) {
+                    result = eventRepository.findStaffNoticesBySchoolInfoIdAndKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
                 } else {
-                    if (keywords != null) {
-                        result = eventRepository.findTeacherNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
-                    } else {
-                        result = eventRepository.findTeacherNotices(schoolInfoId, startDate, endDate, pageable);
-                    }
+                    result = eventRepository.findStaffNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
                 }
             }
             return result.map(eventMapper::toDto);
         }
 
-        if (keywords == null && standardIds == null) {
-            result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
-        } else if (keywords != null && standardIds != null) {
-            result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds, pageable);
-        } else if (keywords != null) {
-            result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+        if (keywords != null && keywords.size() > 0) {
+            if (standardIds != null && standardIds.size() > 0) {
+                result = eventRepository.findAdminNoticesBySchoolInfoIdAndStandardIdsAndKeywords(schoolInfoId, startDate, endDate, keywords, standardIds, pageable);
+            } else {
+                result = eventRepository.findAdminNoticesBySchoolInfoIdAndKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+            }
         } else {
-            result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate, standardIds, pageable);
+            if (standardIds != null && standardIds.size() > 0) {
+                result = eventRepository.findAdminNoticesBySchoolInfoIdAndStandardIds(schoolInfoId, startDate, endDate, standardIds, pageable);
+            } else {
+                result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+            }
         }
 
         return result.map(eventMapper::toDto);
