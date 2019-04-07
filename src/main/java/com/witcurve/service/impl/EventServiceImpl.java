@@ -394,39 +394,15 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId, List<Long> standardIds, List<String> keywords, Long schoolInfoId, Pageable pageable) throws WitcurveException {
+
         DateRangeUtil.correctDateFormat(startDate, endDate);
         Page<Event> result = null;
-        Long studentId = null, staffId = null;
-        if (staffRepository.getStaffByUserId(userId) != null) {
-            staffId = staffRepository.getStaffByUserId(userId).getId();
-        } else if (studentRepository.getStudentByUserId(userId) != null) {
-            studentId = studentRepository.getStudentByUserId(userId).getId();
-        }
-        if (studentId != null) {
-            Optional<Student> student = studentRepository.findById(studentId);
-            StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
-            if (studentStandard != null) {
-                if (schoolInfoId != student.get().getSchoolInfo().getId()) {
-                    throw new WitcurveException("Given student does not belong to this board");
-                }
-                Long standardId = studentStandard.getStandard().getId();
-                Grade grade = studentStandard.getStandard().getGrade();
-                if (keywords != null) {
-                    result = eventRepository.findStudentNoticesByKeywords(standardId, grade, schoolInfoId, startDate, endDate, keywords, pageable);
-                } else {
-                    result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
-                }
-            } else {
-                throw new WitcurveException("Given student does not belong to this board" + studentId);
-            }
-        }
+
+        Long staffId = staffRepository.getStaffByUserId(userId).getId();
         if (staffId != null) {
             Optional<Staff> staff = staffRepository.findById(staffId);
-            if (!staff.isPresent()) {
-                throw new WitcurveException("No staff exists for id : " + staffId);
-            }
-            if (schoolInfoId != staff.get().getSchoolInfo().getId()) {
-                throw new WitcurveException("Given staff should belong to this board");
+            if (!schoolInfoId.equals(staff.get().getSchoolInfo().getId())) {
+                throw new WitcurveException("Given user does not belong to this board");
             }
             if (staff.get().getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staffId);
@@ -445,17 +421,38 @@ public class EventServiceImpl implements EventService {
                     }
                 }
             }
-        } else {
-            if (keywords == null && standardIds == null) {
-                result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
-            } else if (keywords != null && standardIds != null) {
-                result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds, pageable);
-            } else if (keywords != null) {
-                result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+            return result.map(eventMapper::toDto);
+        }
 
+        Long studentId = studentRepository.getStudentByUserId(userId).getId();
+        if (studentId != null) {
+            Optional<Student> student = studentRepository.findById(studentId);
+            StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
+            if (studentStandard != null) {
+                if (!schoolInfoId.equals(student.get().getSchoolInfo().getId())) {
+                    throw new WitcurveException("Given user does not belong to this board");
+                }
+                Long standardId = studentStandard.getStandard().getId();
+                Grade grade = studentStandard.getStandard().getGrade();
+                if (keywords != null) {
+                    result = eventRepository.findStudentNoticesByKeywords(standardId, grade, schoolInfoId, startDate, endDate, keywords, pageable);
+                } else {
+                    result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
+                }
             } else {
-                result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate, standardIds, pageable);
+                throw new WitcurveException("Given user does not belong to any standard");
             }
+            return result.map(eventMapper::toDto);
+        }
+
+        if (keywords == null && standardIds == null) {
+            result = eventRepository.findAdminNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+        } else if (keywords != null && standardIds != null) {
+            result = eventRepository.findAdminNoticesByKeywordsAndStandardIds(schoolInfoId, startDate, endDate, keywords, standardIds, pageable);
+        } else if (keywords != null) {
+            result = eventRepository.findAdminNoticesByKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+        } else {
+            result = eventRepository.findAdminNoticesByStandardIds(schoolInfoId, startDate, endDate, standardIds, pageable);
         }
 
         return result.map(eventMapper::toDto);
