@@ -195,7 +195,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllEventsOnGivenDateForStaff(LocalDate eventDate, Long staffId) throws WitcurveException {
         log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
-        List<Event> result = null;
+        List<Event> result = new ArrayList<>();
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
         if(courseTeachers.size() !=0) {
             Set<Long> standardIds = new HashSet<>();
@@ -216,7 +216,7 @@ public class EventServiceImpl implements EventService {
         } else {
             //need to get school info events
            // result =   eventRepository.findSchoolInfoEventsByDateRange(eventDate, eventDate, staffId, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DATE_RANGE);
-            Collections.sort(result, new EventDateAscComparator());
+          //  Collections.sort(result, new EventDateAscComparator());
         }
 
         return eventMapper.toDto(result);
