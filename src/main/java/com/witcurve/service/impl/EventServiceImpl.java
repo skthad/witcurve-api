@@ -421,10 +421,19 @@ public class EventServiceImpl implements EventService {
                 throw new WitcurveException("Given user does not belong to this board");
             }
             if (staff.getType().equals(StaffType.TEACHING)) {
-                if (keywords != null && keywords.size() > 0) {
-                    result = eventRepository.findStaffNoticesBySchoolInfoIdAndKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+                Standard standard = standardRepository.findByClassTeacherId(staff.getId());
+                if(standard != null) {
+                    if (keywords != null && keywords.size() > 0) {
+                        result = eventRepository.findClassTeacherNotices(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
+                    } else {
+                        result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, pageable);
+                    }
                 } else {
-                    result = eventRepository.findStaffNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+                    if (keywords != null && keywords.size() > 0) {
+                        result = eventRepository.findStaffNoticesBySchoolInfoIdAndKeywords(schoolInfoId, startDate, endDate, keywords, pageable);
+                    } else {
+                        result = eventRepository.findStaffNoticesBySchoolInfoId(schoolInfoId, startDate, endDate, pageable);
+                    }
                 }
             }
             return result.map(eventMapper::toDto);
@@ -544,7 +553,7 @@ public class EventServiceImpl implements EventService {
                     }
                     StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
                     if(studentStandard == null) {
-                        throw new WitcurveException("Student with id :"+eventDTO.getStudentId()+" not mapped to this standard id, so attendance cannot be created");
+                        throw new WitcurveException("Student with id :"+eventDTO.getStudentId()+" not mapped to any standard, so attendance cannot be created");
                     }
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
                     events = eventRepository.eventsBlockingLeaveForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
@@ -558,6 +567,9 @@ public class EventServiceImpl implements EventService {
                     throw new WitcurveException("An attendance record cannot be posted on a holiday or school event");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
+                if(eventDTO.getSchoolInfoId() == null) {
+                    throw new WitcurveException("School Info Id is a required field for creating notice");
+                }
                 if (eventDTO.getStandardId() != null) {
                     Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
                     if(!standard.isPresent()) {
