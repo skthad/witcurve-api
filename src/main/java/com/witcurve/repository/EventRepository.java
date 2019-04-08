@@ -96,14 +96,14 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
         "and e.date between ?4 and ?5 " +
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findStudentNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
         "and e.date between ?4 and ?5 " +
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findClassTeacherNotices(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id " +
@@ -111,44 +111,44 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
         "and e.date between ?4 and ?5 and ek.keywordName in ?6 " +
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findClassTeacherNoticesByKeywords(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords, Pageable pageable);
 
     @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id " +
         "where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "e.grade is null and e.standard.id is null and e.schoolInfo.id=?1 " +
         "and e.date between ?2 and ?3 and ek.keywordName in ?4 "+
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findStaffNoticesBySchoolInfoIdAndKeywords(Long schoolInfoId, LocalDate startDate, LocalDate endDate, List<String> keywords, Pageable pageable);
 
     @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "e.grade is null and e.standard.id is null and e.schoolInfo.id=?1 " +
         "and e.date between ?2 and ?3 "+
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findStaffNoticesBySchoolInfoId(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where " +
         "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
         "and e.date between ?2 and ?3 and ek.keywordName in ?4 and e.standard.id in ?5 "+
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findAdminNoticesBySchoolInfoIdAndStandardIdsAndKeywords(Long schoolInfoId, LocalDate startDate, LocalDate endDate, List<String> keywords, List<Long> standardIds, Pageable pageable);
 
     @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where " +
         "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
         "and e.date between ?2 and ?3 and ek.keywordName in ?4 "+
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findAdminNoticesBySchoolInfoIdAndKeywords(Long schoolInfoId, LocalDate startDate, LocalDate endDate, List<String> keywords, Pageable pageable);
 
     @Query("Select e from Event e where " +
         "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
         "and e.date between ?2 and ?3 and e.standard.id in (?4) "+
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findAdminNoticesBySchoolInfoIdAndStandardIds(Long schoolInfoId, LocalDate startDate, LocalDate endDate, List<Long> standardIds, Pageable pageable);
 
     @Query("Select e from Event e where " +
         "(e.schoolInfo.id=?1 and (e.type='NOTICE' or e.type='STAFF_NOTICE')) " +
         "and e.date between ?2 and ?3 "+
-        "order by e.date, e.createdDate desc")
+        "order by e.date desc, e.createdDate desc")
     Page<Event> findAdminNoticesBySchoolInfoId(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("Select count(e) from Event e where (e.date between ?1 and ?2) and e.type = 'HOLIDAY' and e.schoolInfo.id=?3")
