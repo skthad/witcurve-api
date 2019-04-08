@@ -424,9 +424,9 @@ public class EventServiceImpl implements EventService {
                 Standard standard = standardRepository.findByClassTeacherId(staff.getId());
                 if(standard != null) {
                     if (keywords != null && keywords.size() > 0) {
-                        result = eventRepository.findClassTeacherNotices(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
-                    } else {
                         result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, pageable);
+                    } else {
+                        result = eventRepository.findClassTeacherNotices(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, pageable);
                     }
                 } else {
                     if (keywords != null && keywords.size() > 0) {
@@ -549,11 +549,11 @@ public class EventServiceImpl implements EventService {
                 List<Event> events;
                 if(eventDTO.getStudentId() != null) {
                     if(eventDTO.getStandardId() == null) {
-                        throw new WitcurveException("An attendance record for student must have only standardId");
+                        throw new WitcurveException("An attendance record for student must have standardId");
                     }
                     StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
                     if(studentStandard == null) {
-                        throw new WitcurveException("Student with id :"+eventDTO.getStudentId()+" not mapped to any standard, so attendance cannot be created");
+                        throw new WitcurveException("Student with id :"+eventDTO.getStudentId()+" not mapped to this standard id, so attendance cannot be created");
                     }
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
                     events = eventRepository.eventsBlockingLeaveForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());

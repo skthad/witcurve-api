@@ -110,16 +110,21 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
         "(e.standard.id =?1 or " +
         "(e.grade is null and e.standard.id is null and e.schoolInfo.id=?3) or (e.grade = ?2 and e.schoolInfo.id=?3)) " +
-        "and e.date between ?4 and ?5 and ek.keywordName in ?6" +
+        "and e.date between ?4 and ?5 and ek.keywordName in ?6 " +
         "order by e.date, e.createdDate desc")
     Page<Event> findClassTeacherNoticesByKeywords(Long standardId, Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate,List<String> keywords, Pageable pageable);
 
-    @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where e.type='STAFF_NOTICE'and e.schoolInfo.id =?1 " +
-        "and e.date between ?2 and ?3 and ek.keywordName in ?4 order by e.date, e.createdDate desc")
+    @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id " +
+        "where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
+        "e.grade is null and e.standard.id is null and e.schoolInfo.id=?1 " +
+        "and e.date between ?2 and ?3 and ek.keywordName in ?4 "+
+        "order by e.date, e.createdDate desc")
     Page<Event> findStaffNoticesBySchoolInfoIdAndKeywords(Long schoolInfoId, LocalDate startDate, LocalDate endDate, List<String> keywords, Pageable pageable);
 
-    @Query("Select e from Event e where e.type = 'STAFF_NOTICE' and e.schoolInfo.id=?1 " +
-        "and e.date between ?2 and ?3 order by e.date, e.createdDate desc")
+    @Query("Select e from Event e where (e.type = 'NOTICE' or e.type = 'STAFF_NOTICE') and " +
+        "e.grade is null and e.standard.id is null and e.schoolInfo.id=?1 " +
+        "and e.date between ?2 and ?3 "+
+        "order by e.date, e.createdDate desc")
     Page<Event> findStaffNoticesBySchoolInfoId(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("Select e from Event e left join EventKeyword ek on ek.eventId=e.id where " +
