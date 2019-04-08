@@ -567,9 +567,9 @@ public class EventServiceImpl implements EventService {
                     throw new WitcurveException("An attendance record cannot be posted on a holiday or school event");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
-                if(eventDTO.getSchoolInfoId() == null) {
-                    throw new WitcurveException("School Info Id is a required field for creating notice");
-                }
+               // if(eventDTO.getSchoolInfoId() == null) {
+                 //   throw new WitcurveException("School Info Id is a required field for creating notice");
+                //}
                 if (eventDTO.getStandardId() != null) {
                     Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
                     if(!standard.isPresent()) {
