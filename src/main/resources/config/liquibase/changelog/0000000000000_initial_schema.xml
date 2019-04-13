@@ -1535,4 +1535,24 @@
             <column name="school_id" type="bigint" afterColumn="school_info_id"/>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-175">
+        <dropUniqueConstraint constraintName="event_content_id_UK" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-176">
+        <addColumn tableName="event_content">
+            <column name="for_exam" type="TINYINT(1)" afterColumn="course_content_id"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-177">
+        <sql>update event_content set for_exam = false where for_exam is null</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-178">
+        <addNotNullConstraint columnDataType="TINYINT(1)" columnName="for_exam" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-179">
+        <addUniqueConstraint columnNames="event_id, course_content_id, for_exam" constraintName="event_content_id_UK" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-180">
+        <addDefaultValue tableName="event_content" columnName="for_exam" defaultValueBoolean="false"/>
+    </changeSet>
 </databaseChangeLog>

@@ -3,10 +3,8 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.Course;
 import com.witcurve.domain.CourseContent;
 import com.witcurve.domain.Event;
-import com.witcurve.repository.CourseContentRepository;
-import com.witcurve.repository.CourseRepository;
-import com.witcurve.repository.EventContentRepository;
-import com.witcurve.repository.EventRepository;
+import com.witcurve.domain.Exam;
+import com.witcurve.repository.*;
 import com.witcurve.service.CourseContentService;
 import com.witcurve.service.dto.CourseContentDTO;
 import com.witcurve.service.mapper.CourseContentMapper;
@@ -40,6 +38,9 @@ public class CourseContentServiceImpl implements CourseContentService {
 
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    ExamRepository examRepository;
 
     @Override
     public List<CourseContentDTO> saveOrUpdateForCourse(Long courseId, List<CourseContentDTO> courseContentDTOs) throws WitcurveException {
@@ -78,13 +79,20 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
-    public List<CourseContentDTO> getCourseContentsByEventId(Long eventId) throws WitcurveException {
-        log.debug("Request to get EventContents by event ID: " + eventId);
-        Optional<Event> event = eventRepository.findById(eventId);
-        if (!event.isPresent()) {
-            throw new WitcurveException("No Event with given id " + eventId);
+    public List<CourseContentDTO> getCourseContentsByEventId(Long eventId, Boolean forExam) throws WitcurveException {
+        log.debug("Request to get CourseContents for {} with ID: {}", forExam ? "exam" : "event", eventId);
+        if (forExam) {
+            Optional<Exam> exam = examRepository.findById(eventId);
+            if (!exam.isPresent()) {
+                throw new WitcurveException("No Exam with given id " + eventId);
+            }
+        } else {
+            Optional<Event> event = eventRepository.findById(eventId);
+            if (!event.isPresent()) {
+                throw new WitcurveException("No Event with given id " + eventId);
+            }
         }
-        List<CourseContentDTO> courseContents = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEventId(eventId));
+        List<CourseContentDTO> courseContents = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEventId(eventId, forExam));
         return courseContents;
     }
 

@@ -14,6 +14,9 @@ public class EventContentDTO extends AbstractAuditingDTO implements Serializable
     @NotNull
     private CourseContentDTO courseContent;
 
+    @NotNull
+    private Boolean forExam = Boolean.FALSE;
+
     public Long getId() {
         return id;
     }
@@ -36,6 +39,14 @@ public class EventContentDTO extends AbstractAuditingDTO implements Serializable
 
     public void setCourseContent(CourseContentDTO courseContent) {
         this.courseContent = courseContent;
+    }
+
+    public Boolean getForExam() {
+        return forExam;
+    }
+
+    public void setForExam(Boolean forExam) {
+        this.forExam = forExam;
     }
 
     @Override

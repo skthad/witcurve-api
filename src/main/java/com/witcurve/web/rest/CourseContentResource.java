@@ -102,9 +102,10 @@ public class CourseContentResource {
 
     @GetMapping("/course-content/events/{eventId}")
     @Timed
-    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByEvent(@PathVariable("eventId") Long eventId) throws WitcurveException {
-        log.debug("Request to get CourseContents with eventId {}", eventId);
-        List<CourseContentDTO> result = courseContentService.getCourseContentsByEventId(eventId);
+    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByEvent(@PathVariable("eventId") Long eventId,
+                                                                           @RequestParam(value = "forExam", required = false, defaultValue = "false") Boolean forExam) throws WitcurveException {
+        log.debug("Request to get CourseContents with {} {}", forExam ? "examId" : "eventId", eventId);
+        List<CourseContentDTO> result = courseContentService.getCourseContentsByEventId(eventId, forExam);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

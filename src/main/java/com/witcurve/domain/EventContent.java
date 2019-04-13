@@ -8,7 +8,7 @@ import java.util.Objects;
 @Entity
 @Table(name="event_content", uniqueConstraints = {
     @UniqueConstraint( name= "event_content_id_UK",
-        columnNames = {"event_id", "course_content_id"})
+        columnNames = {"event_id", "course_content_id", "for_exam"})
 })
 public class EventContent extends AbstractAuditingEntity implements Serializable {
 
@@ -26,6 +26,10 @@ public class EventContent extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     @JoinColumn(name = "course_content_id", nullable = false)
     private CourseContent courseContent;
+
+    @NotNull
+    @Column(name = "for_exam", nullable = false)
+    private Boolean forExam = Boolean.FALSE;
 
     public Long getId() {
         return id;
@@ -49,6 +53,14 @@ public class EventContent extends AbstractAuditingEntity implements Serializable
 
     public void setCourseContent(CourseContent courseContent) {
         this.courseContent = courseContent;
+    }
+
+    public Boolean getForExam() {
+        return forExam;
+    }
+
+    public void setForExam(Boolean forExam) {
+        this.forExam = forExam;
     }
 
     @Override

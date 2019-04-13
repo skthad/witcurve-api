@@ -2,8 +2,10 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Event;
 import com.witcurve.domain.EventContent;
+import com.witcurve.domain.Exam;
 import com.witcurve.repository.EventContentRepository;
 import com.witcurve.repository.EventRepository;
+import com.witcurve.repository.ExamRepository;
 import com.witcurve.service.EventContentService;
 import com.witcurve.service.dto.EventContentDTO;
 import com.witcurve.service.mapper.EventContentMapper;
@@ -32,18 +34,37 @@ public class EventContentServiceImpl implements EventContentService {
     @Autowired
     EventRepository eventRepository;
 
+    @Autowired
+    ExamRepository examRepository;
+
     @Override
-    public List<EventContentDTO> saveOrUpdateForEvent(Long eventId, List<EventContentDTO> eventContentDTOs) throws WitcurveException {
-        log.debug("Request to save or update EventContents");
-        Optional<Event> event = eventRepository.findById(eventId);
-        if (!event.isPresent()) {
-            throw new WitcurveException("No Event with given id " + eventId);
-        }
-        for (EventContentDTO eventContentDTO : eventContentDTOs) {
-            if (!eventContentDTO.getEventId().equals(eventId)) {
-                throw new WitcurveException("EventId provided does not match with eventId in one or more eventContents");
+    public List<EventContentDTO> saveOrUpdateForEvent(Long eventId, List<EventContentDTO> eventContentDTOs, Boolean forExam) throws WitcurveException {
+
+        log.debug("Request to save or update EventContents for {} with ID: {}", forExam ? "exam" : "event", eventId);
+        if (forExam) {
+            Optional<Exam> exam = examRepository.findById(eventId);
+            if (!exam.isPresent()) {
+                throw new WitcurveException("No exam with given id " + eventId);
+            }
+            for (EventContentDTO eventContentDTO : eventContentDTOs) {
+                eventContentDTO.setForExam(forExam);
+                if (!eventContentDTO.getEventId().equals(eventId)) {
+                    throw new WitcurveException("Exam Id provided does not match with examId in one or more eventContents");
+                }
+            }
+        } else {
+            Optional<Event> event = eventRepository.findById(eventId);
+            if (!event.isPresent()) {
+                throw new WitcurveException("No Event with given id " + eventId);
+            }
+            for (EventContentDTO eventContentDTO : eventContentDTOs) {
+                eventContentDTO.setForExam(forExam);
+                if (!eventContentDTO.getEventId().equals(eventId)) {
+                    throw new WitcurveException("Event Id provided does not match with eventId in one or more eventContents");
+                }
             }
         }
+
         List<EventContent> eventContents  = eventContentMapper.toEntity(eventContentDTOs);
         return eventContentMapper.toDto(eventContentRepository.saveAll(eventContents));
     }
@@ -59,9 +80,9 @@ public class EventContentServiceImpl implements EventContentService {
     }
 
     @Override
-    public void deleteEventContentByEventId(Long eventId) {
-        log.debug("Request to delete CourseContents for event with id {}", eventId);
-        eventContentRepository.deleteByEventId(eventId);
+    public void deleteEventContentByEventId(Long eventId, Boolean forExam) {
+        log.debug("Request to delete CourseContents for {} with id {}", forExam ? "exam" : "event", eventId);
+        eventContentRepository.deleteByEventId(eventId, forExam);
     }
 
 }
