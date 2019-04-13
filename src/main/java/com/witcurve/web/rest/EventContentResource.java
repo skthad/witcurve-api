@@ -72,7 +72,7 @@ public class EventContentResource {
         log.debug("Request Save or Update eventContents for exam with ID: {}", examId);
 
         try {
-            List<EventContentDTO> result = eventContentService.saveOrUpdateForEvent(examId, eventContentDTOs, false);
+            List<EventContentDTO> result = eventContentService.saveOrUpdateForEvent(examId, eventContentDTOs, true);
             return ResponseEntity.created(new URI("/api/event-content/exams/" + examId))
                 .headers(HeaderUtil.createEntityCreationAlert("eventContent", null))
                 .body(result);
