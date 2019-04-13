@@ -28,7 +28,7 @@ public class EventContent extends AbstractAuditingEntity implements Serializable
     private CourseContent courseContent;
 
     @NotNull
-    @Column(name = "for_exam", nullable = false)
+    @Column(name = "for_exam", nullable = false, columnDefinition = "boolean default false")
     private Boolean forExam = Boolean.FALSE;
 
     public Long getId() {
