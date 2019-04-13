@@ -2,7 +2,9 @@ package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -45,6 +47,8 @@ public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
     private String secondaryEmail;
 
     private String fax;
+
+    private Set<SchoolInfoDTO> schoolInfos;
 
     public SchoolDTO() {
     }
@@ -175,6 +179,22 @@ public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setFax(String fax) {
         this.fax = fax;
+    }
+
+    public Set<SchoolInfoDTO> getSchoolInfos() {
+        return schoolInfos;
+    }
+
+    public void setSchoolInfos(Set<SchoolInfoDTO> schoolInfos) {
+        this.schoolInfos = schoolInfos;
+    }
+
+    public Set<SchoolInfoDTO> addSchoolInfo(SchoolInfoDTO schoolInfo) {
+        if (schoolInfos == null) {
+            schoolInfos = new HashSet<>();
+        }
+        schoolInfos.add(schoolInfo);
+        return schoolInfos;
     }
 
     @Override

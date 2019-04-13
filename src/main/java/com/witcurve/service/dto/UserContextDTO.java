@@ -56,6 +56,8 @@ public class UserContextDTO implements Serializable {
     private long noOfCalendarDaysInMonth;
     private long noOfWorkingDaysInMonth;
 
+    private Map<Long, InstituteDTO> instituteMap;
+
     public UserDTO getCurrentUser() {
         return currentUser;
     }
@@ -246,5 +248,13 @@ public class UserContextDTO implements Serializable {
 
     public void setNoOfWorkingDaysInMonth(long noOfWorkingDaysInMonth) {
         this.noOfWorkingDaysInMonth = noOfWorkingDaysInMonth;
+    }
+
+    public Map<Long, InstituteDTO> getInstituteMap() {
+        return instituteMap;
+    }
+
+    public void setInstituteMap(Map<Long, InstituteDTO> instituteMap) {
+        this.instituteMap = instituteMap;
     }
 }

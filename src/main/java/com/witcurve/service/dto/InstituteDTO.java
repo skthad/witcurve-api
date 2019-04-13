@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 
 public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
@@ -27,6 +28,8 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private String smsSignature;
+
+    Map<Long, SchoolDTO> schoolMap;
 
     public InstituteDTO() {
     }
@@ -93,6 +96,14 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSmsSignature(String smsSignature) {
         this.smsSignature = smsSignature;
+    }
+
+    public Map<Long, SchoolDTO> getSchoolMap() {
+        return schoolMap;
+    }
+
+    public void setSchoolMap(Map<Long, SchoolDTO> schoolMap) {
+        this.schoolMap = schoolMap;
     }
 
     @Override

@@ -1,10 +1,15 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
+import com.witcurve.service.mapper.InstituteMapper;
+import com.witcurve.service.mapper.SchoolInfoMapperLite;
+import com.witcurve.service.mapper.SchoolMapperLite;
 import com.witcurve.service.mapper.UserMapper;
 import com.witcurve.service.util.WeekdayUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -17,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -57,6 +59,18 @@ public class UserContextServiceImpl implements UserContextService {
     @Autowired
     EventService eventService;
 
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    InstituteMapper instituteMapper;
+
+    @Autowired
+    SchoolMapperLite schoolMapperLite;
+
+    @Autowired
+    SchoolInfoMapperLite schoolInfoMapperLite;
+
     @Override
     public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -65,7 +79,6 @@ public class UserContextServiceImpl implements UserContextService {
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
 
-        // TODO need changes for other user types
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
             List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
@@ -106,9 +119,14 @@ public class UserContextServiceImpl implements UserContextService {
             }
 
             schoolInfoId = studentDTO.getSchoolInfo().getId();
+
         } else if (schoolInfoId == null) {
             if (UserType.SUPER_USER.equals(contextDTO.getCurrentUser().getType())) {
+
+                List<SchoolInfo> allSchoolInfos = schoolInfoRepository.findAll();
+                setInstituteMapInUserContext(contextDTO, allSchoolInfos);
                 return contextDTO;
+
             } else {
                 schoolInfoId = Long.parseLong(user.getUsername().substring(0, user.getUsername().indexOf("-")));
             }
@@ -116,6 +134,14 @@ public class UserContextServiceImpl implements UserContextService {
 
         if (schoolInfoId == null) {
             throw new WitcurveException("No schoolInfoId could be found for the current user");
+        } else {
+            if (UserType.INSTITUTE_MANAGER.equals(contextDTO.getCurrentUser().getType())) {
+                setInstituteMapInUserContext(contextDTO, schoolInfoRepository.findAllForInstutiteManager(schoolInfoId));
+            } else if (UserType.SCHOOL_MANAGER.equals(contextDTO.getCurrentUser().getType())) {
+                setInstituteMapInUserContext(contextDTO, schoolInfoRepository.findAllForSchoolAdmin(schoolInfoId));
+            } else {
+                setInstituteMapInUserContext(contextDTO, Arrays.asList(schoolInfoRepository.getOne(schoolInfoId)));
+            }
         }
 
         LocalDate currentDate = LocalDate.now();
@@ -241,5 +267,26 @@ public class UserContextServiceImpl implements UserContextService {
         }
 
         return contextDTO;
+    }
+
+    private void setInstituteMapInUserContext(UserContextDTO contextDTO, List<SchoolInfo> schoolInfos) {
+        for (SchoolInfo schoolInfo : schoolInfos) {
+            Long instituteId = schoolInfo.getSchool().getInstitute().getId();
+            Long schoolId = schoolInfo.getSchool().getId();
+
+            if (contextDTO.getInstituteMap() == null) {
+                contextDTO.setInstituteMap(new HashMap<>());
+            }
+            if (contextDTO.getInstituteMap().get(instituteId) == null) {
+                contextDTO.getInstituteMap().put(instituteId, instituteMapper.toDto(schoolInfo.getSchool().getInstitute()));
+            }
+            if (contextDTO.getInstituteMap().get(instituteId).getSchoolMap() == null) {
+                contextDTO.getInstituteMap().get(instituteId).setSchoolMap(new HashMap<>());
+            }
+            if (contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId) == null) {
+                contextDTO.getInstituteMap().get(instituteId).getSchoolMap().put(schoolId, schoolMapperLite.toDto(schoolInfo.getSchool()));
+            }
+            contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId).addSchoolInfo(schoolInfoMapperLite.toDto(schoolInfo));
+        }
     }
 }
