@@ -85,7 +85,7 @@ public class CourseContentServiceImpl implements CourseContentService {
             throw new WitcurveException("No Event with given id " + eventId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEventId(eventId));
-        return addIndicesToCourseContents(courseContents);
+        return courseContents;
     }
 
     @Override
