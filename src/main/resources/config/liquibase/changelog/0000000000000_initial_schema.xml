@@ -1555,4 +1555,14 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-180">
         <addDefaultValue tableName="event_content" columnName="for_exam" defaultValueBoolean="false"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-181">
+        <addColumn tableName="message">
+            <column defaultValueBoolean="false" name="is_read" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-182">
+        <dropColumn columnName="read" tableName="message"/>
+    </changeSet>
 </databaseChangeLog>
