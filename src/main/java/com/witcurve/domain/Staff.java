@@ -101,6 +101,7 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false, length = 50)
     private String country;
 
+    @Pattern(regexp = "^[1-9][0-9]{5}$")
     @Column(nullable = false, length = 50)
     private String pincode;
 

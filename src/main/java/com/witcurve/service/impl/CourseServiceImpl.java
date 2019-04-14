@@ -2,9 +2,11 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Course;
 import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseRepository;
 import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
 import com.witcurve.service.mapper.CourseMapper;
@@ -32,6 +34,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
 
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
@@ -64,6 +69,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade) throws WitcurveException {
         log.debug("Request to get courses in schoolInfo {} with grade : {}", schoolInfoId, grade);
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
+        }
         List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
         return courseMapper.toDto(courses);
     }

@@ -11,13 +11,31 @@ public enum BloodGroup {
     O_POSITIVE("O+"),
     O_NEGATIVE("O-");
 
-    private final String name;
+    private final String value;
 
-    private BloodGroup(String name) {
-        this.name = name;
+    private BloodGroup(String value) {
+        this.value = value;
     }
 
-    public String getName() {
-        return name;
+    public boolean equalsName(String value) {
+        return value.equals(value);
+    }
+
+    public String toString() {
+        return this.value;
+    }
+
+    public static BloodGroup getBloodGroup(String value) {
+        if(value != null) {
+            for(BloodGroup m : values()) {
+                if(m.toString().equals(value)) {
+                    return m;
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+
     }
 }

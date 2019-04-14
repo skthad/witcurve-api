@@ -1,0 +1,454 @@
+package com.witcurve.service.impl;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.Staff;
+import com.witcurve.domain.Student;
+import com.witcurve.domain.enumeration.BloodGroup;
+import com.witcurve.domain.enumeration.Gender;
+import com.witcurve.domain.enumeration.StaffType;
+import com.witcurve.repository.SchoolInfoRepository;
+import com.witcurve.repository.StaffRepository;
+import com.witcurve.repository.StudentRepository;
+import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.service.BulkImportService;
+import com.witcurve.service.StaffService;
+import com.witcurve.service.StudentService;
+import com.witcurve.service.StudentStandardService;
+import com.witcurve.service.dto.SchoolInfoDTO;
+import com.witcurve.service.dto.StaffDTO;
+import com.witcurve.service.dto.StudentDTO;
+import com.witcurve.service.dto.csv.ImportResponse;
+import com.witcurve.service.dto.csv.StaffCsv;
+import com.witcurve.service.dto.csv.StudentCsv;
+import com.witcurve.service.util.StaffCsvWriter;
+import com.witcurve.service.util.WitcurveUtil;
+import com.witcurve.web.rest.errors.WitcurveException;
+import org.apache.commons.lang3.StringUtils;
+import org.simpleflatmapper.csv.CsvMapperFactory;
+import org.simpleflatmapper.csv.CsvParser;
+import org.simpleflatmapper.map.MapperBuildingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.*;
+
+@Service
+@Transactional
+public class BulkImportServiceImpl implements BulkImportService {
+
+    private final Logger log = LoggerFactory.getLogger(BulkImportServiceImpl.class);
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    StaffRepository staffRepository;
+
+    @Autowired
+    StaffService staffService;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    StudentService studentService;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    StudentStandardService studentStandardService;
+
+    public ImportResponse bulkStaffImport(MultipartFile file, Long schoolInfoId) throws WitcurveException {
+        List<StaffCsv> staffCsvs = null;
+        List<StaffCsv> errorStaffCsvs = new ArrayList<>();
+        Integer rowNo =2, createCount=0, errorCount=0;
+        Map<Integer, String> errorMessageMap = new HashMap<>();
+        try {
+            Reader reader = Files.newBufferedReader(Paths.get(WitcurveUtil.getFile(file).getAbsolutePath()));
+            CsvMapperFactory factory = CsvMapperFactory.newInstance()
+                .addAliases(StaffCsv.ALIAS_MAP);
+
+            Iterator<StaffCsv> csvIterator = CsvParser.mapWith(factory.newMapper(StaffCsv.class)).iterator(reader);
+            while(csvIterator.hasNext()) {
+                StaffCsv staffCsv = csvIterator.next();
+                try {
+                    if(!WitcurveUtil.isObjectEmpty(staffCsv)) {
+                        processAndSaveStaffCsv(staffCsv, schoolInfoId);
+                        createCount++;
+                        log.debug("Staff Details : {} \n \n", staffCsv.toString());
+                    }
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    log.debug("Error while check empty csv object : {}",e.getMessage());
+                    throw new WitcurveException("Error while reading the file, please check if the file is in correct format.");
+                } catch (WitcurveException e) {
+                    log.debug("Error while converting and saving the csv : {}", e.getMessage());
+                    errorCount++;
+                    errorMessageMap.put(rowNo, e.getMessage());
+                    staffCsv.setErrorMessage(e.getMessage());
+                    errorStaffCsvs.add(staffCsv);
+                }
+                rowNo++;
+            }
+
+        } catch (MapperBuildingException e) {
+            log.debug("Error while reading file : {}",e.getMessage());
+            throw new WitcurveException("Error while reading the file, please check if the file has correct headers");
+        } catch (IOException e) {
+            log.debug("Error while reading file : {}",e.getMessage());
+            throw new WitcurveException("Error while reading the file due to reason : "+e.getMessage());
+        }
+
+        if(errorStaffCsvs.size()!=0) {
+            StaffCsvWriter staffCsvWriter = new StaffCsvWriter();
+            byte[] errorFileBytes = staffCsvWriter.generateStaffCSV(errorStaffCsvs);
+
+            return new ImportResponse(createCount, errorCount, errorMessageMap, new String(Base64.getEncoder().encode(errorFileBytes)));
+        } else {
+            return new ImportResponse(createCount, errorCount, null, null);
+        }
+
+    }
+
+    public ImportResponse bulkStudentImport(MultipartFile file, Long schoolInfoId) throws WitcurveException {
+        List<StudentCsv> studentCsvs = null;
+        Integer rowNo =2, createCount=0, errorCount=0;
+        Map<Integer, String> errorMessageMap = new HashMap<>();
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if(!schoolInfo.isPresent()) {
+            throw new WitcurveException("School Board with given Id doesn't exists");
+        }
+
+        for (StudentCsv studentCsv : studentCsvs) {
+            try {
+                if(!WitcurveUtil.isObjectEmpty(studentCsv)) {
+                    processAndSaveStudentCsv(studentCsv, schoolInfoId);
+                    createCount++;
+                    log.debug("Student Details : {} \n \n", studentCsv.toString());
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.debug("Error while check empty csv object : {}",e.getMessage());
+                throw new WitcurveException("Error while reading the file, please check if the file is in correct format.");
+            } catch (WitcurveException e) {
+                log.debug("Error while converting and saving the csv : {}", e.getMessage());
+                errorCount++;
+                errorMessageMap.put(rowNo, e.getMessage());
+            }
+            rowNo++;
+        }
+        return new ImportResponse(createCount, errorCount, errorMessageMap, null);
+    }
+
+    private void processAndSaveStaffCsv(StaffCsv staffCsv, Long schoolInfoId) throws WitcurveException {
+
+        StaffDTO staffDTO = new StaffDTO();
+        SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
+        schoolInfo.setId(schoolInfoId);
+        staffDTO.setSchoolInfo(schoolInfo);
+
+        //converting each csv field to dto after checking if entered values are valid
+
+        if(staffCsv.getFirstName() != null && !StringUtils.isBlank(staffCsv.getFirstName())) {
+            staffDTO.setFirstName(staffCsv.getFirstName());
+        } else {
+            throw new WitcurveException("First Name value is empty");
+        }
+
+        if(staffCsv.getMiddleName() != null && !StringUtils.isBlank(staffCsv.getMiddleName())) {
+            staffDTO.setMiddleName(staffCsv.getMiddleName());
+        }
+
+        if(staffCsv.getLastName() != null && !StringUtils.isBlank(staffCsv.getLastName())) {
+            staffDTO.setLastName(staffCsv.getLastName());
+        } else {
+            throw new WitcurveException("Last Name value is empty");
+        }
+
+        if(staffCsv.getEmployeeId() != null && !StringUtils.isBlank(staffCsv.getEmployeeId())) {
+            staffDTO.setEmployeeId(staffCsv.getEmployeeId());
+        } else {
+            throw new WitcurveException("Employee Id value is empty");
+        }
+
+        if(staffCsv.getJoiningDate() != null && !StringUtils.isBlank(staffCsv.getJoiningDate())) {
+            try {
+                LocalDate joiningDate = WitcurveUtil.getLocalDate(staffCsv.getJoiningDate());
+                staffDTO.setJoiningDate(joiningDate);
+            } catch (Exception e) {
+                throw new WitcurveException("Joining Date value should be a valid date in format yyyy-MM-d");
+            }
+        } else {
+            throw new WitcurveException("Joining Date value is empty");
+        }
+
+        if(staffCsv.getGender() != null && !StringUtils.isBlank(staffCsv.getGender())) {
+            Gender gender = Gender.getGender(staffCsv.getGender().toUpperCase());
+            if(gender != null) {
+                staffDTO.setGender(gender);
+            } else {
+                throw new WitcurveException("Gender value is invalid, please enter only one these values : Male, Female, Other");
+            }
+        } else {
+            throw new WitcurveException("Gender value is empty");
+        }
+
+        if(staffCsv.getPrimaryPhone() != null && !StringUtils.isBlank(staffCsv.getPrimaryPhone())) {
+            if(staffCsv.getPrimaryPhone().matches("^[6-9]\\d{9}$")) {
+                staffDTO.setPrimaryPhone(staffCsv.getPrimaryPhone());
+            } else {
+                throw new WitcurveException("Primary Phone value is invalid, please enter 10 digit mobile number");
+            }
+        } else {
+            throw new WitcurveException("Primary Phone value is required");
+        }
+
+        if(staffCsv.getSecondaryPhone() != null && !StringUtils.isBlank(staffCsv.getSecondaryPhone())) {
+            if(staffCsv.getSecondaryPhone().matches("^[6-9]\\d{9}$")) {
+                staffDTO.setSecondaryPhone(staffCsv.getSecondaryPhone());
+            } else {
+                throw new WitcurveException("Secondary Phone value is invalid, please enter 10 digit mobile number");
+            }
+        }
+
+        if(staffCsv.getDateOfBirth() != null && !StringUtils.isBlank(staffCsv.getDateOfBirth())) {
+            try {
+                LocalDate dob = WitcurveUtil.getLocalDate(staffCsv.getDateOfBirth());
+                staffDTO.setDateOfBirth(dob);
+            } catch (Exception e) {
+                throw new WitcurveException("Date of Birth value should be a valid date in format yyyy-MM-d");
+            }
+        } else {
+            throw new WitcurveException("Date of Birth value is required");
+        }
+
+        if(staffCsv.getBloodGroup() != null && !StringUtils.isBlank(staffCsv.getBloodGroup())) {
+            BloodGroup bloodGroup = BloodGroup.getBloodGroup(staffCsv.getBloodGroup().replaceAll("\\s","").toUpperCase());
+            if(bloodGroup != null) {
+                staffDTO.setBloodGroup(bloodGroup);
+            } else {
+                throw new WitcurveException("Blood Group value is invalid, please enter only one these values : A+, A-, B+, B-, AB+, AB-, O+, O-");
+            }
+        }
+
+        if(staffCsv.getType() != null && !StringUtils.isBlank(staffCsv.getType())) {
+            StaffType staffType = StaffType.getStaffType(staffCsv.getType().trim().toUpperCase());
+            if(staffType != null) {
+                staffDTO.setType(staffType);
+            } else {
+                throw new WitcurveException("Staff Type value is invalid, please enter only one these values : Teaching, Non Teaching");
+            }
+        } else {
+            throw new WitcurveException("Staff Type value is empty");
+        }
+
+        if(staffCsv.getAddress1() != null && !StringUtils.isBlank(staffCsv.getAddress1())) {
+            staffDTO.setAddress1(staffCsv.getAddress1());
+        } else {
+            throw new WitcurveException("Address 1 value is empty");
+        }
+
+        if(staffCsv.getAddress2() != null && !StringUtils.isBlank(staffCsv.getAddress2())) {
+            staffDTO.setAddress2(staffCsv.getAddress2());
+        }
+
+        if(staffCsv.getDistrict() != null && !StringUtils.isBlank(staffCsv.getDistrict())) {
+            staffDTO.setDistrict(staffCsv.getDistrict());
+        } else {
+            throw new WitcurveException("District value is empty");
+        }
+
+        if(staffCsv.getCity() != null && !StringUtils.isBlank(staffCsv.getCity())) {
+            staffDTO.setCity(staffCsv.getCity());
+        } else {
+            throw new WitcurveException("City value is empty");
+        }
+
+        if(staffCsv.getState() != null && !StringUtils.isBlank(staffCsv.getState())) {
+            staffDTO.setState(staffCsv.getState());
+        } else {
+            throw new WitcurveException("State value is empty");
+        }
+
+        if(staffCsv.getCountry() != null && !StringUtils.isBlank(staffCsv.getCountry())) {
+            staffDTO.setCountry(staffCsv.getCountry());
+        } else {
+            throw new WitcurveException("Country value is empty");
+        }
+
+        if(staffCsv.getPincode() != null && !StringUtils.isBlank(staffCsv.getPincode())) {
+            if(staffCsv.getPincode().matches("^[1-9][0-9]{5}$")) {
+                staffDTO.setPincode(staffCsv.getPincode());
+            } else {
+                throw new WitcurveException("Incorrect Pincode value");
+            }
+
+        } else {
+            throw new WitcurveException("Pincode value is empty");
+        }
+
+        if(staffCsv.getAadhaarNo() != null && !StringUtils.isBlank(staffCsv.getAadhaarNo())) {
+            staffDTO.setAadhaarNo(staffCsv.getPincode());
+        }
+
+        if(staffCsv.getPan() != null && !StringUtils.isBlank(staffCsv.getPan())) {
+            staffDTO.setPanNo(staffCsv.getPan());
+        }
+
+        if(staffCsv.getBankAccountNumber() != null && !StringUtils.isBlank(staffCsv.getBankAccountNumber())) {
+            staffDTO.setAccountNumber(staffCsv.getBankAccountNumber());
+        }
+
+        if(staffCsv.getBankIfscCode() != null && !StringUtils.isBlank(staffCsv.getBankIfscCode())) {
+            staffDTO.setIfscCode(staffCsv.getBankIfscCode());
+        }
+
+        Staff existingStaff = staffRepository.findBySchoolInfoIdAndStaffId(schoolInfoId, staffDTO.getEmployeeId());
+        if(existingStaff != null) {
+            throw new WitcurveException("There already exists a staff with given Employee Id value");
+        }
+        staffService.create(staffDTO);
+
+    }
+
+    private void processAndSaveStudentCsv(StudentCsv studentCsv, Long schoolInfoId) {
+
+        StudentDTO studentDTO = new StudentDTO();
+        SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
+        schoolInfo.setId(schoolInfoId);
+        studentDTO.setSchoolInfo(schoolInfo);
+
+        //converting each csv field to dto after check if entered values are valid
+
+        if(studentCsv.getFirstName() != null && !StringUtils.isBlank(studentCsv.getFirstName())) {
+            studentDTO.setFirstName(studentCsv.getFirstName());
+        } else {
+            throw new WitcurveException("First Name value is empty");
+        }
+
+        if(studentCsv.getMiddleName() != null && !StringUtils.isBlank(studentCsv.getMiddleName())) {
+            studentDTO.setMiddleName(studentCsv.getMiddleName());
+        }
+
+        if(studentCsv.getLastName() != null && !StringUtils.isBlank(studentCsv.getLastName())) {
+            studentDTO.setLastName(studentCsv.getLastName());
+        } else {
+            throw new WitcurveException("Last Name value is empty");
+        }
+
+        if(studentCsv.getAdmissionId() != null && !StringUtils.isBlank(studentCsv.getAdmissionId())) {
+            studentDTO.setAdmissionId(studentDTO.getAdmissionId());
+        } else {
+            throw new WitcurveException("Admission Id value is empty");
+        }
+
+        if(studentCsv.getAdmissionDate() != null && !StringUtils.isBlank(studentCsv.getAdmissionDate())) {
+            try {
+                LocalDate admissionDate = WitcurveUtil.getLocalDate(studentCsv.getAdmissionDate());
+                studentDTO.setAdmissionDate(admissionDate);
+            } catch (Exception e) {
+                throw new WitcurveException("Admission Date value should be a valid date in format yyyy-MM-d");
+            }
+        } else {
+            throw new WitcurveException("Admission Date value is empty");
+        }
+
+        if(studentCsv.getGender() != null && !StringUtils.isBlank(studentCsv.getGender())) {
+            Gender gender = Gender.getGender(studentCsv.getGender().toUpperCase());
+            if(gender != null) {
+                studentDTO.setGender(gender);
+            } else {
+                throw new WitcurveException("Gender value is invalid, please enter only one these values : Male, Female, Other");
+            }
+        } else {
+            throw new WitcurveException("Gender value is empty");
+        }
+
+
+        if(studentCsv.getDateOfBirth() != null && !StringUtils.isBlank(studentCsv.getDateOfBirth())) {
+            try {
+                LocalDate dob = WitcurveUtil.getLocalDate(studentCsv.getDateOfBirth());
+                studentDTO.setDateOfBirth(dob);
+            } catch (Exception e) {
+                throw new WitcurveException("Date of Birth value should be a valid date in format yyyy-MM-d");
+            }
+        } else {
+            throw new WitcurveException("Date of Birth value is required");
+        }
+
+        if(studentCsv.getBloodGroup() != null && !StringUtils.isBlank(studentCsv.getBloodGroup())) {
+            BloodGroup bloodGroup = BloodGroup.getBloodGroup(studentCsv.getBloodGroup().replaceAll("\\s","").toUpperCase());
+            if(bloodGroup != null) {
+                studentDTO.setBloodGroup(bloodGroup);
+            } else {
+                throw new WitcurveException("Blood Group value is invalid, please enter only one these values : A+, A-, B+, B-, AB+, AB-, O+, O-");
+            }
+        }
+
+
+        if(studentCsv.getAddress1() != null && !StringUtils.isBlank(studentCsv.getAddress1())) {
+            studentDTO.setAddress1(studentCsv.getAddress1());
+        } else {
+            throw new WitcurveException("Address 1 value is empty");
+        }
+
+        if(studentCsv.getAddress2() != null && !StringUtils.isBlank(studentCsv.getAddress2())) {
+            studentDTO.setAddress2(studentCsv.getAddress2());
+        }
+
+        if(studentCsv.getDistrict() != null && !StringUtils.isBlank(studentCsv.getDistrict())) {
+            studentDTO.setDistrict(studentCsv.getDistrict());
+        } else {
+            throw new WitcurveException("District value is empty");
+        }
+
+        if(studentCsv.getCity() != null && !StringUtils.isBlank(studentCsv.getCity())) {
+            studentDTO.setCity(studentCsv.getCity());
+        } else {
+            throw new WitcurveException("City value is empty");
+        }
+
+        if(studentCsv.getState() != null && !StringUtils.isBlank(studentCsv.getState())) {
+            studentDTO.setState(studentCsv.getState());
+        } else {
+            throw new WitcurveException("State value is empty");
+        }
+
+        if(studentCsv.getCountry() != null && !StringUtils.isBlank(studentCsv.getCountry())) {
+            studentDTO.setCountry(studentCsv.getCountry());
+        } else {
+            throw new WitcurveException("Country value is empty");
+        }
+
+        if(studentCsv.getPincode() != null && !StringUtils.isBlank(studentCsv.getPincode())) {
+            if(studentCsv.getPincode().matches("^[1-9][0-9]{5}$")) {
+                studentDTO.setPincode(studentCsv.getPincode());
+            } else {
+                throw new WitcurveException("Incorrect Pincode value");
+            }
+
+        } else {
+            throw new WitcurveException("Pincode value is empty");
+        }
+
+        if(studentCsv.getAadhaarNo() != null && !StringUtils.isBlank(studentCsv.getAadhaarNo())) {
+            studentDTO.setAadhaarNo(studentCsv.getPincode());
+        }
+        Student existingStudent = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, studentDTO.getAdmissionId());
+        if(existingStudent != null) {
+            throw new WitcurveException("There already exists a student with given Admission Id value");
+        }
+        studentService.create(studentDTO);
+    }
+}

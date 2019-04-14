@@ -97,6 +97,7 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(nullable = false, length = 50)
+    @Pattern(regexp = "^[1-9][0-9]{5}$")
     private String pincode;
 
     @Column(name = "blood_group", length = 50)

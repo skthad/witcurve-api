@@ -81,6 +81,7 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     private String country;
 
     @NotNull
+    @Pattern(regexp = "^[1-9][0-9]{5}$")
     private String pincode;
 
     private BloodGroup bloodGroup;
