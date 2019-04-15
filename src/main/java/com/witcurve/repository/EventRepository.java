@@ -88,8 +88,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "and e.type = 'ATTENDANCE' order by e.date desc")
     List<Event> findAttendanceForStudent(LocalDate fromDate, LocalDate toDate, Long student);
 
-    @Query("select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and " +
-        "e.staff is not null and e.staff.id in ?1 and e.date = ?2")
+    @Query("select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.attendanceType ='ABSENT' " +
+        "and e.staff is not null and e.staff.id in ?1 and e.date = ?2")
     List<Long> findAbsentTeacherList(List<Long> teacherIds, LocalDate date);
 
     @Query("Select e from Event e where e.type = 'NOTICE' and " +

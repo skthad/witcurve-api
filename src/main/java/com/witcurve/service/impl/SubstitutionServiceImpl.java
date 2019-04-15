@@ -73,16 +73,19 @@ public class SubstitutionServiceImpl implements SubstitutionService {
         // look for a staff who teaches given master subject in the given grade
         List<Long> availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolBySubjectAndGrade(
             schoolInfoId, masterSubject, grade, teacherId);
+        log.info("Grade and Subject Teachers : {}",availableStaff);
 
         if (availableStaff.size() == 0) {
             //look for a teacher who teaches any course in the given standard
             availableStaff = courseTeacherRepository.findAvailableTeacherByStandardId(
                 standard.getId(), teacherId);
+            log.info("Standard Teachers : {}",availableStaff);
         }
         if (availableStaff.size() == 0) {
             //look for a teacher who teaches any course in the given grade
             availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolByGrade(
                 schoolInfoId, grade, teacherId);
+            log.info("Grade Teachers : {}",availableStaff);
         }
 
         if (availableStaff.size() == 0) {
@@ -91,6 +94,8 @@ public class SubstitutionServiceImpl implements SubstitutionService {
             availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolBySubject(
                 schoolInfoId, masterSubject, teacherId);
 
+            log.info("Subject Teachers : {}",availableStaff);
+
         }
 
         if (availableStaff.size() == 0) {
@@ -98,18 +103,22 @@ public class SubstitutionServiceImpl implements SubstitutionService {
             // look for a teacher who teaches a course with eligibleForSubstitute = true in the whole school
             availableStaff = courseTeacherRepository.findEligibleForSubstituteBySchoolInfoId(
                 teacherId, schoolInfoId);
+
+            log.info("Teachers : {}",availableStaff);
         }
 
         // should not be in substitution table already
         if (availableStaff.size() > 0) {
             List<Long> alreadySubstituted = substitutionRepository.alreadySubstitutedTeacherList(gsdId, availableStaff, date);
             availableStaff.removeIf((Long a) -> alreadySubstituted.indexOf(a) > -1);
+            log.info("Teachers after removing already susbstituted: {}",availableStaff);
         }
 
         // should not be absent
         if (availableStaff.size() > 0) {
             List<Long> absentTeachers = eventRepository.findAbsentTeacherList(availableStaff, date);
             availableStaff.removeIf((Long a) -> absentTeachers.indexOf(a) > -1);
+            log.info("Removing absent : {}", availableStaff);
         }
 
         /*if (availableStaff.size() > 0) {
@@ -130,6 +139,7 @@ public class SubstitutionServiceImpl implements SubstitutionService {
                 .findAllocatedTeachersList(startTime, endTime, scd.getDayOfWeek(), schoolInfoId);
 
             availableStaff.removeIf((Long a) -> allocatedTeachers.indexOf(a) > -1);
+            log.info("Final list : {}", availableStaff);
         }
         List<Staff> staffList = staffRepository.findAllById(availableStaff);
         return staffMapperLite.toDto(staffList);

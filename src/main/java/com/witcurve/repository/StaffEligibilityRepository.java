@@ -17,7 +17,7 @@ public interface StaffEligibilityRepository extends JpaRepository<StaffEligibili
     @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2  order by staff.employeeId")
     List<StaffEligibility> findBySchoolInfoAndGrade(Long schoolInfoId, Grade grade);
 
-    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2 and se.staff.id != ?3 order by staff.employeeId")
+    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2 and se.staff.id <> ?3 order by staff.employeeId")
     List<Long> findAvailableStaffInSchoolByGrade(Long schoolInfoId, Grade grade, Long staffId);
 
     @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 order by staff.employeeId")
@@ -26,10 +26,10 @@ public interface StaffEligibilityRepository extends JpaRepository<StaffEligibili
     @Query("Select se from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 order by staff.employeeId")
     List<StaffEligibility> findBySchoolInfoAndSubjectAndGrade(Long schoolInfoId, MasterSubject masterSubject, Grade grade);
 
-    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.staff.id != ?3 order by staff.employeeId")
+    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.staff.id <> ?3 order by staff.employeeId")
     List<Long> findAvailableStaffInSchoolBySubject(Long schoolInfoId, MasterSubject masterSubject, Long staffId);
 
-    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 and se.staff.id != ?4 order by staff.employeeId")
+    @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 and se.staff.id <> ?4 order by staff.employeeId")
     List<Long> findAvailableStaffInSchoolBySubjectAndGrade(Long schoolInfoId, MasterSubject masterSubject, Grade grade, Long staffId);
 
     @Query("Select se from StaffEligibility se where se.staff.id = ?1")
