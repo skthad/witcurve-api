@@ -30,7 +30,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Long> findOverlappingExams(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate);
 
     @Query("select e from Exam e where e.schoolInfo.id = ?1 and e.grade = ?2 and e.status = 'PUBLISHED' " +
-        "and (e.startDate between ?3 and ?4 or e.endDate between ?3 and ?4) and e.id != ?5")
+        "and (e.startDate between ?3 and ?4 or e.endDate between ?3 and ?4) and e.id <> ?5")
     List<Long> findOverlappingExams(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate, Long examId);
 
 }

@@ -35,7 +35,7 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
     @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = false order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findInActiveCourseTeachersByStandardId(Long standardId);
 
-    @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true and ct.teacher.id != ?2")
+    @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true and ct.teacher.id <> ?2")
     List<Long> findAvailableTeacherByStandardId(Long standardId, Long teacherId);
 
     @Query("select ct from CourseTeacher ct where ct.teacher.id = ?1 " +
@@ -43,7 +43,7 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
     List<CourseTeacher> findByStaffAndSubjectAndGrade(Long staffId, MasterSubject subject, Grade grade);
 
     @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.course.eligibleForSubstitute = true " +
-        "and ct.teacher.id != ?1 and ct.teacher.schoolInfo.id = ?2")
+        "and ct.teacher.id <> ?1 and ct.teacher.schoolInfo.id = ?2")
     List<Long> findEligibleForSubstituteBySchoolInfoId(Long staffId, Long schoolInfoId);
 
     @Modifying
