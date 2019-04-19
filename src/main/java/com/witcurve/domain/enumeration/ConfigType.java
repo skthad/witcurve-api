@@ -2,16 +2,10 @@ package com.witcurve.domain.enumeration;
 
 public enum ConfigType {
 
-    GRADING_DEFINITION("Grading definition"),
-    REPEAT_ATTENDANCE("Repeat attendance");
-
-    private final String name;
-
-    ConfigType(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    STAFF_ATTENDANCE,
+    STAFF_PAYROLL,
+    GRADING_METHOD,
+    GRADING_SCALE,
+    SMS_NOTIFICATION,
+    EMAIL_NOTIFICATION
 }

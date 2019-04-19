@@ -1565,4 +1565,31 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-182">
         <dropColumn columnName="read" tableName="message"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-183">
+        <modifyDataType tableName="config_settings" columnName="field_name" newDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-184">
+        <addColumn tableName="config_settings">
+            <column name="display_field_name" type="VARCHAR(255)" afterColumn="field_name"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-185">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" tableName="config_settings" columnName="display_field_name"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-186">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_config_settings.csv"
+                  separator=";"
+                  tableName="config_settings">
+        </loadData>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-187">
+        <renameColumn tableName="config_settings" oldColumnName="order" newColumnName="display_order" columnDataType="INT"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-188">
+        <addNotNullConstraint columnDataType="INT" columnName="display_order" tableName="config_settings"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-189">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="field_name" tableName="config_settings"/>
+    </changeSet>
 </databaseChangeLog>

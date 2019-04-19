@@ -30,10 +30,13 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
     private ConfigFieldName fieldName;
 
     @NotNull
+    private String displayFieldName;
+
+    @NotNull
     private String fieldValue;
 
     @NotNull
-    private Integer order;
+    private Integer displayOrder;
 
     public Long getId() {
         return id;
@@ -91,6 +94,14 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
         this.fieldName = fieldName;
     }
 
+    public String getDisplayFieldName() {
+        return displayFieldName;
+    }
+
+    public void setDisplayFieldName(String displayFieldName) {
+        this.displayFieldName = displayFieldName;
+    }
+
     public String getFieldValue() {
         return fieldValue;
     }
@@ -99,12 +110,12 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
         this.fieldValue = fieldValue;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getDisplayOrder() {
+        return displayOrder;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
     }
 
     @Override

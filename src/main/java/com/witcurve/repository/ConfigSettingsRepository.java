@@ -1,7 +1,9 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.ConfigSettings;
+import com.witcurve.domain.enumeration.ConfigType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,8 +12,19 @@ import java.util.List;
 @Repository
 public interface ConfigSettingsRepository extends JpaRepository<ConfigSettings, Long> {
 
-    @Query("select cs from ConfigSettings cs where cs.schoolInfoId = ?1")
-    List<ConfigSettings> getConfigSettingsBySchoolInfoId(Long schoolInfoId);
+    @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 order by cs.configType, cs.displayOrder")
+    List<ConfigSettings> getConfigSettingsBySchoolId(Long schoolId);
+
+    @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 and cs.configType = ?2 order by cs.displayOrder")
+    List<ConfigSettings> getConfigSettingsBySchoolIdAndType(Long schoolId, ConfigType configType);
+
+    @Modifying
+    @Query("delete from ConfigSettings where schoolId = ?1")
+    void deleteBySchoolId(Long schoolId);
+
+    @Modifying
+    @Query("delete from ConfigSettings where schoolId = ?1 and configType = ?2")
+    void deleteBySchoolIdAndType(Long schoolId, ConfigType configType);
 
 }
 

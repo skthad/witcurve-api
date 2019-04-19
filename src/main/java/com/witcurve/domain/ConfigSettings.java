@@ -40,15 +40,20 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
 
     @NotNull
     @Column(name = "field_name", nullable = false)
+    @Enumerated(EnumType.STRING)
     private ConfigFieldName fieldName;
+
+    @NotNull
+    @Column(name = "display_field_name", nullable = false)
+    private String displayFieldName;
 
     @NotNull
     @Column(name = "field_value", nullable = false)
     private String fieldValue;
 
     @NotNull
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "display_order", nullable = false)
+    private Integer displayOrder;
 
     public Long getId() {
         return id;
@@ -106,6 +111,14 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
         this.fieldName = fieldName;
     }
 
+    public String getDisplayFieldName() {
+        return displayFieldName;
+    }
+
+    public void setDisplayFieldName(String displayFieldName) {
+        this.displayFieldName = displayFieldName;
+    }
+
     public String getFieldValue() {
         return fieldValue;
     }
@@ -114,12 +127,12 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
         this.fieldValue = fieldValue;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getDisplayOrder() {
+        return displayOrder;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
     }
 
     @Override
