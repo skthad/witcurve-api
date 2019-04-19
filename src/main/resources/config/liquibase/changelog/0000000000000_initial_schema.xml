@@ -1592,4 +1592,8 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-189">
         <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="field_name" tableName="config_settings"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-190">
+        <sql>update config_settings set field_value = '0800' where id = 1</sql>
+        <sql>update config_settings set field_value = 'Grace duration in minutes' where id = 2</sql>
+    </changeSet>
 </databaseChangeLog>
