@@ -1,6 +1,6 @@
 id;school_id;config_type;field_type;field_name;display_field_name;field_value;order;created_by
-1;-1;STAFF_ATTENDANCE;TIME;STAFF_PRESENT_STATUS_BEFORE;Present status before;800;0;System
-2;-1;STAFF_ATTENDANCE;INTEGER;STAFF_GRACE_DURATION_IN_MINS;Grade duration in minutes;15;1;System
+1;-1;STAFF_ATTENDANCE;TIME;STAFF_PRESENT_STATUS_BEFORE;Present status before;0800;0;System
+2;-1;STAFF_ATTENDANCE;INTEGER;STAFF_GRACE_DURATION_IN_MINS;Grace duration in minutes;15;1;System
 3;-1;STAFF_PAYROLL;INTEGER;LEAVE_CREDITS_PER_MONTH;Leave credits per cycle;2;0;System
 4;-1;GRADING_METHOD;ENUM;GRADING_METHOD;Grading Method;Absolute;0;System
 5;-1;GRADING_SCALE;STRING;GRADE;Ex;90;0;System
