@@ -67,7 +67,6 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
         }
 
-        //TODO:fix the average of average logic by taking total marks into account for subject
         for (String sectionName: sectionSubjectCountMap.keySet()) {
             Double totalScore = 0.0;
 
