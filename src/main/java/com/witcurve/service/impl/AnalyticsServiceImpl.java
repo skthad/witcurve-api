@@ -43,7 +43,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             String masterSubject = studentMarksDTO.getExamCourseDetailsDTO().getCourse().getMasterSubject();
             String sectionName = studentMarksDTO.getSection();
 
-            if(StringUtils.isNotEmpty(sectionName)) {
+            if (StringUtils.isNotEmpty(sectionName)) {
                 if (sectionSubjectCountMap.get(sectionName) == null) {
                     sectionSubjectTotalMap.put(sectionName, new HashMap<>());
                     sectionSubjectCountMap.put(sectionName, new HashMap<>());
