@@ -60,5 +60,8 @@ public class WitcurveUtil {
         }
     }
 
+    public static Double roundToTwoDecimal(Double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
 
 }
