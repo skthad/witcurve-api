@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.StandardDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -16,6 +17,8 @@ public interface StandardService {
     List<StandardDTO> getStandardsBySchoolInfoId(Long schoolInfoId, Boolean slotAssigned);
 
     List<StandardDTO> getStandardsByTeacherId(Long teacherId);
+
+    StandardDTO getStandard(Grade grade, String section, Long schoolInfoId) throws WitcurveException;
 
     void deleteStandard(Long standardId) throws WitcurveException;
 }

@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.StandardService;
 import com.witcurve.service.dto.StandardDTO;
@@ -139,6 +140,16 @@ public class StandardServiceImpl implements StandardService {
         log.debug("Request to get all standards by by teacher id : {}", teacherId);
         List<Standard> result = courseTeacherRepository.findStandardsByTeacherId(teacherId);
         return standardMapperLite.toDto(result);
+    }
+
+    @Override
+    public StandardDTO getStandard(Grade grade, String section, Long schoolInfoId) throws WitcurveException{
+        log.debug("Request to get standard with grade : {}, section : {}, schoolInfoId : {}", grade, section, schoolInfoId);
+        Standard standard = standardRepository.findByGradeAndSectionAndSchoolInfoId(grade, section, schoolInfoId);
+        if(standard == null) {
+            throw new WitcurveException("Standard does not exist for given grade and section");
+        }
+        return standardMapper.toDto(standard);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.witcurve.service.dto.csv;
 
-import com.witcurve.domain.enumeration.Category;
 
-import javax.persistence.Column;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StudentCsv {
 
@@ -22,6 +22,8 @@ public class StudentCsv {
 
     private String registeredMobileNumber;
 
+    private String alternateMobileNumbers;
+
     private String address1;
 
     private String address2;
@@ -38,8 +40,6 @@ public class StudentCsv {
 
     private String bloodGroup;
 
-    private String alternateMobileNumbers;
-
     private String aadhaarNo;
 
     private String nationality;
@@ -52,13 +52,11 @@ public class StudentCsv {
 
     private String subCaste;
 
-    private Category category = Category.NA;
-
-    private Boolean dayScholar = true;
-
-    private Category house;
+    private String category;
 
     private String subCategory;
+
+    private String type;
 
     private String birthPlace;
 
@@ -66,19 +64,85 @@ public class StudentCsv {
 
     private String identificationMark2;
 
-    private String previousSchoolName;
-
-    private String previousSchoolAddress;
-
-    private String previousSchoolStandard;
-
-    private String errorMessage;
-
     private String grade;
 
     private String section;
 
     private String rollNo;
+
+    private String errorMessage;
+
+    public final static Map<String, String> ALIAS_MAP = new HashMap<>();
+
+    static {
+
+        ALIAS_MAP.put("* First Name","firstName");
+
+        ALIAS_MAP.put("Middle Name","middleName");
+
+        ALIAS_MAP.put("* Last Name","lastName");
+
+        ALIAS_MAP.put("* Admission ID","admissionId");
+
+        ALIAS_MAP.put("* Admission Date","admissionDate");
+
+        ALIAS_MAP.put("* Gender","gender");
+
+        ALIAS_MAP.put("* Date of Birth","dateOfBirth");
+
+        ALIAS_MAP.put("* Registered Mobile Number","registeredMobileNumber");
+
+        ALIAS_MAP.put("Alternate Mobile Numbers","alternateMobileNumbers");
+
+        ALIAS_MAP.put("* Address 1","address1");
+
+        ALIAS_MAP.put("Address 2","address2");
+
+        ALIAS_MAP.put("* City","city");
+
+        ALIAS_MAP.put("* District","district");
+
+        ALIAS_MAP.put("* State","state");
+
+        ALIAS_MAP.put("* Country","country");
+
+        ALIAS_MAP.put("* Pin Code","pincode");
+
+        ALIAS_MAP.put("* Nationality","nationality");
+
+        ALIAS_MAP.put("Birth Place","birthPlace");
+
+        ALIAS_MAP.put("Blood Group","bloodGroup");
+
+        ALIAS_MAP.put("Mother Tongue","motherTongue");
+
+        ALIAS_MAP.put("Religion","religion");
+
+        ALIAS_MAP.put("Category","category");
+
+        ALIAS_MAP.put("Sub Category","subCategory");
+
+        ALIAS_MAP.put("Caste","caste");
+
+        ALIAS_MAP.put("Sub Caste","subCaste");
+
+        ALIAS_MAP.put("Aadhaar Number","aadhaarNo");
+
+        ALIAS_MAP.put("Identification Marks 1","identificationMark1");
+
+        ALIAS_MAP.put("Identification Marks 2","identificationMark1");
+
+        ALIAS_MAP.put("Type","type");
+
+        ALIAS_MAP.put("Grade","grade");
+
+        ALIAS_MAP.put("Section","section");
+
+        ALIAS_MAP.put("Roll Number","rollNo");
+
+        ALIAS_MAP.put("Error Message","errorMessage");
+
+    }
 
     public String getFirstName() {
         return firstName;
@@ -142,6 +206,14 @@ public class StudentCsv {
 
     public void setRegisteredMobileNumber(String registeredMobileNumber) {
         this.registeredMobileNumber = registeredMobileNumber;
+    }
+
+    public String getAlternateMobileNumbers() {
+        return alternateMobileNumbers;
+    }
+
+    public void setAlternateMobileNumbers(String alternateMobileNumbers) {
+        this.alternateMobileNumbers = alternateMobileNumbers;
     }
 
     public String getAddress1() {
@@ -208,14 +280,6 @@ public class StudentCsv {
         this.bloodGroup = bloodGroup;
     }
 
-    public String getAlternateMobileNumbers() {
-        return alternateMobileNumbers;
-    }
-
-    public void setAlternateMobileNumbers(String alternateMobileNumbers) {
-        this.alternateMobileNumbers = alternateMobileNumbers;
-    }
-
     public String getAadhaarNo() {
         return aadhaarNo;
     }
@@ -264,28 +328,12 @@ public class StudentCsv {
         this.subCaste = subCaste;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
-    }
-
-    public Boolean getDayScholar() {
-        return dayScholar;
-    }
-
-    public void setDayScholar(Boolean dayScholar) {
-        this.dayScholar = dayScholar;
-    }
-
-    public Category getHouse() {
-        return house;
-    }
-
-    public void setHouse(Category house) {
-        this.house = house;
     }
 
     public String getSubCategory() {
@@ -294,6 +342,14 @@ public class StudentCsv {
 
     public void setSubCategory(String subCategory) {
         this.subCategory = subCategory;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getBirthPlace() {
@@ -318,30 +374,6 @@ public class StudentCsv {
 
     public void setIdentificationMark2(String identificationMark2) {
         this.identificationMark2 = identificationMark2;
-    }
-
-    public String getPreviousSchoolName() {
-        return previousSchoolName;
-    }
-
-    public void setPreviousSchoolName(String previousSchoolName) {
-        this.previousSchoolName = previousSchoolName;
-    }
-
-    public String getPreviousSchoolAddress() {
-        return previousSchoolAddress;
-    }
-
-    public void setPreviousSchoolAddress(String previousSchoolAddress) {
-        this.previousSchoolAddress = previousSchoolAddress;
-    }
-
-    public String getPreviousSchoolStandard() {
-        return previousSchoolStandard;
-    }
-
-    public void setPreviousSchoolStandard(String previousSchoolStandard) {
-        this.previousSchoolStandard = previousSchoolStandard;
     }
 
     public String getGrade() {
