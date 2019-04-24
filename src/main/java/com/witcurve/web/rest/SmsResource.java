@@ -57,7 +57,7 @@ public class SmsResource {
             }
             smsService.sendSms(contactNumber,"Hello User, Your OTP for logging in to Witcurve is " + otp);
             if (user.getEmail() != null) {
-                // mailService.sendOtpMail(user);
+                mailService.sendOtpMail(user);
             }
         } else {
             throw new WitcurveException("User doesn't exist with given login id");
