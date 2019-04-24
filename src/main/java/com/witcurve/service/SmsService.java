@@ -79,7 +79,7 @@ public class SmsService {
             log.error("Error while sending otp as sms"+ e.getMessage());
             throw new WitcurveException("Error while sending otp as sms"+ e.getMessage());
         }
-        log.info("Sms sent successfully");
+        log.info("Sms sent successfully to '{}'", COUNTRY_CODE+mobileNumber);
     }
 
     public void sendBulkSMS(Long schoolInfoId, SmsVM smsVM) {
