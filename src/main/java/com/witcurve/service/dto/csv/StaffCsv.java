@@ -98,6 +98,8 @@ public class StaffCsv {
 
         ALIAS_MAP.put("* Bank IFSC Code","bankIfscCode");
 
+        ALIAS_MAP.put("Error Message","errorMessage");
+
     }
 
     public String getFirstName() {

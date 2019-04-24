@@ -1,9 +1,9 @@
 package com.witcurve.domain.enumeration;
 
 public enum StudentType {
-    DAY_SCHOLAR("Day Scholar"),
-    RESIDENTIAL("Residential"),
-    SEMI_RESIDENTIAL("Semi-Residential");
+    DAY_SCHOLAR("DAY SCHOLAR"),
+    RESIDENTIAL("RESIDENTIAL"),
+    SEMI_RESIDENTIAL("SEMI-RESIDENTIAL");
 
     private final String value;
 

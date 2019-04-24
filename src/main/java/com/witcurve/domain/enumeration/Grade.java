@@ -1,7 +1,7 @@
 package com.witcurve.domain.enumeration;
 
 public enum Grade {
-    NURSERY("Nursery"),
+    NURSERY("NURSERY"),
     LKG("LKG"),
     UKG("UKG"),
     I("I"),
@@ -18,13 +18,31 @@ public enum Grade {
     XII("XII");
 
 
-    private final String name;
+    private final String value;
 
-    private Grade(String name) {
-        this.name = name;
+    private Grade(String value) {
+        this.value = value;
     }
 
-    public String getName() {
-        return name;
+    public boolean equalsName(String value) {
+        return value.equals(value);
+    }
+
+    public String toString() {
+        return this.value;
+    }
+
+    public static Grade getGrade(String value) {
+        if(value != null) {
+            for(Grade m : values()) {
+                if(m.toString().equals(value)) {
+                    return m;
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+
     }
 }
