@@ -11,6 +11,7 @@ import com.witcurve.service.dto.csv.StaffCsv;
 import com.witcurve.service.dto.csv.StudentCsv;
 import com.witcurve.service.util.StaffCsvWriter;
 import com.witcurve.service.util.StudentCsvWriter;
+import com.witcurve.service.util.WitCurveConstants;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.apache.commons.lang3.StringUtils;
@@ -207,10 +208,10 @@ public class BulkImportServiceImpl implements BulkImportService {
 
         if(staffCsv.getJoiningDate() != null && !StringUtils.isBlank(staffCsv.getJoiningDate())) {
             try {
-                LocalDate joiningDate = WitcurveUtil.getLocalDate(staffCsv.getJoiningDate());
+                LocalDate joiningDate = WitcurveUtil.getLocalDate(staffCsv.getJoiningDate(), WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT);
                 staffDTO.setJoiningDate(joiningDate);
             } catch (Exception e) {
-                throw new WitcurveException("Joining Date value should be a valid date in format yyyy-MM-d");
+                throw new WitcurveException("Joining Date value should be a valid date in format dd/MM/yyyy");
             }
         } else {
             throw new WitcurveException("Joining Date value is empty");
@@ -247,10 +248,10 @@ public class BulkImportServiceImpl implements BulkImportService {
 
         if(staffCsv.getDateOfBirth() != null && !StringUtils.isBlank(staffCsv.getDateOfBirth())) {
             try {
-                LocalDate dob = WitcurveUtil.getLocalDate(staffCsv.getDateOfBirth());
+                LocalDate dob = WitcurveUtil.getLocalDate(staffCsv.getDateOfBirth(), WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT);
                 staffDTO.setDateOfBirth(dob);
             } catch (Exception e) {
-                throw new WitcurveException("Date of Birth value should be a valid date in format yyyy-MM-d");
+                throw new WitcurveException("Date of Birth value should be a valid date in format dd/MM/yyyy");
             }
         } else {
             throw new WitcurveException("Date of Birth value is required");
@@ -381,10 +382,10 @@ public class BulkImportServiceImpl implements BulkImportService {
 
         if(studentCsv.getAdmissionDate() != null && !StringUtils.isBlank(studentCsv.getAdmissionDate())) {
             try {
-                LocalDate admissionDate = WitcurveUtil.getLocalDate(studentCsv.getAdmissionDate());
+                LocalDate admissionDate = WitcurveUtil.getLocalDate(studentCsv.getAdmissionDate(), WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT);
                 studentDTO.setAdmissionDate(admissionDate);
             } catch (Exception e) {
-                throw new WitcurveException("Admission Date value should be a valid date in format yyyy-MM-d");
+                throw new WitcurveException("Admission Date value should be a valid date in format dd/MM/yyyy");
             }
         } else {
             throw new WitcurveException("Admission Date value is empty");
@@ -404,10 +405,10 @@ public class BulkImportServiceImpl implements BulkImportService {
 
         if(studentCsv.getDateOfBirth() != null && !StringUtils.isBlank(studentCsv.getDateOfBirth())) {
             try {
-                LocalDate dob = WitcurveUtil.getLocalDate(studentCsv.getDateOfBirth());
+                LocalDate dob = WitcurveUtil.getLocalDate(studentCsv.getDateOfBirth(), WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT);
                 studentDTO.setDateOfBirth(dob);
             } catch (Exception e) {
-                throw new WitcurveException("Date of Birth value should be a valid date in format yyyy-MM-d");
+                throw new WitcurveException("Date of Birth value should be a valid date in format dd/MM/yyyy");
             }
         } else {
             throw new WitcurveException("Date of Birth value is required");

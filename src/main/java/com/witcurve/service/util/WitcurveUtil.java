@@ -22,8 +22,8 @@ public class WitcurveUtil {
 
     private static final Logger log = LoggerFactory.getLogger(WitcurveUtil.class);
 
-    public static LocalDate getLocalDate(String localDate){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(WitCurveConstants.DEFAULT_DATE_FORMAT);
+    public static LocalDate getLocalDate(String localDate, String format){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return LocalDate.parse(localDate, formatter);
     }
 
