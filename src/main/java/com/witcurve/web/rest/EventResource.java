@@ -58,7 +58,7 @@ public class EventResource {
             List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
+            if (e.getMessage().contains("constraint [")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
@@ -205,7 +205,7 @@ public class EventResource {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for Upcoming Events view");
             }
-            result = eventService.findEventsByDateRangeForStudentInUpcomingEvents(eventDate, studentId);
+            result = eventService.findUpcomingEventsForStudentsInWeek(eventDate, studentId);
         }
 //        if(type.equals(ViewType.LEAVE)) {
 //            result = eventService.getAllLeavesForStudent(eventDate, studentId);
@@ -225,6 +225,8 @@ public class EventResource {
     @Timed
     public ResponseEntity<List<EventDTO>> getAllEventsForTeacher(
         @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
+        @RequestParam(value = "eventStart", required = false) LocalDate eventStart,
+        @RequestParam(value = "eventEnd", required = false) LocalDate eventEnd,
         @RequestParam(value = "month", required = false) Integer month,
         @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "type") ViewType type,
@@ -248,21 +250,21 @@ public class EventResource {
             result = eventService.findAllEventsOnGivenMonthForStaff(month, year, staffId);
         }
         if(ViewType.TEST.equals(type)){
-            if(eventDate == null) {
-                throw new WitcurveException("There should be eventDate param for TEST view");
+            if(eventStart == null || eventEnd ==null) {
+                throw new WitcurveException("There should be eventStart and eventEnd params for TEST view");
             }
-            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,eventDate,ViewType.TEST);
+            result=eventService.findAllTestAndAssignmentByTeacherInDateRange(staffId,eventStart,eventEnd,ViewType.TEST);
         }
         if(ViewType.ASSIGNMENT.equals(type)){
-            if(eventDate == null) {
-                throw new WitcurveException("There should be eventDate param for ASSIGNMENT view");
+            if(eventStart == null || eventEnd ==null) {
+                throw new WitcurveException("There should be eventStart and eventEnd params for ASSIGNMENT view");
             }
-            result=eventService.findAllTestAndAssignmentByTeacherInWeek(staffId,eventDate,ViewType.ASSIGNMENT);
+            result=eventService.findAllTestAndAssignmentByTeacherInDateRange(staffId,eventStart,eventEnd,ViewType.ASSIGNMENT);
         } else if(type.equals(ViewType.UPCOMING_EVENTS)) {
             if (eventDate == null) {
                 throw new WitcurveException("There should be eventDate param for ANNOUNCEMENTS view");
             }
-            result = eventService.findEventsByDateRangeForStaffInUpcomingEvents(eventDate, staffId);
+            result = eventService.findUpcomingEventsForStaffInWeek(eventDate, staffId);
         }
 
         return new ResponseEntity<>(result,  HttpStatus.OK);

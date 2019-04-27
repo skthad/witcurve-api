@@ -309,7 +309,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findEventsByDateRangeForStudentInUpcomingEvents(LocalDate date, Long studentId) throws WitcurveException {
+    public List<EventDTO> findUpcomingEventsForStudentsInWeek(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate endDate = date.plusDays(6);
         List<Event> result = new ArrayList<>();
@@ -328,7 +328,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findEventsByDateRangeForStaffInUpcomingEvents(LocalDate date, Long staffId) throws WitcurveException {
+    public List<EventDTO> findUpcomingEventsForStaffInWeek(LocalDate date, Long staffId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for staff with id : {}", date, staffId);
         LocalDate endDate = date.plusDays(6);
         List<Event> result = new ArrayList<>();
@@ -456,17 +456,16 @@ public class EventServiceImpl implements EventService {
         return result.map(eventMapper::toDto);
     }
 
-    public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate eventDate, ViewType type) throws WitcurveException {
-        LocalDate sDate= eventDate.minusDays(6);
+    public List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException {
         List<Event> events;
         if(ViewType.ASSIGNMENT.equals(type)){
-            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,sDate,eventDate);
+            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,eventStart,eventEnd);
         }
         else if(ViewType.TEST.equals(type)){
-            events = eventRepository.findTestsByTeacherInDateRange(staffId,sDate,eventDate);
+            events = eventRepository.findTestsByTeacherInDateRange(staffId,eventStart,eventEnd);
         }
         else {
-            throw new WitcurveException("Event type should be only test and Assignment");
+            throw new WitcurveException("Event type should be only TEST and Assignment");
         }
         Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
