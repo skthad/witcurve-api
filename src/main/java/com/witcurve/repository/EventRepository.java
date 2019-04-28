@@ -66,11 +66,15 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.standard.schoolInfo.id =?3) and e.type in ?2")
     List<Event> eventsBlockingHolidayAndSchoolEvents(LocalDate date, List<EventType> types, Long schoolInfoId);
 
-    @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.standard.schoolInfo.id =?3) and e.student.id=?4 and e.type in ?2")
-    List<Event> eventsBlockingLeaveForStudent(LocalDate date, List<EventType> types, Long schoolInfoId, Long studentId);
+    @Query("Select e from Event e " +
+        "where e.date = ?1 and e.type in ?2 " +
+        "and (e.schoolInfo.id=?3 or e.student.id=?4)")
+    List<Event> eventsBlockingAttendanceForStudent(LocalDate date, List<EventType> types, Long schoolInfoId, Long studentId);
 
-    @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.staff.id=?4) and e.type in ?2")
-    List<Event> eventsBlockingLeaveForStaff(LocalDate date, List<EventType> types, Long schoolInfoId, Long studentId);
+    @Query("Select e from Event e " +
+        "where e.date = ?1 and e.type in ?2 " +
+        "and (e.schoolInfo.id=?3 or e.staff.id=?4)")
+    List<Event> eventsBlockingAttendanceForStaff(LocalDate date, List<EventType> types, Long schoolInfoId, Long staffId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2  and e.student is not null and e.standard.id = ?3 " +
         "and e.type = 'ATTENDANCE' order by e.date desc")

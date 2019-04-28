@@ -1,10 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.EventType;
-import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.domain.enumeration.StaffType;
-import com.witcurve.domain.enumeration.ViewType;
+import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -90,9 +87,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
         if (eventDTOs.size() > 1) {
-            String bindingId = UUID.randomUUID().toString();
             for(EventDTO eventDTO : eventDTOs) {
-                eventDTO.setBindingId(bindingId);
                 if(eventDTO.getKeywords()!= null) {
                     for (String keyword : eventDTO.getKeywords()) {
                         keywordRepository.save(new Keyword(keyword));
@@ -108,29 +103,32 @@ public class EventServiceImpl implements EventService {
         }
 
         List<Event> events = eventMapper.toEntity(eventDTOs);
-        events = eventRepository.saveAll(events);
-        for(int i=0;i<events.size();i++){
-            if(events.get(i).getType().equals(EventType.ATTENDANCE)) {
-                if(events.get(i).getStudent() != null) {
-                    LocalDate date = events.get(i).getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentId(events.get(i).getStudent().getId(), date, date);
+        for(Event event : events){
+            if(event.getType().equals(EventType.ATTENDANCE)) {
+                if (event.getAttendanceType() == null) {
+                    event.setAttendanceType(AttendanceType.PRESENT);
+                }
+                if(event.getStudent() != null) {
+                    LocalDate date = event.getDate();
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentId(event.getStudent().getId(), date, date);
                     if (la.size() > 0) {
-                        la.get(0).addEvents(events.get(i));
-                        events.get(i).setName("LEAVE-"+la.get(0).getReason().toString());
-                        events.get(i).setDescription(la.get(0).getDescription());
+                        la.get(0).addEvents(event);
+                        event.setName("LEAVE-"+la.get(0).getReason().toString());
+                        event.setDescription(la.get(0).getDescription());
                     }
                 }
-                if(events.get(i).getStaff() != null) {
-                    LocalDate date = events.get(i).getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffId(events.get(i).getStaff().getId(), date, date);
+                if(event.getStaff() != null) {
+                    LocalDate date = event.getDate();
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffId(event.getStaff().getId(), date, date);
                     if (la.size() > 0) {
-                        la.get(0).addEvents(events.get(i));
-                        events.get(i).setName("LEAVE-"+la.get(0).getReason().toString());
-                        events.get(i).setDescription(la.get(0).getDescription());
+                        la.get(0).addEvents(event);
+                        event.setName("LEAVE-"+la.get(0).getReason().toString());
+                        event.setDescription(la.get(0).getDescription());
                     }
                 }
             }
         }
+        events = eventRepository.saveAll(events);
         return eventMapper.toDto(events);
     }
 
@@ -309,7 +307,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findEventsByDateRangeForStudentInUpcomingEvents(LocalDate date, Long studentId) throws WitcurveException {
+    public List<EventDTO> findUpcomingEventsForStudentsInWeek(LocalDate date, Long studentId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for student with id : {}", date, studentId);
         LocalDate endDate = date.plusDays(6);
         List<Event> result = new ArrayList<>();
@@ -328,7 +326,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findEventsByDateRangeForStaffInUpcomingEvents(LocalDate date, Long staffId) throws WitcurveException {
+    public List<EventDTO> findUpcomingEventsForStaffInWeek(LocalDate date, Long staffId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for staff with id : {}", date, staffId);
         LocalDate endDate = date.plusDays(6);
         List<Event> result = new ArrayList<>();
@@ -364,7 +362,6 @@ public class EventServiceImpl implements EventService {
         } else {
 
         }
-
 
         return eventMapper.toDto(result);
 
@@ -456,17 +453,16 @@ public class EventServiceImpl implements EventService {
         return result.map(eventMapper::toDto);
     }
 
-    public List<EventDTO> findAllTestAndAssignmentByTeacherInWeek(Long staffId, LocalDate eventDate, ViewType type) throws WitcurveException {
-        LocalDate sDate= eventDate.minusDays(6);
+    public List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException {
         List<Event> events;
         if(ViewType.ASSIGNMENT.equals(type)){
-            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,sDate,eventDate);
+            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,eventStart,eventEnd);
         }
         else if(ViewType.TEST.equals(type)){
-            events = eventRepository.findTestsByTeacherInDateRange(staffId,sDate,eventDate);
+            events = eventRepository.findTestsByTeacherInDateRange(staffId,eventStart,eventEnd);
         }
         else {
-            throw new WitcurveException("Event type should be only test and Assignment");
+            throw new WitcurveException("Event type should be only TEST and Assignment");
         }
         Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
@@ -553,18 +549,21 @@ public class EventServiceImpl implements EventService {
                     }
                     StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
                     if(studentStandard == null) {
-                        throw new WitcurveException("Student with id :"+eventDTO.getStudentId()+" not mapped to this standard id, so attendance cannot be created");
+                        throw new WitcurveException("Student ID: "+eventDTO.getStudentId()+" is not currently mapped to any standard");
+                    }
+                    if (!studentStandard.getStandard().getId().equals(eventDTO.getStandardId())) {
+                        throw new WitcurveException("Student ID: "+eventDTO.getStudentId()+" is not currently mapped with standard ID: " + eventDTO.getStandardId());
                     }
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-                    events = eventRepository.eventsBlockingLeaveForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
+                    events = eventRepository.eventsBlockingAttendanceForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
                     events = removeExistingEvent(events, eventDTO);
                 } else {
                     schoolInfoId = staffRepository.findById(eventDTO.getStaffId()).get().getSchoolInfo().getId();
-                    events = eventRepository.eventsBlockingLeaveForStaff(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStaffId());
+                    events = eventRepository.eventsBlockingAttendanceForStaff(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStaffId());
                     events = removeExistingEvent(events, eventDTO);
                 }
-                if(events.size() !=0) {
-                    throw new WitcurveException("An attendance record cannot be posted on a holiday or school event");
+                if(events.size() !=0 ) {
+                    throw new WitcurveException("Attendance cannot be posted twice, or on a holiday");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
                // if(eventDTO.getSchoolInfoId() == null) {
