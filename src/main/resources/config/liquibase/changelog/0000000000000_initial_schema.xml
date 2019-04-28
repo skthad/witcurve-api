@@ -1596,4 +1596,10 @@
         <sql>update config_settings set field_value = '0800' where id = 1</sql>
         <sql>update config_settings set field_value = 'Grace duration in minutes' where id = 2</sql>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-191">
+        <dropNotNullConstraint tableName="event" columnName="attendance_type" columnDataType="VARCHAR(50)"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-192">
+        <sql>update event set attendance_type = null where type != 'ATTENDANCE'</sql>
+    </changeSet>
 </databaseChangeLog>

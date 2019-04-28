@@ -1,10 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.EventType;
-import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.domain.enumeration.StaffType;
-import com.witcurve.domain.enumeration.ViewType;
+import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -108,29 +105,32 @@ public class EventServiceImpl implements EventService {
         }
 
         List<Event> events = eventMapper.toEntity(eventDTOs);
-        events = eventRepository.saveAll(events);
-        for(int i=0;i<events.size();i++){
-            if(events.get(i).getType().equals(EventType.ATTENDANCE)) {
-                if(events.get(i).getStudent() != null) {
-                    LocalDate date = events.get(i).getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentId(events.get(i).getStudent().getId(), date, date);
+        for(Event event : events){
+            if(event.getType().equals(EventType.ATTENDANCE)) {
+                if (event.getAttendanceType() == null) {
+                    event.setAttendanceType(AttendanceType.PRESENT);
+                }
+                if(event.getStudent() != null) {
+                    LocalDate date = event.getDate();
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentId(event.getStudent().getId(), date, date);
                     if (la.size() > 0) {
-                        la.get(0).addEvents(events.get(i));
-                        events.get(i).setName("LEAVE-"+la.get(0).getReason().toString());
-                        events.get(i).setDescription(la.get(0).getDescription());
+                        la.get(0).addEvents(event);
+                        event.setName("LEAVE-"+la.get(0).getReason().toString());
+                        event.setDescription(la.get(0).getDescription());
                     }
                 }
-                if(events.get(i).getStaff() != null) {
-                    LocalDate date = events.get(i).getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffId(events.get(i).getStaff().getId(), date, date);
+                if(event.getStaff() != null) {
+                    LocalDate date = event.getDate();
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffId(event.getStaff().getId(), date, date);
                     if (la.size() > 0) {
-                        la.get(0).addEvents(events.get(i));
-                        events.get(i).setName("LEAVE-"+la.get(0).getReason().toString());
-                        events.get(i).setDescription(la.get(0).getDescription());
+                        la.get(0).addEvents(event);
+                        event.setName("LEAVE-"+la.get(0).getReason().toString());
+                        event.setDescription(la.get(0).getDescription());
                     }
                 }
             }
         }
+        events = eventRepository.saveAll(events);
         return eventMapper.toDto(events);
     }
 
@@ -364,7 +364,6 @@ public class EventServiceImpl implements EventService {
         } else {
 
         }
-
 
         return eventMapper.toDto(result);
 

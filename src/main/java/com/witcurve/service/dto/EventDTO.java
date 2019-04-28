@@ -61,8 +61,7 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Boolean sendSms = false;
 
-    @NotNull
-    private AttendanceType attendanceType = AttendanceType.PRESENT;
+    private AttendanceType attendanceType;
 
     private Integer fullMarks;
 

@@ -82,10 +82,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Column(name = "send_sms", nullable = false, columnDefinition = "boolean default false")
     private Boolean sendSms = false;
 
-    @NotNull
-    @Column(name = "attendance_type", nullable = false, length = 50, columnDefinition = "varchar(50) default 'PRESENT'")
+    @Column(name = "attendance_type", length = 50)
     @Enumerated(EnumType.STRING)
-    private AttendanceType attendanceType = AttendanceType.PRESENT;
+    private AttendanceType attendanceType;
 
     private Integer fullMarks;
 
