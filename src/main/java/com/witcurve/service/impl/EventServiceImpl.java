@@ -87,9 +87,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
         if (eventDTOs.size() > 1) {
-            String bindingId = UUID.randomUUID().toString();
             for(EventDTO eventDTO : eventDTOs) {
-                eventDTO.setBindingId(bindingId);
                 if(eventDTO.getKeywords()!= null) {
                     for (String keyword : eventDTO.getKeywords()) {
                         keywordRepository.save(new Keyword(keyword));

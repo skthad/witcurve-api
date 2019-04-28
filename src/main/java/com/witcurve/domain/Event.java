@@ -26,9 +26,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "binding_id")
-    private String bindingId;
-
     @NotNull
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -106,14 +103,6 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getBindingId() {
-        return bindingId;
-    }
-
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
     }
 
     public EventType getType() {

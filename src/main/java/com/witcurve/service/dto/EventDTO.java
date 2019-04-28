@@ -20,8 +20,6 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
-    private String bindingId;
-
     @NotNull
     private EventType type;
 
@@ -77,14 +75,6 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getBindingId() {
-        return bindingId;
-    }
-
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
     }
 
     public EventType getType() {

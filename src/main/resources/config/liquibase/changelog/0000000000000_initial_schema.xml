@@ -1602,4 +1602,7 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-192">
         <sql>update event set attendance_type = null where type != 'ATTENDANCE'</sql>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-193">
+        <dropColumn tableName="event" columnName="binding_id"/>
+    </changeSet>
 </databaseChangeLog>
