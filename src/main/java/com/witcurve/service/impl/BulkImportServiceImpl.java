@@ -351,6 +351,7 @@ public class BulkImportServiceImpl implements BulkImportService {
         schoolInfo.setId(schoolInfoId);
         studentDTO.setSchoolInfo(schoolInfo);
         Grade grade = null;
+        Boolean doesCasteExist=false, doesCategoryExist=false;
 
         //converting each csv field to dto after check if entered values are valid
 
@@ -512,10 +513,14 @@ public class BulkImportServiceImpl implements BulkImportService {
         }
 
         if(studentCsv.getCaste() != null && !StringUtils.isBlank(studentCsv.getCaste())) {
+            doesCasteExist = true;
             studentDTO.setCaste(studentCsv.getCaste());
         }
 
         if(studentCsv.getSubCaste() != null && !StringUtils.isBlank(studentCsv.getSubCaste())) {
+            if(!doesCasteExist) {
+                studentCsv.setSubCaste(null);
+            }
             studentDTO.setSubCaste(studentCsv.getSubCaste());
         }
 
@@ -524,10 +529,18 @@ public class BulkImportServiceImpl implements BulkImportService {
             if(category == null) {
                 throw new WitcurveException("Category value is invalid, please enter only one these values : General, SC, ST, OBC, N/A, Other");
             }
+            doesCategoryExist=true;
             studentDTO.setCategory(category);
         }
 
         if(studentCsv.getSubCategory() != null && !StringUtils.isBlank(studentCsv.getSubCategory())) {
+            if(!doesCategoryExist) {
+                studentCsv.setSubCategory(null);
+            } else {
+                if(studentDTO.getCategory().equals(Category.GENERAL)) {
+                    studentCsv.setSubCategory(null);
+                }
+            }
             studentDTO.setSubCategory(studentCsv.getSubCategory());
         }
 
