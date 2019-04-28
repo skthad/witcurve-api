@@ -552,18 +552,21 @@ public class EventServiceImpl implements EventService {
                     }
                     StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
                     if(studentStandard == null) {
-                        throw new WitcurveException("Student with id :"+eventDTO.getStudentId()+" not mapped to this standard id, so attendance cannot be created");
+                        throw new WitcurveException("Student ID: "+eventDTO.getStudentId()+" is not currently mapped to any standard");
+                    }
+                    if (!studentStandard.getStandard().getId().equals(eventDTO.getStandardId())) {
+                        throw new WitcurveException("Student ID: "+eventDTO.getStudentId()+" is not currently mapped with standard ID: " + eventDTO.getStandardId());
                     }
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-                    events = eventRepository.eventsBlockingLeaveForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
+                    events = eventRepository.eventsBlockingAttendanceForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
                     events = removeExistingEvent(events, eventDTO);
                 } else {
                     schoolInfoId = staffRepository.findById(eventDTO.getStaffId()).get().getSchoolInfo().getId();
-                    events = eventRepository.eventsBlockingLeaveForStaff(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStaffId());
+                    events = eventRepository.eventsBlockingAttendanceForStaff(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStaffId());
                     events = removeExistingEvent(events, eventDTO);
                 }
-                if(events.size() !=0) {
-                    throw new WitcurveException("An attendance record cannot be posted on a holiday or school event");
+                if(events.size() !=0 ) {
+                    throw new WitcurveException("Attendance cannot be posted twice, or on a holiday");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
                // if(eventDTO.getSchoolInfoId() == null) {
