@@ -142,17 +142,17 @@ public class CourseContentResource {
     }
 
     /**
-     * get courseContents by examId
-     * @param examId
+     * get courseContents by ecdId
+     * @param ecdId
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/course-content/exams/{examId}")
+    @GetMapping("/course-content/ecd/{ecdId}")
     @Timed
-    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByExam(@PathVariable("examId") Long examId) throws WitcurveException {
-        log.debug("Request to get CourseContents with examId {}", examId);
-        List<CourseContentDTO> result = courseContentService.getCourseContentsByEventId(examId, true);
+    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByECD(@PathVariable("ecdId") Long ecdId) throws WitcurveException {
+        log.debug("Request to get CourseContents with ecdId {}", ecdId);
+        List<CourseContentDTO> result = courseContentService.getCourseContentsByEventId(ecdId, true);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

@@ -2,10 +2,10 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Event;
 import com.witcurve.domain.EventContent;
-import com.witcurve.domain.Exam;
+import com.witcurve.domain.ExamCourseDetails;
 import com.witcurve.repository.EventContentRepository;
 import com.witcurve.repository.EventRepository;
-import com.witcurve.repository.ExamRepository;
+import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.service.EventContentService;
 import com.witcurve.service.dto.EventContentDTO;
 import com.witcurve.service.mapper.EventContentMapper;
@@ -35,21 +35,21 @@ public class EventContentServiceImpl implements EventContentService {
     EventRepository eventRepository;
 
     @Autowired
-    ExamRepository examRepository;
+    ExamCourseDetailsRepository examCourseDetailsRepository;
 
     @Override
     public List<EventContentDTO> saveOrUpdateForEvent(Long eventId, List<EventContentDTO> eventContentDTOs, Boolean forExam) throws WitcurveException {
 
         log.debug("Request to save or update EventContents for {} with ID: {}", forExam ? "exam" : "event", eventId);
         if (forExam) {
-            Optional<Exam> exam = examRepository.findById(eventId);
-            if (!exam.isPresent()) {
-                throw new WitcurveException("No exam with given id " + eventId);
+            Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(eventId);
+            if (!ecd.isPresent()) {
+                throw new WitcurveException("No ECD with given id " + eventId);
             }
             for (EventContentDTO eventContentDTO : eventContentDTOs) {
                 eventContentDTO.setForExam(forExam);
                 if (!eventContentDTO.getEventId().equals(eventId)) {
-                    throw new WitcurveException("Exam Id provided does not match with examId in one or more eventContents");
+                    throw new WitcurveException("ECD Id provided does not match with ECD id in one or more eventContents");
                 }
             }
         } else {

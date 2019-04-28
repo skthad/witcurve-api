@@ -58,22 +58,22 @@ public class EventContentResource {
     }
 
     /**
-     * creates eventContents for exam
-     * @param examId
+     * creates eventContents for ECD
+     * @param ecdId
      *
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/event-content/exams/{examId}")
+    @PostMapping("/event-content/ecd/{ecdId}")
     @Timed
-    public ResponseEntity<List<EventContentDTO>> createEventContentsForExam(@RequestBody @Valid List<EventContentDTO> eventContentDTOs,
-                                                                     @PathVariable("examId") Long examId) throws WitcurveException, URISyntaxException {
-        log.debug("Request Save or Update eventContents for exam with ID: {}", examId);
+    public ResponseEntity<List<EventContentDTO>> createEventContentsForECD(@RequestBody @Valid List<EventContentDTO> eventContentDTOs,
+                                                                     @PathVariable("ecdId") Long ecdId) throws WitcurveException, URISyntaxException {
+        log.debug("Request Save or Update eventContents for ECD with ID: {}", ecdId);
 
         try {
-            List<EventContentDTO> result = eventContentService.saveOrUpdateForEvent(examId, eventContentDTOs, true);
-            return ResponseEntity.created(new URI("/api/event-content/exams/" + examId))
+            List<EventContentDTO> result = eventContentService.saveOrUpdateForEvent(ecdId, eventContentDTOs, true);
+            return ResponseEntity.created(new URI("/api/event-content/ecd/" + ecdId))
                 .headers(HeaderUtil.createEntityCreationAlert("eventContent", null))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
@@ -137,20 +137,20 @@ public class EventContentResource {
     }
 
     /**
-     * delete the eventContents by exam
-     * @param examId
+     * delete the eventContents by ECD
+     * @param ecdId
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/event-content/exams/{examId}")
+    @DeleteMapping("/event-content/ecd/{ecdId}")
     @Timed
-    public ResponseEntity<Void> deleteEventContentsByExam(@PathVariable Long examId) throws WitcurveException {
-        log.debug("REST request to delete EventContents with examId: {}", examId);
+    public ResponseEntity<Void> deleteEventContentsByEcd(@PathVariable Long ecdId) throws WitcurveException {
+        log.debug("REST request to delete EventContents with ecdId: {}", ecdId);
 
         try {
-            eventContentService.deleteEventContentByEventId(examId, true);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("All courseContents are unlinked with examId " + examId,
-                examId.toString())).build();
+            eventContentService.deleteEventContentByEventId(ecdId, true);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("All courseContents are unlinked with ecdId " + ecdId,
+                ecdId.toString())).build();
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
