@@ -9,6 +9,8 @@ public interface CourseContentService {
 
     List<CourseContentDTO> saveOrUpdateForCourse(Long courseId, List<CourseContentDTO> courseContentDTOs) throws WitcurveException;
 
+    CourseContentDTO updateSingleCourseContent(Long courseId, CourseContentDTO courseContentDTO) throws WitcurveException;
+
     CourseContentDTO getCourseContentById(Long courseContentId) throws WitcurveException;
 
     List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException;

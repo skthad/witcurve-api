@@ -13,9 +13,15 @@ public interface CourseContentRepository extends JpaRepository<CourseContent, Lo
     @Query("select cc from CourseContent cc where cc.course.id = ?1 order by cc.contentOrder")
     List<CourseContent> findByCourseId(Long courseId);
 
-    @Query("select cc from CourseContent cc where cc.course.id = ?1 and cc.parentContent is not null")
+    @Query("select cc from CourseContent cc where cc.course.id = ?1 and cc.parentContent is not null order by cc.contentOrder")
     List<CourseContent> findAllSubTopicsInCourse(Long courseId);
 
-    @Query("select cc from CourseContent cc where cc.course.id = ?1")
+    @Query("select cc from CourseContent cc where cc.course.id = ?1 order by cc.contentOrder")
     List<CourseContent> findAllTopicsInCourse(Long courseId);
+
+    @Query("select cc from CourseContent cc where cc.course.id = ?1 and cc.contentOrder > ?2 and cc.parentContent.id = ?3 order by cc.contentOrder")
+    List<CourseContent> findLaterSubtopics(Long courseId, Integer afterOrder, Long parentContentId);
+
+    @Query("select cc from CourseContent cc where cc.course.id = ?1 and cc.contentOrder > ?2 and cc.parentContent is null order by cc.contentOrder")
+    List<CourseContent> findLaterTopics(Long courseId, Integer afterOrder);
 }

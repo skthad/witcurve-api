@@ -42,12 +42,45 @@ public class CourseContentResource {
     @Timed
     public ResponseEntity<List<CourseContentDTO>> createCourseContents(@RequestBody @Valid List<CourseContentDTO> courseContentDTOs,
                                                                         @PathVariable("courseId") Long courseId) throws WitcurveException, URISyntaxException {
-        log.debug("Request Save or Update courseContents");
+        log.debug("Request to Save or Update courseContents");
 
         try {
             List<CourseContentDTO> result = courseContentService.saveOrUpdateForCourse(courseId, courseContentDTOs);
             return ResponseEntity.created(new URI("/api/course-content/courses/" + courseId))
                 .headers(HeaderUtil.createEntityCreationAlert("courseContent", null))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("course_parent_content_order_UK")) {
+                throw new WitcurveException("Unique constraint (course_id, parent_content_id, order) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+
+    }
+
+    /**
+     * update single courseContent
+     * @param courseContentDTO
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PutMapping("/course-content/courses/{courseId}")
+    @Timed
+    public ResponseEntity<CourseContentDTO> updateSingleCourseContent(@RequestBody @Valid CourseContentDTO courseContentDTO,
+                                                                       @PathVariable("courseId") Long courseId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to update single courseContent");
+
+        try {
+            if (courseContentDTO.getId() == null) {
+                throw new WitcurveException("An upate request for course content must have an ID");
+            }
+            CourseContentDTO result = courseContentService.updateSingleCourseContent(courseId, courseContentDTO);
+            return ResponseEntity.created(new URI("/api/course-content/courses/" + courseId))
+                .headers(HeaderUtil.createEntityUpdateAlert("courseContent", ""))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("course_parent_content_order_UK")) {
