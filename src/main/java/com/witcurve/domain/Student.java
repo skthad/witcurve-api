@@ -113,8 +113,8 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Convert(converter = ListToStringConverter.class)
     private List<@Pattern(regexp="^[6-9]\\d{9}$")String> alternateMobileNumbers;
 
-    @Pattern(regexp = "[0-9]{16}")
-    @Column(name = "aadhaar_no", length = 16)
+    @Pattern(regexp = "[0-9]{12}")
+    @Column(name = "aadhaar_no", length = 12)
     private String aadhaarNo;
 
     @NotNull

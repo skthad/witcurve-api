@@ -118,8 +118,8 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
 
-    @Pattern(regexp = "[0-9]{16}")
-    @Column(name = "aadhaar_no", length = 16)
+    @Pattern(regexp = "[0-9]{12}")
+    @Column(name = "aadhaar_no", length = 12)
     private String aadhaarNo;
 
     @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}")
