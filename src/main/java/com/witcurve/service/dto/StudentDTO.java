@@ -85,8 +85,8 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
 
     private List<String> alternateMobileNumbers;
 
-    @Pattern(regexp = "[0-9]{16}")
-    @Size(min = 16, max = 16)
+    @Pattern(regexp = "[0-9]{12}")
+    @Size(min = 16, max = 12)
     private String aadhaarNo;
 
     @NotNull
