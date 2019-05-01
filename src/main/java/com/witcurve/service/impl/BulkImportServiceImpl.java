@@ -1,7 +1,9 @@
 package com.witcurve.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.witcurve.domain.*;
+import com.witcurve.domain.Staff;
+import com.witcurve.domain.Standard;
+import com.witcurve.domain.Student;
+import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.*;
@@ -21,13 +23,12 @@ import org.simpleflatmapper.map.MapperBuildingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -328,9 +329,6 @@ public class BulkImportServiceImpl implements BulkImportService {
             } else {
                 throw new WitcurveException("Incorrect Aadhaar Number value, it should be a 12 digit number");
             }
-
-        } else {
-            throw new WitcurveException("Aadhaar value is empty");
         }
 
         if(staffCsv.getPan() != null && !StringUtils.isBlank(staffCsv.getPan())) {
@@ -339,9 +337,6 @@ public class BulkImportServiceImpl implements BulkImportService {
             } else {
                 throw new WitcurveException("Incorrect Pan Number input");
             }
-
-        } else {
-            throw new WitcurveException("Pan Number value is empty");
         }
 
         if(staffCsv.getBankAccountNumber() != null && !StringUtils.isBlank(staffCsv.getBankAccountNumber())) {
@@ -520,9 +515,6 @@ public class BulkImportServiceImpl implements BulkImportService {
             } else {
                 throw new WitcurveException("Incorrect Aadhaar Number value");
             }
-
-        } else {
-            throw new WitcurveException("Aadhaar value is empty");
         }
 
         if(studentCsv.getReligion() != null && !StringUtils.isBlank(studentCsv.getReligion())) {
