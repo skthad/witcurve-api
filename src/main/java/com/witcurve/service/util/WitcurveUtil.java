@@ -27,6 +27,15 @@ public class WitcurveUtil {
         return LocalDate.parse(localDate, formatter);
     }
 
+    public static void correctDateFormat(LocalDate startDate, LocalDate endDate) throws WitcurveException {
+        if((startDate == null) ^ (endDate == null)) {
+            throw new WitcurveException("Dude send the both dates brah! >:(");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new WitcurveException("Come on bro! you know start date cannot be before end date");
+        }
+    }
+
     public static <T> Boolean  isObjectEmpty(T t) throws IllegalAccessException, InvocationTargetException {
         Set<Method> getters = ReflectionUtils.getAllMethods(t.getClass(),
             ReflectionUtils.withModifier(Modifier.PUBLIC), ReflectionUtils.withPrefix("get"));

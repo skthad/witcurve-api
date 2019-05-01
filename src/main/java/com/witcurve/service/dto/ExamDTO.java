@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
@@ -19,9 +20,6 @@ public class ExamDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private Long schoolInfoId;
-
-    @NotNull
-    private Grade grade;
 
     @NotNull
     private ExamStatus status = ExamStatus.DRAFT;
@@ -37,6 +35,8 @@ public class ExamDTO extends AbstractAuditingDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate endDate;
 
+    private Set<Grade> grades;
+
     public Long getId() {
         return id;
     }
@@ -51,14 +51,6 @@ public class ExamDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSchoolInfoId(Long schoolInfoId) {
         this.schoolInfoId = schoolInfoId;
-    }
-
-    public Grade getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Grade grade) {
-        this.grade = grade;
     }
 
     public ExamStatus getStatus() {
@@ -91,6 +83,14 @@ public class ExamDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Set<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
     }
 
     @Override

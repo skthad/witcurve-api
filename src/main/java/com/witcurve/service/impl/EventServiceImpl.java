@@ -9,7 +9,7 @@ import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.EventMapper;
-import com.witcurve.service.util.DateRangeUtil;
+import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -374,7 +374,7 @@ public class EventServiceImpl implements EventService {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
         //TODO find better logic condition to check if one more ids exist - use truth table;
-        DateRangeUtil.correctDateFormat(fromDate, toDate);
+        WitcurveUtil.correctDateFormat(fromDate, toDate);
         List<Event> attendance;
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
@@ -392,7 +392,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId, List<Long> standardIds, List<String> keywords, Long schoolInfoId, Pageable pageable) throws WitcurveException {
 
-        DateRangeUtil.correctDateFormat(startDate, endDate);
+        WitcurveUtil.correctDateFormat(startDate, endDate);
 
         Page<Event> result = null;
 
@@ -471,7 +471,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findHolidaysInSchoolInfo(Long schoolInfoId, LocalDate startDate, LocalDate endDate) throws WitcurveException {
         log.debug("List of holidays for a schoolInfo with id : {}", schoolInfoId);
-        DateRangeUtil.correctDateFormat(startDate, endDate);
+        WitcurveUtil.correctDateFormat(startDate, endDate);
         List<Event> events = eventRepository.findByTypeAndSchoolInfoIdOrderByDateAsc(EventType.HOLIDAY, schoolInfoId, startDate, endDate);
         return eventMapper.toDto(events);
     }

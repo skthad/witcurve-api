@@ -3,12 +3,14 @@ package com.witcurve.domain;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.util.LocalDateConverter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="exam")
@@ -24,11 +26,6 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name ="school_info_id", nullable = false)
     private SchoolInfo schoolInfo;
-
-    @NotNull
-    @Column(name = "grade", nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private Grade grade;
 
     @NotNull
     @Column(name = "status", nullable = false, length = 50, columnDefinition = "varchar(50) default 'DRAFT'")
@@ -49,6 +46,11 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @Convert(converter = LocalDateConverter.class)
     private LocalDate endDate;
 
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="exam_id", insertable = false, updatable = false)
+    @Where(clause = "status='ACTIVE'")
+    private Set<GeneralSlotDetails> generalSlotDetails;
+
     public Long getId() {
         return id;
     }
@@ -63,14 +65,6 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     public void setSchoolInfo(SchoolInfo schoolInfo) {
         this.schoolInfo = schoolInfo;
-    }
-
-    public Grade getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Grade grade) {
-        this.grade = grade;
     }
 
     public ExamStatus getStatus() {
@@ -103,6 +97,14 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public Set<GeneralSlotDetails> getGeneralSlotDetails() {
+        return generalSlotDetails;
+    }
+
+    public void setGeneralSlotDetails(Set<GeneralSlotDetails> generalSlotDetails) {
+        this.generalSlotDetails = generalSlotDetails;
     }
 
     @Override

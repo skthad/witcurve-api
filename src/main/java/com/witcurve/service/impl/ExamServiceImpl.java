@@ -11,6 +11,7 @@ import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.service.ExamService;
 import com.witcurve.service.dto.ExamDTO;
 import com.witcurve.service.mapper.ExamMapper;
+import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,23 +49,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException {
         log.debug("Request to save or update exam: {}", examDTO);
-
-        if (examDTO.getStartDate().isAfter(examDTO.getEndDate())) {
-            throw new WitcurveException("StartDate cannot be after EndDate");
-        }
-        List<Long> overlappingExamIds;
-        if (examDTO.getId() == null) {
-            overlappingExamIds = examRepository.findOverlappingExams(
-                examDTO.getSchoolInfoId(), examDTO.getGrade(), examDTO.getStartDate(), examDTO.getEndDate());
-        } else {
-            overlappingExamIds = examRepository.findOverlappingExams(
-                examDTO.getSchoolInfoId(), examDTO.getGrade(),
-                examDTO.getStartDate(), examDTO.getEndDate(), examDTO.getId());
-        }
-
-        if (overlappingExamIds.size() > 0) {
-            throw new WitcurveException("Date range provided overlaps with another exam");
-        }
+        WitcurveUtil.correctDateFormat(examDTO.getStartDate(), examDTO.getEndDate());
         return examMapper.toDto(examRepository.save(examMapper.toEntity(examDTO)));
     }
 
@@ -97,22 +82,6 @@ public class ExamServiceImpl implements ExamService {
             throw  new WitcurveException("No Exam with given Id " + examId);
         }
         return examMapper.toDto(exam.get());
-    }
-
-    @Override
-    public List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate, ExamStatus status) throws WitcurveException {
-        log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
-        if (startDate.isAfter(endDate)) {
-            throw new WitcurveException("StartDate cannot be after EndDate");
-        }
-        List<Exam> exams;
-        if (status == null) {
-            exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate);
-        } else {
-            exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, startDate, endDate, status);
-        }
-
-        return examMapper.toDto(exams);
     }
 
     @Override

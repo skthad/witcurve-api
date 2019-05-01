@@ -119,30 +119,6 @@ public class ExamResource {
     }
 
     /**
-     * get exam by school info id and grade
-     * @param schoolInfoId
-     * @param grade
-     * @param startDate
-     * @param endDate
-     * @param status
-     *
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/exams/school-info/{schoolInfoId}/grades/{grade}")
-    @Timed
-    public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfoAndGrade(@PathVariable("schoolInfoId") Long schoolInfoId,
-                                                                   @PathVariable("grade") Grade grade,
-                                                                      @RequestParam(value = "startDate") LocalDate startDate,
-                                                                      @RequestParam(value = "endDate") LocalDate endDate,
-                                                                      @RequestParam(value = "status", required = false) ExamStatus status) throws WitcurveException {
-        log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
-        List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate, status);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
      * get exam by academic session
      * @param sessionId
      *
