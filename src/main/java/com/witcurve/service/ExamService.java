@@ -16,9 +16,7 @@ public interface ExamService {
 
     ExamDTO getExamById(Long examId) throws WitcurveException;
 
-    List<ExamDTO> getExamsBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, LocalDate startDate, LocalDate endDate, ExamStatus status) throws WitcurveException;
-
-    List<ExamDTO> getExamsBySessionId(Long sessionId) throws WitcurveException;
+    List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade) throws WitcurveException;
 
     void deleteExam(Long examId) throws WitcurveException;
 }

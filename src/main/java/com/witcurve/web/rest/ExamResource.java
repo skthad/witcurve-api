@@ -10,6 +10,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,11 +51,7 @@ public class ExamResource {
                 .headers(HeaderUtil.createEntityCreationAlert("exams", result.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key for some field might be invalid");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
         }
     }
 
@@ -71,8 +68,6 @@ public class ExamResource {
         log.debug("Request to update exam");
         if (examDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");
-        } else {
-            examService.getExamById(examDTO.getId());
         }
         try {
             ExamDTO result = examService.saveOrUpdate(examDTO);
@@ -80,11 +75,7 @@ public class ExamResource {
                 .headers(HeaderUtil.createEntityUpdateAlert("exam", examDTO.getId().toString()))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key for some field might be invalid");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
+            throw new WitcurveException("DataIntegrityViolationException occurred.");
         }
     }
 
@@ -119,42 +110,21 @@ public class ExamResource {
     }
 
     /**
-     * get exam by school info id and grade
+     * get exam between fromDate and endDate for school board with schoolInfoId
      * @param schoolInfoId
-     * @param grade
-     * @param startDate
+     * @param fromDate
      * @param endDate
-     * @param status
-     *
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/exams/school-info/{schoolInfoId}/grades/{grade}")
+    @GetMapping("/exams/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfoAndGrade(@PathVariable("schoolInfoId") Long schoolInfoId,
-                                                                   @PathVariable("grade") Grade grade,
-                                                                      @RequestParam(value = "startDate") LocalDate startDate,
-                                                                      @RequestParam(value = "endDate") LocalDate endDate,
-                                                                      @RequestParam(value = "status", required = false) ExamStatus status) throws WitcurveException {
-        log.debug("Request to get Exams for grade {} in schoolInfoId {}", grade, schoolInfoId);
-        List<ExamDTO> result = examService.getExamsBySchoolInfoAndGrade(schoolInfoId, grade, startDate, endDate, status);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * get exam by academic session
-     * @param sessionId
-     *
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/exams/session/{sessionId}")
-    @Timed
-    public ResponseEntity<List<ExamDTO>> getExamsBySchoolInfo(@PathVariable("sessionId") Long sessionId) throws WitcurveException {
-        log.debug("Request to get Exams for academic session with id : {}", sessionId);
-        List<ExamDTO> result = examService.getExamsBySessionId(sessionId);
+    public ResponseEntity<List<ExamDTO>> getExams(@PathVariable Long schoolInfoId, @RequestParam(required = false) Grade grade, @RequestParam LocalDate fromDate,
+                                                  @RequestParam LocalDate endDate, @RequestParam(required = false) Boolean readyToView,
+                                                  @RequestParam(required = false) Boolean readyForMarks) throws WitcurveException {
+        log.debug("Request to get Exams between dates {} and {} for school info with id : {} of grade : {}", fromDate, endDate, schoolInfoId, null);
+        List<ExamDTO> result = examService.getExamsBetweenDates(schoolInfoId, fromDate, endDate, grade);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -168,17 +138,10 @@ public class ExamResource {
     @Timed
     public ResponseEntity<Void> deleteExam(@PathVariable Long examId) throws WitcurveException {
         log.debug("REST request to delete Exam: {}", examId);
-        try {
-            examService.deleteExam(examId);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A exam is deleted with identifier " + examId,
-                examId.toString())).build();
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
+        examService.deleteExam(examId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A exam is deleted with identifier " + examId,
+            examId.toString())).build();
+
 
     }
 

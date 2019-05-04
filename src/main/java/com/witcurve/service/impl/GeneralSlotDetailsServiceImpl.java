@@ -1,10 +1,12 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.Exam;
 import com.witcurve.domain.GeneralSlotDetails;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.ExamCourseDetailsRepository;
+import com.witcurve.repository.ExamRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.service.GeneralSlotDetailsService;
@@ -38,6 +40,9 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Autowired
     private ExamCourseDetailsRepository examCourseDetailsRepository;
 
+    @Autowired
+    private ExamRepository examRepository;
+
     @Override
     public List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
         log.debug("Request to create generalSlotDetails");
@@ -64,8 +69,6 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Override
     public List<GeneralSlotDetailsDTO> createOrUpdateExamSlots(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
         log.debug("Request to create exam slots");
-
-        //TODO: logic for overlap
         Map<Grade, String> gradeBindingValueMap = new HashMap<>();
         for (GeneralSlotDetailsDTO gsd : generalSlotDetailsDTOs) {
             Grade grade = gsd.getGrade();
@@ -73,7 +76,6 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             if (grade == null || examId == null) {
                 throw new WitcurveException("Grade and examId must be provided to create exam slots");
             }
-            //gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
             if (gradeBindingValueMap.get(grade) == null) {
                 String bindingId = UUID.randomUUID().toString();
                 gradeBindingValueMap.put(grade, bindingId);
@@ -99,14 +101,12 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
 
     @Override
     public void activateGSDsForStandard(Long standardId, String bindingId) {
-
         generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(Arrays.asList(standardId)));
         generalSlotDetailsRepository.activateSlotDetailsForStandard(standardId, bindingId);
     }
 
     @Override
     public void deactivateGSDsForStandards(List<Long> standardIds) {
-
         generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(standardIds));
     }
 
@@ -181,9 +181,14 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public List<GeneralSlotDetailsDTO> getExamSlotsByGradeAndExam(Grade grade, Long examId) throws WitcurveException {
-        log.debug("Request to get generalSlotDetails by grade : {}", grade);
-        List<GeneralSlotDetails> gsdList = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(grade, examId);
+    public List<GeneralSlotDetailsDTO> getExamSlotsByExamAndGrade(Long examId, Grade grade) throws WitcurveException {
+        log.debug("Request to get generalSlotDetails by exam with id : {} for grade : {}", examId, grade);
+        List<GeneralSlotDetails> gsdList;
+        if(grade == null) {
+            gsdList = generalSlotDetailsRepository.findExamSlotsByExamId(examId);
+        } else {
+            gsdList = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(grade, examId);
+        }
         return generalSlotDetailsMapper.toDto(gsdList);
     }
 
@@ -193,25 +198,34 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     }
 
     @Override
-    public void deleteGSDById(Long gsdId) throws WitcurveException {
-        log.debug("Request to delete generalSlotDetails by id : {}", gsdId);
-        Optional<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsRepository.findById(gsdId);
-        if(!generalSlotDetails.isPresent()) {
-            throw new WitcurveException("No GeneraSlotDetails exist for given id");
+    public void deleteExamSlotsByGradesAndExamId(List<Grade> grades, Long examId) throws WitcurveException {
+        Optional<Exam> exam = examRepository.findById(examId);
+        if (!exam.isPresent()) {
+            throw  new WitcurveException("No Exam with given Id " + examId);
         }
-        if(generalSlotDetails.get().getExam() != null && !generalSlotDetails.get().getExam().getStatus().equals(ExamStatus.CLOSED)) {
-            examCourseDetailsRepository.deleteByGsdId(gsdId);
-            generalSlotDetailsRepository.deleteById(gsdId);
-        } else {
-            throw new WitcurveException("GeneraSlotDetails with id "+gsdId+" cannot be deleted");
+        if(!ExamStatus.DRAFT.equals(exam.get().getStatus())) {
+            throw new WitcurveException("Only DRAFT exams slots can be deleted");
         }
-
+        generalSlotDetailsRepository.deleteByGradeAndExamId(grades, examId);
     }
 
     @Override
-    public void deleteExamSlotsByGradeAndExamId(Grade grade, Long examId) throws WitcurveException {
+    public void deleteExamSlotsByIds(List<Long> gsdIds) {
+        log.debug("Delete Exam slots with gsd ids : {}", gsdIds);
+        for(Long gsdId : gsdIds) {
+            Optional<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsRepository.findById(gsdId);
+            if(!generalSlotDetails.isPresent() && generalSlotDetails.get().getExam() != null) {
+                throw new WitcurveException("There doesn't exist an exam slot with given id");
+            }
+            Exam exam = generalSlotDetails.get().getExam();
+            if(!ExamStatus.DRAFT.equals(exam.getStatus())) {
+                throw new WitcurveException("Only DRAFT exams slots can be deleted");
+            }
+            generalSlotDetailsRepository.delete(generalSlotDetails.get());
+            examCourseDetailsRepository.deleteByGsdId(generalSlotDetails.get().getId());
+        }
 
-        generalSlotDetailsRepository.deleteByGradeAndExamId(grade, examId);
+
     }
 
 

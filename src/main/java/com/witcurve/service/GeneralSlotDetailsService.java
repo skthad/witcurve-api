@@ -27,11 +27,11 @@ public interface GeneralSlotDetailsService {
 
     List<GeneralSlotDetailsDTO> getGeneralSlotDetailsByStandardId(Long standardId, GSDStatus status) throws WitcurveException;
 
-    List<GeneralSlotDetailsDTO> getExamSlotsByGradeAndExam(Grade grade, Long examId) throws WitcurveException;
+    List<GeneralSlotDetailsDTO> getExamSlotsByExamAndGrade(Long examId, Grade grade) throws WitcurveException;
 
     void deleteGSDsByBindingId(String bindingId) throws WitcurveException;
 
-    void deleteGSDById(Long gsdId) throws WitcurveException;
+    void deleteExamSlotsByGradesAndExamId(List<Grade> grade, Long examId) throws WitcurveException;
 
-    void deleteExamSlotsByGradeAndExamId(Grade grade, Long examId) throws WitcurveException;
+    void deleteExamSlotsByIds(List<Long> gsdIds);
 }

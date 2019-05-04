@@ -1608,4 +1608,12 @@
     <changeSet author="WitCurve (generated)" id="0000000000001-194">
         <sql>delete from event_content where for_exam = true and event_id not in (select id from exam_course_details)</sql>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-195">
+        <dropColumn columnName="grade" tableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-196">
+        <modifyDataType columnName="grade"
+                        newDataType="int"
+                        tableName="general_slot_details"/>
+    </changeSet>
 </databaseChangeLog>

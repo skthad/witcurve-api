@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.Exam;
 import com.witcurve.domain.ExamCourseDetails;
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.ExamCourseDetailsRepository;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,6 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         if (!exam.isPresent()) {
             throw new WitcurveException("No exam found with id: " + examId);
         }
-
         for (ExamCourseDetailsDTO examCourseDetailsDTO : examCourseDetailsDTOs) {
             if (examCourseDetailsDTO.getDate().isBefore(exam.get().getStartDate())
                 || examCourseDetailsDTO.getDate().isAfter(exam.get().getEndDate())) {
@@ -200,13 +201,18 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
 
 
     @Override
-    public void deleteExamCourseDetails(Long examCourseDetailsId) throws WitcurveException {
-        log.debug("Request to delete examCourseDetails by id : {}", examCourseDetailsId);
-        ExamCourseDetails examCourseDetails = examCourseDetailsRepository.findById(examCourseDetailsId).get();
-        if(examCourseDetails == null) {
-            throw new WitcurveException("No ExamCourseDetails exists for given id");
+    public void deleteExamCourseDetails(List<Long> ecdIds) throws WitcurveException {
+        log.debug("Request to delete examCourseDetails by id : {}", ecdIds);
+        for(Long examCourseDetailsId : ecdIds) {
+            Optional<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findById(examCourseDetailsId);
+            if(!examCourseDetails.isPresent()) {
+                throw new WitcurveException("No ExamCourseDetails exists for given id");
+            }
+            if(!examCourseDetails.get().getGsd().getExam().getStatus().equals(ExamStatus.DRAFT)) {
+                throw new WitcurveException("Only DRAFT exam course slots can be deleted");
+            }
+            examCourseDetailsRepository.delete(examCourseDetails.get());
         }
-        examCourseDetailsRepository.delete(examCourseDetails);
     }
 
 }

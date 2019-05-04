@@ -116,21 +116,19 @@ public class GeneralSlotDetailsResource {
     }
 
     /**
-     * get generalSlotDetails by standard id
+     * get generalSlotDetails by exam id
      *
-     * @param grade
      * @param examId
      *
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/general-slot-details/grades/{grade}/exams/{examId}")
+    @GetMapping("/general-slot-details/exams/{examId}")
     @Timed
-    public ResponseEntity<List<GeneralSlotDetailsDTO>> getExamSlotsByGradeAndExam(@PathVariable("grade") Grade grade,
-                                                                           @PathVariable(value = "examId") Long examId) throws WitcurveException {
-        log.debug("Request to get GeneralSlotDetails with grade {} and examId {} ", grade, examId);
-        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getExamSlotsByGradeAndExam(grade, examId);
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> getExamSlotsByExam(@PathVariable(value = "examId") Long examId, @RequestParam(required = false) Grade grade) throws WitcurveException {
+        log.debug("Request to get GeneralSlotDetails with examId {} for grade : {}", examId, grade);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.getExamSlotsByExamAndGrade(examId, grade);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -212,29 +210,6 @@ public class GeneralSlotDetailsResource {
 
     /**
      * delete the gsd
-     * @param generalSlotDetailsId
-     * @return
-     * @throws WitcurveException
-     */
-    @DeleteMapping("/general-slot-details/{generalSlotDetailsId}")
-    @Timed
-    public ResponseEntity<Void> deleteGeneralSlotDetailsById(@PathVariable Long generalSlotDetailsId) throws WitcurveException {
-        log.debug("REST request to delete GeneralSlotDetails for id: {}", generalSlotDetailsId);
-        try {
-            generalSlotDetailsService.deleteGSDById(generalSlotDetailsId);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("GSD deleted with id " + generalSlotDetailsId,
-                generalSlotDetailsId.toString())).build();
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
-    }
-
-    /**
-     * delete the gsd
      * @param bindingId
      * @return
      * @throws WitcurveException
@@ -258,17 +233,32 @@ public class GeneralSlotDetailsResource {
 
     /**
      * delete the gsd
+     * @param
      * @param examId
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/general-slot-details/grades/{grade}/exams/{examId}")
+    @DeleteMapping("/general-slot-details/exams/{examId}")
     @Timed
-    public ResponseEntity<Void> deleteExamSlotsByGradeExamId(@PathVariable Grade grade, @PathVariable Long examId) throws WitcurveException {
-        log.debug("REST request to delete Exam Slots for grade: {} and examId: {}", grade, examId);
-        generalSlotDetailsService.deleteExamSlotsByGradeAndExamId(grade, examId);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("Exam Slots deleted with grade " + grade + " and examId " + examId,
-            grade.toString())).build();
+    public ResponseEntity<Void> deleteExamSlotsByGradeExamId(@RequestParam List<Grade> grades, @PathVariable Long examId) throws WitcurveException {
+        log.debug("REST request to delete Exam Slots for grades: {} and examId: {}", grades, examId);
+        generalSlotDetailsService.deleteExamSlotsByGradesAndExamId(grades, examId);
+        return ResponseEntity.ok(null);
+    }
+
+    /**
+     * delete the gsd
+     * @param
+     * @param gsdIds
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/general-slot-details/exams")
+    @Timed
+    public ResponseEntity<Void> deleteExamSlotsByGradeExamId(@RequestParam List<Long> gsdIds) throws WitcurveException {
+        log.debug("REST request to delete Exam Slots with gsd ids : {}", gsdIds);
+        generalSlotDetailsService.deleteExamSlotsByIds(gsdIds);
+        return ResponseEntity.ok(null);
     }
 
 

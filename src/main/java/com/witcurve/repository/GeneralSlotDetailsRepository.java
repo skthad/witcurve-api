@@ -21,8 +21,11 @@ public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotD
     List<GeneralSlotDetails> findGSDsByStandardIdAndStatus(Long standardId, GSDStatus status);
 
     @Query("select gsd from GeneralSlotDetails gsd where gsd.grade = ?1 " +
-        "and gsd.exam.id = ?2 order by bindingId, start")
+        "and gsd.exam.id = ?2 order by gsd.start")
     List<GeneralSlotDetails> findExamSlotsByGradeAndExamId(Grade grade,Long examId);
+
+    @Query("select gsd from GeneralSlotDetails gsd where gsd.exam.id = ?1 order by gsd.grade, gsd.start")
+    List<GeneralSlotDetails> findExamSlotsByExamId(Long examId);
 
     @Modifying
     @Query("update GeneralSlotDetails set status = 'ACTIVE' where " +
@@ -43,6 +46,10 @@ public interface GeneralSlotDetailsRepository extends JpaRepository<GeneralSlotD
     void deleteByExamId(Long examId);
 
     @Modifying
-    @Query("delete from GeneralSlotDetails where grade = ?1 and exam.id = ?2")
-    void deleteByGradeAndExamId(Grade grade, Long examId);
+    @Query("delete from GeneralSlotDetails where grade in ?1 and exam.id = ?2")
+    void deleteByGradeAndExamId(List<Grade> grades, Long examId);
+
+    @Modifying
+    @Query("delete from GeneralSlotDetails gsd where  gsd.id in ?1")
+    void deleteExamSlotsByIds(List<Long> gsdIds);
 }

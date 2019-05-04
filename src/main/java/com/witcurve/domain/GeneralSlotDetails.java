@@ -31,8 +31,7 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @JoinColumn(name = "standard_id")
     private Standard standard;
 
-    @Column(length = 50)
-    @Enumerated(EnumType.STRING)
+    @Column
     private Grade grade;
 
     @NotNull
