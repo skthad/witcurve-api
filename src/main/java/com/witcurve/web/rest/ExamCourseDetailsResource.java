@@ -51,7 +51,7 @@ public class ExamCourseDetailsResource {
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("ecd_slot_date_course_UK")) {
-                throw new WitcurveException("Unique constraint (gsd_id, date, course) violated");
+                throw new WitcurveException("There are already exists a exam slot with given course and grade");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -163,18 +163,17 @@ public class ExamCourseDetailsResource {
 
     /**
      * delete the examCourseDetails
-     * @param examCourseDetailsId
+     * @param ecdIds
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/exam-course-details/{examCourseDetailsId}")
+    @DeleteMapping("/exam-course-details")
     @Timed
-    public ResponseEntity<Void> deleteExamCourseDetails(@PathVariable Long examCourseDetailsId) throws WitcurveException {
-        log.debug("REST request to delete ExamCourseDetails: {}", examCourseDetailsId);
+    public ResponseEntity<Void> deleteExamCourseDetails(@RequestParam List<Long> ecdIds) throws WitcurveException {
+        log.debug("REST request to delete ExamCourseDetails with ids: {}", ecdIds);
         try {
-            examCourseDetailsService.deleteExamCourseDetails(examCourseDetailsId);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A examCourseDetails is deleted with identifier " + examCourseDetailsId,
-                examCourseDetailsId.toString())).build();
+            examCourseDetailsService.deleteExamCourseDetails(ecdIds);
+            return ResponseEntity.ok(null);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key constraint might have failed while deleting");

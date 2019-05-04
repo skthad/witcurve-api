@@ -3,5 +3,6 @@ package com.witcurve.domain.enumeration;
 public enum ExamStatus {
     DRAFT,
     PUBLISHED,
-    CLOSED
+    AWAITING_RESULTS,
+    RESULTS_DECLARED
 }

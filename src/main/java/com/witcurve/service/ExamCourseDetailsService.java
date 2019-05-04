@@ -31,6 +31,6 @@ public interface ExamCourseDetailsService {
 
     ExamCourseDetailsDTO getExamCourseDetailsById(Long examCourseDetailsId) throws WitcurveException;
 
-    void deleteExamCourseDetails(Long examCourseDetailsId) throws WitcurveException;
+    void deleteExamCourseDetails(List<Long> ecdIds) throws WitcurveException;
 
 }

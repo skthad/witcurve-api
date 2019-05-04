@@ -50,6 +50,17 @@ public class ExamServiceImpl implements ExamService {
     public ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException {
         log.debug("Request to save or update exam: {}", examDTO);
         WitcurveUtil.correctDateFormat(examDTO.getStartDate(), examDTO.getEndDate());
+        if(examDTO.getId() != null) {
+            Optional<Exam> exam = examRepository.findById(examDTO.getId());
+            if (!exam.isPresent()) {
+                throw new WitcurveException("No Exam with given Id " + examDTO.getId());
+            }
+            if(!exam.get().getStatus().equals(ExamStatus.DRAFT)) {
+                throw new WitcurveException("Only DRAFT exams can be updated");
+            }
+            examCourseDetailsRepository.deleteByExamId(examDTO.getId());
+            generalSlotDetailsRepository.deleteByExamId(examDTO.getId());
+        }
         return examMapper.toDto(examRepository.save(examMapper.toEntity(examDTO)));
     }
 
@@ -60,15 +71,11 @@ public class ExamServiceImpl implements ExamService {
         if (!exam.isPresent()) {
             throw new WitcurveException("No Exam with given Id " + examId);
         }
-        if(ExamStatus.DRAFT.equals(exam.get().getStatus())) {
-            if(ExamStatus.CLOSED.equals(status)) {
-                throw new WitcurveException("Drafted exams cannot be closed");
-            }
-        }
-        if(ExamStatus.CLOSED.equals(exam.get().getStatus())) {
-            if(ExamStatus.DRAFT.equals(status)) {
-                throw new WitcurveException("Closed exams cannot be drafted");
-            }
+        Boolean isValidStatusChange = (exam.get().getStatus().equals(ExamStatus.DRAFT) && status.equals(ExamStatus.PUBLISHED))
+            || (exam.get().getStatus().equals(ExamStatus.PUBLISHED) && status.equals(ExamStatus.AWAITING_RESULTS))
+            || (exam.get().getStatus().equals(ExamStatus.AWAITING_RESULTS) && status.equals(ExamStatus.RESULTS_DECLARED));
+        if(!isValidStatusChange) {
+            throw new WitcurveException("Exam status cannot be changed from "+exam.get().getStatus()+" to "+status);
         }
         exam.get().setStatus(status);
         return examMapper.toDto(exam.get());
@@ -85,14 +92,15 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamDTO> getExamsBySessionId(Long sessionId) throws WitcurveException {
-        log.debug("Get the list off exams in academic session with id : {}", sessionId);
-        Optional<AcademicSession> academicSession = academicSessionRepository.findById(sessionId);
-        if (!academicSession.isPresent()) {
-            throw new WitcurveException("No Academic Session with given id");
+    public List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade) throws WitcurveException {
+        log.debug("Get the list of exams between dates {} and {} for school info id : {} for grade : {}", fromDate, endDate, schoolInfoId, grade);
+        WitcurveUtil.correctDateFormat(fromDate, endDate);
+        List<Exam> exams;
+        if(grade == null) {
+            exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate);
+        } else {
+           exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate);
         }
-        List<Exam> exams = examRepository.findAllBySchoolInfoAndDateRange(academicSession.get().getSchoolInfo().getId(),
-            academicSession.get().getStartDate(), academicSession.get().getStartDate().plusYears(1));
         return examMapper.toDto(exams);
     }
 
@@ -103,22 +111,11 @@ public class ExamServiceImpl implements ExamService {
         if (!exam.isPresent()) {
             throw  new WitcurveException("No Exam with given Id " + examId);
         }
-        if(ExamStatus.CLOSED.equals(exam.get().getStatus())) {
-            throw new WitcurveException("CLOSED exams cannot be deleted");
+        if(!(ExamStatus.DRAFT.equals(exam.get().getStatus()) || ExamStatus.PUBLISHED.equals(exam.get().getStatus()))) {
+            throw new WitcurveException("Only PUBLISHED or DRAFT exams can be deleted");
         }
-        if(ExamStatus.PUBLISHED.equals(exam.get().getStatus()) && LocalDate.now().isAfter(exam.get().getStartDate().minusDays(1))) {
-            throw new WitcurveException("Exam cannot be deleted as it has already been conducted");
-        }
-        try {
-            examCourseDetailsRepository.deleteByExamId(examId);
-            generalSlotDetailsRepository.deleteByExamId(examId);
-            examRepository.delete(exam.get());
-        }  catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
+        examCourseDetailsRepository.deleteByExamId(examId);
+        generalSlotDetailsRepository.deleteByExamId(examId);
+        examRepository.delete(exam.get());
     }
 }
