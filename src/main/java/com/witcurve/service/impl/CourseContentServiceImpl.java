@@ -105,12 +105,25 @@ public class CourseContentServiceImpl implements CourseContentService {
         } else {
             Optional<Event> event = eventRepository.findById(eventId);
             if (!event.isPresent()) {
-                throw new WitcurveException("No Event with given id " + eventId);
+                throw new WitcurveException("No Test/Assignment with given id " + eventId);
             }
-            if (event.get().getCourseTeacher() == null) {
-                throw new WitcurveException("Event ID: " + eventId + " is not linked to any course");
+
+            switch (event.get().getType()) {
+                case ASSIGNMENT:
+                    if (event.get().getCourseTeacher() == null) {
+                        throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
+                    }
+                    courseId = event.get().getCourseTeacher().getCourse().getId();
+                    break;
+                case TEST:
+                    if (event.get().getScd() == null || event.get().getScd().getCourseTeacher() == null) {
+                        throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
+                    }
+                    courseId = event.get().getScd().getCourseTeacher().getCourse().getId();
+                    break;
+                default:
+                    throw new WitcurveException("No Test/Assignment with given id " + eventId);
             }
-            courseId = event.get().getCourseTeacher().getCourse().getId();
         }
         List<CourseContentDTO> courseContents = addIndicesToCourseContents(courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId)));
         Map<Long, String> courseContentIndexMap = new HashMap<>();
@@ -121,7 +134,7 @@ public class CourseContentServiceImpl implements CourseContentService {
         for (CourseContentDTO cc : result) {
             cc.setIndex(courseContentIndexMap.get(cc.getId()));
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
     }
 
     @Override
