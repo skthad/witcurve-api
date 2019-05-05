@@ -92,7 +92,10 @@ public class CourseContentServiceImpl implements CourseContentService {
         log.debug("Request to get CourseContents by course ID: " + courseId);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
-            throw new WitcurveException("No Course with given id: " + courseId);
+            return new ArrayList<>();
+        }
+        if (!Boolean.TRUE.equals(course.get().getContentPublished())) {
+            throw new WitcurveException("No published course content found for course with id: " + courseId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
         return addIndicesToCourseContents(courseContents);
@@ -130,6 +133,10 @@ public class CourseContentServiceImpl implements CourseContentService {
                 default:
                     throw new WitcurveException("No Test/Assignment with given id " + eventId);
             }
+        }
+        Course course = courseRepository.findById(courseId).get();
+        if (!Boolean.TRUE.equals(course.getContentPublished())) {
+            return new ArrayList<>();
         }
         List<CourseContentDTO> courseContents = addIndicesToCourseContents(courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId)));
         Map<Long, String> courseContentIndexMap = new HashMap<>();
