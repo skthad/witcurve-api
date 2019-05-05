@@ -1626,4 +1626,9 @@
             <column name="target_date" type="date" afterColumn="description"></column>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-199">
+        <addColumn tableName="general_slot_details">
+            <column name="order" type="integer"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
