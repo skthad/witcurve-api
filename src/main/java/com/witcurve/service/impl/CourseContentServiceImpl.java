@@ -46,6 +46,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
+        if (Boolean.TRUE.equals(course.get().getContentPublished())) {
+            throw new WitcurveException("Course content for this course is published. Cannot add or update anymore");
+        }
         for (CourseContentDTO courseContentDTO : courseContentDTOs) {
             if (!courseContentDTO.getCourseId().equals(courseId)) {
                 throw new WitcurveException("CourseId provided does not match with courseId in one or more courseContent");
@@ -64,6 +67,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         }
         if (!courseId.equals(courseContentDTO.getCourseId())) {
             throw new WitcurveException("Course ID in existing courseContent does not match the given course ID: " + courseId);
+        }
+        if (Boolean.TRUE.equals(courseContent.get().getCourse().getContentPublished())) {
+            throw new WitcurveException("Course content for this course is published. Cannot update anymore");
         }
         CourseContent existingContent = courseContent.get();
         existingContent.setContentName(courseContentDTO.getContentName());
@@ -144,7 +150,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!courseContent.isPresent()) {
             throw new WitcurveException("No CourseContent with given id " + courseContentId);
         }
-
+        if (Boolean.TRUE.equals(courseContent.get().getCourse().getContentPublished())) {
+                throw new WitcurveException("Course content for this course is published. Cannot delete anymore");
+        }
         CourseContent existingCourseContent = courseContent.get();
         Long courseId = existingCourseContent.getCourse().getId();
         Integer contentOrder = existingCourseContent.getContentOrder();
@@ -169,6 +177,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
+        }
+        if (Boolean.TRUE.equals(course.get().getContentPublished())) {
+            throw new WitcurveException("Course content for this course is published. Cannot delete course contents");
         }
         courseContentRepository.deleteInBatch(
             courseContentRepository.findAllSubTopicsInCourse(courseId));
