@@ -92,14 +92,22 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade) throws WitcurveException {
-        log.debug("Get the list of exams between dates {} and {} for school info id : {} for grade : {}", fromDate, endDate, schoolInfoId, grade);
+    public List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade, List<ExamStatus> statusList) throws WitcurveException {
+        log.debug("Get the list of exams between dates {} and {} for school info id : {} and grade : {} of status : {}", fromDate, endDate, schoolInfoId, grade, statusList);
         WitcurveUtil.correctDateFormat(fromDate, endDate);
         List<Exam> exams;
-        if(grade == null) {
-            exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate);
+        if(statusList != null && !statusList.isEmpty()) {
+            if(grade == null) {
+                exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statusList);
+            } else {
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, grade, fromDate, endDate, statusList);
+            }
         } else {
-           exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate);
+            if(grade == null) {
+                exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate);
+            } else {
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate);
+            }
         }
         return examMapper.toDto(exams);
     }
