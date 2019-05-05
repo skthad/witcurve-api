@@ -76,6 +76,13 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             if (grade == null || examId == null) {
                 throw new WitcurveException("Grade and examId must be provided to create exam slots");
             }
+            if(gsd.getOrder() == null) {
+                throw new WitcurveException("Order is required for exam slots");
+            } else {
+                if(!(gsd.getOrder() == 1 || gsd.getOrder()==2)) {
+                    throw new WitcurveException("Order of exam slots can be 1 or 2");
+                }
+            }
             if (gradeBindingValueMap.get(grade) == null) {
                 String bindingId = UUID.randomUUID().toString();
                 gradeBindingValueMap.put(grade, bindingId);
