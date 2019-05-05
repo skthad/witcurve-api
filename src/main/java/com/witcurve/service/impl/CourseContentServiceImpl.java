@@ -88,13 +88,13 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
-    public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
+    public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId, Boolean admin) throws WitcurveException {
         log.debug("Request to get CourseContents by course ID: " + courseId);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             return new ArrayList<>();
         }
-        if (!Boolean.TRUE.equals(course.get().getContentPublished())) {
+        if (!Boolean.TRUE.equals(admin) && !Boolean.TRUE.equals(course.get().getContentPublished())) {
             throw new WitcurveException("No published course content found for course with id: " + courseId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
