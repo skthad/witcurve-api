@@ -1,14 +1,21 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class CourseContentDTO extends AbstractAuditingDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    private String index;
 
     @NotNull
     private Long courseId;
@@ -22,7 +29,8 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
 
     private String description;
 
-    private String index;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate targetDate;
 
     public Long getId() {
         return id;
@@ -30,6 +38,14 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public String getContentName() {
@@ -64,20 +80,20 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
         this.contentOrder = contentOrder;
     }
 
-    public String getIndex() {
-        return index;
-    }
-
-    public void setIndex(String index) {
-        this.index = index;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getTargetDate() {
+        return targetDate;
+    }
+
+    public void setTargetDate(LocalDate targetDate) {
+        this.targetDate = targetDate;
     }
 
     @Override

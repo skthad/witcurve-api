@@ -46,6 +46,9 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @Column(name = "eligible_for_substitute", nullable = false, columnDefinition = "boolean default false")
     private Boolean eligibleForSubstitute = false;
 
+    @Column
+    private Boolean contentPublished;
+
     @NotNull
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
@@ -105,6 +108,14 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
         this.eligibleForSubstitute = eligibleForSubstitute;
+    }
+
+    public Boolean getContentPublished() {
+        return contentPublished;
+    }
+
+    public void setContentPublished(Boolean contentPublished) {
+        this.contentPublished = contentPublished;
     }
 
     public Boolean getActive() {

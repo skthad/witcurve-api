@@ -1616,4 +1616,14 @@
                         newDataType="int"
                         tableName="general_slot_details"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-197">
+        <addColumn tableName="course">
+            <column name="content_published" type="TINYINT(1)" afterColumn="eligible_for_substitute"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-198">
+        <addColumn tableName="course_content">
+            <column name="target_date" type="date" afterColumn="description"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -46,6 +46,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
+        if (Boolean.TRUE.equals(course.get().getContentPublished())) {
+            throw new WitcurveException("Course content for this course is published. Cannot add or update anymore");
+        }
         for (CourseContentDTO courseContentDTO : courseContentDTOs) {
             if (!courseContentDTO.getCourseId().equals(courseId)) {
                 throw new WitcurveException("CourseId provided does not match with courseId in one or more courseContent");
@@ -65,6 +68,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!courseId.equals(courseContentDTO.getCourseId())) {
             throw new WitcurveException("Course ID in existing courseContent does not match the given course ID: " + courseId);
         }
+        if (Boolean.TRUE.equals(courseContent.get().getCourse().getContentPublished())) {
+            throw new WitcurveException("Course content for this course is published. Cannot update anymore");
+        }
         CourseContent existingContent = courseContent.get();
         existingContent.setContentName(courseContentDTO.getContentName());
         existingContent.setDescription(courseContentDTO.getDescription());
@@ -82,11 +88,14 @@ public class CourseContentServiceImpl implements CourseContentService {
     }
 
     @Override
-    public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException {
+    public List<CourseContentDTO> getCourseContentsByCourseId(Long courseId, Boolean admin) throws WitcurveException {
         log.debug("Request to get CourseContents by course ID: " + courseId);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
-            throw new WitcurveException("No Course with given id: " + courseId);
+            return new ArrayList<>();
+        }
+        if (!Boolean.TRUE.equals(admin) && !Boolean.TRUE.equals(course.get().getContentPublished())) {
+            throw new WitcurveException("No published course content found for course with id: " + courseId);
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
         return addIndicesToCourseContents(courseContents);
@@ -105,12 +114,29 @@ public class CourseContentServiceImpl implements CourseContentService {
         } else {
             Optional<Event> event = eventRepository.findById(eventId);
             if (!event.isPresent()) {
-                throw new WitcurveException("No Event with given id " + eventId);
+                throw new WitcurveException("No Test/Assignment with given id " + eventId);
             }
-            if (event.get().getCourseTeacher() == null) {
-                throw new WitcurveException("Event ID: " + eventId + " is not linked to any course");
+
+            switch (event.get().getType()) {
+                case ASSIGNMENT:
+                    if (event.get().getCourseTeacher() == null) {
+                        throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
+                    }
+                    courseId = event.get().getCourseTeacher().getCourse().getId();
+                    break;
+                case TEST:
+                    if (event.get().getScd() == null || event.get().getScd().getCourseTeacher() == null) {
+                        throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
+                    }
+                    courseId = event.get().getScd().getCourseTeacher().getCourse().getId();
+                    break;
+                default:
+                    throw new WitcurveException("No Test/Assignment with given id " + eventId);
             }
-            courseId = event.get().getCourseTeacher().getCourse().getId();
+        }
+        Course course = courseRepository.findById(courseId).get();
+        if (!Boolean.TRUE.equals(course.getContentPublished())) {
+            return new ArrayList<>();
         }
         List<CourseContentDTO> courseContents = addIndicesToCourseContents(courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId)));
         Map<Long, String> courseContentIndexMap = new HashMap<>();
@@ -121,7 +147,7 @@ public class CourseContentServiceImpl implements CourseContentService {
         for (CourseContentDTO cc : result) {
             cc.setIndex(courseContentIndexMap.get(cc.getId()));
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
     }
 
     @Override
@@ -131,7 +157,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (!courseContent.isPresent()) {
             throw new WitcurveException("No CourseContent with given id " + courseContentId);
         }
-
+        if (Boolean.TRUE.equals(courseContent.get().getCourse().getContentPublished())) {
+                throw new WitcurveException("Course content for this course is published. Cannot delete anymore");
+        }
         CourseContent existingCourseContent = courseContent.get();
         Long courseId = existingCourseContent.getCourse().getId();
         Integer contentOrder = existingCourseContent.getContentOrder();
@@ -156,6 +184,9 @@ public class CourseContentServiceImpl implements CourseContentService {
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
+        }
+        if (Boolean.TRUE.equals(course.get().getContentPublished())) {
+            throw new WitcurveException("Course content for this course is published. Cannot delete course contents");
         }
         courseContentRepository.deleteInBatch(
             courseContentRepository.findAllSubTopicsInCourse(courseId));

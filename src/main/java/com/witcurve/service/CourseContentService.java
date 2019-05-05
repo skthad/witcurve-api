@@ -13,7 +13,7 @@ public interface CourseContentService {
 
     CourseContentDTO getCourseContentById(Long courseContentId) throws WitcurveException;
 
-    List<CourseContentDTO> getCourseContentsByCourseId(Long courseId) throws WitcurveException;
+    List<CourseContentDTO> getCourseContentsByCourseId(Long courseId, Boolean admin) throws WitcurveException;
 
     List<CourseContentDTO> getCourseContentsByEventId(Long eventId, Boolean forExam) throws WitcurveException;
 

@@ -1,8 +1,11 @@
 package com.witcurve.domain;
 
+import com.witcurve.service.util.LocalDateConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -36,6 +39,10 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     @Column
     private String description;
+
+    @Column(name = "target_date")
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate targetDate;
 
     public Long getId() {
         return id;
@@ -83,6 +90,14 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getTargetDate() {
+        return targetDate;
+    }
+
+    public void setTargetDate(LocalDate targetDate) {
+        this.targetDate = targetDate;
     }
 
     @Override

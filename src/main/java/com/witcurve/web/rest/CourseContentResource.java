@@ -120,9 +120,10 @@ public class CourseContentResource {
 
     @GetMapping("/course-content/courses/{courseId}")
     @Timed
-    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByCourse(@PathVariable("courseId") Long courseId) throws WitcurveException {
+    public ResponseEntity<List<CourseContentDTO>> getCourseContentsByCourse(@PathVariable("courseId") Long courseId,
+                                                                            @RequestParam(value = "admin", required = false) Boolean admin) throws WitcurveException {
         log.debug("Request to get CourseContents with courseId {}", courseId);
-        List<CourseContentDTO> result = courseContentService.getCourseContentsByCourseId(courseId);
+        List<CourseContentDTO> result = courseContentService.getCourseContentsByCourseId(courseId, admin);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
