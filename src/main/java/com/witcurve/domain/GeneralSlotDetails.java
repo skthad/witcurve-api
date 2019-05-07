@@ -51,6 +51,9 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @JoinColumn
     private Exam exam;
 
+    @Column
+    private Integer order;
+
     public Long getId() {
         return id;
     }
@@ -121,6 +124,14 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     public void setExam(Exam exam) {
         this.exam = exam;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     @Override

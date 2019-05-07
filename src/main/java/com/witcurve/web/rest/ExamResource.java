@@ -121,10 +121,9 @@ public class ExamResource {
     @GetMapping("/exams/school-info/{schoolInfoId}")
     @Timed
     public ResponseEntity<List<ExamDTO>> getExams(@PathVariable Long schoolInfoId, @RequestParam(required = false) Grade grade, @RequestParam LocalDate fromDate,
-                                                  @RequestParam LocalDate endDate, @RequestParam(required = false) Boolean readyToView,
-                                                  @RequestParam(required = false) Boolean readyForMarks) throws WitcurveException {
-        log.debug("Request to get Exams between dates {} and {} for school info with id : {} of grade : {}", fromDate, endDate, schoolInfoId, null);
-        List<ExamDTO> result = examService.getExamsBetweenDates(schoolInfoId, fromDate, endDate, grade);
+                                                  @RequestParam LocalDate endDate, @RequestParam(required = false) List<ExamStatus> statusList) throws WitcurveException {
+        log.debug("Request to get Exams between dates {} and {} for school info with id : {} of grade : {} and of status : {}", fromDate, endDate, schoolInfoId, grade, statusList);
+        List<ExamDTO> result = examService.getExamsBetweenDates(schoolInfoId, fromDate, endDate, grade, statusList);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

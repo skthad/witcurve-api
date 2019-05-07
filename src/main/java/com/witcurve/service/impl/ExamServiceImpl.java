@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,8 +59,12 @@ public class ExamServiceImpl implements ExamService {
             if(!exam.get().getStatus().equals(ExamStatus.DRAFT)) {
                 throw new WitcurveException("Only DRAFT exams can be updated");
             }
-            examCourseDetailsRepository.deleteByExamId(examDTO.getId());
-            generalSlotDetailsRepository.deleteByExamId(examDTO.getId());
+            if ((!exam.get().getStartDate().equals(examDTO.getStartDate()))
+            || (!exam.get().getEndDate().equals(examDTO.getEndDate()))) {
+                examCourseDetailsRepository.deleteByExamId(examDTO.getId());
+                generalSlotDetailsRepository.deleteByExamId(examDTO.getId());
+            }
+
         }
         return examMapper.toDto(examRepository.save(examMapper.toEntity(examDTO)));
     }
@@ -68,6 +73,7 @@ public class ExamServiceImpl implements ExamService {
     public ExamDTO updateExamStatus(Long examId, ExamStatus status) throws WitcurveException{
         log.debug("Request to update exam with id {} with status : {}", examId, status);
         Optional<Exam> exam = examRepository.findById(examId);
+        List<Grade> gradesWithOutCourse = new ArrayList<>();
         if (!exam.isPresent()) {
             throw new WitcurveException("No Exam with given Id " + examId);
         }
@@ -76,6 +82,24 @@ public class ExamServiceImpl implements ExamService {
             || (exam.get().getStatus().equals(ExamStatus.AWAITING_RESULTS) && status.equals(ExamStatus.RESULTS_DECLARED));
         if(!isValidStatusChange) {
             throw new WitcurveException("Exam status cannot be changed from "+exam.get().getStatus()+" to "+status);
+        }
+        ExamDTO examDTO = examMapper.toDto(exam.get());
+        if(status.equals(ExamStatus.PUBLISHED)) {
+            if(examDTO.getGrades() != null && examDTO.getGrades().size()!=0) {
+                for(Grade grade : examDTO.getGrades()) {
+                    if(examCourseDetailsRepository.findByGradeAndExamIdOrderByGsdStart(grade, examId).size()==0) {
+                        gradesWithOutCourse.add(grade);
+                    }
+                }
+                if(gradesWithOutCourse.size() !=0) {
+                    throw new WitcurveException("Status cannot be changed to published," +
+                        " slots have been assigned for grades : "+gradesWithOutCourse.toString()+
+                        "  but not courses. Please assign them or remove the slots for these grade");
+                }
+            } else {
+                throw new WitcurveException("Status cannot be changed to published," +
+                    " please assign slot for at least one grade");
+            }
         }
         exam.get().setStatus(status);
         return examMapper.toDto(exam.get());
@@ -92,14 +116,22 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade) throws WitcurveException {
-        log.debug("Get the list of exams between dates {} and {} for school info id : {} for grade : {}", fromDate, endDate, schoolInfoId, grade);
+    public List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade, List<ExamStatus> statusList) throws WitcurveException {
+        log.debug("Get the list of exams between dates {} and {} for school info id : {} and grade : {} of status : {}", fromDate, endDate, schoolInfoId, grade, statusList);
         WitcurveUtil.correctDateFormat(fromDate, endDate);
         List<Exam> exams;
-        if(grade == null) {
-            exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate);
+        if(statusList != null && !statusList.isEmpty()) {
+            if(grade == null) {
+                exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statusList);
+            } else {
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, grade, fromDate, endDate, statusList);
+            }
         } else {
-           exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate);
+            if(grade == null) {
+                exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate);
+            } else {
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate);
+            }
         }
         return examMapper.toDto(exams);
     }
