@@ -1631,4 +1631,10 @@
             <column name="order" type="integer"/>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-200">
+        <renameColumn columnDataType="integer"
+                      newColumnName="slot_order"
+                      oldColumnName="order"
+                      tableName="general_slot_details"/>
+    </changeSet>
 </databaseChangeLog>

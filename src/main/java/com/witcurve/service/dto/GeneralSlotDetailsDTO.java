@@ -31,13 +31,13 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
     private Integer duration;
 
     @NotNull
-    private Boolean recess;
+    private Boolean recess = false;
 
     private Long examId;
 
     private String examName;
 
-    private Integer order;
+    private Integer slotOrder;
 
     public Long getId() {
         return id;
@@ -119,12 +119,12 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
         this.examName = examName;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getSlotOrder() {
+        return slotOrder;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setSlotOrder(Integer slotOrder) {
+        this.slotOrder = slotOrder;
     }
 
     @Override
