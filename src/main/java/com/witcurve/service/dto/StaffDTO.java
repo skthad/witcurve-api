@@ -90,7 +90,6 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String primaryPhone;
 
-    @Size(min = 16, max = 16)
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
 
