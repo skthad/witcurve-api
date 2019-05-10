@@ -52,6 +52,12 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private String lastName;
 
+    private String fatherName;
+
+    private String motherName;
+
+    private String guardianName;
+
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate dateOfBirth;
@@ -84,6 +90,10 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     private String registeredMobileNumber;
 
     private List<String> alternateMobileNumbers;
+
+    @Email
+    @Size(min = 5, max = 254)
+    private String email;
 
     @Pattern(regexp = "[0-9]{12}")
     @Size(min = 12, max = 12)
@@ -234,6 +244,30 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
+    }
+
+    public String getMotherName() {
+        return motherName;
+    }
+
+    public void setMotherName(String motherName) {
+        this.motherName = motherName;
+    }
+
+    public String getGuardianName() {
+        return guardianName;
+    }
+
+    public void setGuardianName(String guardianName) {
+        this.guardianName = guardianName;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
@@ -320,6 +354,14 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
         this.alternateMobileNumbers = alternateMobileNumbers;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAadhaarNo() {

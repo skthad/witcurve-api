@@ -247,6 +247,17 @@ public class BulkImportServiceImpl implements BulkImportService {
             }
         }
 
+        if(staffCsv.getEmail() != null && !StringUtils.isBlank(staffCsv.getEmail())) {
+            if(staffCsv.getEmail().replaceAll("\\s","").matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                staffDTO.setEmail(staffCsv.getEmail());
+            } else {
+                throw new WitcurveException("Email Address is invalid, please enter correct email address.");
+            }
+        } else {
+            throw new WitcurveException("Email Address is empty");
+        }
+
+
         if(staffCsv.getDateOfBirth() != null && !StringUtils.isBlank(staffCsv.getDateOfBirth())) {
             try {
                 LocalDate dob = WitcurveUtil.getLocalDate(staffCsv.getDateOfBirth(), WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT);
@@ -380,6 +391,18 @@ public class BulkImportServiceImpl implements BulkImportService {
             throw new WitcurveException("Last Name value is empty");
         }
 
+        if(studentCsv.getFatherName() != null && !StringUtils.isBlank(studentCsv.getFatherName())) {
+            studentDTO.setFatherName(studentCsv.getFatherName());
+        }
+
+        if(studentCsv.getMotherName() != null && !StringUtils.isBlank(studentCsv.getMotherName())) {
+            studentDTO.setMotherName(studentCsv.getMotherName());
+        }
+
+        if(studentCsv.getGuardianName() != null && !StringUtils.isBlank(studentCsv.getGuardianName())) {
+            studentDTO.setGuardianName(studentCsv.getGuardianName());
+        }
+
         if(studentCsv.getAdmissionId() != null && !StringUtils.isBlank(studentCsv.getAdmissionId())) {
             Student existingStudent = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, studentCsv.getAdmissionId());
             if(existingStudent != null) {
@@ -441,11 +464,20 @@ public class BulkImportServiceImpl implements BulkImportService {
                 if(alternateNumbers[i].matches("^[6-9]\\d{9}$")) {
                     alternateNumbersList.add(alternateNumbers[i]);
                 } else {
-                    throw new WitcurveException("Please make sure alternate number are 10 digit phone numbers separated by comma, Ex(9876543210, 9876543210)");
+                    throw new WitcurveException("Please make sure alternate number are 10 digit phone numbers separated by comma. Ex : 9876543210, 9876543210");
                 }
             }
             studentDTO.setAlternateMobileNumbers(alternateNumbersList);
         }
+
+        if(studentCsv.getEmail() != null && !StringUtils.isBlank(studentCsv.getEmail())) {
+            if(studentCsv.getEmail().replaceAll("\\s","").matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                studentDTO.setEmail(studentCsv.getEmail());
+            } else {
+                throw new WitcurveException("Email Address is invalid, please enter correct email address.");
+            }
+        }
+
 
         if(studentCsv.getAddress1() != null && !StringUtils.isBlank(studentCsv.getAddress1())) {
             studentDTO.setAddress1(studentCsv.getAddress1());

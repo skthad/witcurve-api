@@ -12,6 +12,12 @@ public class StudentCsv {
 
     private String lastName;
 
+    private String motherName;
+
+    private String fatherName;
+
+    private String guardianName;
+
     private String admissionId;
 
     private String admissionDate;
@@ -23,6 +29,8 @@ public class StudentCsv {
     private String registeredMobileNumber;
 
     private String alternateMobileNumbers;
+
+    private String email;
 
     private String address1;
 
@@ -82,6 +90,12 @@ public class StudentCsv {
 
         ALIAS_MAP.put("* Last Name","lastName");
 
+        ALIAS_MAP.put("Father Name","fatherName");
+
+        ALIAS_MAP.put("Mother Name","motherName");
+
+        ALIAS_MAP.put("Guardian Name","guardianName");
+
         ALIAS_MAP.put("* Admission ID","admissionId");
 
         ALIAS_MAP.put("* Admission Date","admissionDate");
@@ -93,6 +107,8 @@ public class StudentCsv {
         ALIAS_MAP.put("* Registered Mobile Number","registeredMobileNumber");
 
         ALIAS_MAP.put("Alternate Mobile Numbers","alternateMobileNumbers");
+
+        ALIAS_MAP.put("Email Address","email");
 
         ALIAS_MAP.put("* Address 1","address1");
 
@@ -168,6 +184,30 @@ public class StudentCsv {
         this.lastName = lastName;
     }
 
+    public String getMotherName() {
+        return motherName;
+    }
+
+    public void setMotherName(String motherName) {
+        this.motherName = motherName;
+    }
+
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
+    }
+
+    public String getGuardianName() {
+        return guardianName;
+    }
+
+    public void setGuardianName(String guardianName) {
+        this.guardianName = guardianName;
+    }
+
     public String getAdmissionId() {
         return admissionId;
     }
@@ -214,6 +254,14 @@ public class StudentCsv {
 
     public void setAlternateMobileNumbers(String alternateMobileNumbers) {
         this.alternateMobileNumbers = alternateMobileNumbers;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAddress1() {

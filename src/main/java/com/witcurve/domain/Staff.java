@@ -7,8 +7,10 @@ import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -117,6 +119,12 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column(length = 50)
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
+
+    @NotNull
+    @Email
+    @Size(min = 5, max = 254)
+    @Column(length = 254, nullable = false)
+    private String email;
 
     @Pattern(regexp = "[0-9]{12}")
     @Column(name = "aadhaar_no", length = 12)
@@ -320,6 +328,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAadhaarNo() {

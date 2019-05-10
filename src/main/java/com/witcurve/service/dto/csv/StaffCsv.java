@@ -21,6 +21,8 @@ public class StaffCsv {
 
     private String secondaryPhone;
 
+    private String email;
+
     private String dateOfBirth;
 
     private String bloodGroup;
@@ -69,6 +71,8 @@ public class StaffCsv {
         ALIAS_MAP.put("* Primary Mobile Number","primaryPhone");
 
         ALIAS_MAP.put("Secondary Mobile Number","secondaryPhone");
+
+        ALIAS_MAP.put("* Email Address","email");
 
         ALIAS_MAP.put("* Date of Birth","dateOfBirth");
 
@@ -164,6 +168,14 @@ public class StaffCsv {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDateOfBirth() {
@@ -284,34 +296,5 @@ public class StaffCsv {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
-    }
-
-    @Override
-    public String toString() {
-        return "StaffCsv{" +
-            "firstName='" + firstName + '\'' +
-            ", middleName='" + middleName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", employeeId='" + employeeId + '\'' +
-            ", gender='" + gender + '\'' +
-            ", joiningDate='" + joiningDate + '\'' +
-            ", primaryPhone='" + primaryPhone + '\'' +
-            ", secondaryPhone='" + secondaryPhone + '\'' +
-            ", dateOfBirth='" + dateOfBirth + '\'' +
-            ", bloodGroup='" + bloodGroup + '\'' +
-            ", type='" + type + '\'' +
-            ", address1='" + address1 + '\'' +
-            ", address2='" + address2 + '\'' +
-            ", city='" + city + '\'' +
-            ", district='" + district + '\'' +
-            ", state='" + state + '\'' +
-            ", country='" + country + '\'' +
-            ", pincode='" + pincode + '\'' +
-            ", aadhaarNo='" + aadhaarNo + '\'' +
-            ", pan='" + pan + '\'' +
-            ", bankAccountNumber='" + bankAccountNumber + '\'' +
-            ", bankIfscCode='" + bankIfscCode + '\'' +
-            ", errorMessage='" + errorMessage + '\'' +
-            '}';
     }
 }

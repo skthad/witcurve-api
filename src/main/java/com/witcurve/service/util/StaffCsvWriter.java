@@ -1,6 +1,5 @@
 package com.witcurve.service.util;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.witcurve.service.dto.csv.StaffCsv;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.simpleflatmapper.csv.CsvWriter;
@@ -9,10 +8,10 @@ import org.simpleflatmapper.map.property.RenameProperty;
 import org.simpleflatmapper.util.CheckedConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -32,6 +31,7 @@ public class StaffCsvWriter {
             .column("* Gender", new RenameProperty("gender"))
             .column("* Primary Mobile Number", new RenameProperty("primaryPhone"))
             .column("Secondary Mobile Number", new RenameProperty("secondaryPhone"))
+            .column("* Email Address", new RenameProperty("email"))
             .column("* Date of Birth", new RenameProperty("dateOfBirth"))
             .column("Blood Group", new RenameProperty("bloodGroup"))
             .column("* Type", new RenameProperty("type"))
@@ -49,8 +49,7 @@ public class StaffCsvWriter {
             .column("Error Message", new RenameProperty("errorMessage"));
 
     public byte[] generateStaffCSV(List<StaffCsv> errorList) throws WitcurveException {
-        String directoryPath = System.getProperty("java.io.tmpdir")+File.separator+Instant.now();
-        File file = new File(directoryPath);
+       File file = WitcurveUtil.createTempFile();
         try (FileWriter fileWriter = new FileWriter(file)) {
             CsvWriter<StaffCsv> writer =
                 staffWriterDsl.to(fileWriter);
