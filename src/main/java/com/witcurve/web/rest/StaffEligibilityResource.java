@@ -51,7 +51,7 @@ public class StaffEligibilityResource {
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("staff_eligibility_subject_staff_grade_UK")) {
-                throw new WitcurveException("Unique constraint (master_subject, staff_id, grade) violated");
+                throw new WitcurveException("There already exists a staff eligibilty for this subject and teacher for this grade");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -84,7 +84,7 @@ public class StaffEligibilityResource {
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("staff_eligibility_subject_staff_grade_UK")) {
-                throw new WitcurveException("Unique constraint (master_subject, staff_id, grade) violated");
+                throw new WitcurveException("There already exists a staff eligibilty for this subject and teacher for this grade");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
