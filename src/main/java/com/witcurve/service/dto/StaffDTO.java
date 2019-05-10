@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.StaffType;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -92,6 +93,11 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
+
+    @NotNull
+    @Email
+    @Size(min = 5, max = 254)
+    private String email;
 
     @Pattern(regexp = "[0-9]{12}")
     @Size(min = 12, max = 12)
@@ -320,6 +326,14 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAadhaarNo() {

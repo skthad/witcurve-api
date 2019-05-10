@@ -9,10 +9,7 @@ import com.witcurve.service.util.LocalDateConverter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -67,6 +64,15 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "father_name")
+    private String fatherName;
+
+    @Column(name = "mother_name")
+    private String motherName;
+
+    @Column(name = "guardian_name")
+    private String guardianName;
+
     @NotNull
     @Column(name = "date_of_birth", nullable = false)
     @Convert(converter = LocalDateConverter.class)
@@ -108,6 +114,11 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(length = 50, nullable = false)
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String registeredMobileNumber;
+
+    @Email
+    @Size(min = 5, max = 254)
+    @Column(length = 254)
+    private String email;
 
     @Column
     @Convert(converter = ListToStringConverter.class)
@@ -255,6 +266,30 @@ public class Student extends AbstractAuditingEntity implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getFatherName() {
+        return fatherName;
+    }
+
+    public void setFatherName(String fatherName) {
+        this.fatherName = fatherName;
+    }
+
+    public String getMotherName() {
+        return motherName;
+    }
+
+    public void setMotherName(String motherName) {
+        this.motherName = motherName;
+    }
+
+    public String getGuardianName() {
+        return guardianName;
+    }
+
+    public void setGuardianName(String guardianName) {
+        this.guardianName = guardianName;
+    }
+
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
@@ -341,6 +376,14 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setAlternateMobileNumbers(List<String> alternateMobileNumbers) {
         this.alternateMobileNumbers = alternateMobileNumbers;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getAadhaarNo() {

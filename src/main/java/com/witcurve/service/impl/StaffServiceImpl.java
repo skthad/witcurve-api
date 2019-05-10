@@ -64,6 +64,7 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
+        userDTO.setEmail(staffDTO.getEmail());
         if (StaffType.TEACHING.equals(staffDTO.getType())) {
             userDTO.setType(UserType.TEACHING_STAFF);
         } else {
@@ -87,6 +88,7 @@ public class StaffServiceImpl implements StaffService {
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
         userDTO.setFirstName(staffDTO.getFirstName());
         userDTO.setLastName(staffDTO.getLastName());
+        userDTO.setEmail(staffDTO.getEmail());
         if (StaffType.TEACHING.equals(staffDTO.getType())) {
             userDTO.setType(UserType.TEACHING_STAFF);
         } else {

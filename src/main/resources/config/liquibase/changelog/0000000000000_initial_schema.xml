@@ -1637,4 +1637,38 @@
                       oldColumnName="order"
                       tableName="general_slot_details"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-201">
+        <addColumn tableName="student">
+            <column name="father_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-202">
+        <addColumn tableName="student">
+            <column name="guardian_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-203">
+        <addColumn tableName="student">
+            <column name="mother_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-204">
+        <addColumn tableName="student">
+            <column name="email" type="varchar(254)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-205">
+        <addColumn tableName="staff">
+            <column name="email" type="varchar(254)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-206">
+        <sql>UPDATE staff SET    email = 'saichand@witcurve.com';</sql>
+        <sql>UPDATE wc_user SET  email = 'saichand@witcurve.com' where type='TEACHING_STAFF';</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-207">
+        <addNotNullConstraint columnDataType="varchar(254)"
+                              columnName="email"
+                              tableName="staff"/>
+    </changeSet>
 </databaseChangeLog>

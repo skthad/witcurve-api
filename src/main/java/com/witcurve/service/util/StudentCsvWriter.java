@@ -28,10 +28,14 @@ public class StudentCsvWriter {
             .column("* First Name", new RenameProperty("firstName"))
             .column("Middle Name", new RenameProperty("middleName"))
             .column("* Last Name", new RenameProperty("lastName"))
+            .column("Father Name", new RenameProperty("fatherName"))
+            .column("Mother Name", new RenameProperty("motherName"))
+            .column("Guardian Name", new RenameProperty("guardianName"))
             .column("* Gender", new RenameProperty("gender"))
             .column("* Date of Birth", new RenameProperty("dateOfBirth"))
             .column("* Registered Mobile Number", new RenameProperty("registeredMobileNumber"))
             .column("Alternate Mobile Numbers", new RenameProperty("alternateMobileNumbers"))
+            .column("Email Address", new RenameProperty("email"))
             .column("* Address 1", new RenameProperty("address1"))
             .column("Address 2", new RenameProperty("address2"))
             .column("* City", new RenameProperty("city"))
@@ -58,8 +62,7 @@ public class StudentCsvWriter {
             .column("Error Message", new RenameProperty("errorMessage"));
 
     public byte[] generateStudentCSV(List<StudentCsv> errorList) throws WitcurveException {
-        String directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now();
-        File file = new File(directoryPath);
+        File file = WitcurveUtil.createTempFile();
         try (FileWriter fileWriter = new FileWriter(file)) {
             CsvWriter<StudentCsv> writer =
                 studentCsvWriterDSL.to(fileWriter);

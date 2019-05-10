@@ -56,6 +56,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentDTO create(StudentDTO studentDTO) {
         log.debug("Request to create student : {}", studentDTO);
         UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(studentDTO.getEmail());
         userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId().toLowerCase());
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
@@ -78,6 +79,7 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId().toLowerCase());
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
+        userDTO.setEmail(studentDTO.getEmail());
         userDTO.setType(UserType.PARENT);
         userService.updateUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);

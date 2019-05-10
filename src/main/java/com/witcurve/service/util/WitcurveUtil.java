@@ -52,7 +52,7 @@ public class WitcurveUtil {
     public static File getFile(MultipartFile file) throws WitcurveException {
         File convFile;
         try {
-            String tmpLocation = System.getProperty("java.io.tmpdir")+Instant.now();
+            String tmpLocation = System.getProperty("java.io.tmpdir")+File.separator+Instant.now().getEpochSecond();
             File tmpDirectory = new File(tmpLocation);
             if(!tmpDirectory.exists()) {
                 tmpDirectory.mkdir();
@@ -67,6 +67,19 @@ public class WitcurveUtil {
             log.debug("Error while reading file : {}",e.getMessage());
             throw new WitcurveException("Error while reading the file, please check if the file is in correct format.");
         }
+    }
+
+    public static File createTempFile() throws WitcurveException{
+        String directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now().getEpochSecond();
+        File file = new File(directoryPath);
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            log.debug("Error while writing student csv file : {}",e.getMessage());
+            throw new WitcurveException("Error while writing the generating error file");
+        }
+
+        return file;
     }
 
     public static Double roundToTwoDecimal(Double value) {
