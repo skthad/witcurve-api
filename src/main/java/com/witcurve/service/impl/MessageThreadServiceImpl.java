@@ -274,4 +274,14 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         }
     }
 
+    public void deleteMessage(Long messageId) {
+        log.debug("Request to delete message with id : {}",messageId);
+        messageRepository.deleteById(messageId);
+    }
+
+    public void deleteMessageThread(Long messageThreadId) {
+        log.debug("Request to delete message thread with id : {}",messageThreadId);
+        messageThreadRepository.deleteById(messageThreadId);
+    }
+
 }
