@@ -16,9 +16,12 @@ public interface StudentMapperLite extends EntityMapper<StudentDTO, Student>{
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.login")
     @Mapping(target = "rollNo", expression = "java(getStudentRollNo(student.getStudentStandards()))")
+    @Mapping(ignore = true, target = "active")
+    @Mapping(ignore = true, target = "hasPassword")
     StudentDTO toDto(Student student);
 
     @Mapping(target = "user.id", source = "userId")
+    @Mapping(ignore = true, target = "studentStandards")
     Student toEntity(StudentDTO studentDTO);
 
     default Student fromId(Long id) {

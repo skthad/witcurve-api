@@ -11,6 +11,7 @@ public interface CourseContentMapper extends EntityMapper<CourseContentDTO, Cour
 
     @Mapping(target = "courseId", source = "course.id")
     @Mapping(target = "parentContentId", source = "parentContent.id")
+    @Mapping(ignore = true, target = "index")
     CourseContentDTO toDto(CourseContent courseContent);
 
     @Mapping(target = "course", source = "courseId")

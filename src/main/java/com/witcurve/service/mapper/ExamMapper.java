@@ -15,6 +15,7 @@ import java.util.TreeSet;
 public interface ExamMapper extends EntityMapper<ExamDTO, Exam> {
 
     @Mapping(source = "schoolInfoId", target = "schoolInfo")
+    @Mapping(ignore = true, target = "generalSlotDetails")
     Exam toEntity(ExamDTO examDTO);
 
     @Mapping(target = "schoolInfoId", source = "schoolInfo.id")

@@ -23,6 +23,7 @@ public interface LeaveApplicationMapper extends EntityMapper<LeaveApplicationDTO
     @Mapping(target = "studentName", expression = "java(getStudentName(leaveApplication.getAppliedStudent()))")
     @Mapping(target = "rollNo", expression = "java(getStudentRollNo(leaveApplication.getAppliedStudent()))")
     @Mapping(target = "staffName", expression = "java(getStaffName(leaveApplication.getAppliedStaff()))")
+    @Mapping(ignore = true, target = "numLeaveDays")
     LeaveApplicationDTO toDto(LeaveApplication leaveApplication);
 
     @Mapping(target = "appliedStaff", source = "appliedStaffId")

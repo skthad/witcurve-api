@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -46,7 +47,7 @@ public class SmsService {
     private static final String ROUTE="4";
 
     @Async
-    public void sendSms(String mobileNumber, String body) throws WitcurveException {
+    public void sendSms(String mobileNumber, String body) throws WitcurveException, UnsupportedEncodingException {
 
         URLConnection myURLConnection;
         URL myURL;
@@ -57,7 +58,7 @@ public class SmsService {
         StringBuilder sbPostData= new StringBuilder(API_URL);
         sbPostData.append("authkey="+ applicationProperties.getSms().getAuthKey());
         sbPostData.append("&mobiles="+COUNTRY_CODE+mobileNumber);
-        sbPostData.append("&message="+ URLEncoder.encode(body));
+        sbPostData.append("&message="+ URLEncoder.encode(body, "UTF-8"));
         sbPostData.append("&route="+ROUTE);
         sbPostData.append("&sender="+applicationProperties.getSms().getSenderId());
         sbPostData.append("&country="+0);
@@ -82,7 +83,7 @@ public class SmsService {
         log.info("Sms sent successfully to '{}'", COUNTRY_CODE+mobileNumber);
     }
 
-    public void sendBulkSMS(Long schoolInfoId, SmsVM smsVM) {
+    public void sendBulkSMS(Long schoolInfoId, SmsVM smsVM) throws UnsupportedEncodingException {
         Set<String> recipientsList = new HashSet<>();
         if (!Strings.isNullOrEmpty(smsVM.getStudentList())) {
             if (smsVM.getStudentList().equals("-1")) {

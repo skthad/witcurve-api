@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public class SmsResource {
 
     @PostMapping("/generate-otp")
     @Timed
-    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber) throws WitcurveException {
+    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber) throws WitcurveException, UnsupportedEncodingException {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
@@ -68,7 +69,7 @@ public class SmsResource {
 
     @PostMapping("/send-sms/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<Void> sendBulkSMS(@Valid @RequestBody SmsVM smsVM, @PathVariable Long schoolInfoId) throws WitcurveException {
+    public ResponseEntity<Void> sendBulkSMS(@Valid @RequestBody SmsVM smsVM, @PathVariable Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to send bulk SMS for schoolInfoId: " + schoolInfoId);
 
         if (Strings.isNullOrEmpty(smsVM.getStudentList())
