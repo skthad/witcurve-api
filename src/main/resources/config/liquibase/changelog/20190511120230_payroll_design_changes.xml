@@ -127,4 +127,7 @@
     <changeSet author="WitCurve (generated)" id="1557576165033-29">
         <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="payroll_details" constraintName="FK1k2b8w88iroh77btb9uxfcih7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-30">
+        <modifyDataType tableName="payroll" columnName="check_number" newDataType="VARCHAR(50)"/>
+    </changeSet>
 </databaseChangeLog>
