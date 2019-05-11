@@ -111,6 +111,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/reset-password/finish").permitAll()
             .antMatchers("/api/generate-otp").permitAll()
             .antMatchers("/api/users/contact-numbers/**").permitAll()
+            .antMatchers("/api/mobile-meta-data/**").permitAll()
 
 
             //temp permitAll, need to be changes once user service is fixed

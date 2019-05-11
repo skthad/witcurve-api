@@ -1,10 +1,11 @@
-package com.witcurve.service;
+package com.witcurve.service.impl;
 
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.Institute;
 import com.witcurve.domain.Permission;
 import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.InstituteRepository;
+import com.witcurve.service.InstituteService;
 import com.witcurve.service.dto.AuthorityDTO;
 import com.witcurve.service.dto.InstituteDTO;
 import com.witcurve.service.mapper.InstituteMapper;
