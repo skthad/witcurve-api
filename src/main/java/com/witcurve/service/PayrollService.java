@@ -16,5 +16,5 @@ public interface PayrollService {
 
     PayrollDetailsDTO saveOrUpdate(PayrollDetailsDTO payrollDetailsDTO);
 
-    List<PayrollDetailsDTO> getActivePayrollDetailsForStaff(Long staffId);
+    List<PayrollDetailsDTO> getPayrollDetailsForStaff(Long staffId, Boolean activeOnly);
 }

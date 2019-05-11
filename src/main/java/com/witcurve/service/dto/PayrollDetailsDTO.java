@@ -12,16 +12,7 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializab
     @NotNull
     private StaffDTO staff;
 
-    @NotNull
-    private PayrollCycleDTO payrollCycle;
-
     private Instant deactivationDate;
-
-    @NotNull
-    private Integer paidDays = 0;
-
-    @NotNull
-    private Integer totalDays = 0;
 
     @NotNull
     private Float basicSalary = 0f;
@@ -39,16 +30,6 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializab
     private Float providentFund = 0f;
 
     private Float professionalTax = 0f;
-
-    private Float incomeTax = 0f;
-
-    private Float lateEntryDeductions = 0f;
-
-    private Float bonus = 0f;
-
-    private Float miscEarnings = 0f;
-
-    private Float miscDeductions = 0f;
 
     public PayrollDetailsDTO() {
     }
@@ -69,36 +50,12 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializab
         this.staff = staff;
     }
 
-    public PayrollCycleDTO getPayrollCycle() {
-        return payrollCycle;
-    }
-
-    public void setPayrollCycle(PayrollCycleDTO payrollCycle) {
-        this.payrollCycle = payrollCycle;
-    }
-
     public Instant getDeactivationDate() {
         return deactivationDate;
     }
 
     public void setDeactivationDate(Instant deactivationDate) {
         this.deactivationDate = deactivationDate;
-    }
-
-    public Integer getPaidDays() {
-        return paidDays;
-    }
-
-    public void setPaidDays(Integer paidDays) {
-        this.paidDays = paidDays;
-    }
-
-    public Integer getTotalDays() {
-        return totalDays;
-    }
-
-    public void setTotalDays(Integer totalDays) {
-        this.totalDays = totalDays;
     }
 
     public Float getBasicSalary() {
@@ -163,45 +120,6 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializab
 
     public void setProfessionalTax(Float professionalTax) {
         this.professionalTax = professionalTax;
-    }
-
-    public Float getIncomeTax() {
-        return incomeTax;
-    }
-
-    public void setIncomeTax(Float incomeTax) {
-        this.incomeTax = incomeTax;
-    }
-
-    public Float getLateEntryDeductions() {
-        return lateEntryDeductions;
-    }
-
-    public void setLateEntryDeductions(Float lateEntryDeductions) {
-        this.lateEntryDeductions = lateEntryDeductions;
-    }
-    public Float getBonus() {
-        return bonus;
-    }
-
-    public void setBonus(Float bonus) {
-        this.bonus = bonus;
-    }
-
-    public Float getMiscEarnings() {
-        return miscEarnings;
-    }
-
-    public void setMiscEarnings(Float miscEarnings) {
-        this.miscEarnings = miscEarnings;
-    }
-
-    public Float getMiscDeductions() {
-        return miscDeductions;
-    }
-
-    public void setMiscDeductions(Float miscDeductions) {
-        this.miscDeductions = miscDeductions;
     }
 
     @Override

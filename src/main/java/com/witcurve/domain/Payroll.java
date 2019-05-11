@@ -22,7 +22,60 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
+    private PayrollCycle payrollCycle;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private PayrollDetails payrollDetails;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private Integer paidDays = 0;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private Integer totalDays = 0;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private Float basicSalary = 0f;
+
+    @Column
+    private Float houseRentAllowance;
+
+    @Column
+    private Float conveyanceAllowance;
+
+    @Column
+    private Float medicalAllowance;
+
+    @Column
+    private Float managerialAllowance;
+
+    @Column
+    private Float leaveTravelAllowance;
+
+    @Column
+    private Float providentFund;
+
+    @Column
+    private Float professionalTax;
+
+    @Column
+    private Float incomeTax;
+
+    @Column
+    private Float lateEntryDeductions;
+
+    @Column
+    private Float bonus;
+
+    @Column
+    private Float miscEarnings;
+
+    @Column
+    private Float miscDeductions;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -30,7 +83,7 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     private ModeOfPayment modeOfPayment;
 
     @Column
-    private Integer checkNumber;
+    private String checkNumber;
 
     @Column
     @Convert(converter = LocalDateConverter.class)
@@ -48,12 +101,140 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
+    public PayrollCycle getPayrollCycle() {
+        return payrollCycle;
+    }
+
+    public void setPayrollCycle(PayrollCycle payrollCycle) {
+        this.payrollCycle = payrollCycle;
+    }
+
     public PayrollDetails getPayrollDetails() {
         return payrollDetails;
     }
 
     public void setPayrollDetails(PayrollDetails payrollDetails) {
         this.payrollDetails = payrollDetails;
+    }
+
+    public Integer getPaidDays() {
+        return paidDays;
+    }
+
+    public void setPaidDays(Integer paidDays) {
+        this.paidDays = paidDays;
+    }
+
+    public Integer getTotalDays() {
+        return totalDays;
+    }
+
+    public void setTotalDays(Integer totalDays) {
+        this.totalDays = totalDays;
+    }
+
+    public Float getBasicSalary() {
+        return basicSalary;
+    }
+
+    public void setBasicSalary(Float basicSalary) {
+        this.basicSalary = basicSalary;
+    }
+
+    public Float getHouseRentAllowance() {
+        return houseRentAllowance;
+    }
+
+    public void setHouseRentAllowance(Float houseRentAllowance) {
+        this.houseRentAllowance = houseRentAllowance;
+    }
+
+    public Float getConveyanceAllowance() {
+        return conveyanceAllowance;
+    }
+
+    public void setConveyanceAllowance(Float conveyanceAllowance) {
+        this.conveyanceAllowance = conveyanceAllowance;
+    }
+
+    public Float getMedicalAllowance() {
+        return medicalAllowance;
+    }
+
+    public void setMedicalAllowance(Float medicalAllowance) {
+        this.medicalAllowance = medicalAllowance;
+    }
+
+    public Float getManagerialAllowance() {
+        return managerialAllowance;
+    }
+
+    public void setManagerialAllowance(Float managerialAllowance) {
+        this.managerialAllowance = managerialAllowance;
+    }
+
+    public Float getLeaveTravelAllowance() {
+        return leaveTravelAllowance;
+    }
+
+    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+        this.leaveTravelAllowance = leaveTravelAllowance;
+    }
+
+    public Float getProvidentFund() {
+        return providentFund;
+    }
+
+    public void setProvidentFund(Float providentFund) {
+        this.providentFund = providentFund;
+    }
+
+    public Float getProfessionalTax() {
+        return professionalTax;
+    }
+
+    public void setProfessionalTax(Float professionalTax) {
+        this.professionalTax = professionalTax;
+    }
+
+    public Float getIncomeTax() {
+        return incomeTax;
+    }
+
+    public void setIncomeTax(Float incomeTax) {
+        this.incomeTax = incomeTax;
+    }
+
+    public Float getLateEntryDeductions() {
+        return lateEntryDeductions;
+    }
+
+    public void setLateEntryDeductions(Float lateEntryDeductions) {
+        this.lateEntryDeductions = lateEntryDeductions;
+    }
+
+    public Float getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Float bonus) {
+        this.bonus = bonus;
+    }
+
+    public Float getMiscEarnings() {
+        return miscEarnings;
+    }
+
+    public void setMiscEarnings(Float miscEarnings) {
+        this.miscEarnings = miscEarnings;
+    }
+
+    public Float getMiscDeductions() {
+        return miscDeductions;
+    }
+
+    public void setMiscDeductions(Float miscDeductions) {
+        this.miscDeductions = miscDeductions;
     }
 
     public ModeOfPayment getModeOfPayment() {
@@ -64,11 +245,11 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
         this.modeOfPayment = modeOfPayment;
     }
 
-    public Integer getCheckNumber() {
+    public String getCheckNumber() {
         return checkNumber;
     }
 
-    public void setCheckNumber(Integer checkNumber) {
+    public void setCheckNumber(String checkNumber) {
         this.checkNumber = checkNumber;
     }
 

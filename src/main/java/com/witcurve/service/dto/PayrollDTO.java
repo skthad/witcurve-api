@@ -17,7 +17,43 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
     private Long id;
 
     @NotNull
+    private PayrollCycleDTO payrollCycle;
+
+    @NotNull
     private PayrollDetailsDTO payrollDetails;
+
+    @NotNull
+    private Integer paidDays = 0;
+
+    @NotNull
+    private Integer totalDays = 0;
+
+    @NotNull
+    private Float basicSalary = 0f;
+
+    private Float houseRentAllowance;
+
+    private Float conveyanceAllowance;
+
+    private Float medicalAllowance;
+
+    private Float managerialAllowance;
+
+    private Float leaveTravelAllowance;
+
+    private Float providentFund;
+
+    private Float professionalTax;
+
+    private Float incomeTax;
+
+    private Float lateEntryDeductions;
+
+    private Float bonus;
+
+    private Float miscEarnings;
+
+    private Float miscDeductions;
 
     @NotNull
     private ModeOfPayment modeOfPayment;
@@ -30,6 +66,7 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate closedOn;
 
+
     public PayrollDTO() {
     }
 
@@ -41,12 +78,140 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
         this.id = id;
     }
 
+    public PayrollCycleDTO getPayrollCycle() {
+        return payrollCycle;
+    }
+
+    public void setPayrollCycle(PayrollCycleDTO payrollCycle) {
+        this.payrollCycle = payrollCycle;
+    }
+
     public PayrollDetailsDTO getPayrollDetails() {
         return payrollDetails;
     }
 
     public void setPayrollDetails(PayrollDetailsDTO payrollDetails) {
         this.payrollDetails = payrollDetails;
+    }
+
+    public Integer getPaidDays() {
+        return paidDays;
+    }
+
+    public void setPaidDays(Integer paidDays) {
+        this.paidDays = paidDays;
+    }
+
+    public Integer getTotalDays() {
+        return totalDays;
+    }
+
+    public void setTotalDays(Integer totalDays) {
+        this.totalDays = totalDays;
+    }
+
+    public Float getBasicSalary() {
+        return basicSalary;
+    }
+
+    public void setBasicSalary(Float basicSalary) {
+        this.basicSalary = basicSalary;
+    }
+
+    public Float getHouseRentAllowance() {
+        return houseRentAllowance;
+    }
+
+    public void setHouseRentAllowance(Float houseRentAllowance) {
+        this.houseRentAllowance = houseRentAllowance;
+    }
+
+    public Float getConveyanceAllowance() {
+        return conveyanceAllowance;
+    }
+
+    public void setConveyanceAllowance(Float conveyanceAllowance) {
+        this.conveyanceAllowance = conveyanceAllowance;
+    }
+
+    public Float getMedicalAllowance() {
+        return medicalAllowance;
+    }
+
+    public void setMedicalAllowance(Float medicalAllowance) {
+        this.medicalAllowance = medicalAllowance;
+    }
+
+    public Float getManagerialAllowance() {
+        return managerialAllowance;
+    }
+
+    public void setManagerialAllowance(Float managerialAllowance) {
+        this.managerialAllowance = managerialAllowance;
+    }
+
+    public Float getLeaveTravelAllowance() {
+        return leaveTravelAllowance;
+    }
+
+    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+        this.leaveTravelAllowance = leaveTravelAllowance;
+    }
+
+    public Float getProvidentFund() {
+        return providentFund;
+    }
+
+    public void setProvidentFund(Float providentFund) {
+        this.providentFund = providentFund;
+    }
+
+    public Float getProfessionalTax() {
+        return professionalTax;
+    }
+
+    public void setProfessionalTax(Float professionalTax) {
+        this.professionalTax = professionalTax;
+    }
+
+    public Float getIncomeTax() {
+        return incomeTax;
+    }
+
+    public void setIncomeTax(Float incomeTax) {
+        this.incomeTax = incomeTax;
+    }
+
+    public Float getLateEntryDeductions() {
+        return lateEntryDeductions;
+    }
+
+    public void setLateEntryDeductions(Float lateEntryDeductions) {
+        this.lateEntryDeductions = lateEntryDeductions;
+    }
+
+    public Float getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Float bonus) {
+        this.bonus = bonus;
+    }
+
+    public Float getMiscEarnings() {
+        return miscEarnings;
+    }
+
+    public void setMiscEarnings(Float miscEarnings) {
+        this.miscEarnings = miscEarnings;
+    }
+
+    public Float getMiscDeductions() {
+        return miscDeductions;
+    }
+
+    public void setMiscDeductions(Float miscDeductions) {
+        this.miscDeductions = miscDeductions;
     }
 
     public ModeOfPayment getModeOfPayment() {

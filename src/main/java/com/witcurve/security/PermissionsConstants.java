@@ -12,7 +12,7 @@ public final class PermissionsConstants {
     public static final String STAFF_DIRECTORY_READ_ONLY_ACCESS = "StaffDirectoryReadOnlyAccess";
     public static final String STAFF_NOTIFICATION_FULL_ACCESS = "StaffNotificationFullAccess";
     public static final String STAFF_ATTENDANCE_FULL_ACCESS = "StaffAttendanceFullAccess";
-    public static final String STAFF_ATTENDACE_READ_ONLY_ACCESS = "StaffAttendanceReadOnlyAccess";
+    public static final String STAFF_ATTENDANCE_READ_ONLY_ACCESS = "StaffAttendanceReadOnlyAccess";
     public static final String STAFF_ALLOCATION_FULL_ACCESS = "StaffAllocationFullAccess";
     public static final String STAFF_PAYROLL_FULL_ACCESS = "StaffPayrollFullAccess";
     public static final String STUDENT_DIRECTORY_FULL_ACCESS = "StudentDirectoryFullAccess";

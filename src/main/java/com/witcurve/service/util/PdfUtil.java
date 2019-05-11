@@ -29,8 +29,6 @@ public class PdfUtil {
         SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
 
         PayrollDetailsDTO payrollDetailsDTO = new PayrollDetailsDTO();
-        payrollDetailsDTO.setPaidDays(21);
-        payrollDetailsDTO.setTotalDays(22);
         payrollDetailsDTO.setBasicSalary(12000f);
         payrollDetailsDTO.setHouseRentAllowance(6000f);
         payrollDetailsDTO.setConveyanceAllowance(1000f);
@@ -40,11 +38,14 @@ public class PdfUtil {
 
         payrollDetailsDTO.setProvidentFund(997f);
         payrollDetailsDTO.setProfessionalTax(1300f);
-        payrollDetailsDTO.setIncomeTax(2200f);
-        payrollDetailsDTO.setLateEntryDeductions(0.0f);
-        payrollDetailsDTO.setBonus(11000f);
 
         PayrollDTO payrollDTO = new PayrollDTO();
+
+        payrollDTO.setPaidDays(21);
+        payrollDTO.setTotalDays(22);
+        payrollDTO.setIncomeTax(2200f);
+        payrollDTO.setLateEntryDeductions(0.0f);
+        payrollDTO.setBonus(11000f);
         payrollDTO.setPayrollDetails(payrollDetailsDTO);
 
         createPDF(schoolInfo, payrollDTO);
@@ -118,7 +119,7 @@ public class PdfUtil {
         stream.addRect(cursorX_LEFT - 15, cursorY_TOP - 10, 400, 1);
         stream.fill();
 
-        double earnings = ((double) payrollDTO.getPayrollDetails().getPaidDays() / payrollDTO.getPayrollDetails().getTotalDays()) * totalEarnings;
+        double earnings = ((double) payrollDTO.getPaidDays() / payrollDTO.getTotalDays()) * totalEarnings;
         double netSalary = earnings - totalDeductions;
 
         cursorY_TOP -= 30;
@@ -201,10 +202,10 @@ public class PdfUtil {
         writeToStream(stream, font, fSize, cursor_CENTER, startY, "Location: XX, XXXXXX XXXX");
 
         startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Total Days: " + payrollDTO.getPayrollDetails().getTotalDays());
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Total Days: " + payrollDTO.getTotalDays());
 
         startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Paid Days: " + payrollDTO.getPayrollDetails().getPaidDays());
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Paid Days: " + payrollDTO.getPaidDays());
 
     }
 
@@ -280,18 +281,18 @@ public class PdfUtil {
             totalEarnings += payrollDTO.getPayrollDetails().getLeaveTravelAllowance();
         }
 
-        if (payrollDTO.getPayrollDetails().getBonus() != null && payrollDTO.getPayrollDetails().getBonus() > 0) {
+        if (payrollDTO.getBonus() != null && payrollDTO.getBonus() > 0) {
             cursorY_TOP -= titleHeight + 5;
             writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Bonus: ");
-            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getBonus() );
-            totalEarnings += payrollDTO.getPayrollDetails().getBonus();
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getBonus() );
+            totalEarnings += payrollDTO.getBonus();
         }
 
-        if (payrollDTO.getPayrollDetails().getMiscEarnings() != null && payrollDTO.getPayrollDetails().getMiscEarnings() > 0) {
+        if (payrollDTO.getMiscEarnings() != null && payrollDTO.getMiscEarnings() > 0) {
             cursorY_TOP -= titleHeight + 5;
             writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Misc. Earnings: ");
-            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getMiscEarnings());
-            totalEarnings += payrollDTO.getPayrollDetails().getMiscEarnings();
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getMiscEarnings());
+            totalEarnings += payrollDTO.getMiscEarnings();
         }
 
         fSize += 1;
@@ -331,25 +332,25 @@ public class PdfUtil {
             totalDeductions += payrollDTO.getPayrollDetails().getProfessionalTax();
         }
 
-        if (payrollDTO.getPayrollDetails().getIncomeTax() != null && payrollDTO.getPayrollDetails().getIncomeTax() > 0) {
+        if (payrollDTO.getIncomeTax() != null && payrollDTO.getIncomeTax() > 0) {
             cursorY_TOP -= titleHeight + 5;
             writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Income Tax: ");
-            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getIncomeTax());
-            totalDeductions += payrollDTO.getPayrollDetails().getIncomeTax();
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getIncomeTax());
+            totalDeductions += payrollDTO.getIncomeTax();
         }
 
-        if (payrollDTO.getPayrollDetails().getLateEntryDeductions() != null && payrollDTO.getPayrollDetails().getLateEntryDeductions() > 0) {
+        if (payrollDTO.getLateEntryDeductions() != null && payrollDTO.getLateEntryDeductions() > 0) {
             cursorY_TOP -= titleHeight + 5;
             writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Late Entry Deductions: ");
-            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getLateEntryDeductions());
-            totalDeductions += payrollDTO.getPayrollDetails().getLateEntryDeductions();
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getLateEntryDeductions());
+            totalDeductions += payrollDTO.getLateEntryDeductions();
         }
 
-        if (payrollDTO.getPayrollDetails().getMiscDeductions() != null && payrollDTO.getPayrollDetails().getMiscDeductions() > 0) {
+        if (payrollDTO.getMiscDeductions() != null && payrollDTO.getMiscDeductions() > 0) {
             cursorY_TOP -= titleHeight + 5;
             writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Misc. Deductions: ");
-            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getPayrollDetails().getMiscDeductions());
-            totalDeductions += payrollDTO.getPayrollDetails().getMiscDeductions();
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getMiscDeductions());
+            totalDeductions += payrollDTO.getMiscDeductions();
         }
 
         fSize += 1;

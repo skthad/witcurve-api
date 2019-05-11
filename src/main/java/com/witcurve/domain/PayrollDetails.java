@@ -9,10 +9,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-@Table(name="payroll_details", uniqueConstraints = {
-    @UniqueConstraint(name = "staff_payroll_cycle_UK",
-        columnNames = {"staff_id", "payroll_cycle_id"})
-})
+@Table(name="payroll_details")
 public class PayrollDetails extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,22 +23,9 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
     @JoinColumn(nullable = false)
     private Staff staff;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private PayrollCycle payrollCycle;
-
     @Column
     @Convert(converter = InstantTimeConverter.class)
     private Instant deactivationDate;
-
-    @NotNull
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Integer paidDays = 0;
-
-    @NotNull
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Integer totalDays = 0;
 
     @NotNull
     @Column(nullable = false, columnDefinition = "int default 0")
@@ -67,21 +51,6 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
 
     @Column
     private Float professionalTax;
-    
-    @Column
-    private Float incomeTax;
-
-    @Column
-    private Float lateEntryDeductions;
-
-    @Column
-    private Float bonus;
-
-    @Column
-    private Float miscEarnings;
-
-    @Column
-    private Float miscDeductions;
 
     public Long getId() {
         return id;
@@ -99,36 +68,12 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
         this.staff = staff;
     }
 
-    public PayrollCycle getPayrollCycle() {
-        return payrollCycle;
-    }
-
-    public void setPayrollCycle(PayrollCycle payrollCycle) {
-        this.payrollCycle = payrollCycle;
-    }
-
     public Instant getDeactivationDate() {
         return deactivationDate;
     }
 
     public void setDeactivationDate(Instant deactivationDate) {
         this.deactivationDate = deactivationDate;
-    }
-
-    public Integer getPaidDays() {
-        return paidDays;
-    }
-
-    public void setPaidDays(Integer paidDays) {
-        this.paidDays = paidDays;
-    }
-
-    public Integer getTotalDays() {
-        return totalDays;
-    }
-
-    public void setTotalDays(Integer totalDays) {
-        this.totalDays = totalDays;
     }
 
     public Float getBasicSalary() {
@@ -193,46 +138,6 @@ public class PayrollDetails extends AbstractAuditingEntity implements Serializab
 
     public void setProfessionalTax(Float professionalTax) {
         this.professionalTax = professionalTax;
-    }
-
-    public Float getIncomeTax() {
-        return incomeTax;
-    }
-
-    public void setIncomeTax(Float incomeTax) {
-        this.incomeTax = incomeTax;
-    }
-
-    public Float getLateEntryDeductions() {
-        return lateEntryDeductions;
-    }
-
-    public void setLateEntryDeductions(Float lateEntryDeductions) {
-        this.lateEntryDeductions = lateEntryDeductions;
-    }
-
-    public Float getBonus() {
-        return bonus;
-    }
-
-    public void setBonus(Float bonus) {
-        this.bonus = bonus;
-    }
-
-    public Float getMiscEarnings() {
-        return miscEarnings;
-    }
-
-    public void setMiscEarnings(Float miscEarnings) {
-        this.miscEarnings = miscEarnings;
-    }
-
-    public Float getMiscDeductions() {
-        return miscDeductions;
-    }
-
-    public void setMiscDeductions(Float miscDeductions) {
-        this.miscDeductions = miscDeductions;
     }
 
     @Override

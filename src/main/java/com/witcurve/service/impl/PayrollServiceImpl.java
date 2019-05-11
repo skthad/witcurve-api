@@ -52,9 +52,15 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
-    public List<PayrollDetailsDTO> getActivePayrollDetailsForStaff(Long staffId) {
-        List<PayrollDetails> result = payrollDetailsRepository.findActivePayrollDetailsForStaff(staffId);
-        return payrollDetailsMapper.toDto(result);
+    public List<PayrollDetailsDTO> getPayrollDetailsForStaff(Long staffId, Boolean activeOnly) {
+        if (activeOnly) {
+            List<PayrollDetails> result = payrollDetailsRepository.findActivePayrollDetailsForStaff(staffId);
+            return payrollDetailsMapper.toDto(result);
+        } else {
+            List<PayrollDetails> result = payrollDetailsRepository.findAllPayrollDetailsForStaff(staffId);
+            return payrollDetailsMapper.toDto(result);
+        }
+
     }
 
     @Override
