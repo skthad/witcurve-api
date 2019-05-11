@@ -83,9 +83,14 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
     }
 
     @Override
-    public List<ExamCourseDetailsDTO> getExamCourseDetailsByGradeAndExamId(Grade grade, Long examId) {
-        log.debug("Request to get list of examCourseDetails for given grade : {} and examId : {}", grade, examId);
-        List<ExamCourseDetails> examCourseDetailsList = examCourseDetailsRepository.findByGradeAndExamIdOrderByGsdStart(grade, examId);
+    public List<ExamCourseDetailsDTO> getExamCourseDetailsByGradesAndExamId(List<Grade> grades, Long examId) {
+        log.debug("Request to get list of examCourseDetails for given grades : {} and examId : {}", grades, examId);
+        List<ExamCourseDetails> examCourseDetailsList = null;
+        if(grades != null && grades.isEmpty()) {
+            examCourseDetailsList = examCourseDetailsRepository.findByExamId(examId);
+        } else {
+            examCourseDetailsList = examCourseDetailsRepository.findByGradesAndExamId(grades, examId);
+        }
         return examCourseDetailsMapper.toDto(examCourseDetailsList);
     }
 

@@ -11,7 +11,7 @@ public interface ExamCourseDetailsService {
 
     List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTO, Long examId) throws WitcurveException;
 
-    List<ExamCourseDetailsDTO> getExamCourseDetailsByGradeAndExamId(Grade grade, Long examId);
+    List<ExamCourseDetailsDTO> getExamCourseDetailsByGradesAndExamId(List<Grade> grades, Long examId);
 
     List<ExamCourseDetailsDTO> getExamCourseDetailsForStudentOnDate(Long studentId, LocalDate date) throws WitcurveException;
 

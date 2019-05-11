@@ -79,18 +79,18 @@ public class ExamCourseDetailsResource {
     /**
      * get examCourseDetails by standard id
      *
-     * @param grade
+     * @param grades
      * @param examId
      * @return
      * @throws WitcurveException
      */
 
-    @GetMapping("/exam-course-details/grades/{grade}/exams/{examId}")
+    @GetMapping("/exam-course-details/exams/{examId}")
     @Timed
-    public ResponseEntity<List<ExamCourseDetailsDTO>> getExamCourseDetailsByGradeAndExam(@PathVariable("grade") Grade grade,
+    public ResponseEntity<List<ExamCourseDetailsDTO>> getExamCourseDetailsByGradeAndExam(@RequestParam(required = false) List<Grade> grades,
                                                                                          @PathVariable("examId") Long examId) throws WitcurveException {
-        log.debug("Request to get ExamCourseDetails with grade: {} and examId: {}", grade, examId);
-        List<ExamCourseDetailsDTO> result = examCourseDetailsService.getExamCourseDetailsByGradeAndExamId(grade, examId);
+        log.debug("Request to get ExamCourseDetails with grades: {} and examId: {}", grades, examId);
+        List<ExamCourseDetailsDTO> result = examCourseDetailsService.getExamCourseDetailsByGradesAndExamId(grades, examId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

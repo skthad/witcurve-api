@@ -87,7 +87,9 @@ public class ExamServiceImpl implements ExamService {
         if(status.equals(ExamStatus.PUBLISHED)) {
             if(examDTO.getGrades() != null && examDTO.getGrades().size()!=0) {
                 for(Grade grade : examDTO.getGrades()) {
-                    if(examCourseDetailsRepository.findByGradeAndExamIdOrderByGsdStart(grade, examId).size()==0) {
+                    List<Grade> grades = new ArrayList<>();
+                    grades.add(grade);
+                    if(examCourseDetailsRepository.findByGradesAndExamId(grades, examId).size()==0) {
                         gradesWithOutCourse.add(grade);
                     }
                 }
