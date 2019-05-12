@@ -96,6 +96,14 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
         this.date = date;
     }
 
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
     public String getEventStartTime() {
         return eventStartTime;
     }
