@@ -371,6 +371,7 @@ public class BulkImportServiceImpl implements BulkImportService {
         schoolInfo.setId(schoolInfoId);
         studentDTO.setSchoolInfo(schoolInfo);
         Grade grade = null;
+        Boolean doesGradeExist=false, doesSectionExist=false, doesRollNumberExist=false;
         Boolean doesCasteExist=false, doesCategoryExist=false;
 
         //converting each csv field to dto after check if entered values are valid
@@ -614,43 +615,42 @@ public class BulkImportServiceImpl implements BulkImportService {
             if(grade == null) {
                 throw new WitcurveException("Grade value is invalid, please enter only one of these values : Nursery, I, II, III, IV, V, VI, VII, VIII, IX, XI, XII");
             }
+            doesGradeExist=true;
         }
 
         if(studentCsv.getSection() != null && !StringUtils.isBlank(studentCsv.getSection())) {
-            if(grade == null) {
-                throw new WitcurveException("Please enter Grade value");
-            }
             Standard standard = standardRepository.findByGradeAndSectionAndSchoolInfoId(grade, studentCsv.getSection().toUpperCase(), schoolInfoId);
             if(standard == null) {
                 throw new WitcurveException("Standard does not exist for given grade and section");
             }
             standardDTO.setId(standard.getId());
-//            standardDTO= standardService.getStandard(grade, studentCsv.getSection().toUpperCase(), schoolInfoId);
+            doesSectionExist=true;
         }
 
         if(studentCsv.getRollNo() != null && !StringUtils.isBlank(studentCsv.getRollNo())) {
-            if(grade == null) {
-                throw new WitcurveException("Please enter Grade value");
+            List<String> rollNos = new ArrayList<>();
+            rollNos.add(studentCsv.getRollNo());
+            List<StudentStandard> existingRollNos = studentStandardRepository.getByStandardIdAndRollNos(standardDTO.getId(), rollNos);
+            if(existingRollNos.size() !=0) {
+                throw new WitcurveException("There's already exists a student in given standard with entered roll no.");
             }
+            doesRollNumberExist=true;
         }
 
-
-        //student standard check
-        List<String> rollNos = new ArrayList<>();
-        rollNos.add(studentCsv.getRollNo());
-        List<StudentStandard> existingRollNos = studentStandardRepository.getByStandardIdAndRollNos(standardDTO.getId(), rollNos);
-        if(existingRollNos.size() !=0) {
-            throw new WitcurveException("There's already exists a student in given standard with entered roll no.");
+        if( (doesGradeExist || doesSectionExist || doesRollNumberExist) && !(doesSectionExist && doesGradeExist && doesRollNumberExist)) {
+            throw new WitcurveException("Grade, Section and Roll Number has to be entered together");
         }
 
         //save student
         studentDTO = studentService.create(studentDTO);
 
         //save student standard
-        studentStandardDTO.setStudent(studentDTO);
-        studentStandardDTO.setStandard(standardDTO);
-        studentStandardDTO.setRollNo(studentCsv.getRollNo());
-        studentStandardDTO.setActive(true);
-        studentStandardService.save(studentStandardDTO);
+        if(doesGradeExist && doesSectionExist && doesRollNumberExist) {
+            studentStandardDTO.setStudent(studentDTO);
+            studentStandardDTO.setStandard(standardDTO);
+            studentStandardDTO.setRollNo(studentCsv.getRollNo());
+            studentStandardDTO.setActive(true);
+            studentStandardService.save(studentStandardDTO);
+        }
     }
 }
