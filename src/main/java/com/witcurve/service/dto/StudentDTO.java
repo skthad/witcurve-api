@@ -140,6 +140,10 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
 
     private Double adjustment = 0.00;
 
+    private LocalDate subscriptionStartDate;
+
+    private LocalDate subscriptionEndDate;
+
     public Long getId() {
         return id;
     }
@@ -522,6 +526,22 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
         }
         BigDecimal bd = new BigDecimal(adjustment).setScale(2, RoundingMode.FLOOR);
         this.adjustment = bd.doubleValue();
+    }
+
+    public LocalDate getSubscriptionStartDate() {
+        return subscriptionStartDate;
+    }
+
+    public void setSubscriptionStartDate(LocalDate subscriptionStartDate) {
+        this.subscriptionStartDate = subscriptionStartDate;
+    }
+
+    public LocalDate getSubscriptionEndDate() {
+        return subscriptionEndDate;
+    }
+
+    public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
+        this.subscriptionEndDate = subscriptionEndDate;
     }
 
     @Override
