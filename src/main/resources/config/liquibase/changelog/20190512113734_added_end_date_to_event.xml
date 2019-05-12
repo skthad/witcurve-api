@@ -5,4 +5,9 @@
             <column name="end_date" type="date" afterColumn="date"/>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557661064730-2">
+        <addColumn tableName="course_content">
+            <column name="target_periods" type="int" afterColumn="target_date"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
