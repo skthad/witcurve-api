@@ -95,7 +95,7 @@ public class CourseContentServiceImpl implements CourseContentService {
             return new ArrayList<>();
         }
         if (!Boolean.TRUE.equals(admin) && !Boolean.TRUE.equals(course.get().getContentPublished())) {
-            throw new WitcurveException("No published course content found for course with id: " + courseId);
+            return new ArrayList<>();
         }
         List<CourseContentDTO> courseContents = courseContentMapper.toDto(courseContentRepository.findByCourseId(courseId));
         return addIndicesToCourseContents(courseContents);

@@ -6,5 +6,5 @@
 
     <include file="config/liquibase/changelog/0000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190511120230_payroll_design_changes.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/20190512113734_added_end_date_to_event.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
