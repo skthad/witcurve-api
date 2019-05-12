@@ -68,16 +68,16 @@ public class StudentCsvWriter {
                 studentCsvWriterDSL.to(fileWriter);
             errorList.forEach(CheckedConsumer.toConsumer(writer::append));
         } catch (IOException e) {
-            log.debug("Error while writing student csv file : {}",e.getMessage());
-            throw new WitcurveException("Error while writing the generating error file");
+            log.info("\n \n \nError while creating error file : {}\n\n\n",e.getMessage());
+            throw new WitcurveException("Error while creating error file");
         } catch (MapperBuildingException e) {
-            log.debug("Error while reading file : {}",e.getMessage());
+            log.debug("Error while reading student error file : {}",e.getMessage());
             throw new WitcurveException("Error while reading the file, please check if the file has correct headers");
         }
         try {
             return Files.readAllBytes(Paths.get(file.getAbsolutePath()));
         } catch (IOException e) {
-            log.debug("Error while writing staff csv file : {}",e.getMessage());
+            log.info("\n \n \nError while writing staff csv file : {}\n\n\n",e.getMessage());
             throw new WitcurveException("Error while writing the generating error file");
         }
 
