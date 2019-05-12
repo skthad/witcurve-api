@@ -36,6 +36,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Convert(converter = LocalDateConverter.class)
     private LocalDate date;
 
+    @Column(name = "end_date")
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate endDate;
+
     @Column(name = "event_start_time")
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventStartTime;
@@ -119,6 +123,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public String getEventStartTime() {

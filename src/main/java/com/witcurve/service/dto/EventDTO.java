@@ -27,6 +27,9 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate date;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate endDate;
+
     @Pattern(regexp = "^([01]\\d|2[0-3])([0-5]\\d)$")
     private String eventStartTime;
 
