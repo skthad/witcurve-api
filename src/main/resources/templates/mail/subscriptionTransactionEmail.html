@@ -6,11 +6,11 @@
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>
 <body>
-<p th:text="#{email.subscription.transaction.greeting(${user.login})}">
+<p th:text="#{email.subscription.transaction.greeting(${studentName})}">
     Dear
 </p>
-<p th:text="#{email.subscription.transaction.text1}">
-    Your subscription has been activated
+<p th:text="#{email.subscription.transaction.text1(${subscriptionEndDate})}">
+
 </p>
 <p>
     <span th:text="#{email.subscription.transaction.text2}">Regards, </span>

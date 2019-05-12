@@ -86,4 +86,11 @@ public class WitcurveUtil {
         return (double) Math.round(value * 100) / 100;
     }
 
+    public static String format(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return date.format(DateTimeFormatter.ofPattern(WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT));
+    }
+
 }

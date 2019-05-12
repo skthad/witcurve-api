@@ -18,6 +18,7 @@ import com.witcurve.service.dto.PaytmRequestDTO;
 import com.witcurve.service.dto.PaytmResponseDTO;
 import com.witcurve.service.dto.PaytmVerificationRequestDTO;
 import com.witcurve.service.util.RestClientUtil;
+import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +33,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 @Transactional
@@ -167,15 +167,20 @@ public class PaymentServiceImpl implements PaymentService {
                 .plusMonths(subscriptionPackage.getMonths()));
         }
 
+        Map notificationParams = new HashMap();
+        notificationParams.put("studentName", student.getFirstName() + " " + student.getLastName());
+        notificationParams.put("subscriptionEndDate", WitcurveUtil.format(student.getSubscriptionEndDate()));
+
         try {
             smsService.sendSms(student.getRegisteredMobileNumber(),
-                "Hello User, Your have subscribed to Witcurve");
+                "Dear " + notificationParams.get("studentName") +
+                    ", Your have been subscribed to Witcurve, it will expire on " + notificationParams.get("subscriptionEndDate") + ".");
         } catch (UnsupportedEncodingException e) {
             log.error("Unable to send Subscription message", e);
         }
 
         if (student.getUser().getEmail() != null) {
-            mailService.sendSubscriptionTransactionMail(student.getUser());
+            mailService.sendSubscriptionTransactionMail(student.getUser().getEmail(), notificationParams);
         }
     }
 }
