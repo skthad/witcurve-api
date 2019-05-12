@@ -1,9 +1,15 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.SubscriptionModel;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -28,6 +34,15 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private String smsSignature;
+
+    @NotNull
+    private SubscriptionModel subscriptionModel;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate subscriptionStartDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate subscriptionEndDate;
 
     Map<Long, SchoolDTO> schoolMap;
 
@@ -96,6 +111,30 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSmsSignature(String smsSignature) {
         this.smsSignature = smsSignature;
+    }
+
+    public SubscriptionModel getSubscriptionModel() {
+        return subscriptionModel;
+    }
+
+    public void setSubscriptionModel(SubscriptionModel subscriptionModel) {
+        this.subscriptionModel = subscriptionModel;
+    }
+
+    public LocalDate getSubscriptionStartDate() {
+        return subscriptionStartDate;
+    }
+
+    public void setSubscriptionStartDate(LocalDate subscriptionStartDate) {
+        this.subscriptionStartDate = subscriptionStartDate;
+    }
+
+    public LocalDate getSubscriptionEndDate() {
+        return subscriptionEndDate;
+    }
+
+    public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
+        this.subscriptionEndDate = subscriptionEndDate;
     }
 
     public Map<Long, SchoolDTO> getSchoolMap() {
