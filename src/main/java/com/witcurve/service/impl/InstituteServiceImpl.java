@@ -3,8 +3,11 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.Institute;
 import com.witcurve.domain.Permission;
+import com.witcurve.domain.Student;
+import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.InstituteRepository;
+import com.witcurve.repository.StudentRepository;
 import com.witcurve.service.InstituteService;
 import com.witcurve.service.dto.AuthorityDTO;
 import com.witcurve.service.dto.InstituteDTO;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,9 +40,30 @@ public class InstituteServiceImpl implements InstituteService {
     @Autowired
     AuthorityRepository authorityRepository;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     @Override
     public InstituteDTO saveOrUpdate(InstituteDTO instituteDTO) {
         log.debug("Request to save or update institute");
+
+        if (instituteDTO.getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
+            if (instituteDTO.getSubscriptionStartDate() != null && instituteDTO.getSubscriptionEndDate() != null) {
+                if (instituteDTO.getId() != null) {
+                    List<Student> students = studentRepository.getStudentsByInstituteId(instituteDTO.getId());
+
+                    if (!CollectionUtils.isEmpty(students)) {
+                        students.forEach(student -> {
+                            student.setSubscriptionStartDate(instituteDTO.getSubscriptionStartDate());
+                            student.setSubscriptionEndDate(instituteDTO.getSubscriptionEndDate());
+                        });
+                    }
+                }
+            } else {
+                throw new WitcurveException("For Institute Subscription Model start and end date for subscription are required ");
+            }
+        }
+
         Institute institute = instituteMapper.toEntity(instituteDTO);
         institute = instituteRepository.save(institute);
         return instituteMapper.toDto(institute);

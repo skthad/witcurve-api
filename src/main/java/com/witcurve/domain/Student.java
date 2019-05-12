@@ -189,6 +189,12 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Column(columnDefinition="Decimal(10,2)")
     private Double adjustment;
 
+    @Column(name = "subscription_start_date")
+    private LocalDate subscriptionStartDate;
+
+    @Column(name = "subscription_end_date")
+    private LocalDate subscriptionEndDate;
+
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="student_id", insertable = false, updatable = false)
     @Where(clause = "active=true")
@@ -536,6 +542,22 @@ public class Student extends AbstractAuditingEntity implements Serializable {
 
     public void setAdjustment(Double adjustment) {
         this.adjustment = adjustment;
+    }
+
+    public LocalDate getSubscriptionStartDate() {
+        return subscriptionStartDate;
+    }
+
+    public void setSubscriptionStartDate(LocalDate subscriptionStartDate) {
+        this.subscriptionStartDate = subscriptionStartDate;
+    }
+
+    public LocalDate getSubscriptionEndDate() {
+        return subscriptionEndDate;
+    }
+
+    public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
+        this.subscriptionEndDate = subscriptionEndDate;
     }
 
     public Set<StudentStandard> getStudentStandards() {

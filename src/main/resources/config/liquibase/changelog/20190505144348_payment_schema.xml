@@ -1,0 +1,64 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="vishal" id="1557067436848-1">
+        <createTable tableName="payment_order">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="payment_orderPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="payment_gateway" type="VARCHAR(255)"/>
+            <column name="subscription_package" type="VARCHAR(255)"/>
+            <column name="transaction_amount" type="BIGINT"/>
+            <column name="transaction_charge" type="BIGINT"/>
+            <column name="transaction_id" type="VARCHAR(255)"/>
+            <column name="transaction_mode" type="INT"/>
+            <column name="transaction_status" type="VARCHAR(255)"/>
+            <column name="student_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-2">
+        <addColumn tableName="institute">
+            <column name="subscription_end_date" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-3">
+        <addColumn tableName="student">
+            <column name="subscription_end_date" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-4">
+        <addColumn tableName="institute">
+            <column name="subscription_model" type="varchar(20)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-5">
+        <addColumn tableName="institute">
+            <column name="subscription_start_date" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-6">
+        <addColumn tableName="student">
+            <column name="subscription_start_date" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-7">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="payment_order" constraintName="FKgh2ry0vorn2bqa56p3ofu7m37" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-9">
+        <update tableName="institute">
+            <column name="subscription_model" value="INSTITUTE" type="varchar(20)"/>
+            <column name="subscription_start_date" value="2019/04/01" type="date"/>
+            <column name="subscription_end_date" value="2020/03/31" type="date"/>
+        </update>
+    </changeSet>
+    <changeSet author="vishal" id="1557067436848-8">
+        <addNotNullConstraint columnDataType="VARCHAR(20)" tableName="institute" columnName="subscription_model"/>
+    </changeSet>
+</databaseChangeLog>
