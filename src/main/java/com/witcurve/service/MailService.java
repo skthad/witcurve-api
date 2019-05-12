@@ -102,7 +102,7 @@ public class MailService {
     @Async
     public void sendSubscriptionTransactionMail(User user) {
         log.debug("Sending Subscription Transaction email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
     }
 
     @Async
