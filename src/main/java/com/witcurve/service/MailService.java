@@ -100,6 +100,12 @@ public class MailService {
     }
 
     @Async
+    public void sendSubscriptionTransactionMail(User user) {
+        log.debug("Sending Subscription Transaction email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user, "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
+    }
+
+    @Async
     public void sendLeaveApplicationMail(User user) {
         log.debug("Sending Leave Application email to '{}'", user.getEmail());
         sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/leaveApplicationEmail", "email.leave.application.title");
