@@ -179,4 +179,32 @@ public class MessageThreadResource {
         Page<MessageThreadDTO> result = messageThreadService.getOutboxMessageThreadsByUserId(pageable, userId, type, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    /**
+     * delete message by messageId
+     * @param messageId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/message-thread/message/{messageId}")
+    @Timed
+    public ResponseEntity<Void> deleteMessage(@PathVariable Long messageId) throws WitcurveException {
+        log.debug("Request to delete message with id {}", messageId);
+        messageThreadService.deleteMessage(messageId);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    /**
+     * delete messageThread by messageThreadId
+     * @param messageThreadId
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/message-thread/{messageThreadId}")
+    @Timed
+    public ResponseEntity<Void> deleteMessageThread(@PathVariable Long messageThreadId) throws WitcurveException {
+        log.debug("Request to delete messageThread with id {}", messageThreadId);
+        messageThreadService.deleteMessageThread(messageThreadId);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }

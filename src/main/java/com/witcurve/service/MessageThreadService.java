@@ -34,4 +34,8 @@ public interface MessageThreadService {
                                                            Long userId,
                                                            MessageType messageType,
                                                            ApprovalStatus status) throws WitcurveException;
+
+    void deleteMessage(Long messageId);
+
+    void deleteMessageThread(Long messageThreadId);
 }

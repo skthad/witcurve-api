@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujan (generated)" id="1557595768839-1">
+        <createTable tableName="mobile_meta_data">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="mobile_meta_dataPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="enabled" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latest" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="minimum" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="institute_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujan (generated)" id="1557595768839-2">
+        <addUniqueConstraint columnNames="type, institute_id" constraintName="type_institute_UK" tableName="mobile_meta_data"/>
+    </changeSet>
+    <changeSet author="srujan (generated)" id="1557595768839-3">
+        <addForeignKeyConstraint baseColumnNames="institute_id" baseTableName="mobile_meta_data" constraintName="FK7bmdldl50cq55isl6ukmi21mw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="institute"/>
+    </changeSet>
+</databaseChangeLog>
