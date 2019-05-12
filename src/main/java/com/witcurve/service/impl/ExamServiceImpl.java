@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,24 +120,24 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade, List<ExamStatus> statusList) throws WitcurveException {
+    public Page<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade, List<ExamStatus> statusList, Pageable pageable) throws WitcurveException {
         log.debug("Get the list of exams between dates {} and {} for school info id : {} and grade : {} of status : {}", fromDate, endDate, schoolInfoId, grade, statusList);
         WitcurveUtil.correctDateFormat(fromDate, endDate);
-        List<Exam> exams;
+        Page<Exam> exams;
         if(statusList != null && !statusList.isEmpty()) {
             if(grade == null) {
-                exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statusList);
+                exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statusList, pageable);
             } else {
-                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, grade, fromDate, endDate, statusList);
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, grade, fromDate, endDate, statusList, pageable);
             }
         } else {
             if(grade == null) {
-                exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate);
+                exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate, pageable);
             } else {
-                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate);
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate, pageable);
             }
         }
-        return examMapper.toDto(exams);
+        return exams.map(examMapper::toDto);
     }
 
     @Override

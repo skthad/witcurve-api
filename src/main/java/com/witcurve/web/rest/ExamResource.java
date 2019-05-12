@@ -7,11 +7,14 @@ import com.witcurve.service.ExamService;
 import com.witcurve.service.dto.ExamDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -120,10 +123,11 @@ public class ExamResource {
 
     @GetMapping("/exams/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<ExamDTO>> getExams(@PathVariable Long schoolInfoId, @RequestParam(required = false) Grade grade, @RequestParam LocalDate fromDate,
-                                                  @RequestParam LocalDate endDate, @RequestParam(required = false) List<ExamStatus> statusList) throws WitcurveException {
+    public ResponseEntity<Page<ExamDTO>> getExams(@ApiParam Pageable pageable, @PathVariable Long schoolInfoId, @RequestParam(required = false) Grade grade,
+                                                  @RequestParam LocalDate fromDate, @RequestParam LocalDate endDate,
+                                                  @RequestParam(required = false) List<ExamStatus> statusList) throws WitcurveException {
         log.debug("Request to get Exams between dates {} and {} for school info with id : {} of grade : {} and of status : {}", fromDate, endDate, schoolInfoId, grade, statusList);
-        List<ExamDTO> result = examService.getExamsBetweenDates(schoolInfoId, fromDate, endDate, grade, statusList);
+        Page<ExamDTO> result = examService.getExamsBetweenDates(schoolInfoId, fromDate, endDate, grade, statusList, pageable);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
