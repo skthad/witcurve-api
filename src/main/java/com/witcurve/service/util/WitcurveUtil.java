@@ -70,13 +70,13 @@ public class WitcurveUtil {
     }
 
     public static File createTempFile() throws WitcurveException{
-        String directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now().getEpochSecond();
-        File file = new File(directoryPath);
+        String directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now().getEpochSecond()+".tmp";
+        File file = new File(directoryPath) ;
         try {
             file.createNewFile();
         } catch (IOException e) {
-            log.debug("Error while writing student csv file : {}",e.getMessage());
-            throw new WitcurveException("Error while writing the generating error file");
+            log.debug("Error while writing temp file : {}",e.getMessage());
+            throw new WitcurveException("Error while creating temp file");
         }
 
         return file;
