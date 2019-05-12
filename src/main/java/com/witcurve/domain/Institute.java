@@ -1,8 +1,11 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.SubscriptionModel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -42,6 +45,17 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(name="sms_signature", length = 6, nullable = false)
     private String smsSignature;
+
+    @NotNull
+    @Column(name = "subscription_model")
+    @Enumerated(EnumType.STRING)
+    private SubscriptionModel subscriptionModel;
+
+    @Column(name = "subscription_start_date")
+    private LocalDate subscriptionStartDate;
+
+    @Column(name = "subscription_end_date")
+    private LocalDate subscriptionEndDate;
 
     public Long getId() {
         return id;
@@ -105,6 +119,30 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setSmsSignature(String smsSignature) {
         this.smsSignature = smsSignature;
+    }
+
+    public SubscriptionModel getSubscriptionModel() {
+        return subscriptionModel;
+    }
+
+    public void setSubscriptionModel(SubscriptionModel subscriptionModel) {
+        this.subscriptionModel = subscriptionModel;
+    }
+
+    public LocalDate getSubscriptionStartDate() {
+        return subscriptionStartDate;
+    }
+
+    public void setSubscriptionStartDate(LocalDate subscriptionStartDate) {
+        this.subscriptionStartDate = subscriptionStartDate;
+    }
+
+    public LocalDate getSubscriptionEndDate() {
+        return subscriptionEndDate;
+    }
+
+    public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
+        this.subscriptionEndDate = subscriptionEndDate;
     }
 
     @Override

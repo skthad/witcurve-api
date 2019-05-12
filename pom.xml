@@ -10,6 +10,17 @@
 
     <repositories>
         <!-- jhipster-needle-maven-repository -->
+
+        <repository>
+            <id>giddu-paytm</id>
+            <url>https://packagecloud.io/giddu/paytm/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <properties>
@@ -361,7 +372,19 @@
             <version>0.9.11</version>
         </dependency>
 
+        <!--paytm library for genrating and verifying checksum-->
+        <dependency>
+            <groupId>com.paytm.pg</groupId>
+            <artifactId>pg-checksum</artifactId>
+            <version>1.0</version>
+        </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.14.1</version>
+        </dependency>
 
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>

@@ -15,7 +15,9 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Service for sending emails.
@@ -73,14 +75,14 @@ public class MailService {
     }
 
     @Async
-    public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
+    public void sendEmailFromTemplate(String to, Map<String, Object> params, String templateName, String titleKey) {
         Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
         Context context = new Context(locale);
-        context.setVariable(USER, user);
+        context.setVariables(params);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
+        sendEmail(to, subject, content, false, true);
 
     }
 
@@ -88,25 +90,37 @@ public class MailService {
     @Async
     public void sendOtpMail(User user) {
         log.debug("Sending OTP email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/otpEmail", "email.otp.title");
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/otpEmail", "email.otp.title");
+    }
+
+    @Async
+    public void sendSubscriptionTransactionMail(String to, Map<String, Object> params) {
+        log.debug("Sending Subscription Transaction email to '{}'", to);
+        sendEmailFromTemplate(to, params, "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
+    }
+
+    @Async
+    public void sendSubscriptionTransactionMail(User user) {
+        log.debug("Sending Subscription Transaction email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
     }
 
     @Async
     public void sendLeaveApplicationMail(User user) {
         log.debug("Sending Leave Application email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/leaveApplicationEmail", "email.leave.application.title");
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/leaveApplicationEmail", "email.leave.application.title");
     }
 
     @Async
     public void sendMeetingRequestMail(User user) {
         log.debug("Sending Meeting Request email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/meetingRequestEmail", "email.meeting.request.title");
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/meetingRequestEmail", "email.meeting.request.title");
     }
 
     @Async
     public void sendPersonalMessageMail(User user) {
         log.debug("Sending Personal Message email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/personalMessageEmail", "email.personal.message.title");
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/personalMessageEmail", "email.personal.message.title");
     }
 
 }

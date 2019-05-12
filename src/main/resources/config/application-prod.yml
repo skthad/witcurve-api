@@ -143,3 +143,11 @@ application:
     sms:
         auth-key: 228729Ax0VORwQvEQ25b9cfff6
         sender-id: WCURVE
+    paytm:
+        merchantId: cJVwMd54082818442940
+        secretKey : r8kh40On_Gf9pgZk
+        website: WEBSTAGING
+        industryTypeId : Retail
+        callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
+        transactionStatusApi: https://securegw-stage.paytm.in/order/status
+
