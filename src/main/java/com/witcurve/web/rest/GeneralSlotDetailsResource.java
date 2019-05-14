@@ -120,7 +120,7 @@ public class GeneralSlotDetailsResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PatchMapping("/general-slot-details/exam/empty-courses")
+    @GetMapping("/general-slot-details/exam/empty-courses")
     @Timed
     public ResponseEntity<Map<String, List<String>>> emptyMarksCourses(@RequestParam Grade grade,
                                                            @RequestParam Long examId) throws WitcurveException, URISyntaxException {
