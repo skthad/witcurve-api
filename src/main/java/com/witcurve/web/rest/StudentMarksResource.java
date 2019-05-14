@@ -66,7 +66,6 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
-    //need published option
     @GetMapping("/student-marks/exams/{examId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getStudentMarksForExam(@PathVariable("examId")  Long examId,
@@ -84,7 +83,6 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
-    //need publsihed option
     @GetMapping("/student-marks/students/{studentId}/courses/{courseId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getAllMarksForAStudentInACourse(@PathVariable("studentId")  Long studentId,
@@ -104,7 +102,6 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
-    //need published option
     @GetMapping("/student-marks/grades/{grade}/courses/{courseId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getMarksForAllStudentsInAGradeAndCourse(@PathVariable("grade") Grade grade,

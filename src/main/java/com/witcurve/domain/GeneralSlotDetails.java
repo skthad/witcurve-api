@@ -45,7 +45,7 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     @NotNull
     @Column(name = "is_recess", nullable = false, columnDefinition = "boolean default false")
-    private Boolean recess = false;
+    private Boolean recess;
 
     @ManyToOne
     @JoinColumn
