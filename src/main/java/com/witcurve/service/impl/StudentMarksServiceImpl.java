@@ -2,9 +2,12 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
+import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.StudentMarksService;
+import com.witcurve.service.dto.EventDTO;
+import com.witcurve.service.dto.ExamCourseDetailsDTO;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.service.mapper.StudentMarksMapper;
 import com.witcurve.service.util.WitcurveUtil;
@@ -15,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +30,10 @@ import java.util.Optional;
 @Transactional
 public class StudentMarksServiceImpl implements StudentMarksService {
     private final Logger log  = LoggerFactory.getLogger(StandardServiceImpl.class);
+
+    private final List<Boolean> ALL = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
+    private final List<Boolean> PUBLISHED_ONLY = Arrays.asList(Boolean.TRUE);
+
     @Autowired
     StudentMarksMapper studentMarksMapper;
 
@@ -47,25 +57,42 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
 
     @Override
-    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs) throws WitcurveException {
-        log.debug("Request to save or update Student Marks: {}", studentMarksDTOs);
-        if(studentMarksDTOs.size() !=0) {
-            List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
-            studentMarks = studentMarksRepository.saveAll(studentMarks);
-            return studentMarksMapper.toDto(studentMarks);
-        } else{
-            throw new WitcurveException("No records to update");
+    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long ecdId) throws WitcurveException {
+        if(eventId == null && ecdId == null) {
+            throw new WitcurveException("EcdId or EventId need to be entered");
+        } else if(eventId != null && ecdId== null) {
+            log.debug("Request to save or update Student Marks: {} with event id : {} ", studentMarksDTOs, eventId);
+            Optional<Event> event = eventRepository.findById(eventId);
+            if(!event.isPresent()) {
+                throw new WitcurveException("Event doesn't exist with id "+ eventId);
+            }
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setId(eventId);
+            for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                studentMarksDTO.setEventDTO(eventDTO);
+                studentMarksDTO.setExamCourseDetailsDTO(null);
+            }
+        } else if(eventId ==null && ecdId!=null) {
+            log.debug("Request to save or update Student Marks: {} with ecd id : {} ", studentMarksDTOs, ecdId);
+            Optional<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findById(ecdId);
+            if(!examCourseDetails.isPresent()) {
+                throw new WitcurveException("ExamCourseDetails doesn't exist with id "+ ecdId);
+            }
+            if(examCourseDetails.get().getGsd().getExam().getStatus().equals(ExamStatus.DRAFT)) {
+                throw new WitcurveException("Marks cannot be posted for draft exams");
+            }
+            ExamCourseDetailsDTO ecd = new ExamCourseDetailsDTO();
+            ecd.setId(ecdId);
+            for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                studentMarksDTO.setEventDTO(null);
+                studentMarksDTO.setExamCourseDetailsDTO(ecd);
+            }
+        } else {
+            throw new WitcurveException("You cannot send both ecdId and eventId");
         }
-    }
-
-    @Override
-    public void publishMarksForEvent(Long eventId) {
-        studentMarksRepository.publishMarksForEvent(eventId);
-    }
-
-    @Override
-    public void publishMarksForECD(Long ecdId) {
-        studentMarksRepository.publishMarksForECD(ecdId);
+        List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
+        studentMarks = studentMarksRepository.saveAll(studentMarks);
+        return studentMarksMapper.toDto(studentMarks);
     }
 
     @Override
@@ -85,14 +112,18 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId, Long standardId) throws WitcurveException {
+    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId, Long standardId, Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get student Marks by examId id : {}", examId);
         Optional<Exam> exam = examRepository.findById(examId);
         if (!exam.isPresent()) {
             throw new WitcurveException("Exam does not exist with id: " + examId);
         }
         if (ecdId == null && standardId == null) {
-            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId));
+            if(publishedOnly) {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, PUBLISHED_ONLY));
+            } else {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, ALL));
+            }
         } else if (ecdId != null) {
             Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(ecdId);
             if (!ecd.isPresent()) {
@@ -101,18 +132,32 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             if (!ecd.get().getGsd().getExam().getId().equals(examId)) {
                 throw new WitcurveException("ExamCourseDetails provided does not belong to the examId: " + examId);
             }
-            if (standardId == null) {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndEcdId(examId, ecdId));
+            if(publishedOnly) {
+                if (standardId == null) {
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndEcdId(examId, ecdId, PUBLISHED_ONLY));
+                } else {
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecdId, standardId, ALL));
+                }
             } else {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecdId, standardId));
+                if (standardId == null) {
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndEcdId(examId, ecdId, PUBLISHED_ONLY));
+                } else {
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecdId, standardId, ALL));
+                }
             }
+
         } else {
-            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId));
+            if(publishedOnly) {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId, PUBLISHED_ONLY));
+            } else  {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId, ALL));
+            }
+
         }
     }
 
     @Override
-    public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
+    public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate, Boolean publishedOnly) throws WitcurveException{
         log.debug("Request to get all {} marks for student {} in course {}", type, studentId, courseId);
         WitcurveUtil.correctDateFormat(startDate, endDate);
         Optional<Course> course = courseRepository.findById(courseId);
@@ -127,12 +172,17 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             case ASSIGNMENT:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForEvent(courseId, studentId, type, startDate, endDate));
             case EXAM:
-                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate));
+                if(publishedOnly) {
+                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate, PUBLISHED_ONLY));
+                } else {
+                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate, ALL));
+                }
+
         }
         throw new WitcurveException("Not a valid type");
     }
 
-    public List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate) throws WitcurveException{
+    public List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate,  Boolean publishedOnly) throws WitcurveException{
         log.debug("Request to get marks for all students {} in grade {} in course {}", type, grade, courseId);
         WitcurveUtil.correctDateFormat(startDate, endDate);
         Optional<Course> course = courseRepository.findById(courseId);
@@ -147,7 +197,12 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             case ASSIGNMENT:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForEvent(courseId, grade, type, startDate, endDate));
             case EXAM:
-                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate));
+                if(publishedOnly) {
+                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate, PUBLISHED_ONLY));
+                } else {
+                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate, ALL));
+                }
+
         }
         throw new WitcurveException("Not a valid type");
     }

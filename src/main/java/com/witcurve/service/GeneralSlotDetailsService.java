@@ -6,6 +6,7 @@ import com.witcurve.service.dto.GeneralSlotDetailsDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GeneralSlotDetailsService {
 
@@ -34,4 +35,8 @@ public interface GeneralSlotDetailsService {
     void deleteExamSlotsByGradesAndExamId(List<Grade> grade, Long examId) throws WitcurveException;
 
     void deleteExamSlotsByIds(List<Long> gsdIds);
+
+    List<GeneralSlotDetailsDTO> publishMarksForExamAndGrade(Grade grade, Long examId);
+
+    Map<String, List<String>> emptyMarksCourses(Grade grade, Long examId);
 }

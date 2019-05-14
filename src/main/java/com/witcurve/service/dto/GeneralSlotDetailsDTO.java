@@ -39,6 +39,8 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     private Integer slotOrder;
 
+    private Boolean marksPublished;
+
     public Long getId() {
         return id;
     }
@@ -125,6 +127,14 @@ public class GeneralSlotDetailsDTO extends AbstractAuditingDTO implements Serial
 
     public void setSlotOrder(Integer slotOrder) {
         this.slotOrder = slotOrder;
+    }
+
+    public Boolean getMarksPublished() {
+        return marksPublished;
+    }
+
+    public void setMarksPublished(Boolean marksPublished) {
+        this.marksPublished = marksPublished;
     }
 
     @Override

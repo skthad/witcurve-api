@@ -31,10 +31,6 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     private ExamCourseDetails examCourseDetails;
 
-    @NotNull
-    @Column(name = "published", nullable = false, columnDefinition = "boolean default false")
-    private Boolean published = false;
-
     public Long getId() {
         return id;
     }
@@ -73,14 +69,6 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
 
     public void setExamCourseDetails(ExamCourseDetails examCourseDetails) {
         this.examCourseDetails = examCourseDetails;
-    }
-
-    public Boolean getPublished() {
-        return published;
-    }
-
-    public void setPublished(Boolean published) {
-        this.published = published;
     }
 
     @Override

@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -94,6 +95,38 @@ public class GeneralSlotDetailsResource {
             }
 
         }
+    }
+
+    /**
+     * update Slot with Marks Published
+     *
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PatchMapping("/general-slot-details/exam/publish-marks")
+    @Timed
+    public ResponseEntity<List<GeneralSlotDetailsDTO>> updatePublishMarks(@RequestParam Grade grade,
+                                                                                @RequestParam Long examId) throws WitcurveException, URISyntaxException {
+        log.debug("Request update exam generalSlotDetails for grade : {} with exam id : {}", grade, examId);
+        List<GeneralSlotDetailsDTO> result = generalSlotDetailsService.publishMarksForExamAndGrade(grade, examId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * course marking marks publish
+     *
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PatchMapping("/general-slot-details/exam/empty-courses")
+    @Timed
+    public ResponseEntity<Map<String, List<String>>> emptyMarksCourses(@RequestParam Grade grade,
+                                                           @RequestParam Long examId) throws WitcurveException, URISyntaxException {
+        log.debug("Request update exam generalSlotDetails for grade : {} with exam id : {}", grade, examId);
+        Map<String, List<String>> result = generalSlotDetailsService.emptyMarksCourses(grade, examId);
+        return ResponseEntity.ok(result);
     }
 
     /**

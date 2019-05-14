@@ -80,8 +80,7 @@ public class ExamServiceImpl implements ExamService {
             throw new WitcurveException("No Exam with given Id " + examId);
         }
         Boolean isValidStatusChange = (exam.get().getStatus().equals(ExamStatus.DRAFT) && status.equals(ExamStatus.PUBLISHED))
-            || (exam.get().getStatus().equals(ExamStatus.PUBLISHED) && status.equals(ExamStatus.AWAITING_RESULTS))
-            || (exam.get().getStatus().equals(ExamStatus.AWAITING_RESULTS) && status.equals(ExamStatus.RESULTS_DECLARED));
+            || (exam.get().getStatus().equals(ExamStatus.PUBLISHED) && status.equals(ExamStatus.RESULTS_DECLARED));
         if(!isValidStatusChange) {
             throw new WitcurveException("Exam status cannot be changed from "+exam.get().getStatus()+" to "+status);
         }

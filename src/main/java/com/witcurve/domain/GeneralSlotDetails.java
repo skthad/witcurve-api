@@ -54,6 +54,9 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
     @Column
     private Integer slotOrder;
 
+    @Column(name = "marks_published")
+    private Boolean marksPublished = false;
+
     public Long getId() {
         return id;
     }
@@ -132,6 +135,14 @@ public class GeneralSlotDetails extends AbstractAuditingEntity implements Serial
 
     public void setSlotOrder(Integer slotOrder) {
         this.slotOrder = slotOrder;
+    }
+
+    public Boolean getMarksPublished() {
+        return marksPublished;
+    }
+
+    public void setMarksPublished(Boolean marksPublished) {
+        this.marksPublished = marksPublished;
     }
 
     @Override

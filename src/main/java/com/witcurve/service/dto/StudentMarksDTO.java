@@ -31,9 +31,6 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     private ExamCourseDetailsDTO examCourseDetailsDTO;
 
-    @NotNull
-    private Boolean published = false;
-
     public Long getId() {
         return id;
     }
@@ -112,14 +109,6 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     public void setExamCourseDetailsDTO(ExamCourseDetailsDTO examCourseDetailsDTO) {
         this.examCourseDetailsDTO = examCourseDetailsDTO;
-    }
-
-    public Boolean getPublished() {
-        return published;
-    }
-
-    public void setPublished(Boolean published) {
-        this.published = published;
     }
 
     @Override
