@@ -28,35 +28,20 @@ public class StudentMarksResource {
     StudentMarksService studentMarksService;
     /**
       * creates a new student marks relation
-      * @param studentMarksDTO
+      * @param studentMarksDTOs
+      * @param eventId
+      * @param ecdId
       * @return
       * @throws WitcurveException
       * @throws URISyntaxException
       */
     @PostMapping("/student-marks")
     @Timed
-    public ResponseEntity<List<StudentMarksDTO>> createStudentMarks(@RequestBody @Valid List<StudentMarksDTO> studentMarksDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<StudentMarksDTO>> createStudentMarks(@RequestBody @Valid List<StudentMarksDTO> studentMarksDTOs, @RequestParam(required = false) Long ecdId, @RequestParam(required = false) Long eventId) throws WitcurveException, URISyntaxException {
         log.debug("Request to create student Marks ");
-        List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTO);
-
+        List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTOs, ecdId, eventId);
         return ResponseEntity.ok()
             .body(result);
-    }
-
-    @PutMapping("/student-marks/events/{eventId}")
-    @Timed
-    public ResponseEntity<Void> publishMarksForEvent(@PathVariable Long eventId) {
-        log.debug("Request to publish student marks for event ID: " + eventId);
-         studentMarksService.publishMarksForEvent(eventId);
-        return (ResponseEntity<Void>) ResponseEntity.ok();
-    }
-
-    @PutMapping("/student-marks/exam-course-details/{ecdId}")
-    @Timed
-    public ResponseEntity<Void> publishMarksForECD(@PathVariable Long ecdId) {
-        log.debug("Request to publish student marks for ECD ID: " + ecdId);
-        studentMarksService.publishMarksForECD(ecdId);
-        return (ResponseEntity<Void>) ResponseEntity.ok();
     }
 
     /**
@@ -68,7 +53,7 @@ public class StudentMarksResource {
     @GetMapping("/student-marks/events/{eventId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getStudentMarksForTestOrAssignmentEvent(@PathVariable("eventId")  Long eventId) throws WitcurveException {
-        log.debug("Request to get list of tudent marks by eventId: {}", eventId);
+        log.debug("Request to get list of student marks by eventId: {}", eventId);
         List<StudentMarksDTO> result = studentMarksService.getStudentMarksByEventId(eventId);
         return ResponseEntity.ok(result);
     }
@@ -81,13 +66,15 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
+    //need published option
     @GetMapping("/student-marks/exams/{examId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getStudentMarksForExam(@PathVariable("examId")  Long examId,
                                                                          @RequestParam(value = "ecdId", required = false) Long ecdId,
-                                                                        @RequestParam(value = "standardId", required = false) Long standardId) throws WitcurveException {
+                                                                        @RequestParam(value = "standardId", required = false) Long standardId,
+                                                                        @RequestParam(defaultValue = "false") Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get list of Student marks by exam id.");
-        List<StudentMarksDTO> result = studentMarksService.getStudentMarksByExamId(examId, ecdId, standardId);
+        List<StudentMarksDTO> result = studentMarksService.getStudentMarksByExamId(examId, ecdId, standardId, publishedOnly);
         return ResponseEntity.ok(result);
     }
 
@@ -97,15 +84,17 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
+    //need publsihed option
     @GetMapping("/student-marks/students/{studentId}/courses/{courseId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getAllMarksForAStudentInACourse(@PathVariable("studentId")  Long studentId,
                                                                                 @PathVariable("courseId")  Long courseId,
                                                                                 @RequestParam("type") EventType type,
                                                                                  @RequestParam(value = "startDate") LocalDate startDate,
-                                                                                 @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
+                                                                                 @RequestParam(value = "endDate") LocalDate endDate,
+                                                                                 @RequestParam(defaultValue = "false") Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get list of Student marks by course id and event type and student id");
-        List<StudentMarksDTO> result = studentMarksService.getAllMarksForAStudentInACourse(studentId, courseId, type, startDate, endDate);
+        List<StudentMarksDTO> result = studentMarksService.getAllMarksForAStudentInACourse(studentId, courseId, type, startDate, endDate, publishedOnly);
         return ResponseEntity.ok(result);
     }
 
@@ -115,15 +104,17 @@ public class StudentMarksResource {
      * @return
      * @throws WitcurveException
      */
+    //need published option
     @GetMapping("/student-marks/grades/{grade}/courses/{courseId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getMarksForAllStudentsInAGradeAndCourse(@PathVariable("grade") Grade grade,
                                                                                @PathVariable("courseId") Long courseId,
                                                                               @RequestParam("type") EventType type,
                                                                               @RequestParam(value = "startDate") LocalDate startDate,
-                                                                              @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
+                                                                              @RequestParam(value = "endDate") LocalDate endDate,
+                                                                                         @RequestParam(defaultValue = "false") Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get list of Student marks by course id and event type and grade");
-        List<StudentMarksDTO> result = studentMarksService.getMarksForAllStudentsInAGradeAndCourse(grade, courseId, type, startDate, endDate);
+        List<StudentMarksDTO> result = studentMarksService.getMarksForAllStudentsInAGradeAndCourse(grade, courseId, type, startDate, endDate, publishedOnly);
         return ResponseEntity.ok(result);
     }
 

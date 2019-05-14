@@ -47,7 +47,7 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     private String smsSignature;
 
     @NotNull
-    @Column(name = "subscription_model")
+    @Column(name = "subscription_model", nullable=false)
     @Enumerated(EnumType.STRING)
     private SubscriptionModel subscriptionModel;
 

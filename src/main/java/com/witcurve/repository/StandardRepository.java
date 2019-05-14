@@ -14,6 +14,9 @@ public interface StandardRepository extends JpaRepository<Standard,Long> {
     @Query("select std from Standard std where std.classTeacher.id = ?1 and std.active = true")
     Standard findByClassTeacherId(Long classTeacherId);
 
+    @Query("select std from Standard std where std.grade = ?1 and std.schoolInfo.id = ?2 and std.active = true order by std.section")
+    List<Standard> findByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId);
+
     @Query("select std from Standard std where std.schoolInfo.id = ?1 and std.active = true order by std.grade, std.section")
     List<Standard> findBySchoolInfoId(Long schoolInfoId);
 

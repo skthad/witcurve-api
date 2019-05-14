@@ -32,6 +32,8 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate targetDate;
 
+    private Integer targetPeriods;
+
     public Long getId() {
         return id;
     }
@@ -94,6 +96,14 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setTargetDate(LocalDate targetDate) {
         this.targetDate = targetDate;
+    }
+
+    public Integer getTargetPeriods() {
+        return targetPeriods;
+    }
+
+    public void setTargetPeriods(Integer targetPeriods) {
+        this.targetPeriods = targetPeriods;
     }
 
     @Override

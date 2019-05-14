@@ -1,14 +1,10 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Exam;
-import com.witcurve.domain.GeneralSlotDetails;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.GSDStatus;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.repository.ExamCourseDetailsRepository;
-import com.witcurve.repository.ExamRepository;
-import com.witcurve.repository.GeneralSlotDetailsRepository;
-import com.witcurve.repository.StandardRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.GeneralSlotDetailsService;
 import com.witcurve.service.dto.GeneralSlotDetailsDTO;
 import com.witcurve.service.mapper.GeneralSlotDetailsMapper;
@@ -42,6 +38,12 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
 
     @Autowired
     private ExamRepository examRepository;
+
+    @Autowired
+    private StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    private StudentMarksRepository studentMarksRepository;
 
     @Override
     public List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
@@ -82,6 +84,9 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
                 if(!(gsd.getSlotOrder() == 1 || gsd.getSlotOrder()==2)) {
                     throw new WitcurveException("Order of exam slots can be 1 or 2");
                 }
+            }
+            if(!gsd.getMarksPublished()) {
+                throw new WitcurveException("Exam slots need mark published field");
             }
             if (gradeBindingValueMap.get(grade) == null) {
                 String bindingId = UUID.randomUUID().toString();
@@ -233,6 +238,62 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
         }
 
 
+    }
+
+    @Override
+    public List<GeneralSlotDetailsDTO> publishMarksForExamAndGrade(Grade grade, Long examId) {
+        log.debug("Publish marks for exam slots for grade : {} and exam with id :{}", grade, examId);
+        Boolean areResultsDeclared = true;
+        List<GeneralSlotDetails> result = generalSlotDetailsRepository.findExamSlotsByGradeAndExamId(grade, examId);
+        for(GeneralSlotDetails gsd : result) {
+            gsd.setMarksPublished(true);
+        }
+        List<GeneralSlotDetails> allGsdsForExam = generalSlotDetailsRepository.findExamSlotsByExamId(examId);
+        for(GeneralSlotDetails gsd: allGsdsForExam) {
+            if(!gsd.getMarksPublished()) {
+                areResultsDeclared = false;
+            }
+        }
+        if(areResultsDeclared) {
+            Exam exam = result.get(0).getExam();
+            exam.setStatus(ExamStatus.RESULTS_DECLARED);
+            examRepository.save(exam);
+        }
+        return generalSlotDetailsMapper.toDto(result);
+
+    }
+
+    @Override
+    public Map<String, List<String>> emptyMarksCourses(Grade grade, Long examId) {
+        log.debug("List of standard to courses for who marks are empty for grade : {} and exam with id : {}", grade, examId);
+        Map<String, List<String>> result = new HashMap<>();
+        Optional<Exam> exam = examRepository.findById(examId);
+        List<Grade> gradeList = new ArrayList<>();
+        gradeList.add(grade);
+        if (!exam.isPresent()) {
+            throw new WitcurveException("No Exam with given Id " + examId);
+        }
+        List<Standard> standardList = standardRepository.findByGradeAndSchoolInfoId(grade, exam.get().getSchoolInfo().getId());
+        for(Standard standard : standardList) {
+            String className = standard.getGrade().toString()+ " "+standard.getSection();
+            List<ExamCourseDetails> examCourseDetailsList = examCourseDetailsRepository.findByGradesAndExamId(gradeList, examId);
+            List<Boolean> allList = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
+            for(ExamCourseDetails ecd : examCourseDetailsList) {
+                List<StudentMarks> studentMarksList = studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecd.getId(), standard.getId(), allList);
+                if(studentMarksList.isEmpty()) {
+                    List<String> courseList = null;
+                    if(result.get(className)==null) {
+                        courseList = new ArrayList<>();
+                    } else {
+                        courseList = result.get(className);
+                    }
+                    courseList.add(ecd.getCourse().getCourseCode());
+                    result.put(className, courseList);
+                }
+            }
+        }
+
+        return result;
     }
 
 

@@ -44,6 +44,9 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
     @Convert(converter = LocalDateConverter.class)
     private LocalDate targetDate;
 
+    @Column(name = "target_periods")
+    private Integer targetPeriods;
+
     public Long getId() {
         return id;
     }
@@ -98,6 +101,14 @@ public class CourseContent extends AbstractAuditingEntity implements Serializabl
 
     public void setTargetDate(LocalDate targetDate) {
         this.targetDate = targetDate;
+    }
+
+    public Integer getTargetPeriods() {
+        return targetPeriods;
+    }
+
+    public void setTargetPeriods(Integer targetPeriods) {
+        this.targetPeriods = targetPeriods;
     }
 
     @Override
