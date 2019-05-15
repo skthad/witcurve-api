@@ -85,7 +85,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
                     throw new WitcurveException("Order of exam slots can be 1 or 2");
                 }
             }
-            if(!gsd.getMarksPublished()) {
+            if(gsd.getMarksPublished() == null) {
                 throw new WitcurveException("Exam slots need mark published field");
             }
             if (gradeBindingValueMap.get(grade) == null) {
