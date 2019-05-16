@@ -73,10 +73,16 @@ public class PaymentServiceImpl implements PaymentService {
         Student student = studentRepository.findById(studentId)
             .orElseThrow(() -> new WitcurveException("Invalid Request, student does not exist by the given id"));
 
+        Double subscriptionCost = student.getSchoolInfo().getSchool().getInstitute().getPricing().get(subscriptionPackage);
+
+        if (subscriptionCost == null) {
+            throw new WitcurveException("Invalid Request, given pricing does not exist for the institute");
+        }
+
         PaymentOrder paymentOrder = new PaymentOrder();
         paymentOrder.setStudent(student);
         paymentOrder.setSubscriptionPackage(subscriptionPackage);
-        paymentOrder.setTransactionAmount((long) subscriptionPackage.getCost());
+        paymentOrder.setTransactionAmount(subscriptionCost);
         paymentOrder.setTransactionStatus(TransactionStatus.PENDING);
         paymentOrder.setPaymentGateway(PaymentGateway.PAYTM);
         paymentOrderRepository.save(paymentOrder);

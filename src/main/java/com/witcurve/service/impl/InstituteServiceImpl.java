@@ -51,7 +51,6 @@ public class InstituteServiceImpl implements InstituteService {
             if (instituteDTO.getSubscriptionStartDate() != null && instituteDTO.getSubscriptionEndDate() != null) {
                 if (instituteDTO.getId() != null) {
                     List<Student> students = studentRepository.getStudentsByInstituteId(instituteDTO.getId());
-
                     if (!CollectionUtils.isEmpty(students)) {
                         students.forEach(student -> {
                             student.setSubscriptionStartDate(instituteDTO.getSubscriptionStartDate());
@@ -60,8 +59,14 @@ public class InstituteServiceImpl implements InstituteService {
                     }
                 }
             } else {
-                throw new WitcurveException("For Institute Subscription Model start and end date for subscription are required ");
+                throw new WitcurveException("For Institute Subscription Model start and end date for subscription are required");
             }
+        } else if (instituteDTO.getSubscriptionModel() == SubscriptionModel.STUDENT) {
+            if (instituteDTO.getPricing() == null) {
+                throw new WitcurveException("For Student Subscription Model pricing is required");
+            }
+            instituteDTO.setSubscriptionStartDate(null);
+            instituteDTO.setSubscriptionEndDate(null);
         }
 
         Institute institute = instituteMapper.toEntity(instituteDTO);
