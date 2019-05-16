@@ -1,10 +1,12 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.UserRepository;
@@ -53,6 +55,9 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
         log.debug("Request to create student : {}", studentDTO);
@@ -93,7 +98,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private void populateSubscriptionFields(StudentDTO studentDTO) {
-        if (studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(studentDTO.getSchoolInfo().getId());
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo with given id " + studentDTO.getSchoolInfo().getId());
+        }
+
+        if (schoolInfo.get().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
             studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
             studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
         } else {
