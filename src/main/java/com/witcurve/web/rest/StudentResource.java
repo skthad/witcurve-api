@@ -101,7 +101,7 @@ public class StudentResource {
         return ResponseEntity.ok(result);
     }
 
-    @PutMapping("/students/{studentId}/deactivate")
+    @DeleteMapping("/students/{studentId}")
     public ResponseEntity<Void> deactivateStudent(@PathVariable Long studentId) throws WitcurveException, URISyntaxException {
         log.debug("Request to deactivate student with ID: " + studentId);
         studentService.deactivate(studentId);
