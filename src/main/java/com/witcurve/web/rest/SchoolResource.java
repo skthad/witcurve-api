@@ -100,8 +100,8 @@ public class SchoolResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
-        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
+//    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+//        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @GetMapping("/schools/{schoolId}")
     @Timed
     public ResponseEntity<SchoolDTO> getSchoolById(@PathVariable("schoolId") Long schoolId) throws WitcurveException {
@@ -117,8 +117,8 @@ public class SchoolResource {
      * @throws WitcurveException
      */
 
-    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
-        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
+//    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+//        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @GetMapping("/schools/institutes/{instituteId}")
     @Timed
     public ResponseEntity<List<SchoolDTO>> getSchoolsByInstituteId(@PathVariable("instituteId") Long instituteId) throws WitcurveException {

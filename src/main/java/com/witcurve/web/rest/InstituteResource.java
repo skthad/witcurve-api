@@ -99,7 +99,7 @@ public class InstituteResource {
      * @return
      * @throws WitcurveException
      */
-    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
+//    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @GetMapping("/institutes/{instituteId}")
     @Timed
     public ResponseEntity<InstituteDTO> getInstituteById(@PathVariable("instituteId") Long instituteId) throws WitcurveException {
