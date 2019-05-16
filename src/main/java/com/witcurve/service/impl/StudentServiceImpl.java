@@ -62,13 +62,9 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
-
-        if (studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
-            studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
-            studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
-        }
-
         User user = userService.createUser(userDTO);
+
+        populateSubscriptionFields(studentDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
         student = studentRepository.save(student);
@@ -88,16 +84,22 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setEmail(studentDTO.getEmail());
         userDTO.setType(UserType.PARENT);
-
-        if (studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
-            studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
-            studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
-        }
-
         userService.updateUser(userDTO);
+
+        populateSubscriptionFields(studentDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);
         return studentMapperLite.toDto(student);
+    }
+
+    private void populateSubscriptionFields(StudentDTO studentDTO) {
+        if (studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
+            studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
+            studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
+        } else {
+            studentDTO.setSubscriptionStartDate(null);
+            studentDTO.setSubscriptionEndDate(null);
+        }
     }
 
     @Override
