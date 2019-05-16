@@ -1,11 +1,14 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.SubscriptionModel;
+import com.witcurve.domain.enumeration.SubscriptionPackage;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -56,6 +59,13 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "subscription_end_date")
     private LocalDate subscriptionEndDate;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @MapKeyEnumerated(value = EnumType.STRING)
+    @MapKeyColumn(name = "subscription_package")
+    @Column(name = "subscription_cost")
+    @CollectionTable(name = "subscription_pricing", joinColumns=@JoinColumn(name="institute_id"))
+    private Map<SubscriptionPackage, Double> pricing = new HashMap<>();
 
     public Long getId() {
         return id;
@@ -143,6 +153,14 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
         this.subscriptionEndDate = subscriptionEndDate;
+    }
+
+    public Map<SubscriptionPackage, Double> getPricing() {
+        return pricing;
+    }
+
+    public void setPricing(Map<SubscriptionPackage, Double> pricing) {
+        this.pricing = pricing;
     }
 
     @Override

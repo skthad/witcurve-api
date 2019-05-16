@@ -2,10 +2,12 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.SubscriptionModel;
+import com.witcurve.domain.enumeration.SubscriptionPackage;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,6 +45,8 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate subscriptionEndDate;
+
+    private Map<SubscriptionPackage, Double> pricing;
 
     Map<Long, SchoolDTO> schoolMap;
 
@@ -135,6 +139,14 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
         this.subscriptionEndDate = subscriptionEndDate;
+    }
+
+    public Map<SubscriptionPackage, Double> getPricing() {
+        return pricing;
+    }
+
+    public void setPricing(Map<SubscriptionPackage, Double> pricing) {
+        this.pricing = pricing;
     }
 
     public Map<Long, SchoolDTO> getSchoolMap() {
