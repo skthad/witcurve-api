@@ -60,7 +60,11 @@ public class InstituteServiceImpl implements InstituteService {
                     }
                 }
             } else {
-                throw new WitcurveException("For Institute Subscription Model start and end date for subscription are required ");
+                throw new WitcurveException("For Institute Subscription Model start and end date for subscription are required");
+            }
+        } else if (instituteDTO.getSubscriptionModel() == SubscriptionModel.STUDENT) {
+            if (instituteDTO.getPricing() == null) {
+                throw new WitcurveException("For Student Subscription Model pricing is required");
             }
         }
 

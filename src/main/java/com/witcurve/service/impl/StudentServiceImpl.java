@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.google.common.base.Strings;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
@@ -61,6 +62,12 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setFirstName(studentDTO.getFirstName());
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setType(UserType.PARENT);
+
+        if (studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
+            studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
+            studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
+        }
+
         User user = userService.createUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student.setUser(user);
@@ -81,6 +88,12 @@ public class StudentServiceImpl implements StudentService {
         userDTO.setLastName(studentDTO.getLastName());
         userDTO.setEmail(studentDTO.getEmail());
         userDTO.setType(UserType.PARENT);
+
+        if (studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
+            studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
+            studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
+        }
+
         userService.updateUser(userDTO);
         Student student = studentMapper.toEntity(studentDTO);
         student = studentRepository.save(student);

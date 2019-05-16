@@ -24,21 +24,21 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
     private Student student;
 
     @NotNull
-    @Column(name = "subscription_package")
+    @Column(name = "subscription_package", nullable = false)
     @Enumerated(EnumType.STRING)
     private SubscriptionPackage subscriptionPackage;
 
     @NotNull
-    @Column(name = "payment_gateway")
+    @Column(name = "payment_gateway", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentGateway paymentGateway;
 
     @NotNull
-    @Column(name = "transaction_amount")
-    private Long transactionAmount;
+    @Column(name = "transaction_amount", nullable = false)
+    private Double transactionAmount;
 
     @NotNull
-    @Column(name = "transaction_status")
+    @Column(name = "transaction_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private TransactionStatus transactionStatus;
 
@@ -83,11 +83,11 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
         this.paymentGateway = paymentGateway;
     }
 
-    public Long getTransactionAmount() {
+    public Double getTransactionAmount() {
         return transactionAmount;
     }
 
-    public void setTransactionAmount(Long transactionAmount) {
+    public void setTransactionAmount(Double transactionAmount) {
         this.transactionAmount = transactionAmount;
     }
 
