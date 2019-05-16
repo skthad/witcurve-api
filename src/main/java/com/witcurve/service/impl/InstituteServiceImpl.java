@@ -51,7 +51,6 @@ public class InstituteServiceImpl implements InstituteService {
             if (instituteDTO.getSubscriptionStartDate() != null && instituteDTO.getSubscriptionEndDate() != null) {
                 if (instituteDTO.getId() != null) {
                     List<Student> students = studentRepository.getStudentsByInstituteId(instituteDTO.getId());
-
                     if (!CollectionUtils.isEmpty(students)) {
                         students.forEach(student -> {
                             student.setSubscriptionStartDate(instituteDTO.getSubscriptionStartDate());
@@ -66,6 +65,8 @@ public class InstituteServiceImpl implements InstituteService {
             if (instituteDTO.getPricing() == null) {
                 throw new WitcurveException("For Student Subscription Model pricing is required");
             }
+            instituteDTO.setSubscriptionStartDate(null);
+            instituteDTO.setSubscriptionEndDate(null);
         }
 
         Institute institute = instituteMapper.toEntity(instituteDTO);
