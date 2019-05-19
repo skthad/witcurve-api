@@ -57,7 +57,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
 
     @Override
-    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long ecdId) throws WitcurveException {
+    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long ecdId, Long eventId) throws WitcurveException {
         if(eventId == null && ecdId == null) {
             throw new WitcurveException("EcdId or EventId need to be entered");
         } else if(eventId != null && ecdId== null) {
@@ -134,15 +134,15 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             }
             if(publishedOnly) {
                 if (standardId == null) {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndEcdId(examId, ecdId, PUBLISHED_ONLY));
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdId(ecdId, PUBLISHED_ONLY));
                 } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecdId, standardId, ALL));
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, PUBLISHED_ONLY));
                 }
             } else {
                 if (standardId == null) {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndEcdId(examId, ecdId, PUBLISHED_ONLY));
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdId(ecdId, ALL));
                 } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecdId, standardId, ALL));
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, ALL));
                 }
             }
 

@@ -279,7 +279,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             List<ExamCourseDetails> examCourseDetailsList = examCourseDetailsRepository.findByGradesAndExamId(gradeList, examId);
             List<Boolean> allList = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
             for(ExamCourseDetails ecd : examCourseDetailsList) {
-                List<StudentMarks> studentMarksList = studentMarksRepository.getStudentMarksByExamIdEcdIdAndStandardId(examId, ecd.getId(), standard.getId(), allList);
+                List<StudentMarks> studentMarksList = studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecd.getId(), standard.getId(), allList);
                 if(studentMarksList.isEmpty()) {
                     List<String> courseList = null;
                     if(result.get(className)==null) {
