@@ -24,7 +24,7 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
 
     private Integer onTimeDays = 0;
 
-    private Integer graceDays= 0;
+    private Integer graceDays = 0;
 
     private Integer lateDays = 0;
 

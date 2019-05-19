@@ -1,14 +1,20 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.ConfigSettings;
 import com.witcurve.domain.Payroll;
 import com.witcurve.domain.PayrollCycle;
 import com.witcurve.domain.PayrollDetails;
+import com.witcurve.domain.enumeration.ConfigFieldName;
+import com.witcurve.domain.enumeration.ConfigType;
+import com.witcurve.repository.ConfigSettingsRepository;
 import com.witcurve.repository.PayrollCycleRepository;
 import com.witcurve.repository.PayrollDetailsRepository;
 import com.witcurve.repository.PayrollRepository;
 import com.witcurve.service.PayrollService;
+import com.witcurve.service.dto.PayrollCycleDTO;
 import com.witcurve.service.dto.PayrollDTO;
 import com.witcurve.service.dto.PayrollDetailsDTO;
+import com.witcurve.service.mapper.PayrollCycleMapper;
 import com.witcurve.service.mapper.PayrollDetailsMapper;
 import com.witcurve.service.mapper.PayrollMapper;
 import com.witcurve.service.util.PayrollComparator;
@@ -47,6 +53,12 @@ public class PayrollServiceImpl implements PayrollService {
     @Autowired
     PayrollCycleRepository payrollCycleRepository;
 
+    @Autowired
+    PayrollCycleMapper payrollCycleMapper;
+
+    @Autowired
+    ConfigSettingsRepository configSettingsRepository;
+
     @Override
     public PayrollDTO saveOrUpdate(PayrollDTO payrollDTO) {
         return payrollMapper.toDto(payrollRepository.save(payrollMapper.toEntity(payrollDTO)));
@@ -63,7 +75,7 @@ public class PayrollServiceImpl implements PayrollService {
     @Override
     public List<PayrollDetailsDTO> getPayrollDetailsForStaff(Long staffId, Boolean activeOnly) {
         if (activeOnly) {
-            List<PayrollDetails> result = payrollDetailsRepository.findActivePayrollDetailsForStaff(staffId);
+            List<PayrollDetails> result = payrollDetailsRepository.findActivePayrollDetailsForActiveStaff(staffId);
             return payrollDetailsMapper.toDto(result);
         } else {
             List<PayrollDetails> result = payrollDetailsRepository.findAllPayrollDetailsForStaff(staffId);
@@ -100,9 +112,36 @@ public class PayrollServiceImpl implements PayrollService {
         if (!payrollCycle.getCycleEnd().isBefore(LocalDate.now())) {
             return new ArrayList<>();
         }
-        List<Payroll> payrolls = payrollRepository.findPayrollForScoolInfoInYearAndMonth(schoolInfoId, payrollCycle.getYear(), payrollCycle.getMonth());
+        PayrollCycleDTO payrollCycleDTO = payrollCycleMapper.toDto(payrollCycle);
+        List<Payroll> payrolls = payrollRepository.findPayrollForScoolInfoInYearAndMonth(schoolInfoId, payrollCycleDTO.getYear(), payrollCycleDTO.getMonth());
         List<PayrollDTO> payrollDTOs = payrollMapper.toDto(payrolls);
-        Collections.sort(payrollDTOs, new PayrollComparator());
+
+        List<PayrollDetails> payrollDetails = payrollDetailsRepository.findPayrollDetailsForActiveStaffInSchoolInfo(schoolInfoId,  payrollCycleDTO.getYear(), payrollCycleDTO.getMonth());
+        List<PayrollDetailsDTO> payrollDetailsDTOs = payrollDetailsMapper.toDto(payrollDetails);
+        List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolInfoId, new ConfigType[]{ConfigType.STAFF_ATTENDANCE});
+        Integer durationInMins = 0;
+        String presentStatusBefore = "";
+        for (ConfigSettings cs : configSettings) {
+            if (ConfigFieldName.STAFF_GRACE_DURATION_IN_MINS.equals(cs.getFieldName())) {
+                durationInMins = Integer.parseInt(cs.getFieldValue());
+            }
+            if (ConfigFieldName.STAFF_PRESENT_STATUS_BEFORE.equals(cs.getFieldName())) {
+                presentStatusBefore = cs.getFieldValue();
+            }
+        }
+        Integer hours = Integer.parseInt(presentStatusBefore.substring(0, 2));
+        Integer mins = Integer.parseInt(presentStatusBefore.substring(2));
+        for (PayrollDetailsDTO pd : payrollDetailsDTOs) {
+            PayrollDTO payrollDTO = payrollMapper.fromPayrollDetails(pd, payrollCycleDTO);
+            payrollDTO.setPayrollCycle(payrollCycleDTO);
+            //TODO: ontime days == calcualte from biometric and config logic
+            //TODO: grace days == calcualte from biometric and config logic
+            //TODO: late days == calculatte from biometric and config logic
+            payrollDTO.setOnTimeDays(14);
+            payrollDTO.setGraceDays(1);
+            payrollDTO.setLateDays(3);
+            payrollDTOs.add(payrollDTO);
+        }
         return payrollDTOs;
     }
 }
