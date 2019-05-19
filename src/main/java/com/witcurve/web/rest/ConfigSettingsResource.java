@@ -26,7 +26,7 @@ public class ConfigSettingsResource {
     /**
       * creates config settings
       * @param schoolId
-      * @param configType
+      * @param configTypes
       * @return
       * @throws WitcurveException
       * @throws URISyntaxException
@@ -34,9 +34,9 @@ public class ConfigSettingsResource {
     @PostMapping("/config-settings/school/{schoolId}")
     @Timed
     public ResponseEntity<List<ConfigSettingsDTO>> resetConfigSettings(@PathVariable Long schoolId,
-                                                                        @RequestParam(required = false) ConfigType configType) {
+                                                                        @RequestParam(required = false) ConfigType[] configTypes) {
         log.debug("Request to create config settings");
-        List<ConfigSettingsDTO> result = configSettingsService.resetConfigSettingsToDefault(schoolId, configType);
+        List<ConfigSettingsDTO> result = configSettingsService.resetConfigSettingsToDefault(schoolId, configTypes);
         return ResponseEntity.ok()
             .body(result);
     }
@@ -60,9 +60,9 @@ public class ConfigSettingsResource {
 
     @GetMapping("/config-settings/school/{schoolId}")
     @Timed
-    public ResponseEntity<List<ConfigSettingsDTO>> getConfigSettingsBySchool(@PathVariable Long schoolId, @RequestParam(required = false) ConfigType configType) {
-        log.debug("Request to get config settings for school ID: " + schoolId + (configType != null ? (" for configType: " + configType) : ""));
-        List<ConfigSettingsDTO> result = configSettingsService.getSettingsBySchoolId(schoolId, configType);
+    public ResponseEntity<List<ConfigSettingsDTO>> getConfigSettingsBySchool(@PathVariable Long schoolId, @RequestParam(required = false) ConfigType[] configTypes) {
+        log.debug("Request to get config settings for school ID: " + schoolId + (configTypes != null && configTypes.length != 0 ? (" for configTypes: " + configTypes) : ""));
+        List<ConfigSettingsDTO> result = configSettingsService.getSettingsBySchoolIdAndTypes(schoolId, configTypes);
         return ResponseEntity.ok()
             .body(result);
     }

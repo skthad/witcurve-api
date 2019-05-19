@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface ConfigSettingsService {
 
-    List<ConfigSettingsDTO> resetConfigSettingsToDefault(Long schoolId, ConfigType configType) throws WitcurveException;
+    List<ConfigSettingsDTO> resetConfigSettingsToDefault(Long schoolId, ConfigType[] configTypes) throws WitcurveException;
 
     List<ConfigSettingsDTO> updateConfigSetting(Long schoolId, List<ConfigSettingsDTO> configSettings) throws WitcurveException;
 
-    List<ConfigSettingsDTO> getSettingsBySchoolId(Long schoolId, ConfigType configType) throws WitcurveException;
+    List<ConfigSettingsDTO> getSettingsBySchoolIdAndTypes(Long schoolId, ConfigType[] configTypes) throws WitcurveException;
 
 }
