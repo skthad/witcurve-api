@@ -31,7 +31,7 @@ public class ConfigSettingsResource {
       * @throws WitcurveException
       * @throws URISyntaxException
       */
-    @PostMapping("/config-settings/school/{schoolId}")
+    @PostMapping("/config-settings/schools/{schoolId}")
     @Timed
     public ResponseEntity<List<ConfigSettingsDTO>> resetConfigSettings(@PathVariable Long schoolId,
                                                                         @RequestParam(required = false) ConfigType[] configTypes) {
@@ -48,7 +48,7 @@ public class ConfigSettingsResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PutMapping("/config-settings/school/{schoolId}")
+    @PutMapping("/config-settings/schools/{schoolId}")
     @Timed
     public ResponseEntity<List<ConfigSettingsDTO>> updateConfigSettings(@RequestBody @Valid List<ConfigSettingsDTO> configSettings,
                                                                         @PathVariable Long schoolId) {
@@ -58,7 +58,7 @@ public class ConfigSettingsResource {
             .body(result);
     }
 
-    @GetMapping("/config-settings/school/{schoolId}")
+    @GetMapping("/config-settings/schools/{schoolId}")
     @Timed
     public ResponseEntity<List<ConfigSettingsDTO>> getConfigSettingsBySchool(@PathVariable Long schoolId, @RequestParam(required = false) ConfigType[] configTypes) {
         log.debug("Request to get config settings for school ID: " + schoolId + (configTypes != null && configTypes.length != 0 ? (" for configTypes: " + configTypes) : ""));
