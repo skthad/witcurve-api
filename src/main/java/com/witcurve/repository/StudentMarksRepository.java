@@ -19,16 +19,16 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.examCourseDetails.gsd.marksPublished in ?2 order by sm.examCourseDetails.date")
     List<StudentMarks> getStudentMarksByExamId(Long examId, List<Boolean> publishList);
 
-    @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.examCourseDetails.id = ?2 and sm.examCourseDetails.gsd.marksPublished in ?3")
-    List<StudentMarks> getStudentMarksByExamIdAndEcdId(Long examId, Long ecdId, List<Boolean> publishList);
+    @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 and sm.examCourseDetails.gsd.marksPublished in ?2")
+    List<StudentMarks> getStudentMarksByEcdId(Long ecdId, List<Boolean> publishList);
 
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 " +
         "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?2) and sm.examCourseDetails.gsd.marksPublished in ?3")
     List<StudentMarks> getStudentMarksByExamIdAndStandardId(Long examId, Long standardId, List<Boolean> publishList);
 
-    @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.examCourseDetails.id = ?2 " +
-        "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?3) and sm.examCourseDetails.gsd.marksPublished in ?4")
-    List<StudentMarks> getStudentMarksByExamIdEcdIdAndStandardId(Long examId, Long ecdId, Long standardId, List<Boolean> publishList);
+    @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 " +
+        "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?2) and sm.examCourseDetails.gsd.marksPublished in ?3")
+    List<StudentMarks> getStudentMarksByEcdIdAndStandardId(Long ecdId, Long standardId, List<Boolean> publishList);
 
     @Query("select sm from StudentMarks sm where sm.event.scd.courseTeacher.course.id = ?1 " +
         "and sm.student.id=?2 and sm.event.type = ?3 " +
