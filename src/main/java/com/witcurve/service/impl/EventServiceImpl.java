@@ -326,6 +326,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<EventDTO> findHolidaysOrSchoolEventsBySchoolInfoId(LocalDate fromDate, LocalDate endDate, Long schoolInfoId) throws WitcurveException {
+        log.debug("Find events for holidays and school events between from date : {} to end date : {} for school info with id : {}", fromDate, endDate, schoolInfoId);
+        WitcurveUtil.correctDateFormat(fromDate, endDate);
+        List<Event> result = eventRepository.findHolidaysAndSchoolEventsBetweenFromDateAndToDate(fromDate, endDate, schoolInfoId);
+        Collections.sort(result, new EventDateAscComparator());
+        return eventMapper.toDto(result);
+
+    }
+
+    @Override
     public List<EventDTO> findUpcomingEventsForStaffInWeek(LocalDate date, Long staffId) throws WitcurveException {
         log.debug("Find events for announcements for a duration of week from date : {} and for staff with id : {}", date, staffId);
         LocalDate endDate = date.plusDays(6);

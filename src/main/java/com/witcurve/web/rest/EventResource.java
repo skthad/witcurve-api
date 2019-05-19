@@ -279,20 +279,32 @@ public class EventResource {
      */
     @GetMapping("/events/standards/{standardId}")
     @Timed
-    public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
+    public ResponseEntity<Void> getAllEventsForStandard(
         @RequestParam(value = "eventDate", required = false) LocalDate eventDate,
         @RequestParam(value = "type") ViewType type,
         @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
         log.debug("Request to get events on given date : {} for standard id : {}", eventDate, standardId);
 
-        //add null checks later and change log statement
-        List<EventDTO> result = new ArrayList<>();
 
-//        if(type.equals(ViewType.LEAVE)) {
-//            result = eventService.getAllLeavesForStandard(eventDate, standardId);
-//        }
+        return new ResponseEntity<>(null,  HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(result,  HttpStatus.OK);
+    /**
+     *
+     * @param fromDate
+     * @param endDate
+     * @param schoolInfoId
+     * @return
+     */
+    @GetMapping("/events/schoolInfo/{schoolInfoId}/holidays-school-events")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getHolidaysAndSchoolEventsForSchoolInfo(
+        @RequestParam LocalDate fromDate,
+        @RequestParam LocalDate endDate,
+        @PathVariable Long schoolInfoId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to get holiday and school events between dates : {} and {} for school info with id : {}", fromDate, endDate, schoolInfoId);
+        List<EventDTO> result = eventService.findHolidaysOrSchoolEventsBySchoolInfoId(fromDate, endDate, schoolInfoId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
