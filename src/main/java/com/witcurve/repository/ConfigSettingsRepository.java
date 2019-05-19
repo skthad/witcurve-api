@@ -15,16 +15,16 @@ public interface ConfigSettingsRepository extends JpaRepository<ConfigSettings, 
     @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 order by cs.configType, cs.displayOrder")
     List<ConfigSettings> getConfigSettingsBySchoolId(Long schoolId);
 
-    @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 and cs.configType = ?2 order by cs.displayOrder")
-    List<ConfigSettings> getConfigSettingsBySchoolIdAndType(Long schoolId, ConfigType configType);
+    @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 and cs.configType in ?2 order by cs.displayOrder")
+    List<ConfigSettings> getConfigSettingsBySchoolIdAndTypes(Long schoolId, ConfigType[] configTypes);
 
     @Modifying
     @Query("delete from ConfigSettings where schoolId = ?1")
     void deleteBySchoolId(Long schoolId);
 
     @Modifying
-    @Query("delete from ConfigSettings where schoolId = ?1 and configType = ?2")
-    void deleteBySchoolIdAndType(Long schoolId, ConfigType configType);
+    @Query("delete from ConfigSettings where schoolId = ?1 and configType in ?2")
+    void deleteBySchoolIdAndType(Long schoolId, ConfigType[] configTypes);
 
 }
 

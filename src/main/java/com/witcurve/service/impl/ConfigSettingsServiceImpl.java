@@ -35,18 +35,18 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
     SchoolRepository schoolRepository;
 
     @Override
-    public List<ConfigSettingsDTO> resetConfigSettingsToDefault(Long schoolId, ConfigType configType) throws WitcurveException {
+    public List<ConfigSettingsDTO> resetConfigSettingsToDefault(Long schoolId, ConfigType[] configTypes) throws WitcurveException {
         Optional<School> school = schoolRepository.findById(schoolId);
         if (!school.isPresent()) {
             throw new WitcurveException("No school found with ID: " + schoolId);
         }
-        log.debug("Request to create Config settings for school ID {} and type {} ", schoolId, configType);
-        if (configType == null) {
+        log.debug("Request to create Config settings for school ID {} and types {} ", schoolId, configTypes);
+        if (configTypes == null || configTypes.length == 0) {
             configSettingsRepository.deleteBySchoolId(schoolId);
         } else {
-            configSettingsRepository.deleteBySchoolIdAndType(schoolId, configType);
+            configSettingsRepository.deleteBySchoolIdAndType(schoolId, configTypes);
         }
-        List<ConfigSettingsDTO> defaultSettings = getDefaultSettings(configType);
+        List<ConfigSettingsDTO> defaultSettings = getDefaultSettings(configTypes);
         defaultSettings.stream().forEach(cs -> {
             cs.setId(null);
             cs.setSchoolId(schoolId);
@@ -73,33 +73,33 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
     }
 
     @Override
-    public List<ConfigSettingsDTO> getSettingsBySchoolId(Long schoolId, ConfigType configType) throws WitcurveException {
+    public List<ConfigSettingsDTO> getSettingsBySchoolIdAndTypes(Long schoolId, ConfigType[] configTypes) throws WitcurveException {
         Optional<School> school = schoolRepository.findById(schoolId);
         if (!school.isPresent()) {
             throw new WitcurveException("No school found with ID: " + schoolId);
         }
         log.debug("Request to get Config settings for school ID: {}", schoolId);
         List<ConfigSettingsDTO> settings;
-        if (configType == null) {
+        if (configTypes == null || configTypes.length == 0) {
             settings = configSettingsMapper.toDto(configSettingsRepository
                 .getConfigSettingsBySchoolId(schoolId));
         } else {
             settings = configSettingsMapper.toDto(configSettingsRepository
-                .getConfigSettingsBySchoolIdAndType(schoolId, configType));
+                .getConfigSettingsBySchoolIdAndTypes(schoolId, configTypes));
         }
         if (settings.size() == 0) {
-            return resetConfigSettingsToDefault(schoolId, configType);
+            return resetConfigSettingsToDefault(schoolId, configTypes);
         } else {
             return settings;
         }
     }
 
-    private List<ConfigSettingsDTO> getDefaultSettings(ConfigType configType) throws WitcurveException {
+    private List<ConfigSettingsDTO> getDefaultSettings(ConfigType[] configTypes) throws WitcurveException {
         List<ConfigSettings> defaultSettings;
-        if (configType == null) {
+        if (configTypes == null || configTypes.length == 0) {
             defaultSettings = configSettingsRepository.getConfigSettingsBySchoolId(-1l);
         } else {
-            defaultSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndType(-1l, configType);
+            defaultSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(-1l, configTypes);
         }
         return configSettingsMapper.toDto(defaultSettings);
     }
