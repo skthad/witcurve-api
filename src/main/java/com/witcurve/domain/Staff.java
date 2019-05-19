@@ -120,6 +120,9 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
 
+    @Column(name = "leave_accrual", columnDefinition = "int default 0")
+    private Integer leaveAccrual = 0;
+
     @NotNull
     @Email
     @Size(min = 5, max = 254)
@@ -328,6 +331,14 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public Integer getLeaveAccrual() {
+        return leaveAccrual;
+    }
+
+    public void setLeaveAccrual(Integer leaveAccrual) {
+        this.leaveAccrual = leaveAccrual;
     }
 
     public String getEmail() {

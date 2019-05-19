@@ -29,23 +29,22 @@ public class PdfUtil {
         SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
 
         PayrollDetailsDTO payrollDetailsDTO = new PayrollDetailsDTO();
-        payrollDetailsDTO.setBasicSalary(12000f);
-        payrollDetailsDTO.setHouseRentAllowance(6000f);
-        payrollDetailsDTO.setConveyanceAllowance(1000f);
-        payrollDetailsDTO.setMedicalAllowance(6000f);
-        payrollDetailsDTO.setManagerialAllowance(4000f);
-        payrollDetailsDTO.setLeaveTravelAllowance(2300f);
+        payrollDetailsDTO.setBasicSalary(12000d);
+        payrollDetailsDTO.setHouseRentAllowance(6000d);
+        payrollDetailsDTO.setConveyanceAllowance(1000d);
+        payrollDetailsDTO.setMedicalAllowance(6000d);
+        payrollDetailsDTO.setManagerialAllowance(4000d);
+        payrollDetailsDTO.setLeaveTravelAllowance(2300d);
 
-        payrollDetailsDTO.setProvidentFund(997f);
-        payrollDetailsDTO.setProfessionalTax(1300f);
+        payrollDetailsDTO.setProvidentFund(997d);
+        payrollDetailsDTO.setProfessionalTax(1300d);
 
         PayrollDTO payrollDTO = new PayrollDTO();
 
-        payrollDTO.setPaidDays(21);
-        payrollDTO.setTotalDays(22);
-        payrollDTO.setIncomeTax(2200f);
-        payrollDTO.setLateEntryDeductions(0.0f);
-        payrollDTO.setBonus(11000f);
+        payrollDTO.setPaidDays(21d);
+        payrollDTO.setPayableDays(22d);
+        payrollDTO.setIncomeTax(2200d);
+        payrollDTO.setBonus(11000d);
         payrollDTO.setPayrollDetails(payrollDetailsDTO);
 
         createPDF(schoolInfo, payrollDTO);
@@ -119,7 +118,7 @@ public class PdfUtil {
         stream.addRect(cursorX_LEFT - 15, cursorY_TOP - 10, 400, 1);
         stream.fill();
 
-        double earnings = ((double) payrollDTO.getPaidDays() / payrollDTO.getTotalDays()) * totalEarnings;
+        double earnings = ((double) payrollDTO.getPaidDays() / payrollDTO.getPayableDays()) * totalEarnings;
         double netSalary = earnings - totalDeductions;
 
         cursorY_TOP -= 30;
@@ -202,7 +201,7 @@ public class PdfUtil {
         writeToStream(stream, font, fSize, cursor_CENTER, startY, "Location: XX, XXXXXX XXXX");
 
         startY = startY - titleHeight - 5;
-        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Total Days: " + payrollDTO.getTotalDays());
+        writeToStream(stream, font, fSize, cursor_CENTER, startY, "Total Days: " + payrollDTO.getPayableDays());
 
         startY = startY - titleHeight - 5;
         writeToStream(stream, font, fSize, cursor_CENTER, startY, "Paid Days: " + payrollDTO.getPaidDays());
@@ -339,11 +338,11 @@ public class PdfUtil {
             totalDeductions += payrollDTO.getIncomeTax();
         }
 
-        if (payrollDTO.getLateEntryDeductions() != null && payrollDTO.getLateEntryDeductions() > 0) {
+        if (payrollDTO.getLateDays() != null && payrollDTO.getLateDays() > 0) {
             cursorY_TOP -= titleHeight + 5;
             writeToStream(stream, font, fSize, cursorX_LEFT, cursorY_TOP, "Late Entry Deductions: ");
-            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getLateEntryDeductions());
-            totalDeductions += payrollDTO.getLateEntryDeductions();
+            writeToStream(stream, font, fSize, cursor_CENTER, cursorY_TOP, "Rs. " + payrollDTO.getLateDays());
+            totalDeductions += payrollDTO.getLateDays();
         }
 
         if (payrollDTO.getMiscDeductions() != null && payrollDTO.getMiscDeductions() > 0) {

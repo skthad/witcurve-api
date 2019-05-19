@@ -12,7 +12,7 @@ public interface PayrollService {
 
     List<PayrollDTO> getPayrollsForStaff(Long staffId, Integer year, Month month);
 
-    List<PayrollDTO> getPayrollsForSchoolInfo(Long schoolInfoId, Integer year, Month month);
+    List<PayrollDTO> getPayrollsForSchoolInfo(Long schoolInfoId, Long payrollCycleId);
 
     PayrollDetailsDTO saveOrUpdate(PayrollDetailsDTO payrollDetailsDTO);
 

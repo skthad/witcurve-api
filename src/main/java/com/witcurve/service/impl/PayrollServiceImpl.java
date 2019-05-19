@@ -1,7 +1,9 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.Payroll;
+import com.witcurve.domain.PayrollCycle;
 import com.witcurve.domain.PayrollDetails;
+import com.witcurve.repository.PayrollCycleRepository;
 import com.witcurve.repository.PayrollDetailsRepository;
 import com.witcurve.repository.PayrollRepository;
 import com.witcurve.service.PayrollService;
@@ -10,15 +12,19 @@ import com.witcurve.service.dto.PayrollDetailsDTO;
 import com.witcurve.service.mapper.PayrollDetailsMapper;
 import com.witcurve.service.mapper.PayrollMapper;
 import com.witcurve.service.util.PayrollComparator;
+import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,6 +43,9 @@ public class PayrollServiceImpl implements PayrollService {
 
     @Autowired
     PayrollDetailsMapper payrollDetailsMapper;
+
+    @Autowired
+    PayrollCycleRepository payrollCycleRepository;
 
     @Override
     public PayrollDTO saveOrUpdate(PayrollDTO payrollDTO) {
@@ -79,17 +88,21 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
-    public List<PayrollDTO> getPayrollsForSchoolInfo(Long schoolInfoId, Integer year, Month month) {
-        List<Payroll> payrolls;
-        if (month != null) {
-            payrolls = payrollRepository.findPayrollForScoolInfoInMonth(schoolInfoId, year, month);
-        } else if (year != null) {
-            payrolls = payrollRepository.findPayrollsForScoolInfoInYear(schoolInfoId, year);
-        } else {
-            payrolls = payrollRepository.findAllPayrollsForScoolInfo(schoolInfoId);
+    public List<PayrollDTO> getPayrollsForSchoolInfo(Long schoolInfoId, Long payrollCycleId) {
+        Optional<PayrollCycle> result = payrollCycleRepository.findById(payrollCycleId);
+        if (!result.isPresent()) {
+            throw new WitcurveException("No payroll cycle exists with ID: " + payrollCycleId);
         }
-        List<PayrollDTO> result = payrollMapper.toDto(payrolls);
-        Collections.sort(result, new PayrollComparator());
-        return result;
+        PayrollCycle payrollCycle = result.get();
+        if (!payrollCycle.getSchoolInfo().getId().equals(schoolInfoId)) {
+            throw new WitcurveException("Given schoolInfoId does not match with the one in payroll Cycle");
+        }
+        if (!payrollCycle.getCycleEnd().isBefore(LocalDate.now())) {
+            return new ArrayList<>();
+        }
+        List<Payroll> payrolls = payrollRepository.findPayrollForScoolInfoInYearAndMonth(schoolInfoId, payrollCycle.getYear(), payrollCycle.getMonth());
+        List<PayrollDTO> payrollDTOs = payrollMapper.toDto(payrolls);
+        Collections.sort(payrollDTOs, new PayrollComparator());
+        return payrollDTOs;
     }
 }

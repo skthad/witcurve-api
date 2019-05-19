@@ -22,38 +22,44 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private PayrollDetailsDTO payrollDetails;
 
-    @NotNull
-    private Integer paidDays = 0;
+    private Integer onTimeDays = 0;
+
+    private Integer graceDays= 0;
+
+    private Integer lateDays = 0;
+
+    private Double leavesWithoutPay = 0d;
 
     @NotNull
-    private Integer totalDays = 0;
+    private Double paidDays = 0d;
 
     @NotNull
-    private Float basicSalary = 0f;
+    private Double payableDays = 0d;
 
-    private Float houseRentAllowance;
+    @NotNull
+    private Double basicSalary = 0d;
 
-    private Float conveyanceAllowance;
+    private Double houseRentAllowance = 0d;
 
-    private Float medicalAllowance;
+    private Double conveyanceAllowance = 0d;
 
-    private Float managerialAllowance;
+    private Double medicalAllowance = 0d;
 
-    private Float leaveTravelAllowance;
+    private Double managerialAllowance = 0d;
 
-    private Float providentFund;
+    private Double leaveTravelAllowance = 0d;
 
-    private Float professionalTax;
+    private Double providentFund = 0d;
 
-    private Float incomeTax;
+    private Double professionalTax = 0d;
 
-    private Float lateEntryDeductions;
+    private Double incomeTax = 0d;
 
-    private Float bonus;
+    private Double bonus = 0d;
 
-    private Float miscEarnings;
+    private Double miscEarnings = 0d;
 
-    private Float miscDeductions;
+    private Double miscDeductions = 0d;
 
     @NotNull
     private ModeOfPayment modeOfPayment;
@@ -94,123 +100,147 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
         this.payrollDetails = payrollDetails;
     }
 
-    public Integer getPaidDays() {
+    public Integer getOnTimeDays() {
+        return onTimeDays;
+    }
+
+    public void setOnTimeDays(Integer onTimeDays) {
+        this.onTimeDays = onTimeDays;
+    }
+
+    public Integer getGraceDays() {
+        return graceDays;
+    }
+
+    public void setGraceDays(Integer graceDays) {
+        this.graceDays = graceDays;
+    }
+
+    public Integer getLateDays() {
+        return lateDays;
+    }
+
+    public void setLateDays(Integer lateDays) {
+        this.lateDays = lateDays;
+    }
+
+    public Double getLeavesWithoutPay() {
+        return leavesWithoutPay;
+    }
+
+    public void setLeavesWithoutPay(Double leavesWithoutPay) {
+        this.leavesWithoutPay = leavesWithoutPay;
+    }
+
+    public Double getPaidDays() {
         return paidDays;
     }
 
-    public void setPaidDays(Integer paidDays) {
+    public void setPaidDays(Double paidDays) {
         this.paidDays = paidDays;
     }
 
-    public Integer getTotalDays() {
-        return totalDays;
+    public Double getPayableDays() {
+        return payableDays;
     }
 
-    public void setTotalDays(Integer totalDays) {
-        this.totalDays = totalDays;
+    public void setPayableDays(Double payableDays) {
+        this.payableDays = payableDays;
     }
 
-    public Float getBasicSalary() {
+    public Double getBasicSalary() {
         return basicSalary;
     }
 
-    public void setBasicSalary(Float basicSalary) {
+    public void setBasicSalary(Double basicSalary) {
         this.basicSalary = basicSalary;
     }
 
-    public Float getHouseRentAllowance() {
+    public Double getHouseRentAllowance() {
         return houseRentAllowance;
     }
 
-    public void setHouseRentAllowance(Float houseRentAllowance) {
+    public void setHouseRentAllowance(Double houseRentAllowance) {
         this.houseRentAllowance = houseRentAllowance;
     }
 
-    public Float getConveyanceAllowance() {
+    public Double getConveyanceAllowance() {
         return conveyanceAllowance;
     }
 
-    public void setConveyanceAllowance(Float conveyanceAllowance) {
+    public void setConveyanceAllowance(Double conveyanceAllowance) {
         this.conveyanceAllowance = conveyanceAllowance;
     }
 
-    public Float getMedicalAllowance() {
+    public Double getMedicalAllowance() {
         return medicalAllowance;
     }
 
-    public void setMedicalAllowance(Float medicalAllowance) {
+    public void setMedicalAllowance(Double medicalAllowance) {
         this.medicalAllowance = medicalAllowance;
     }
 
-    public Float getManagerialAllowance() {
+    public Double getManagerialAllowance() {
         return managerialAllowance;
     }
 
-    public void setManagerialAllowance(Float managerialAllowance) {
+    public void setManagerialAllowance(Double managerialAllowance) {
         this.managerialAllowance = managerialAllowance;
     }
 
-    public Float getLeaveTravelAllowance() {
+    public Double getLeaveTravelAllowance() {
         return leaveTravelAllowance;
     }
 
-    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+    public void setLeaveTravelAllowance(Double leaveTravelAllowance) {
         this.leaveTravelAllowance = leaveTravelAllowance;
     }
 
-    public Float getProvidentFund() {
+    public Double getProvidentFund() {
         return providentFund;
     }
 
-    public void setProvidentFund(Float providentFund) {
+    public void setProvidentFund(Double providentFund) {
         this.providentFund = providentFund;
     }
 
-    public Float getProfessionalTax() {
+    public Double getProfessionalTax() {
         return professionalTax;
     }
 
-    public void setProfessionalTax(Float professionalTax) {
+    public void setProfessionalTax(Double professionalTax) {
         this.professionalTax = professionalTax;
     }
 
-    public Float getIncomeTax() {
+    public Double getIncomeTax() {
         return incomeTax;
     }
 
-    public void setIncomeTax(Float incomeTax) {
+    public void setIncomeTax(Double incomeTax) {
         this.incomeTax = incomeTax;
     }
 
-    public Float getLateEntryDeductions() {
-        return lateEntryDeductions;
-    }
-
-    public void setLateEntryDeductions(Float lateEntryDeductions) {
-        this.lateEntryDeductions = lateEntryDeductions;
-    }
-
-    public Float getBonus() {
+    public Double getBonus() {
         return bonus;
     }
 
-    public void setBonus(Float bonus) {
+    public void setBonus(Double bonus) {
         this.bonus = bonus;
     }
 
-    public Float getMiscEarnings() {
+    public Double getMiscEarnings() {
         return miscEarnings;
     }
 
-    public void setMiscEarnings(Float miscEarnings) {
+    public void setMiscEarnings(Double miscEarnings) {
         this.miscEarnings = miscEarnings;
     }
 
-    public Float getMiscDeductions() {
+    public Double getMiscDeductions() {
         return miscDeductions;
     }
 
-    public void setMiscDeductions(Float miscDeductions) {
+    public void setMiscDeductions(Double miscDeductions) {
         this.miscDeductions = miscDeductions;
     }
 

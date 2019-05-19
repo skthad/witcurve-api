@@ -94,6 +94,8 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     @Pattern(regexp = "^[6-9]\\d{9}$")
     private String secondaryPhone;
 
+    private Integer leaveAccrual = 0;
+
     @NotNull
     @Email
     @Size(min = 5, max = 254)
@@ -326,6 +328,14 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSecondaryPhone(String secondaryPhone) {
         this.secondaryPhone = secondaryPhone;
+    }
+
+    public Integer getLeaveAccrual() {
+        return leaveAccrual;
+    }
+
+    public void setLeaveAccrual(Integer leaveAccrual) {
+        this.leaveAccrual = leaveAccrual;
     }
 
     public String getEmail() {

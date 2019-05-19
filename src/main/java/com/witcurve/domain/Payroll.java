@@ -29,53 +29,62 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(nullable = false)
     private PayrollDetails payrollDetails;
 
-    @NotNull
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Integer paidDays = 0;
+    @Column(columnDefinition="integer default 0")
+    private Integer onTimeDays = 0;
+
+    @Column(columnDefinition="integer default 0")
+    private Integer graceDays = 0;
+
+    @Column(columnDefinition="integer default 0")
+    private Integer lateDays = 0;
+
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double leavesWithoutPay = 0d;
 
     @NotNull
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Integer totalDays = 0;
+    @Column(nullable = false, columnDefinition="Decimal(10,2) default 0.0")
+    private Double paidDays = 0d;
 
     @NotNull
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Float basicSalary = 0f;
+    @Column(nullable = false, columnDefinition="Decimal(10,2) default 0.0")
+    private Double payableDays = 0d;
 
-    @Column
-    private Float houseRentAllowance;
+    @NotNull
+    @Column(nullable = false, columnDefinition="Decimal(10,2) default 0.0")
+    private Double basicSalary = 0d;
 
-    @Column
-    private Float conveyanceAllowance;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double houseRentAllowance = 0d;
 
-    @Column
-    private Float medicalAllowance;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double conveyanceAllowance = 0d;
 
-    @Column
-    private Float managerialAllowance;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double medicalAllowance = 0d;
 
-    @Column
-    private Float leaveTravelAllowance;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double managerialAllowance = 0d;
 
-    @Column
-    private Float providentFund;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double leaveTravelAllowance = 0d;
 
-    @Column
-    private Float professionalTax;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double providentFund = 0d;
 
-    @Column
-    private Float incomeTax;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double professionalTax = 0d;
 
-    @Column
-    private Float lateEntryDeductions;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double incomeTax = 0d;
 
-    @Column
-    private Float bonus;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double bonus;
 
-    @Column
-    private Float miscEarnings;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double miscEarnings;
 
-    @Column
-    private Float miscDeductions;
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double miscDeductions;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -117,123 +126,147 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
         this.payrollDetails = payrollDetails;
     }
 
-    public Integer getPaidDays() {
+    public Integer getOnTimeDays() {
+        return onTimeDays;
+    }
+
+    public void setOnTimeDays(Integer onTimeDays) {
+        this.onTimeDays = onTimeDays;
+    }
+
+    public Integer getGraceDays() {
+        return graceDays;
+    }
+
+    public void setGraceDays(Integer graceDays) {
+        this.graceDays = graceDays;
+    }
+
+    public Integer getLateDays() {
+        return lateDays;
+    }
+
+    public void setLateDays(Integer lateDays) {
+        this.lateDays = lateDays;
+    }
+
+    public Double getLeavesWithoutPay() {
+        return leavesWithoutPay;
+    }
+
+    public void setLeavesWithoutPay(Double leavesWithoutPay) {
+        this.leavesWithoutPay = leavesWithoutPay;
+    }
+
+    public Double getPaidDays() {
         return paidDays;
     }
 
-    public void setPaidDays(Integer paidDays) {
+    public void setPaidDays(Double paidDays) {
         this.paidDays = paidDays;
     }
 
-    public Integer getTotalDays() {
-        return totalDays;
+    public Double getPayableDays() {
+        return payableDays;
     }
 
-    public void setTotalDays(Integer totalDays) {
-        this.totalDays = totalDays;
+    public void setPayableDays(Double payableDays) {
+        this.payableDays = payableDays;
     }
 
-    public Float getBasicSalary() {
+    public Double getBasicSalary() {
         return basicSalary;
     }
 
-    public void setBasicSalary(Float basicSalary) {
+    public void setBasicSalary(Double basicSalary) {
         this.basicSalary = basicSalary;
     }
 
-    public Float getHouseRentAllowance() {
+    public Double getHouseRentAllowance() {
         return houseRentAllowance;
     }
 
-    public void setHouseRentAllowance(Float houseRentAllowance) {
+    public void setHouseRentAllowance(Double houseRentAllowance) {
         this.houseRentAllowance = houseRentAllowance;
     }
 
-    public Float getConveyanceAllowance() {
+    public Double getConveyanceAllowance() {
         return conveyanceAllowance;
     }
 
-    public void setConveyanceAllowance(Float conveyanceAllowance) {
+    public void setConveyanceAllowance(Double conveyanceAllowance) {
         this.conveyanceAllowance = conveyanceAllowance;
     }
 
-    public Float getMedicalAllowance() {
+    public Double getMedicalAllowance() {
         return medicalAllowance;
     }
 
-    public void setMedicalAllowance(Float medicalAllowance) {
+    public void setMedicalAllowance(Double medicalAllowance) {
         this.medicalAllowance = medicalAllowance;
     }
 
-    public Float getManagerialAllowance() {
+    public Double getManagerialAllowance() {
         return managerialAllowance;
     }
 
-    public void setManagerialAllowance(Float managerialAllowance) {
+    public void setManagerialAllowance(Double managerialAllowance) {
         this.managerialAllowance = managerialAllowance;
     }
 
-    public Float getLeaveTravelAllowance() {
+    public Double getLeaveTravelAllowance() {
         return leaveTravelAllowance;
     }
 
-    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+    public void setLeaveTravelAllowance(Double leaveTravelAllowance) {
         this.leaveTravelAllowance = leaveTravelAllowance;
     }
 
-    public Float getProvidentFund() {
+    public Double getProvidentFund() {
         return providentFund;
     }
 
-    public void setProvidentFund(Float providentFund) {
+    public void setProvidentFund(Double providentFund) {
         this.providentFund = providentFund;
     }
 
-    public Float getProfessionalTax() {
+    public Double getProfessionalTax() {
         return professionalTax;
     }
 
-    public void setProfessionalTax(Float professionalTax) {
+    public void setProfessionalTax(Double professionalTax) {
         this.professionalTax = professionalTax;
     }
 
-    public Float getIncomeTax() {
+    public Double getIncomeTax() {
         return incomeTax;
     }
 
-    public void setIncomeTax(Float incomeTax) {
+    public void setIncomeTax(Double incomeTax) {
         this.incomeTax = incomeTax;
     }
 
-    public Float getLateEntryDeductions() {
-        return lateEntryDeductions;
-    }
-
-    public void setLateEntryDeductions(Float lateEntryDeductions) {
-        this.lateEntryDeductions = lateEntryDeductions;
-    }
-
-    public Float getBonus() {
+    public Double getBonus() {
         return bonus;
     }
 
-    public void setBonus(Float bonus) {
+    public void setBonus(Double bonus) {
         this.bonus = bonus;
     }
 
-    public Float getMiscEarnings() {
+    public Double getMiscEarnings() {
         return miscEarnings;
     }
 
-    public void setMiscEarnings(Float miscEarnings) {
+    public void setMiscEarnings(Double miscEarnings) {
         this.miscEarnings = miscEarnings;
     }
 
-    public Float getMiscDeductions() {
+    public Double getMiscDeductions() {
         return miscDeductions;
     }
 
-    public void setMiscDeductions(Float miscDeductions) {
+    public void setMiscDeductions(Double miscDeductions) {
         this.miscDeductions = miscDeductions;
     }
 

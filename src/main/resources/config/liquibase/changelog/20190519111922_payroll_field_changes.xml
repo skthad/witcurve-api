@@ -1,0 +1,224 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="15582647780011558264778001-1">
+        <loadData file="config/liquibase/config_settings_push_late_grace_penalty.csv"
+                  separator=";"
+                  tableName="config_settings">
+        </loadData>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558264778001-2">
+        <addColumn tableName="staff">
+            <column name="leave_accrual"
+                    type="integer"
+                    defaultValueNumeric="0"
+                    afterColumn="secondary_phone"/>
+        </addColumn>
+        <addColumn tableName="staff">
+            <column name="e_mail" type="varchar(254)"/>
+        </addColumn>
+        <sql>update staff set e_mail = email</sql>
+        <dropNotNullConstraint tableName="staff" columnName="email" columnDataType="varchar(254)"/>
+        <dropColumn tableName="staff" columnName="email"/>
+        <addColumn tableName="staff">
+            <column name="email" type="varchar(254)" afterColumn="leave_accrual"/>
+        </addColumn>
+        <sql>update staff set email = e_mail</sql>
+        <addNotNullConstraint columnDataType="varchar(254)"
+                              columnName="email"
+                              tableName="staff"/>
+        <dropColumn tableName="staff" columnName="e_mail"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558264778001-3">
+        <dropColumn tableName="payroll_details" columnName="basic_salary"/>
+        <addColumn tableName="payroll_details">
+            <column name="basic_salary"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="deactivation_date">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="house_rent_allowance"/>
+        <addColumn tableName="payroll_details">
+            <column name="house_rent_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="basic_salary"/>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="conveyance_allowance"/>
+        <addColumn tableName="payroll_details">
+            <column name="conveyance_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="house_rent_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="medical_allowance"/>
+        <addColumn tableName="payroll_details">
+            <column name="medical_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="conveyance_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="managerial_allowance"/>
+        <addColumn tableName="payroll_details">
+            <column name="managerial_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="medical_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="leave_travel_allowance"/>
+        <addColumn tableName="payroll_details">
+            <column name="leave_travel_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="managerial_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="provident_fund"/>
+        <addColumn tableName="payroll_details">
+            <column name="provident_fund"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="leave_travel_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll_details" columnName="professional_tax"/>
+        <addColumn tableName="payroll_details">
+            <column name="professional_tax"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="provident_fund"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558264778001-4">
+        <dropNotNullConstraint tableName="payroll" columnName="total_days" columnDataType="integer"/>
+        <dropColumn tableName="payroll" columnName="total_days"/>
+        <addColumn tableName="payroll">
+            <column name="payable_days"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="paid_days">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropNotNullConstraint tableName="payroll" columnName="paid_days" columnDataType="integer"/>
+        <dropColumn tableName="payroll" columnName="paid_days"/>
+        <addColumn tableName="payroll">
+            <column name="paid_days"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="payroll_details_id">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="payroll">
+            <column name="leaves_without_pay"
+                    type="Decimal(10, 2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="payroll_details_id"/>
+        </addColumn>
+        <addColumn tableName="payroll">
+            <column name="late_days"
+                    type="integer"
+                    defaultValueNumeric="0"
+                    afterColumn="payroll_details_id"/>
+        </addColumn>
+        <addColumn tableName="payroll">
+            <column name="grace_days"
+                    type="integer"
+                    defaultValueNumeric="0"
+                    afterColumn="payroll_details_id"/>
+        </addColumn>
+        <addColumn tableName="payroll">
+            <column name="on_time_days"
+                    type="integer"
+                    defaultValueNumeric="0"
+                    afterColumn="payroll_details_id"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="basic_salary"/>
+        <addColumn tableName="payroll">
+            <column name="basic_salary"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="payable_days">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="house_rent_allowance"/>
+        <addColumn tableName="payroll">
+            <column name="house_rent_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="basic_salary"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="conveyance_allowance"/>
+        <addColumn tableName="payroll">
+            <column name="conveyance_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="house_rent_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="medical_allowance"/>
+        <addColumn tableName="payroll">
+            <column name="medical_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="conveyance_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="managerial_allowance"/>
+        <addColumn tableName="payroll">
+            <column name="managerial_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="medical_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="leave_travel_allowance"/>
+        <addColumn tableName="payroll">
+            <column name="leave_travel_allowance"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="managerial_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="provident_fund"/>
+        <addColumn tableName="payroll">
+            <column name="provident_fund"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="leave_travel_allowance"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="professional_tax"/>
+        <addColumn tableName="payroll">
+            <column name="professional_tax"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="provident_fund"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="income_tax"/>
+        <addColumn tableName="payroll">
+            <column name="income_tax"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="professional_tax"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="bonus"/>
+        <addColumn tableName="payroll">
+            <column name="bonus"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="income_tax"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="misc_earnings"/>
+        <addColumn tableName="payroll">
+            <column name="misc_earnings"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="bonus"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="misc_deductions"/>
+        <addColumn tableName="payroll">
+            <column name="misc_deductions"
+                    type="decimal(10,2)"
+                    defaultValueNumeric="0.0"
+                    afterColumn="misc_earnings"/>
+        </addColumn>
+        <dropColumn tableName="payroll" columnName="late_entry_deductions"/>
+    </changeSet>
+</databaseChangeLog>

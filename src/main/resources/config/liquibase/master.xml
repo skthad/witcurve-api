@@ -11,5 +11,5 @@
     <include file="config/liquibase/changelog/20190512113734_added_end_date_to_event.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190514152026_refactor_to_marks.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190516111958_added_subscription_to_institute.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/20190519111922_payroll_field_changes.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

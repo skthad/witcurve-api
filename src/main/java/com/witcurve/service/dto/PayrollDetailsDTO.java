@@ -15,21 +15,21 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializab
     private Instant deactivationDate;
 
     @NotNull
-    private Float basicSalary = 0f;
+    private Double basicSalary = 0d;
 
-    private Float houseRentAllowance = 0f;
+    private Double houseRentAllowance = 0d;
 
-    private Float conveyanceAllowance = 0f;
+    private Double conveyanceAllowance = 0d;
 
-    private Float medicalAllowance = 0f;
+    private Double medicalAllowance = 0d;
 
-    private Float managerialAllowance = 0f;
+    private Double managerialAllowance = 0d;
 
-    private Float leaveTravelAllowance = 0f;
+    private Double leaveTravelAllowance = 0d;
 
-    private Float providentFund = 0f;
+    private Double providentFund = 0d;
 
-    private Float professionalTax = 0f;
+    private Double professionalTax = 0d;
 
     public PayrollDetailsDTO() {
     }
@@ -58,67 +58,67 @@ public class PayrollDetailsDTO extends AbstractAuditingDTO implements Serializab
         this.deactivationDate = deactivationDate;
     }
 
-    public Float getBasicSalary() {
+    public Double getBasicSalary() {
         return basicSalary;
     }
 
-    public void setBasicSalary(Float basicSalary) {
+    public void setBasicSalary(Double basicSalary) {
         this.basicSalary = basicSalary;
     }
 
-    public Float getHouseRentAllowance() {
+    public Double getHouseRentAllowance() {
         return houseRentAllowance;
     }
 
-    public void setHouseRentAllowance(Float houseRentAllowance) {
+    public void setHouseRentAllowance(Double houseRentAllowance) {
         this.houseRentAllowance = houseRentAllowance;
     }
 
-    public Float getConveyanceAllowance() {
+    public Double getConveyanceAllowance() {
         return conveyanceAllowance;
     }
 
-    public void setConveyanceAllowance(Float conveyanceAllowance) {
+    public void setConveyanceAllowance(Double conveyanceAllowance) {
         this.conveyanceAllowance = conveyanceAllowance;
     }
 
-    public Float getMedicalAllowance() {
+    public Double getMedicalAllowance() {
         return medicalAllowance;
     }
 
-    public void setMedicalAllowance(Float medicalAllowance) {
+    public void setMedicalAllowance(Double medicalAllowance) {
         this.medicalAllowance = medicalAllowance;
     }
 
-    public Float getManagerialAllowance() {
+    public Double getManagerialAllowance() {
         return managerialAllowance;
     }
 
-    public void setManagerialAllowance(Float managerialAllowance) {
+    public void setManagerialAllowance(Double managerialAllowance) {
         this.managerialAllowance = managerialAllowance;
     }
 
-    public Float getLeaveTravelAllowance() {
+    public Double getLeaveTravelAllowance() {
         return leaveTravelAllowance;
     }
 
-    public void setLeaveTravelAllowance(Float leaveTravelAllowance) {
+    public void setLeaveTravelAllowance(Double leaveTravelAllowance) {
         this.leaveTravelAllowance = leaveTravelAllowance;
     }
 
-    public Float getProvidentFund() {
+    public Double getProvidentFund() {
         return providentFund;
     }
 
-    public void setProvidentFund(Float providentFund) {
+    public void setProvidentFund(Double providentFund) {
         this.providentFund = providentFund;
     }
 
-    public Float getProfessionalTax() {
+    public Double getProfessionalTax() {
         return professionalTax;
     }
 
-    public void setProfessionalTax(Float professionalTax) {
+    public void setProfessionalTax(Double professionalTax) {
         this.professionalTax = professionalTax;
     }
 

@@ -24,13 +24,6 @@ public interface PayrollRepository extends JpaRepository<Payroll, Long> {
 
     @Query("select p from Payroll p where p.payrollCycle.schoolInfo.id = ?1 " +
         "and p.payrollCycle.year = ?2 and p.payrollCycle.month = ?3")
-    List<Payroll> findPayrollForScoolInfoInMonth(Long schoolInfoId, Integer year, Month month);
-
-    @Query("select p from Payroll p where p.payrollCycle.schoolInfo.id = ?1 " +
-        "and p.payrollCycle.year = ?2")
-    List<Payroll> findPayrollsForScoolInfoInYear(Long schoolInfoId, Integer year);
-
-    @Query("select p from Payroll p where p.payrollCycle.schoolInfo.id = ?1")
-    List<Payroll> findAllPayrollsForScoolInfo(Long schoolInfoId);
+    List<Payroll> findPayrollForScoolInfoInYearAndMonth(Long schoolInfoId, Integer year, Month month);
 
 }

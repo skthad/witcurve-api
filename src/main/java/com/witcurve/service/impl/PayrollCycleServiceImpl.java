@@ -37,7 +37,7 @@ public class PayrollCycleServiceImpl implements PayrollCycleService {
     public List<PayrollCycleDTO> getPayrollCyclesForSchoolInfo(Long schoolInfoId, Integer year, Month month) {
         List<PayrollCycle> payrollCycles;
         if (month != null) {
-            payrollCycles = payrollCycleRepository.findBySchoolInfoIdAndMonth(schoolInfoId, year, month);
+            payrollCycles = payrollCycleRepository.findBySchoolInfoIdAndYearAndMonth(schoolInfoId, year, month);
         } else if (year != null) {
             payrollCycles = payrollCycleRepository.findBySchoolInfoIdAndYear(schoolInfoId, year);
         } else {
