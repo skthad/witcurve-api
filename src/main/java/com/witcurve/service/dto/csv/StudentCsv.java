@@ -146,7 +146,7 @@ public class StudentCsv {
 
         ALIAS_MAP.put("Identification Marks 1","identificationMark1");
 
-        ALIAS_MAP.put("Identification Marks 2","identificationMark1");
+        ALIAS_MAP.put("Identification Marks 2","identificationMark2");
 
         ALIAS_MAP.put("Type","type");
 
