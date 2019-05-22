@@ -68,6 +68,14 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean schoolBoardAdminMessage = false;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean superAdminMessage = false;
+
     @OneToOne
     @JoinColumn(unique = true)
     private LeaveApplication leaveApplication;
@@ -76,6 +84,7 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
     @JoinColumn(name="message_thread_id")
     @OrderBy("created_date ASC")
     private Set<Message> messages;
+
 
     public Long getId() {
         return id;
@@ -171,6 +180,22 @@ public class MessageThread extends AbstractAuditingEntity implements Serializabl
 
     public void setStatus(ApprovalStatus status) {
         this.status = status;
+    }
+
+    public Boolean getSchoolBoardAdminMessage() {
+        return schoolBoardAdminMessage;
+    }
+
+    public void setSchoolBoardAdminMessage(Boolean schoolBoardAdminMessage) {
+        this.schoolBoardAdminMessage = schoolBoardAdminMessage;
+    }
+
+    public Boolean getSuperAdminMessage() {
+        return superAdminMessage;
+    }
+
+    public void setSuperAdminMessage(Boolean superAdminMessage) {
+        this.superAdminMessage = superAdminMessage;
     }
 
     public LeaveApplication getLeaveApplication() {

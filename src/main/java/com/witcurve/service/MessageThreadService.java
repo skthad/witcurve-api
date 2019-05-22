@@ -23,14 +23,18 @@ public interface MessageThreadService {
     void readMessageService(Long messageId) throws WitcurveException;
 
     Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
+                                                          Boolean superAdminMessage,
+                                                          Boolean boardAdminMessage,
                                                           Long userId,
                                                           MessageType messageType,
                                                           ApprovalStatus status,
                                                           Boolean read) throws WitcurveException;
 
-    Map<MessageType, Integer> unReadCount(Long userId) throws WitcurveException;
+    Map<String, Integer> unReadCount(Long userId) throws WitcurveException;
 
     Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
+                                                           Boolean superAdminMessage,
+                                                           Boolean boardAdminMessage,
                                                            Long userId,
                                                            MessageType messageType,
                                                            ApprovalStatus status) throws WitcurveException;
