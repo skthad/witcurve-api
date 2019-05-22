@@ -49,4 +49,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("update User set activated = ?2 where id = ?1")
     void activateOrDeactivateByUserId(Long userId, Boolean activate);
+
+    @Query("select u from User u where u.login like %?1% and u.type='SCHOOL_BOARD_MANAGER' order by u.createdDate asc")
+    List<User> findSchoolManagerBySchoolInfoId(Long schoolInfoId);
 }

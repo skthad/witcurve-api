@@ -52,6 +52,12 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     private ApprovalStatus status;
 
+    @NotNull
+    private Boolean schoolBoardAdminMessage = false;
+
+    @NotNull
+    private Boolean superAdminMessage = false;
+
     private LeaveApplicationDTO leaveApplicationDTO;
 
     @NotNull
@@ -167,6 +173,22 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setStatus(ApprovalStatus status) {
         this.status = status;
+    }
+
+    public Boolean getSchoolBoardAdminMessage() {
+        return schoolBoardAdminMessage;
+    }
+
+    public void setSchoolBoardAdminMessage(Boolean schoolBoardAdminMessage) {
+        this.schoolBoardAdminMessage = schoolBoardAdminMessage;
+    }
+
+    public Boolean getSuperAdminMessage() {
+        return superAdminMessage;
+    }
+
+    public void setSuperAdminMessage(Boolean superAdminMessage) {
+        this.superAdminMessage = superAdminMessage;
     }
 
     public LeaveApplicationDTO getLeaveApplicationDTO() {

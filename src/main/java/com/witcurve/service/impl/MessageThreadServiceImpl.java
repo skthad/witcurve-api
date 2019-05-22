@@ -3,10 +3,8 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.domain.enumeration.MessageType;
-import com.witcurve.repository.MessageRepository;
-import com.witcurve.repository.MessageThreadRepository;
-import com.witcurve.repository.StudentRepository;
-import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.repository.*;
 import com.witcurve.service.MessageThreadService;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
@@ -46,6 +44,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     @Autowired
     StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
@@ -141,6 +142,8 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     }
 
     public Page<MessageThreadDTO> getInboxMessageThreadsByUserId(Pageable pageable,
+                                                                 Boolean superAdminMessage,
+                                                                 Boolean boardAdminMessage,
                                                                  Long userId,
                                                                  MessageType messageType,
                                                                  ApprovalStatus status,
@@ -148,53 +151,67 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         log.debug("Get inbox list of inbox message threads for user with id : {} of " +
             "type : {} with status : {} and read : {}", userId, messageType, status, read);
         Page<MessageThread> messageThreads = null;
-        if(messageType.equals(MessageType.SUBJECT_NOTE)) {
-            Student student = studentRepository.getStudentByUserId(userId);
-            if(student == null) {
-                throw new WitcurveException("No student exists for given user id to get subject note messages");
-            }
-            List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(student.getId());
-            if(studentStandards.isEmpty()) {
-                throw new WitcurveException("There is no student standard with given student id : "+student.getId());
-            }
-            if (studentStandards.size() > 1) {
-                throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
-            }
-            Long standardId = studentStandards.get(0).getStandard().getId();
-            if(status == null && read==null) {
-                messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
-            } else if(status != null && read == null) {
-                messageThreads = messageThreadRepository.
-                    findInboxMessageThreadsOfSubjectNoteWithStatus(standardId, messageType, status, pageable);
+        if(boardAdminMessage) {
+            if(read == null) {
+                messageThreads = messageThreadRepository.findBoardAdminInboxMessageThreads(userId, messageType, pageable);
             } else {
-                throw new WitcurveException("Subject Note message doesn't support read filter");
+                messageThreads = messageThreadRepository.findBoardAdminInboxMessageThreadsWithRead(userId, messageType, read, pageable);
+            }
+        } else if (superAdminMessage) {
+            if(read == null) {
+                messageThreads = messageThreadRepository.findSuperAdminInboxMessageThreads(userId, messageType, pageable);
+            } else {
+                messageThreads = messageThreadRepository.findSuperAdminInboxMessageThreadsWithRead(userId, messageType, read, pageable);
             }
         } else {
-            if(status == null && read==null) {
-                messageThreads = messageThreadRepository.findOtherInboxMessageThreads(userId, messageType, pageable);
-            } else if(status != null && read == null) {
-                messageThreads = messageThreadRepository.
-                    findOtherInboxMessageThreadsWithStatus(userId, messageType, status, pageable);
-            } else if(status == null && read != null) {
-                messageThreads = messageThreadRepository.
-                    findOtherInboxMessageThreadsWithRead(userId, messageType, read, pageable);
+            if(messageType.equals(MessageType.SUBJECT_NOTE)) {
+                Student student = studentRepository.getStudentByUserId(userId);
+                if(student == null) {
+                    throw new WitcurveException("No student exists for given user id to get subject note messages");
+                }
+                List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(student.getId());
+                if(studentStandards.isEmpty()) {
+                    throw new WitcurveException("There is no student standard with given student id : "+student.getId());
+                }
+                if (studentStandards.size() > 1) {
+                    throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
+                }
+                Long standardId = studentStandards.get(0).getStandard().getId();
+                if(status == null && read==null) {
+                    messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
+                } else if(status != null && read == null) {
+                    messageThreads = messageThreadRepository.
+                        findInboxMessageThreadsOfSubjectNoteWithStatus(standardId, messageType, status, pageable);
+                } else {
+                    throw new WitcurveException("Subject Note message doesn't support read filter");
+                }
             } else {
-                messageThreads = messageThreadRepository.
-                    findOtherInboxMessageThreadsWithStatusAndRead(userId, messageType, status, read, pageable);
+                if(status == null && read==null) {
+                    messageThreads = messageThreadRepository.findOtherInboxMessageThreads(userId, messageType, pageable);
+                } else if(status != null && read == null) {
+                    messageThreads = messageThreadRepository.
+                        findOtherInboxMessageThreadsWithStatus(userId, messageType, status, pageable);
+                } else if(status == null && read != null) {
+                    messageThreads = messageThreadRepository.
+                        findOtherInboxMessageThreadsWithRead(userId, messageType, read, pageable);
+                } else {
+                    messageThreads = messageThreadRepository.
+                        findOtherInboxMessageThreadsWithStatusAndRead(userId, messageType, status, read, pageable);
+                }
             }
         }
         return messageThreads.map(messageThreadMapper::toDto);
     }
 
-    public Map<MessageType, Integer> unReadCount(Long userId) throws WitcurveException {
+    public Map<String, Integer> unReadCount(Long userId) throws WitcurveException {
         log.debug("Get inbox unread message threads counts for user with id : {}", userId);
 
         //refactor repo method to give details properly
-        Map<MessageType, Integer> result = new HashMap<>();
+        Map<String, Integer> result = new HashMap<>();
         Integer count = 0;
         Student student = studentRepository.getStudentByUserId(userId);
         if(student == null) {
-            result.put(MessageType.SUBJECT_NOTE, null);
+            result.put(MessageType.SUBJECT_NOTE.toString(), null);
         } else {
             List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(student.getId());
             if(studentStandards.isEmpty()) {
@@ -205,36 +222,49 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             }
             Long standardId = studentStandards.get(0).getStandard().getId();
             count = messageThreadRepository.findInboxMessageThreadsOfSubjectNoteCount(standardId, MessageType.SUBJECT_NOTE);
-            result.put(MessageType.SUBJECT_NOTE, count);
+            result.put(MessageType.SUBJECT_NOTE.toString(), count);
         }
 //        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.LEAVE);
 //        result.put(MessageType.LEAVE, count);
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.MEETING_REQUEST);
-        result.put(MessageType.MEETING_REQUEST, count);
+        result.put(MessageType.MEETING_REQUEST.toString(), count);
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.PERSONAL);
-        result.put(MessageType.PERSONAL, count);
+        result.put(MessageType.PERSONAL.toString(), count);
+
+        count = messageThreadRepository.findUnReadBoardAdminInboxMessageThreadsCount(userId, MessageType.PERSONAL);
+        result.put("BOARD_ADMIN", count);
+
+        count = messageThreadRepository.findUnReadSuperAdminInboxMessageThreadsCount(userId, MessageType.PERSONAL);
+        result.put("SUPER_ADMIN", count);
 
         return result;
     }
 
     public Page<MessageThreadDTO> getOutboxMessageThreadsByUserId(Pageable pageable,
+                                                                  Boolean superAdminMessage,
+                                                                  Boolean boardAdminMessage,
                                                                   Long userId,
                                                                   MessageType messageType,
                                                                   ApprovalStatus status) throws WitcurveException {
         log.debug("Get inbox list of inbox message threads for user with id : {} of " +
             "type : {} with status : {}", userId, messageType, status);
-        //refactor repo method to give details properly
         Page<MessageThread> messageThreads = null;
-        if(messageType.equals(MessageType.SUBJECT_NOTE)) {
-            Student student = studentRepository.getStudentByUserId(userId);
-            if(student != null) {
-                throw new WitcurveException("Subject Note doesn't exist for student user ");
-            }
-        }
-        if(status == null) {
-            messageThreads = messageThreadRepository.findOutboxMessageThreads(userId, messageType, pageable);
+        if(boardAdminMessage) {
+            messageThreads = messageThreadRepository.findBoardAdminOutboxMessageThreads(userId, messageType, pageable);
+        } else if(superAdminMessage) {
+            messageThreads = messageThreadRepository.findSuperAdminOutboxMessageThreads(userId, messageType, pageable);
         } else {
-            messageThreads = messageThreadRepository.findOutboxMessageThreadsWithStatus(userId, messageType, status, pageable);
+            if(messageType.equals(MessageType.SUBJECT_NOTE)) {
+                Student student = studentRepository.getStudentByUserId(userId);
+                if(student != null) {
+                    throw new WitcurveException("Subject Note doesn't exist for student user ");
+                }
+            }
+            if(status == null) {
+                messageThreads = messageThreadRepository.findOutboxMessageThreads(userId, messageType, pageable);
+            } else {
+                messageThreads = messageThreadRepository.findOutboxMessageThreadsWithStatus(userId, messageType, status, pageable);
+            }
         }
         return messageThreads.map(messageThreadMapper::toDto);
     }
@@ -266,6 +296,18 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             if(messageThreadDTO.getToUserId() == null || messageDTO.getToUserId() == null) {
                 throw new WitcurveException("For Personal Type thread there should be toUserId");
             }
+            if(messageThreadDTO.getSuperAdminMessage()) {
+                if(!(messageThreadDTO.getFromUserId() == 1L || messageThreadDTO.getToUserId() == 1L)) {
+                    throw new WitcurveException("Please make sure super admin message is either from admin user or to admin user");
+                }
+            }
+            if(messageThreadDTO.getSchoolBoardAdminMessage()) {
+                Optional<User> toUser = userRepository.findById(messageThreadDTO.getToUserId());
+                Optional<User> fromUser = userRepository.findById(messageThreadDTO.getFromUserId());
+                if(!(toUser.get().getType().equals(UserType.SCHOOL_BOARD_MANAGER) || fromUser.get().getType().equals(UserType.SCHOOL_BOARD_MANAGER))) {
+                    throw new WitcurveException("PLease make sure school baord message should be either form school board user or to school board user ");
+                }
+            }
         }
         if(messageType.equals(MessageType.SUBJECT_NOTE)) {
             if(messageThreadDTO.getCourseTeacherDTO() == null) {
@@ -281,6 +323,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     public void deleteMessageThread(Long messageThreadId) {
         log.debug("Request to delete message thread with id : {}",messageThreadId);
+        messageRepository.deleteByMessageThreadId(messageThreadId);
         messageThreadRepository.deleteById(messageThreadId);
     }
 
