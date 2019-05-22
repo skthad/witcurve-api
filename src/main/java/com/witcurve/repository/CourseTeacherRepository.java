@@ -32,6 +32,9 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
     @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findActiveCourseTeachersByStandardId(Long standardId);
 
+    @Query("select ct.id from CourseTeacher ct where ct.standard.id = ?1 and ct.course.id = ?2 and ct.active = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
+    List<Long> findActiveCourseTeachersByStandardIdAndCourseId(Long standardId, Long courseId);
+
     @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = false order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findInActiveCourseTeachersByStandardId(Long standardId);
 
