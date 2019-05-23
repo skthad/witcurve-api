@@ -19,6 +19,8 @@ public class SchoolInfoDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private String medium;
 
+    private Long mainSchoolInfoUserId;
+
     public SchoolInfoDTO() {
     }
 
@@ -52,6 +54,14 @@ public class SchoolInfoDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setMedium(String medium) {
         this.medium = medium;
+    }
+
+    public Long getMainSchoolInfoUserId() {
+        return mainSchoolInfoUserId;
+    }
+
+    public void setMainSchoolInfoUserId(Long mainSchoolInfoUserId) {
+        this.mainSchoolInfoUserId = mainSchoolInfoUserId;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.SchoolInfoRepository;
+import com.witcurve.repository.UserRepository;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.InstituteMapper;
@@ -70,6 +71,9 @@ public class UserContextServiceImpl implements UserContextService {
 
     @Autowired
     SchoolInfoMapperLite schoolInfoMapperLite;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
@@ -286,7 +290,13 @@ public class UserContextServiceImpl implements UserContextService {
             if (contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId) == null) {
                 contextDTO.getInstituteMap().get(instituteId).getSchoolMap().put(schoolId, schoolMapperLite.toDto(schoolInfo.getSchool()));
             }
-            contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId).addSchoolInfo(schoolInfoMapperLite.toDto(schoolInfo));
+            SchoolInfoDTO schoolInfoDTO = schoolInfoMapperLite.toDto(schoolInfo);
+            List<User> users = userRepository.findSchoolManagerBySchoolInfoId(schoolInfo.getId());
+            if(users != null && users.size() != 0) {
+                schoolInfoDTO.setMainSchoolInfoUserId(users.get(0).getId());
+            }
+            contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId).addSchoolInfo(schoolInfoDTO);
+
         }
     }
 }

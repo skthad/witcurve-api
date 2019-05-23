@@ -43,6 +43,8 @@ public class UserContextDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentTermEndDate;
 
+    private Long superAdminUserId=1L;
+
     private long totalCalendarDaysInSession;
     private long totalWorkingDaysInSession;
     private long noOfCalendarDaysInSession;
@@ -152,6 +154,14 @@ public class UserContextDTO implements Serializable {
 
     public void setCurrentTermEndDate(LocalDate currentTermEndDate) {
         this.currentTermEndDate = currentTermEndDate;
+    }
+
+    public Long getSuperAdminUserId() {
+        return superAdminUserId;
+    }
+
+    public void setSuperAdminUserId(Long superAdminUserId) {
+        this.superAdminUserId = superAdminUserId;
     }
 
     public long getTotalCalendarDaysInSession() {

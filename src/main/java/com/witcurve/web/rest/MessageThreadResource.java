@@ -142,10 +142,12 @@ public class MessageThreadResource {
     public ResponseEntity<Page<MessageThreadDTO>> getInboxMessagesForUser(@ApiParam Pageable pageable,
                                                                           @PathVariable("userId") Long userId,
                                                                           @RequestParam MessageType type,
+                                                                          @RequestParam(defaultValue = "false")Boolean superAdminMessage,
+                                                                          @RequestParam(defaultValue = "false")Boolean boardAdminMessage,
                                                                           @RequestParam(required = false)ApprovalStatus status,
                                                                           @RequestParam(required = false)Boolean read) throws WitcurveException {
         log.debug("Request to get MessageThreads for user with id {} of type : {} with status : {} and read : {}", userId, type, status, read);
-        Page<MessageThreadDTO> result = messageThreadService.getInboxMessageThreadsByUserId(pageable, userId, type, status, read);
+        Page<MessageThreadDTO> result = messageThreadService.getInboxMessageThreadsByUserId(pageable, superAdminMessage, boardAdminMessage, userId, type, status, read);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -157,9 +159,9 @@ public class MessageThreadResource {
      */
     @GetMapping("/message-thread/user/{userId}/inbox/count")
     @Timed
-    public ResponseEntity<Map<MessageType, Integer>> getUnReadInboxCount(@PathVariable("userId") Long userId) throws WitcurveException {
+    public ResponseEntity<Map<String, Integer>> getUnReadInboxCount(@PathVariable("userId") Long userId) throws WitcurveException {
         log.debug("Request to get unread MessageThreads count for user with id {}", userId);
-        Map<MessageType, Integer> result = messageThreadService.unReadCount(userId);
+        Map<String, Integer> result = messageThreadService.unReadCount(userId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -174,9 +176,11 @@ public class MessageThreadResource {
     public ResponseEntity<Page<MessageThreadDTO>> getOutboxMessagesForUser(@ApiParam Pageable pageable,
                                                                            @PathVariable("userId") Long userId,
                                                                           @RequestParam MessageType type,
+                                                                           @RequestParam(defaultValue = "false")Boolean superAdminMessage,
+                                                                           @RequestParam(defaultValue = "false")Boolean boardAdminMessage,
                                                                           @RequestParam(required = false)ApprovalStatus status) throws WitcurveException {
         log.debug("Request to get MessageThreads for user with id {} of type : {} with status : {}", userId, type, status);
-        Page<MessageThreadDTO> result = messageThreadService.getOutboxMessageThreadsByUserId(pageable, userId, type, status);
+        Page<MessageThreadDTO> result = messageThreadService.getOutboxMessageThreadsByUserId(pageable, superAdminMessage, boardAdminMessage, userId, type, status);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

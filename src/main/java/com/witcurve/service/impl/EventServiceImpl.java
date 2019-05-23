@@ -463,6 +463,7 @@ public class EventServiceImpl implements EventService {
         return result.map(eventMapper::toDto);
     }
 
+    @Override
     public List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException {
         List<Event> events;
         if(ViewType.ASSIGNMENT.equals(type)){
@@ -473,6 +474,24 @@ public class EventServiceImpl implements EventService {
         }
         else {
             throw new WitcurveException("Event type should be only TEST and Assignment");
+        }
+        Collections.sort(events, new EventDateDescComparator());
+        return eventMapper.toDto(events);
+    }
+
+    @Override
+    public List<EventDTO> findAllTestAndAssignmentByStandardAndCourse(LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
+        List<Event> events = new ArrayList<>();
+        List<Long> courseTeacherIds = courseTeacherRepository.findActiveCourseTeachersByStandardIdAndCourseId(standardId, courseId);
+        if(courseTeacherIds.size() ==0) {
+            throw new WitcurveException("There are no teacher assigned to this for course in given standard");
+        }
+        if(type.equals(ViewType.ASSIGNMENT)) {
+            events = eventRepository.findAssignmentsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+        } else if(type.equals(ViewType.TEST)) {
+            events = eventRepository.findTestsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+        } else {
+            throw new WitcurveException("Invalid Event Type");
         }
         Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
