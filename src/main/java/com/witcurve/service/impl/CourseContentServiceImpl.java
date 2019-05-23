@@ -158,7 +158,7 @@ public class CourseContentServiceImpl implements CourseContentService {
             throw new WitcurveException("No CourseContent with given id " + courseContentId);
         }
         if (Boolean.TRUE.equals(courseContent.get().getCourse().getContentPublished())) {
-                throw new WitcurveException("Course content for this course is published. Cannot delete anymore");
+            throw new WitcurveException("Course content for this course is published. Cannot delete anymore");
         }
         CourseContent existingCourseContent = courseContent.get();
         Long courseId = existingCourseContent.getCourse().getId();
@@ -170,6 +170,8 @@ public class CourseContentServiceImpl implements CourseContentService {
             laterCourseContents = courseContentRepository.findLaterSubtopics(courseId, contentOrder, parentContent.getId());
         } else {
             laterCourseContents = courseContentRepository.findLaterTopics(courseId, contentOrder);
+            List<CourseContent> subTopics = courseContentRepository.findByCourseIdAndParentContentId(courseId, existingCourseContent.getId());
+            courseContentRepository.deleteAll(subTopics);
         }
         courseContentRepository.delete(existingCourseContent);
         if (laterCourseContents.size() > 0) {
