@@ -95,7 +95,7 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     public List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId) {
         log.debug("Requqest to get list of slotCourseDetails for given standard id : {}", standardId);
         List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStartTime(standardId);
-        return slotCourseDetailsMapperLite.toDto(slotCourseDetailsList);
+        return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 
     @Override
