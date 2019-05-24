@@ -101,6 +101,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Keyword> keywords = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="event_id", insertable = false, updatable = false)
+    private Set<EventContent> eventContents;
+
     public Long getId() {
         return id;
     }
@@ -259,6 +263,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public Set<EventContent> getEventContents() {
+        return eventContents;
+    }
+
+    public void setEventContents(Set<EventContent> eventContents) {
+        this.eventContents = eventContents;
     }
 
     @Override

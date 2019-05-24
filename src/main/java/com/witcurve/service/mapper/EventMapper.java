@@ -5,6 +5,7 @@ import com.witcurve.domain.Keyword;
 import com.witcurve.service.dto.EventDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(target = "studentName", expression = "java(getStudentName(event.getStudent()))")
     @Mapping(target = "standardName", expression = "java(getStandardName(event.getStandard()))")
     @Mapping(target = "keywords", expression = "java(getKeywordNames(event.getKeywords()))")
+    @Mapping(target = "courseContentIds", expression = "java(getCourseContentIds(event.getEventContents()))")
     EventDTO toDto(Event event);
 
     default Event fromId(Long id) {
@@ -99,6 +101,18 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
         List<String> result = new ArrayList<>();
         for(Keyword keyword : keywords) {
             result.add(keyword.getName());
+        }
+        return result;
+    }
+
+    default List<Long> getCourseContentIds(Set<EventContent> eventContents) {
+        if (CollectionUtils.isEmpty(eventContents)) {
+            return null;
+        }
+
+        List<Long> result = new ArrayList<>();
+        for (EventContent eventContent: eventContents) {
+            result.add(eventContent.getCourseContent().getId());
         }
         return result;
     }
