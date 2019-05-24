@@ -1,9 +1,6 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Staff;
-import com.witcurve.domain.Standard;
-import com.witcurve.domain.Student;
-import com.witcurve.domain.StudentStandard;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.*;
@@ -68,6 +65,9 @@ public class BulkImportServiceImpl implements BulkImportService {
     @Autowired
     StudentStandardService studentStandardService;
 
+    @Autowired
+    AcademicSessionRepository academicSessionRepository;
+
     @Override
     @Transactional
     public ImportResponse bulkStaffImport(MultipartFile file, Long schoolInfoId) throws WitcurveException {
@@ -126,6 +126,10 @@ public class BulkImportServiceImpl implements BulkImportService {
     public ImportResponse bulkStudentImport(MultipartFile file, Long schoolInfoId) throws WitcurveException {
         List<StudentCsv> errorStudentCsvs = new ArrayList<>();
         Integer rowNo =2, createCount=0, errorCount=0;
+        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, LocalDate.now());
+        if(academicSession == null) {
+            throw new WitcurveException("There is not active current session for this board");
+        }
         Map<Integer, String> errorMessageMap = new HashMap<>();
         try {
             Reader reader = Files.newBufferedReader(Paths.get(WitcurveUtil.getFile(file).getAbsolutePath()));
@@ -370,6 +374,8 @@ public class BulkImportServiceImpl implements BulkImportService {
         SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
         schoolInfo.setId(schoolInfoId);
         studentDTO.setSchoolInfo(schoolInfo);
+        Long sessionId= academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, LocalDate.now()).getId();
+
         Grade grade = null;
         Boolean doesGradeExist=false, doesSectionExist=false, doesRollNumberExist=false;
         Boolean doesCasteExist=false, doesCategoryExist=false;
@@ -648,6 +654,7 @@ public class BulkImportServiceImpl implements BulkImportService {
         if(doesGradeExist && doesSectionExist && doesRollNumberExist) {
             studentStandardDTO.setStudent(studentDTO);
             studentStandardDTO.setStandard(standardDTO);
+            studentStandardDTO.setSessionId(sessionId);
             studentStandardDTO.setRollNo(studentCsv.getRollNo());
             studentStandardDTO.setActive(true);
             studentStandardService.save(studentStandardDTO);

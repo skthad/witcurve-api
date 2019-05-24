@@ -13,4 +13,5 @@
     <include file="config/liquibase/changelog/20190516111958_added_subscription_to_institute.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190519111922_payroll_field_changes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190522141145_added_admin_booleans_for_message_thread.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190524145920_session_in_studnet_standard.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

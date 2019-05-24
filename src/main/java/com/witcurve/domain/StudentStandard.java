@@ -7,8 +7,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="student_standard", uniqueConstraints = {
-    @UniqueConstraint(name = "student_standard_UK",
-        columnNames = {"student_id", "standard_id"})
+    @UniqueConstraint(name = "student_standard_session_UK",
+        columnNames = {"student_id", "standard_id", "session_id"})
 })
 public class StudentStandard extends AbstractAuditingEntity implements Serializable {
 
@@ -27,6 +27,11 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "standard_id")
     private Standard standard;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "session_id")
+    private AcademicSession session;
 
     @NotNull
     @Column(name = "roll_no", nullable = false)
@@ -58,6 +63,14 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
 
     public void setStandard(Standard standard) {
         this.standard = standard;
+    }
+
+    public AcademicSession getSession() {
+        return session;
+    }
+
+    public void setSession(AcademicSession session) {
+        this.session = session;
     }
 
     public String getRollNo() {

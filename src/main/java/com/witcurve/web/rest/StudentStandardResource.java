@@ -65,9 +65,9 @@ public class StudentStandardResource {
             StudentStandardDTO result = studentStandardService.save(studentStandardDTO);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("student_standard_UK")) {
-                log.error("Unique constraint (student_id, standard_id) violated");
-                throw new WitcurveException("There is already student with given standard");
+            if (e.getMessage().contains("student_standard_session_UK")) {
+                log.error("Unique constraint (student_id, standard_id, session_id) violated");
+                throw new WitcurveException("There is already student with given standard in this session");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {

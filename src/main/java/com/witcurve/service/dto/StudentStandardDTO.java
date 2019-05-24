@@ -20,6 +20,9 @@ public class StudentStandardDTO extends AbstractAuditingDTO implements Serializa
     private String rollNo;
 
     @NotNull
+    private Long sessionId;
+
+    @NotNull
     private Boolean active = true;
 
     public Long getId() {
@@ -52,6 +55,14 @@ public class StudentStandardDTO extends AbstractAuditingDTO implements Serializa
 
     public void setRollNo(String rollNo) {
         this.rollNo = rollNo;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
     }
 
     public Boolean getActive() {
