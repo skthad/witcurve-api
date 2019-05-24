@@ -167,7 +167,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findAssignmentsByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate eDate);
 
-    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.id=?1 and e.date between ?2 and ?3 order by e.date desc")
+    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findTestsByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate eDate);
 
     @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
