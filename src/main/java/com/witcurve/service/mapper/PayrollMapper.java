@@ -35,9 +35,6 @@ public interface PayrollMapper extends EntityMapper<PayrollDTO, Payroll> {
         payrollDTO.setLeaveTravelAllowance(payrollDetails.getLeaveTravelAllowance());
         payrollDTO.setProvidentFund(payrollDetails.getProvidentFund());
         payrollDTO.setProfessionalTax(payrollDetails.getProfessionalTax());
-        Integer daysInCycle = payrollCycle.getCycleEnd().until(payrollCycle.getCycleStart()).getDays() + 1;
-        payrollDTO.setPayableDays(daysInCycle.doubleValue());
-        payrollDTO.setPaidDays(daysInCycle.doubleValue());
         payrollDTO.setModeOfPayment(ModeOfPayment.CHEQUE);
         return payrollDTO;
     }
