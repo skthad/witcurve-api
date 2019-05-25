@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -143,7 +144,14 @@ public class CourseContentServiceImpl implements CourseContentService {
         for (CourseContentDTO cc : courseContents) {
             courseContentIndexMap.put(cc.getId(), cc.getIndex());
         }
-        List<CourseContentDTO> result = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEventId(eventId, forExam));
+
+        List<CourseContentDTO> result;
+        if (forExam) {
+            result = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEcdId(eventId));
+        } else {
+            result = courseContentMapper.toDto(eventContentRepository.findCourseContentsByEventId(eventId));
+        }
+
         for (CourseContentDTO cc : result) {
             cc.setIndex(courseContentIndexMap.get(cc.getId()));
         }
@@ -171,8 +179,10 @@ public class CourseContentServiceImpl implements CourseContentService {
         } else {
             laterCourseContents = courseContentRepository.findLaterTopics(courseId, contentOrder);
             List<CourseContent> subTopics = courseContentRepository.findByCourseIdAndParentContentId(courseId, existingCourseContent.getId());
+            eventContentRepository.deleteByCourseContentIds(subTopics.stream().map(CourseContent::getId).collect(Collectors.toList()));
             courseContentRepository.deleteAll(subTopics);
         }
+        eventContentRepository.deleteByCourseContentId(existingCourseContent.getId());
         courseContentRepository.delete(existingCourseContent);
         if (laterCourseContents.size() > 0) {
             for (CourseContent lc : laterCourseContents) {
@@ -190,10 +200,15 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (Boolean.TRUE.equals(course.get().getContentPublished())) {
             throw new WitcurveException("Course content for this course is published. Cannot delete course contents");
         }
-        courseContentRepository.deleteInBatch(
-            courseContentRepository.findAllSubTopicsInCourse(courseId));
-        courseContentRepository.deleteInBatch(
-            courseContentRepository.findAllTopicsInCourse(courseId));
+        List<CourseContent> subTopics = courseContentRepository.findAllSubTopicsInCourse(courseId);
+        List<CourseContent> topics = courseContentRepository.findAllTopicsInCourse(courseId);
+
+        List<Long> courseContentIds = Stream.concat(subTopics.stream(), topics.stream()).map(CourseContent::getId)
+            .collect(Collectors.toList());
+        eventContentRepository.deleteByCourseContentIds(courseContentIds);
+
+        courseContentRepository.deleteInBatch(subTopics);
+        courseContentRepository.deleteInBatch(topics);
     }
 
     private List<CourseContentDTO> addIndicesToCourseContents(List<CourseContentDTO> contents) {

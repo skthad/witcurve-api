@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+<changeSet author="vishal" id="1558795551912-1">
+    <sql>SET FOREIGN_KEY_CHECKS=0;</sql>
+</changeSet>
+<changeSet author="vishal" id="1558795551912-2">
+    <dropUniqueConstraint constraintName="event_content_id_UK" tableName="event_content"/>
+</changeSet>
+<changeSet author="vishal" id="1558795551912-3">
+    <dropColumn columnName="for_exam" tableName="event_content"/>
+</changeSet>
+<changeSet author="vishal" id="1558795551912-4">
+    <dropNotNullConstraint columnDataType="bigint" columnName="event_id" tableName="event_content"/>
+</changeSet>
+
+<changeSet author="vishal" id="1558795551912-5">
+    <addColumn tableName="event_content">
+        <column name="exam_course_details_id" type="bigint"/>
+    </addColumn>
+</changeSet>
+<changeSet author="vishal" id="1558795551912-6">
+    <addForeignKeyConstraint baseColumnNames="exam_course_details_id" baseTableName="event_content" constraintName="FK7eey6rob9lkh3i3hmf7h5acp5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam_course_details"/>
+</changeSet>
+<changeSet author="vishal" id="1558795551912-7">
+    <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_content" constraintName="FKmkgus7pjt9wgoo50gmvl3kfe8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
+</changeSet>
+<changeSet author="vishal" id="1558795551912-8">
+    <sql>SET FOREIGN_KEY_CHECKS=1;</sql>
+</changeSet>
+</databaseChangeLog>

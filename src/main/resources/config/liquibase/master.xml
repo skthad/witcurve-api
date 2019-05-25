@@ -15,4 +15,5 @@
     <include file="config/liquibase/changelog/20190522141145_added_admin_booleans_for_message_thread.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190524145920_session_in_studnet_standard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190525113948_config_settings_and_payroll_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190525135934_event_content_refactor.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
