@@ -60,6 +60,8 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     private LeaveApplicationDTO leaveApplicationDTO;
 
+    private String userType;
+
     @NotNull
     private List<MessageDTO> messageDTOs;
 
@@ -197,6 +199,14 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setLeaveApplicationDTO(LeaveApplicationDTO leaveApplicationDTO) {
         this.leaveApplicationDTO = leaveApplicationDTO;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public List<MessageDTO> getMessageDTOs() {
