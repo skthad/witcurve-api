@@ -176,6 +176,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where (e.date between ?1 and ?2) and (e.type = 'HOLIDAY' or e.type = 'SCHOOL_EVENT') and e.schoolInfo.id=?3 order by e.date desc ")
     List<Event> findHolidaysAndSchoolEventsBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
 
+    @Query("Select e from Event e where e.type='DAILY_UPDATE' and e.scd.courseTeacher.id in ?1 order by e.date")
+    List<Event> findDailyUpdatesByCourseTeachers(List<Long> courseTeacherIds);
 
 }
 
