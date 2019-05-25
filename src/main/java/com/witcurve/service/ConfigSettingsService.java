@@ -10,8 +10,11 @@ public interface ConfigSettingsService {
 
     List<ConfigSettingsDTO> resetConfigSettingsToDefault(Long schoolId, ConfigType[] configTypes) throws WitcurveException;
 
-    List<ConfigSettingsDTO> updateConfigSetting(Long schoolId, List<ConfigSettingsDTO> configSettings) throws WitcurveException;
+    ConfigSettingsDTO updateConfigSetting(Long schoolId, ConfigSettingsDTO configSetting) throws WitcurveException;
+
+    ConfigSettingsDTO createConfigSetting(Long schoolId, ConfigSettingsDTO configSetting) throws WitcurveException;
 
     List<ConfigSettingsDTO> getSettingsBySchoolIdAndTypes(Long schoolId, ConfigType[] configTypes) throws WitcurveException;
 
+    void deleteByConfigSettingAndSchoolId(Long configSettingId, Long schoolId);
 }

@@ -14,11 +14,8 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
 
     private Long id;
 
-    private Long instituteId;
-
+    @NotNull
     private Long schoolId;
-
-    private Long schoolInfoId;
 
     @NotNull
     private ConfigType configType;
@@ -46,28 +43,12 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
         this.id = id;
     }
 
-    public Long getInstituteId() {
-        return instituteId;
-    }
-
-    public void setInstituteId(Long instituteId) {
-        this.instituteId = instituteId;
-    }
-
     public Long getSchoolId() {
         return schoolId;
     }
 
     public void setSchoolId(Long schoolId) {
         this.schoolId = schoolId;
-    }
-
-    public Long getSchoolInfoId() {
-        return schoolInfoId;
-    }
-
-    public void setSchoolInfoId(Long schoolInfoId) {
-        this.schoolInfoId = schoolInfoId;
     }
 
     public ConfigType getConfigType() {

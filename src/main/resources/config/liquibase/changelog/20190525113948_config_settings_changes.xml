@@ -1,0 +1,21 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1558784400950-1">
+        <dropColumn columnName="institute_id" tableName="config_settings"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-2">
+        <dropColumn columnName="school_info_id" tableName="config_settings"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-3">
+        <addNotNullConstraint columnDataType="bigint" columnName="school_id" tableName="config_settings"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-4">
+        <sql>
+            update config_settings set field_value = 'ABSOLUTE' where field_value = 'Absolute';
+            update config_settings set field_value = 'RELATIVE' where field_value = 'Relative';
+            update config_settings set field_value = 15 where field_name = 'STAFF_GRACE_DURATION_IN_MINS';
+            update config_settings set field_type = 'INTEGER' where field_name = 'GRADE';
+            update config_settings set field_value = 'FALSE' where config_type like '%_NOTIFICATION';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

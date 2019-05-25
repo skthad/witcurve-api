@@ -2,7 +2,10 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.ConfigSettings;
 import com.witcurve.domain.School;
+import com.witcurve.domain.enumeration.ConfigFieldName;
+import com.witcurve.domain.enumeration.ConfigFieldType;
 import com.witcurve.domain.enumeration.ConfigType;
+import com.witcurve.domain.enumeration.GradingMethod;
 import com.witcurve.repository.ConfigSettingsRepository;
 import com.witcurve.repository.SchoolRepository;
 import com.witcurve.service.ConfigSettingsService;
@@ -17,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -55,28 +60,101 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
     }
 
     @Override
-    public List<ConfigSettingsDTO> updateConfigSetting(Long schoolId, List<ConfigSettingsDTO> configSettings) throws WitcurveException {
-        Optional<School> school = schoolRepository.findById(schoolId);
-        if (!school.isPresent()) {
-            throw new WitcurveException("No school found with ID: " + schoolId);
+    public ConfigSettingsDTO createConfigSetting(Long schoolId, ConfigSettingsDTO configSetting) throws WitcurveException {
+
+        if (!schoolId.equals(-1l)) {
+            Optional<School> school = schoolRepository.findById(schoolId);
+            if (!school.isPresent()) {
+                throw new WitcurveException("No school found with ID: " + schoolId);
+            }
         }
-        log.debug("Request to update Config settings");
-        configSettings.stream().forEach(cs -> {
-            if (cs.getId() == null) {
-                throw new WitcurveException("ID cannot be null for an update request");
+
+        log.debug("Request to create Config setting");
+
+        if (configSetting.getConfigType().equals(ConfigType.GRADING_SCALE)) {
+            configSetting.setFieldType(ConfigFieldType.INTEGER);
+            configSetting.setFieldName(ConfigFieldName.GRADE);
+
+            List<ConfigSettings> exisingSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypeAndDisplayNameAndValueAndOrder(schoolId,
+                ConfigType.GRADING_SCALE, configSetting.getDisplayFieldName().trim(), configSetting.getFieldValue().trim(), configSetting.getDisplayOrder());
+
+            if (exisingSettings.size() > 0) {
+                throw new WitcurveException("Invalid configuration provided");
             }
-            if (!schoolId.equals(cs.getSchoolId())) {
-                throw new WitcurveException("School ID provided does not match the schoolId in the object to be updated");
-            }
-        });
-        return configSettingsMapper.toDto(configSettingsRepository.saveAll(configSettingsMapper.toEntity(configSettings)));
+        } else {
+            throw new WitcurveException("Create not supported for given config type");
+        }
+        ConfigSettings result = configSettingsRepository.save(configSettingsMapper.toEntity(configSetting));
+        return configSettingsMapper.toDto(result);
+    }
+
+    @Override
+    public ConfigSettingsDTO updateConfigSetting(Long schoolId, ConfigSettingsDTO configSetting) throws WitcurveException {
+
+        Optional<ConfigSettings> result = configSettingsRepository.findById(configSetting.getId());
+        if (!result.isPresent()) {
+            throw new WitcurveException("No config setting found with ID: " + configSetting.getId());
+        }
+        ConfigSettings existingSetting = result.get();
+
+        if (!existingSetting.getSchoolId().equals(schoolId)) {
+            throw new WitcurveException("School ID mismatch occured.");
+        }
+        log.debug("Request to update Config setting");
+
+        String fieldValue = configSetting.getFieldValue().trim();
+        switch (existingSetting.getFieldType()) {
+            case TIME:
+                Pattern pattern = Pattern.compile("^([01]\\d|2[0-3])([0-5]\\d)$");
+                Matcher matcher = pattern.matcher(fieldValue);
+                if (!matcher.matches()){
+                    throw new WitcurveException("");
+                }
+                break;
+            case INTEGER:
+                try {
+                    Integer.parseInt(fieldValue);
+                } catch (NumberFormatException e) {
+                    throw new WitcurveException("");
+                }
+                if (existingSetting.getConfigType().equals(ConfigType.GRADING_SCALE)) {
+                    existingSetting.setDisplayFieldName(configSetting.getDisplayFieldName().trim());
+                }
+                break;
+            case ENUM:
+                try {
+                    if (existingSetting.getConfigType().equals(ConfigType.GRADING_METHOD)) {
+                        GradingMethod.valueOf(fieldValue.toUpperCase());
+                        fieldValue = fieldValue.toUpperCase();
+                        break;
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw new WitcurveException("");
+                }
+                break;
+            case STRING:
+                // no validation required
+                break;
+            case BOOLEAN:
+                if (!fieldValue.equalsIgnoreCase("TRUE") && !fieldValue.equalsIgnoreCase("FALSE")) {
+                    throw new WitcurveException("");
+                }
+                fieldValue = fieldValue.toUpperCase();
+                break;
+            default:
+        }
+        existingSetting.setFieldValue(fieldValue);
+        return configSettingsMapper.toDto(existingSetting);
     }
 
     @Override
     public List<ConfigSettingsDTO> getSettingsBySchoolIdAndTypes(Long schoolId, ConfigType[] configTypes) throws WitcurveException {
-        Optional<School> school = schoolRepository.findById(schoolId);
-        if (!school.isPresent()) {
-            throw new WitcurveException("No school found with ID: " + schoolId);
+
+        if (!schoolId.equals(-1l)) {
+            Optional<School> school = schoolRepository.findById(schoolId);
+            if (!school.isPresent()) {
+                throw new WitcurveException("No school found with ID: " + schoolId);
+            }
         }
         log.debug("Request to get Config settings for school ID: {}", schoolId);
         List<ConfigSettingsDTO> settings;
@@ -92,6 +170,19 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
         } else {
             return settings;
         }
+    }
+
+    @Override
+    public void deleteByConfigSettingAndSchoolId(Long configSettingId, Long schoolId) {
+        Optional<ConfigSettings> result = configSettingsRepository.findById(configSettingId);
+        if (!result.isPresent()) {
+            throw new WitcurveException("No config setting found with ID: " + configSettingId);
+        }
+        ConfigSettings existingConfigSetting = result.get();
+        if (!existingConfigSetting.getSchoolId().equals(schoolId)) {
+            throw new WitcurveException("School ID mismatch occured");
+        }
+        configSettingsRepository.deleteById(configSettingId);
     }
 
     private List<ConfigSettingsDTO> getDefaultSettings(ConfigType[] configTypes) throws WitcurveException {
