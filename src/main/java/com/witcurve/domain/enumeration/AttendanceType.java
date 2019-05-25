@@ -2,5 +2,5 @@ package com.witcurve.domain.enumeration;
 
 public enum AttendanceType {
 
-    PRESENT, ABSENT, HALF_DAY, GRACE, LATE
+    PRESENT, GRACE, LATE, ABSENT, HALF_DAY,
 }

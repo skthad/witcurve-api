@@ -85,7 +85,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     List<Event> findAttendanceForStaff(LocalDate fromDate, LocalDate toDate, Long staffId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and e.staff is not null and e.staff.schoolInfo.id = ?3 " +
-        "and e.type = 'ATTENDANCE' order by e.staff.firstName, e.staff.lastName, e.date desc")
+        "and e.type = 'ATTENDANCE' order by e.staff.firstName, e.staff.middleName, e.staff.lastName, e.staff.id, e.date desc")
     List<Event> findAttendanceForAllStaffInSchoolInfo(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
 
     @Query("Select e from Event e where e.date between ?1 and ?2 and e.student.id = ?3 " +

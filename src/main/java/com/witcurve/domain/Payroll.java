@@ -38,6 +38,15 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
     @Column(columnDefinition="integer default 0")
     private Integer lateDays = 0;
 
+    @Column(columnDefinition="integer default 0")
+    private Integer absentDays = 0;
+
+    @Column(columnDefinition="integer default 0")
+    private Integer halfDays = 0;
+
+    @Column(columnDefinition="Decimal(10,2) default 0.0")
+    private Double nonWorkingDays = 0d;
+
     @Column(columnDefinition="Decimal(10,2) default 0.0")
     private Double leavesWithoutPay = 0d;
 
@@ -148,6 +157,30 @@ public class Payroll extends AbstractAuditingEntity implements Serializable {
 
     public void setLateDays(Integer lateDays) {
         this.lateDays = lateDays;
+    }
+
+    public Integer getAbsentDays() {
+        return absentDays;
+    }
+
+    public void setAbsentDays(Integer absentDays) {
+        this.absentDays = absentDays;
+    }
+
+    public Integer getHalfDays() {
+        return halfDays;
+    }
+
+    public void setHalfDays(Integer halfDays) {
+        this.halfDays = halfDays;
+    }
+
+    public Double getNonWorkingDays() {
+        return nonWorkingDays;
+    }
+
+    public void setNonWorkingDays(Double nonWorkingDays) {
+        this.nonWorkingDays = nonWorkingDays;
     }
 
     public Double getLeavesWithoutPay() {

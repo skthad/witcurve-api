@@ -1,15 +1,10 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.ConfigSettings;
+import com.witcurve.domain.Event;
 import com.witcurve.domain.Payroll;
 import com.witcurve.domain.PayrollCycle;
 import com.witcurve.domain.PayrollDetails;
-import com.witcurve.domain.enumeration.ConfigFieldName;
-import com.witcurve.domain.enumeration.ConfigType;
-import com.witcurve.repository.ConfigSettingsRepository;
-import com.witcurve.repository.PayrollCycleRepository;
-import com.witcurve.repository.PayrollDetailsRepository;
-import com.witcurve.repository.PayrollRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.PayrollService;
 import com.witcurve.service.dto.PayrollCycleDTO;
 import com.witcurve.service.dto.PayrollDTO;
@@ -27,10 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
@@ -58,6 +52,9 @@ public class PayrollServiceImpl implements PayrollService {
 
     @Autowired
     ConfigSettingsRepository configSettingsRepository;
+
+    @Autowired
+    EventRepository eventRepository;
 
     @Override
     public PayrollDTO saveOrUpdate(PayrollDTO payrollDTO) {
@@ -116,30 +113,79 @@ public class PayrollServiceImpl implements PayrollService {
         List<Payroll> payrolls = payrollRepository.findPayrollForScoolInfoInYearAndMonth(schoolInfoId, payrollCycleDTO.getYear(), payrollCycleDTO.getMonth());
         List<PayrollDTO> payrollDTOs = payrollMapper.toDto(payrolls);
 
+        Map<Long, PayrollDTO> payrollMap = new HashMap<>();
+        for (PayrollDTO payrollDTO : payrollDTOs) {
+            payrollMap.put(payrollDTO.getPayrollDetails().getStaff().getId(), payrollDTO);
+        }
         List<PayrollDetails> payrollDetails = payrollDetailsRepository.findPayrollDetailsForActiveStaffInSchoolInfo(schoolInfoId,  payrollCycleDTO.getYear(), payrollCycleDTO.getMonth());
         List<PayrollDetailsDTO> payrollDetailsDTOs = payrollDetailsMapper.toDto(payrollDetails);
-        List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolInfoId, new ConfigType[]{ConfigType.STAFF_ATTENDANCE});
-        Integer durationInMins = 0;
-        String presentStatusBefore = "";
-        for (ConfigSettings cs : configSettings) {
-            if (ConfigFieldName.STAFF_GRACE_DURATION_IN_MINS.equals(cs.getFieldName())) {
-                durationInMins = Integer.parseInt(cs.getFieldValue());
+
+        Double payableDays = Double.valueOf(DAYS.between(payrollCycleDTO.getCycleStart(), payrollCycleDTO.getCycleEnd()) + 1);
+        Map<Long, Integer> presentCount = new HashMap<>();
+        Map<Long, Integer> absentCount = new HashMap<>();
+        Map<Long, Integer> halfDayCount = new HashMap<>();
+        Map<Long, Integer> lateCount = new HashMap<>();
+        Map<Long, Integer> graceCount = new HashMap<>();
+        List<Event> attendanceEvents = eventRepository.findAttendanceForAllStaffInSchoolInfo(payrollCycle.getCycleStart(), payrollCycle.getCycleEnd(), schoolInfoId);
+
+        for (Event attendanceEvent : attendanceEvents) {
+            Long staffId = attendanceEvent.getStaff().getId();
+            if (presentCount.get(staffId) == null) {
+                presentCount.put(staffId, 0);
             }
-            if (ConfigFieldName.STAFF_PRESENT_STATUS_BEFORE.equals(cs.getFieldName())) {
-                presentStatusBefore = cs.getFieldValue();
+            if (absentCount.get(staffId) == null) {
+                absentCount.put(staffId, 0);
+            }
+            if (halfDayCount.get(staffId) == null) {
+                halfDayCount.put(staffId, 0);
+            }
+            if (lateCount.get(staffId) == null) {
+                lateCount.put(staffId, 0);
+            }
+            if (graceCount.get(staffId) == null) {
+                graceCount.put(staffId, 0);
+            }
+            switch (attendanceEvent.getAttendanceType()) {
+                case PRESENT:
+                    presentCount.put(staffId, presentCount.get(staffId) + 1);
+                    break;
+                case GRACE:
+                    graceCount.put(staffId, presentCount.get(staffId) + 1);
+                    break;
+                case LATE:
+                    lateCount.put(staffId, presentCount.get(staffId) + 1);
+                    break;
+                case ABSENT:
+                    absentCount.put(staffId, presentCount.get(staffId) + 1);
+                    break;
+                case HALF_DAY:
+                    halfDayCount.put(staffId, presentCount.get(staffId) + 1);
+                    break;
+                default:
             }
         }
-        Integer hours = Integer.parseInt(presentStatusBefore.substring(0, 2));
-        Integer mins = Integer.parseInt(presentStatusBefore.substring(2));
         for (PayrollDetailsDTO pd : payrollDetailsDTOs) {
+            Long staffId = pd.getStaff().getId();
+            if (payrollMap.get(staffId) != null) {
+                payrollDTOs.add(payrollMap.get(staffId));
+                continue;
+            }
             PayrollDTO payrollDTO = payrollMapper.fromPayrollDetails(pd, payrollCycleDTO);
             payrollDTO.setPayrollCycle(payrollCycleDTO);
-            //TODO: ontime days == calcualte from biometric and config logic
-            //TODO: grace days == calcualte from biometric and config logic
-            //TODO: late days == calculatte from biometric and config logic
-            payrollDTO.setOnTimeDays(14);
-            payrollDTO.setGraceDays(1);
-            payrollDTO.setLateDays(3);
+            payrollDTO.setPayableDays(payableDays);
+            payrollDTO.setPaidDays(payableDays);
+            payrollDTO.setOnTimeDays(presentCount.get(staffId) == null ? 0 : presentCount.get(staffId));
+            payrollDTO.setGraceDays(graceCount.get(staffId) == null ? 0 : graceCount.get(staffId));
+            payrollDTO.setLateDays(lateCount.get(staffId) == null ? 0 : lateCount.get(staffId));
+            payrollDTO.setAbsentDays(absentCount.get(staffId) == null ? 0 : absentCount.get(staffId));
+            payrollDTO.setHalfDays(halfDayCount.get(staffId) == null ? 0 : halfDayCount.get(staffId));
+            payrollDTO.setNonWorkingDays(payableDays - (
+                payrollDTO.getOnTimeDays() +
+                payrollDTO.getGraceDays() +
+                payrollDTO.getLateDays() +
+                payrollDTO.getAbsentDays() +
+                payrollDTO.getHalfDays())
+            );
             payrollDTOs.add(payrollDTO);
         }
         return payrollDTOs;

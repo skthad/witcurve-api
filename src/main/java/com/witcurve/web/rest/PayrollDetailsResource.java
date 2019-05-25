@@ -29,7 +29,7 @@ public class PayrollDetailsResource {
 
     @PostMapping("/payroll-details")
     @Timed
-    public ResponseEntity<PayrollDetailsDTO> createPayrollDetails(@RequestBody @Valid PayrollDetailsDTO payrollDetailsDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<PayrollDetailsDTO> saveOrUpdatePayrollDetails(@RequestBody @Valid PayrollDetailsDTO payrollDetailsDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to save or update PayrollDetails");
         try {
             PayrollDetailsDTO result = payrollService.saveOrUpdate(payrollDetailsDTO);

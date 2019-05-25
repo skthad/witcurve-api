@@ -18,4 +18,19 @@
             update config_settings set field_value = 'FALSE' where config_type like '%_NOTIFICATION';
         </sql>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-5">
+        <addColumn tableName="payroll">
+            <column defaultValueNumeric="0.0" name="non_working_days" type="Decimal(10, 2)" afterColumn="late_days"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-6">
+        <addColumn tableName="payroll">
+            <column defaultValueNumeric="0" name="half_days" type="integer" afterColumn="late_days"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-7">
+        <addColumn tableName="payroll">
+            <column defaultValueNumeric="0" name="absent_days" type="integer" afterColumn="late_days"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

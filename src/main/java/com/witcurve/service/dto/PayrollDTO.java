@@ -28,6 +28,12 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
 
     private Integer lateDays = 0;
 
+    private Integer absentDays = 0;
+
+    private Integer halfDays = 0;
+
+    private Double nonWorkingDays = 0d;
+
     private Double leavesWithoutPay = 0d;
 
     @NotNull
@@ -122,6 +128,30 @@ public class PayrollDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setLateDays(Integer lateDays) {
         this.lateDays = lateDays;
+    }
+
+    public Integer getAbsentDays() {
+        return absentDays;
+    }
+
+    public void setAbsentDays(Integer absentDays) {
+        this.absentDays = absentDays;
+    }
+
+    public Integer getHalfDays() {
+        return halfDays;
+    }
+
+    public void setHalfDays(Integer halfDays) {
+        this.halfDays = halfDays;
+    }
+
+    public Double getNonWorkingDays() {
+        return nonWorkingDays;
+    }
+
+    public void setNonWorkingDays(Double nonWorkingDays) {
+        this.nonWorkingDays = nonWorkingDays;
     }
 
     public Double getLeavesWithoutPay() {
