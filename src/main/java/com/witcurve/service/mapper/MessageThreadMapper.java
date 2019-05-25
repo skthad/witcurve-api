@@ -2,6 +2,7 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.MessageThread;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.dto.MessageThreadDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,6 +18,7 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
     @Mapping(source = "leaveApplication", target = "leaveApplicationDTO")
     @Mapping(target = "fromUserName", expression = "java(getUserName(messageThread.getFromUser()))")
     @Mapping(target = "toUserName", expression = "java(getUserName(messageThread.getToUser()))")
+    @Mapping(target = "userType", expression = "java(getUserType(messageThread))")
     MessageThreadDTO toDto(MessageThread messageThread);
 
     @Mapping(source = "messageDTOs", target = "messages")
@@ -51,5 +53,26 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
                 return firstName + " "+ lastName;
             }
         }
+    }
+
+    default String getUserType(MessageThread messageThread) {
+        if(messageThread.getSchoolBoardAdminMessage()) {
+            if (messageThread.getFromUser().getType().equals(UserType.TEACHING_STAFF)) {
+                return "Teacher";
+            } else if (messageThread.getFromUser().getType().equals(UserType.PARENT)) {
+                return "Parent";
+            }
+            if (messageThread.getToUser() != null) {
+                if (messageThread.getToUser().getType().equals(UserType.TEACHING_STAFF)) {
+                    return "Teacher";
+                } else if (messageThread.getToUser().getType().equals(UserType.PARENT)) {
+                    return "Parent";
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+
     }
 }
