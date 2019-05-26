@@ -46,6 +46,9 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
     @Column(name = "field_value", nullable = false)
     private String fieldValue;
 
+    @Column(name = "field_description")
+    private String fieldDescription;
+
     @NotNull
     @Column(name = "display_order", nullable = false)
     private Integer displayOrder;
@@ -104,6 +107,14 @@ public class ConfigSettings extends AbstractAuditingEntity implements Serializab
 
     public void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
+    }
+
+    public String getFieldDescription() {
+        return fieldDescription;
+    }
+
+    public void setFieldDescription(String fieldDescription) {
+        this.fieldDescription = fieldDescription;
     }
 
     public Integer getDisplayOrder() {

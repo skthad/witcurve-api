@@ -38,4 +38,22 @@
             update config_settings set display_order = display_order + 1 where config_type not like '%_NOTIFICATION'
         </sql>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-9">
+        <addColumn tableName="config_settings">
+            <column name="field_description" type="varchar(255)" afterColumn="field_value"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558784400950-10">
+        <sql>
+            update config_settings set
+                field_name = 'STAFF_OR_STUDENT_ABSENT',
+                display_field_name = 'Staff or student is absent'
+            where field_name = 'ATTENDANCE_POSTED'
+        </sql>
+        <sql>
+            update config_settings set field_description =
+            'In case a staff is marked absent, a notification will be sent to that staff. In case of a student, it will be sent to the parent/guardian'
+            where field_name = 'STAFF_OR_STUDENT_ABSENT'
+        </sql>
+    </changeSet>
 </databaseChangeLog>
