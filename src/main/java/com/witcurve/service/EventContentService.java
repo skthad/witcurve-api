@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface EventContentService {
 
-    List<EventContentDTO> saveOrUpdateForEvent(Long eventId, List<EventContentDTO> eventContentDTOs, Boolean forExam) throws WitcurveException;
+    List<EventContentDTO> saveOrUpdateForEvent(Long id, List<EventContentDTO> eventContentDTOs, Boolean forExam) throws WitcurveException;
 
     void deleteEventContentById(Long eventContentId) throws WitcurveException;
 

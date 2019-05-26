@@ -480,7 +480,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllTestAndAssignmentByStandardAndCourse(LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
+    public List<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
         List<Event> events = new ArrayList<>();
         List<Long> courseTeacherIds = courseTeacherRepository.findActiveCourseTeachersByStandardIdAndCourseId(standardId, courseId);
         if(courseTeacherIds.size() ==0) {
@@ -490,6 +490,8 @@ public class EventServiceImpl implements EventService {
             events = eventRepository.findAssignmentsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
         } else if(type.equals(ViewType.TEST)) {
             events = eventRepository.findTestsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+        } else if (type.equals(ViewType.DAILY_UPDATE)) {
+            events = eventRepository.findDailyUpdatesByCourseTeachers(courseTeacherIds);
         } else {
             throw new WitcurveException("Invalid Event Type");
         }

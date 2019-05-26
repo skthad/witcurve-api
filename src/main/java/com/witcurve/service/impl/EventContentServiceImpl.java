@@ -38,28 +38,32 @@ public class EventContentServiceImpl implements EventContentService {
     ExamCourseDetailsRepository examCourseDetailsRepository;
 
     @Override
-    public List<EventContentDTO> saveOrUpdateForEvent(Long eventId, List<EventContentDTO> eventContentDTOs, Boolean forExam) throws WitcurveException {
+    public List<EventContentDTO> saveOrUpdateForEvent(Long id, List<EventContentDTO> eventContentDTOs, Boolean forExam) throws WitcurveException {
 
-        log.debug("Request to save or update EventContents for {} with ID: {}", forExam ? "exam" : "event", eventId);
+        log.debug("Request to save or update EventContents for {} with ID: {}", forExam ? "exam" : "event", id);
         if (forExam) {
-            Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(eventId);
+            Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(id);
             if (!ecd.isPresent()) {
-                throw new WitcurveException("No ECD with given id " + eventId);
+                throw new WitcurveException("No ECD with given id " + id);
             }
             for (EventContentDTO eventContentDTO : eventContentDTOs) {
-                eventContentDTO.setForExam(forExam);
-                if (!eventContentDTO.getEventId().equals(eventId)) {
+                if (eventContentDTO.getEventId() != null) {
+                    throw new WitcurveException("Event Id is populated while saving Event Content for ECD in one or more eventContents");
+                }
+                if (!eventContentDTO.getEcdId().equals(id)) {
                     throw new WitcurveException("ECD Id provided does not match with ECD id in one or more eventContents");
                 }
             }
         } else {
-            Optional<Event> event = eventRepository.findById(eventId);
+            Optional<Event> event = eventRepository.findById(id);
             if (!event.isPresent()) {
-                throw new WitcurveException("No Event with given id " + eventId);
+                throw new WitcurveException("No Event with given id " + id);
             }
             for (EventContentDTO eventContentDTO : eventContentDTOs) {
-                eventContentDTO.setForExam(forExam);
-                if (!eventContentDTO.getEventId().equals(eventId)) {
+                if (eventContentDTO.getEcdId() != null) {
+                    throw new WitcurveException("ECD Id is populated while saving Event Content for Event in one or more eventContents");
+                }
+                if (!eventContentDTO.getEventId().equals(id)) {
                     throw new WitcurveException("Event Id provided does not match with eventId in one or more eventContents");
                 }
             }
@@ -80,9 +84,13 @@ public class EventContentServiceImpl implements EventContentService {
     }
 
     @Override
-    public void deleteEventContentByEventId(Long eventId, Boolean forExam) {
-        log.debug("Request to delete CourseContents for {} with id {}", forExam ? "exam" : "event", eventId);
-        eventContentRepository.deleteByEventId(eventId, forExam);
+    public void deleteEventContentByEventId(Long id, Boolean forExam) {
+        log.debug("Request to delete CourseContents for {} with id {}", forExam ? "exam" : "event", id);
+        if (forExam) {
+            eventContentRepository.deleteByEcdId(id);
+        } else {
+            eventContentRepository.deleteByEventId(id);
+        }
     }
 
 }

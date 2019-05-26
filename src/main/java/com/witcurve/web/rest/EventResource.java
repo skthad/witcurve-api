@@ -288,7 +288,7 @@ public class EventResource {
         @PathVariable Long courseId,
         @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
         log.debug("Request to get events on between dates : {} and : {} for standard id : {} and course id : {}", eventStart, eventEnd, courseId, standardId);
-        List<EventDTO> result = eventService.findAllTestAndAssignmentByStandardAndCourse(eventStart, eventEnd, type, standardId, courseId);
+        List<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(eventStart, eventEnd, type, standardId, courseId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
