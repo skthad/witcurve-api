@@ -12,10 +12,9 @@
 <changeSet author="vishal" id="1558795551912-4">
     <dropNotNullConstraint columnDataType="bigint" columnName="event_id" tableName="event_content"/>
 </changeSet>
-
 <changeSet author="vishal" id="1558795551912-5">
     <addColumn tableName="event_content">
-        <column name="exam_course_details_id" type="bigint"/>
+        <column name="exam_course_details_id" type="bigint" afterColumn="event_id"/>
     </addColumn>
 </changeSet>
 <changeSet author="vishal" id="1558795551912-6">
