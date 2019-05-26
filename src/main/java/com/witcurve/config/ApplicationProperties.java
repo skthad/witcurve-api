@@ -109,4 +109,22 @@ public class ApplicationProperties {
     public Paytm getPaytm() {
         return paytm;
     }
+
+    public final Domain domain = new Domain();
+
+    public static class Domain {
+        private String url;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
 }

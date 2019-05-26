@@ -90,6 +90,32 @@ public class AccountResource {
         userService.setPassword(passwordChangeDto.getNewPassword());
     }
 
+
+    /**
+     * POST  /account/request-reset-password : request mail to reset password
+     *
+     * @param passwordChangeDto username for password reset
+     * @throws InvalidPasswordException 400 (Bad Request) if the user does not exist
+     */
+    @PostMapping(path = "/account/request-reset-password")
+    @Timed
+    public void requestPasswordMail(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        userService.requestPasswordEmail(passwordChangeDto.getUsername());
+    }
+
+    /**
+     * POST  /account/reset-password : resets the given user's password
+     *
+     * @param passwordChangeDto with username and new password
+     * @throws InvalidPasswordException 400 (Bad Request) if the new password is incorrect or user does not exist
+     */
+    @PostMapping(path = "/account/reset-password")
+    @Timed
+    public void resetPassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        checkValidPassword(passwordChangeDto.getNewPassword());
+        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword());
+    }
+
     private static void checkValidPassword(String password) throws WitcurveException {
         if(!password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{"+
             ManagedUserVM.PASSWORD_MIN_LENGTH+","+ManagedUserVM.PASSWORD_MAX_LENGTH+"}$")) {
