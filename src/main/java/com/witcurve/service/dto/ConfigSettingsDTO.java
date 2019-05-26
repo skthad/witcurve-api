@@ -32,6 +32,8 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
     @NotNull
     private String fieldValue;
 
+    private String fieldDescription;
+
     @NotNull
     private Integer displayOrder;
 
@@ -89,6 +91,14 @@ public class ConfigSettingsDTO extends AbstractAuditingDTO implements Serializab
 
     public void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
+    }
+
+    public String getFieldDescription() {
+        return fieldDescription;
+    }
+
+    public void setFieldDescription(String fieldDescription) {
+        this.fieldDescription = fieldDescription;
     }
 
     public Integer getDisplayOrder() {
