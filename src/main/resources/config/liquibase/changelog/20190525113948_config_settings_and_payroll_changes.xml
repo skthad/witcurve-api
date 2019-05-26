@@ -35,7 +35,7 @@
     </changeSet>
     <changeSet author="WitCurve (generated)" id="1558784400950-8">
         <sql>
-            UPDATE CONFIG_SETTINGS set display_order = display_order + 1 where config_type  NOT LIKE '%_NOTIFICATION'
+            update config_settings set display_order = display_order + 1 where config_type not like '%_NOTIFICATION'
         </sql>
     </changeSet>
 </databaseChangeLog>
