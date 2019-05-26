@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -179,8 +180,10 @@ public class CourseContentServiceImpl implements CourseContentService {
         } else {
             laterCourseContents = courseContentRepository.findLaterTopics(courseId, contentOrder);
             List<CourseContent> subTopics = courseContentRepository.findByCourseIdAndParentContentId(courseId, existingCourseContent.getId());
-            eventContentRepository.deleteByCourseContentIds(subTopics.stream().map(CourseContent::getId).collect(Collectors.toList()));
-            courseContentRepository.deleteAll(subTopics);
+            if (!CollectionUtils.isEmpty(subTopics)) {
+                eventContentRepository.deleteByCourseContentIds(subTopics.stream().map(CourseContent::getId).collect(Collectors.toList()));
+                courseContentRepository.deleteAll(subTopics);
+            }
         }
         eventContentRepository.deleteByCourseContentId(existingCourseContent.getId());
         courseContentRepository.delete(existingCourseContent);
