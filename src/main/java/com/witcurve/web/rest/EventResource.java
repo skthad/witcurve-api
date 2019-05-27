@@ -281,14 +281,15 @@ public class EventResource {
      */
     @GetMapping("/events/standards/{standardId}/courses/{courseId}")
     @Timed
-    public ResponseEntity<List<EventDTO>> getAllEventsForStandard(
-        @RequestParam(value = "eventStart", required = false) LocalDate eventStart,
-        @RequestParam(value = "eventEnd", required = false) LocalDate eventEnd,
+    public ResponseEntity<Page<EventDTO>> getAllEventsForStandard(
+        @ApiParam Pageable pageable,
+        @RequestParam(value = "eventStart") LocalDate eventStart,
+        @RequestParam(value = "eventEnd") LocalDate eventEnd,
         @RequestParam(value = "type") ViewType type,
         @PathVariable Long courseId,
         @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
         log.debug("Request to get events on between dates : {} and : {} for standard id : {} and course id : {}", eventStart, eventEnd, courseId, standardId);
-        List<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(eventStart, eventEnd, type, standardId, courseId);
+        Page<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(pageable, eventStart, eventEnd, type, standardId, courseId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
