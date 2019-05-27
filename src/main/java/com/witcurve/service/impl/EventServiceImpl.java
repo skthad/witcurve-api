@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -480,8 +481,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
-        List<Event> events = new ArrayList<>();
+    public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
+        WitcurveUtil.correctDateFormat(eventStart, eventEnd);
+        List<Event> events = null;
         List<Long> courseTeacherIds = courseTeacherRepository.findActiveCourseTeachersByStandardIdAndCourseId(standardId, courseId);
         if(courseTeacherIds.size() ==0) {
             throw new WitcurveException("There are no teacher assigned to this for course in given standard");
@@ -491,12 +493,13 @@ public class EventServiceImpl implements EventService {
         } else if(type.equals(ViewType.TEST)) {
             events = eventRepository.findTestsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
         } else if (type.equals(ViewType.DAILY_UPDATE)) {
-            events = eventRepository.findDailyUpdatesByCourseTeachers(courseTeacherIds);
+            events = eventRepository.findDailyUpdatesByCourseTeachers(courseTeacherIds, eventStart, eventEnd);
         } else {
             throw new WitcurveException("Invalid Event Type");
         }
         Collections.sort(events, new EventDateDescComparator());
-        return eventMapper.toDto(events);
+        List<EventDTO> result =  eventMapper.toDto(events);
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     @Override
