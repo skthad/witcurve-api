@@ -104,8 +104,8 @@ public class StudentServiceImpl implements StudentService {
         }
 
         if (schoolInfo.get().getSchool().getInstitute().getSubscriptionModel() == SubscriptionModel.INSTITUTE) {
-            studentDTO.setSubscriptionStartDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionStartDate());
-            studentDTO.setSubscriptionEndDate(studentDTO.getSchoolInfo().getSchool().getInstitute().getSubscriptionEndDate());
+            studentDTO.setSubscriptionStartDate(schoolInfo.get().getSchool().getInstitute().getSubscriptionStartDate());
+            studentDTO.setSubscriptionEndDate(schoolInfo.get().getSchool().getInstitute().getSubscriptionEndDate());
         } else {
             studentDTO.setSubscriptionStartDate(null);
             studentDTO.setSubscriptionEndDate(null);
