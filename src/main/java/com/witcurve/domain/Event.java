@@ -87,6 +87,7 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private AttendanceType attendanceType;
 
+    @Column(name = "full_marks")
     private Integer fullMarks;
 
     @Column
