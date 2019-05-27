@@ -497,9 +497,19 @@ public class EventServiceImpl implements EventService {
         } else {
             throw new WitcurveException("Invalid Event Type");
         }
+        events = new ArrayList<>(events);
         Collections.sort(events, new EventDateDescComparator());
-        List<EventDTO> result =  eventMapper.toDto(events);
-        return new PageImpl<>(result, pageable, result.size());
+        List<Event> finalList = new ArrayList<>();
+        int startIndex = pageable.getPageNumber()*pageable.getPageSize();
+        int endIndex = startIndex + pageable.getPageSize()-1;
+        for(int i=startIndex; i<=endIndex; i++ ) {
+            if(i>events.size()-1) {
+                break;
+            }
+            finalList.add(events.get(i));
+        }
+        List<EventDTO> result =  eventMapper.toDto(finalList);
+        return new PageImpl<>(new ArrayList<>(result), pageable, events.size());
     }
 
     @Override
