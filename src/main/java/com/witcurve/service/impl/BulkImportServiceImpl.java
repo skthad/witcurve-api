@@ -339,16 +339,16 @@ public class BulkImportServiceImpl implements BulkImportService {
         }
 
         if(staffCsv.getAadhaarNo() != null && !StringUtils.isBlank(staffCsv.getAadhaarNo())) {
-            if(staffCsv.getAadhaarNo().matches("[0-9]{12}")) {
-                staffDTO.setAadhaarNo(staffCsv.getAadhaarNo());
+            if(staffCsv.getAadhaarNo().replaceAll("\\s","").matches("[0-9]{12}")) {
+                staffDTO.setAadhaarNo(staffCsv.getAadhaarNo().replaceAll("\\s",""));
             } else {
                 throw new WitcurveException("Incorrect Aadhaar Number value, it should be a 12 digit number");
             }
         }
 
         if(staffCsv.getPan() != null && !StringUtils.isBlank(staffCsv.getPan())) {
-            if(staffCsv.getPan().matches("[A-Z]{5}[0-9]{4}[A-Z]{1}")) {
-                staffDTO.setPanNo(staffCsv.getPan());
+            if(staffCsv.getPan().replaceAll("\\s","").matches("[A-Z]{5}[0-9]{4}[A-Z]{1}")) {
+                staffDTO.setPanNo(staffCsv.getPan().replaceAll("\\s",""));
             } else {
                 throw new WitcurveException("Incorrect Pan Number input");
             }
@@ -549,8 +549,8 @@ public class BulkImportServiceImpl implements BulkImportService {
         }
 
         if(studentCsv.getAadhaarNo() != null && !StringUtils.isBlank(studentCsv.getAadhaarNo())) {
-            if(studentCsv.getAadhaarNo().matches("[0-9]{12}")) {
-                studentDTO.setAadhaarNo(studentCsv.getAadhaarNo());
+            if(studentCsv.getAadhaarNo().replaceAll("\\s","").matches("[0-9]{12}")) {
+                studentDTO.setAadhaarNo(studentCsv.getAadhaarNo().replaceAll("\\s",""));
             } else {
                 throw new WitcurveException("Incorrect Aadhaar Number value");
             }
