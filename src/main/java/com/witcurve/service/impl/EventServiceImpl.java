@@ -491,7 +491,7 @@ public class EventServiceImpl implements EventService {
         } else if(type.equals(ViewType.TEST)) {
             events = eventRepository.findTestsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
         } else if (type.equals(ViewType.DAILY_UPDATE)) {
-            events = eventRepository.findDailyUpdatesByCourseTeachers(courseTeacherIds);
+            events = eventRepository.findDailyUpdatesByCourseTeachers(courseTeacherIds, eventStart, eventEnd);
         } else {
             throw new WitcurveException("Invalid Event Type");
         }
