@@ -209,7 +209,7 @@ public class UserService {
                 this.clearUserCaches(user.get());
                 log.debug("Set password for User: {}", user.get());
             } else {
-                throw new WitcurveException("There is no user with given user name!");
+                throw new WitcurveException("Password cannot be reset as we can’t find any user to reset password");
             }
         } else {
             throw new WitcurveException("Invalid request, user name is required!");
