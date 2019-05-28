@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +29,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "(ct.standard_id = ?4 and e.type = 'ASSIGNMENT') OR \n" +
         "(e.standard_id = ?4 and e.type = 'SCHOOL_EVENT') OR\n" +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) \n" +
-        " and e.school_info_id = ?6 and (e.type in ('HOLIDAY', 'SCHOOL_EVENT'))))", nativeQuery = true)
+        " and e.school_info_id = ?6 and (e.type in ('HOLIDAY', 'PERIODIC_TEST','SCHOOL_EVENT'))))", nativeQuery = true)
     List<BigInteger> findEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
                                                      Long studentId, Long standardId, String grade,
                                                      Long schoolInfoId, List<String> types);
@@ -39,13 +40,14 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.staff_id = ?3 and e.type = 'ATTENDANCE') or \n" +
-        "(scd.course_teacher_id in ?4 and e.type in ?8) or \n" +
+        "(scd.course_teacher_id in ?4 and e.type in ?9) or \n" +
         "(e.course_teacher_id in ?4 and e.type = 'ASSIGNMENT') OR \n" +
-        "(e.standard_id in ?5 and e.type = 'SCHOOL_EVENT') OR\n" +
-        "((e.grade is null or (e.grade is not null and e.grade in ?6)) \n" +
-        " and e.school_info_id = ?7 and (e.type in ('HOLIDAY', 'SCHOOL_EVENT'))))", nativeQuery = true)
+        "(ct.course_id in ?5 and e.type = 'PERIODIC_TEST') OR \n" +
+        "(e.standard_id in ?6 and e.type = 'SCHOOL_EVENT') OR\n" +
+        "((e.grade is null or (e.grade is not null and e.grade in ?7)) \n" +
+        " and e.school_info_id = ?8 and (e.type in ('HOLIDAY', 'SCHOOL_EVENT'))))", nativeQuery = true)
     List<BigInteger> findEventsByDateRangeForStaff(LocalDate startDate, LocalDate endDate,
-                                                   Long staffId, Set<Long> courseTeacherIds, Set<Long> standardIds, Set<String> grades,
+                                                   Long staffId, Set<Long> courseTeacherIds, Set<Long> courseIds, Set<Long> standardIds, Set<String> grades,
                                                    Long schoolInfoId, List<String> types);
 
     @Query("Select distinct e.date from Event e where e.date between ?1 and ?2 and" +
@@ -60,8 +62,14 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
                                                 Long studentId, Long standardId, String grade,
                                                 Long schoolInfoId, List<String> types);
 
-    @Query("Select e from Event e where e.date = ?1 and e.type = ?2 and e.scd.id = ?3")
-    Event findEventOnDateAndSlot(LocalDate date, EventType type, Long scdId);
+    @Query("Select e from Event e where e.date = ?1 and e.type = 'TEST' and e.scd.id = ?2")
+    Event findTestOnDateAndSlot(LocalDate date, Long scdId);
+
+    @Query("Select e from Event e where e.date = ?1 and e.type = 'ASSIGNMENT' and e.courseTeacher.id = ?2")
+    Event findAssignmentOnDateAndCourseTeacher(LocalDate date, Long courseTeacherId);
+
+    @Query("Select e from Event e where e.date = ?1 and e.type = 'PERIODIC_TEST' and e.courseTeacher.course.id = ?2")
+    Event findPeriodicTestOnDateAndCourseId(LocalDate date, Long courseId);
 
     @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.standard.schoolInfo.id =?3) and e.type in ?2")
     List<Event> eventsBlockingHolidayAndSchoolEvents(LocalDate date, List<EventType> types, Long schoolInfoId);
@@ -155,6 +163,28 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "order by e.date desc, e.createdDate desc")
     Page<Event> findAdminNoticesBySchoolInfoId(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
+    @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.schoolInfo.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
+    List<Event> findPeriodicTestsBySchoolInfoId(Long schoolInfoId, LocalDate eventStart, LocalDate eventEnd);
+
+    @Query("Select e.bindingId from Event e where e.type='PERIODIC_TEST' and e.schoolInfo.id in ?1  and e.grade in ?2 and e.date between ?3 and ?4 order by e.date desc")
+    List<String> findPeriodicTestBindingIdBySchoolInfoIdAndGrades(Long schoolInfoId, List<Grade> grades, LocalDate eventStart, LocalDate eventEnd);
+
+    @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.bindingId in ?1 order by e.date desc")
+    List<Event> findPeriodicTestByBindingIds(List<String> bindingIds);
+
+    @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1 order by e.date asc")
+    List<Event> findPeriodicEventsByBindingId(String bindingId);
+
+    @Query("Select e.id from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1 order by e.date asc")
+    List<Long> findPeriodicEventIdsByBindingId(String bindingId);
+
+    @Modifying
+    @Query("delete from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1")
+    void deletePeriodicEventByBindingId(String bindingId);
+
+    @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1 and e.courseTeacher.course.id in ?2 order by e.date asc")
+    List<Event> findPeriodicEventsByBindingIdAndCourseIds(String bindingId, List<Long> courseIds);
+
     @Query("Select count(e) from Event e where (e.date between ?1 and ?2) and e.type = 'HOLIDAY' and e.schoolInfo.id=?3")
     Long findHolidaysBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
 
@@ -164,17 +194,23 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.teacher.id=?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findTestsByTeacherInDateRange(Long staffId, LocalDate sdate, LocalDate eDate);
 
+    @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.scd.courseTeacher.course.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
+    List<Event> findPeriodicTestsByTeacherInDateRange(Set<Long> courseIds, LocalDate eventStart, LocalDate eventEnd);
+
     @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findAssignmentsByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate eDate);
 
     @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findTestsByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate eDate);
 
+    @Query("Select e from Event e where e.type='DAILY_UPDATE' and e.scd.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
+    List<Event> findDailyUpdatesByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate edate);
+
+    @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.scd.courseTeacher.course.id = ?1 and e.date between ?2 and ?3 order by e.date desc")
+    List<Event> findPeriodicTestsByCourseTeachersInDateRange(Long courseId, LocalDate sdate, LocalDate edate);
+
     @Query("Select e from Event e where e.type= ?1 and e.schoolInfo.id= ?2 and (e.date between ?3 and ?4) order by e.date desc" )
     List<Event> findByTypeAndSchoolInfoIdOrderByDateAsc(EventType eventType, Long schoolInfoId, LocalDate sDate, LocalDate eDate);
-
-    @Query("Select e from Event e where e.type='DAILY_UPDATE' and e.scd.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
-    List<Event> findDailyUpdatesByCourseTeachers(List<Long> courseTeacherIds, LocalDate sdate, LocalDate edate);
 
     @Query("Select e from Event e where (e.date between ?1 and ?2) and (e.type = 'HOLIDAY' or e.type = 'SCHOOL_EVENT') and e.schoolInfo.id=?3 order by e.date desc ")
     List<Event> findHolidaysAndSchoolEventsBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);

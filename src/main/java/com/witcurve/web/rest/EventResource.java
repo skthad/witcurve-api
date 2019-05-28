@@ -1,10 +1,12 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.KeywordRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
+import com.witcurve.service.dto.PeriodicTestDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import io.swagger.annotations.ApiParam;
@@ -54,6 +56,31 @@ public class EventResource {
                 throw new WitcurveException("New Event can't already have an id");
             }
         }
+        try {
+            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+            return ResponseEntity.ok(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+
+
+    /**
+     * creates perodice test events
+     * @param eventDTOs
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @PostMapping("/events/periodic-tests")
+    @Timed
+    public ResponseEntity<List<EventDTO>> createPeriodicEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+        log.debug("Request Save Periodic Test Events : {}",eventDTOs);
+
         try {
             List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
             return ResponseEntity.ok(result);
@@ -331,6 +358,55 @@ public class EventResource {
         Page<EventDTO> result = eventService.getNotices(startDate, endDate, userId,standardIds,keywords,schoolInfoId, pageable);
 
         return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     *
+     * * @param pageable
+     * @param startDate
+     * @param endDate
+     * @param schoolInfoId
+     * @param grades
+     * @return
+     */
+    @GetMapping("/events/periodic-tests")
+    @Timed
+    public ResponseEntity<Page<PeriodicTestDTO>> getPeriodicTests(@ApiParam Pageable pageable,
+                                                     @RequestParam(value = "startDate") LocalDate startDate,
+                                                     @RequestParam(value = "endDate") LocalDate endDate,
+                                                     @RequestParam Long schoolInfoId,
+                                                           @RequestParam(required = false) List<Grade> grades) throws WitcurveException, URISyntaxException {
+        Page<PeriodicTestDTO> result = eventService.getPeriodTestsBetweenDates(pageable, startDate, endDate,schoolInfoId, grades);
+
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     * get periodic test events by binding id
+     * * @param pageable
+     * @param bindingId
+     * @param
+     * @return
+     */
+    @GetMapping("/events/periodic-tests/binding/{bindingId}")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getPeriodicTestsByBindingId(@PathVariable String bindingId, @RequestParam(required = false) List<Long> courseIds) throws WitcurveException, URISyntaxException {
+        List<EventDTO> result = eventService.getPeriodicTestsByBindingId(bindingId, courseIds);
+        return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     * delete periodic test events by binding id
+     * * @param pageable
+     * @param bindingId
+     * @param
+     * @return
+     */
+    @DeleteMapping("/events/periodic-tests/binding/{bindingId}")
+    @Timed
+    public ResponseEntity<Void> deletePeriodicTestsByBindingId(@PathVariable String bindingId) throws WitcurveException, URISyntaxException {
+        eventService.deletePeriodicTestsByBindingId(bindingId);
+        return new ResponseEntity<>(null,  HttpStatus.OK);
     }
 
     /**

@@ -106,6 +106,9 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name="event_id", insertable = false, updatable = false)
     private Set<EventContent> eventContents;
 
+    @Column
+    private String bindingId;
+
     public Long getId() {
         return id;
     }
@@ -272,6 +275,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setEventContents(Set<EventContent> eventContents) {
         this.eventContents = eventContents;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     @Override
