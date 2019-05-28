@@ -16,6 +16,9 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     @Query("select sm from StudentMarks sm where sm.event.id = ?1")
     List<StudentMarks> getStudentMarksByEventId(Long eventId);
 
+    @Query("select sm from StudentMarks sm where sm.event.id in ?1")
+    List<StudentMarks> getStudentMarksByEventId(List<Long> eventIds);
+
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.examCourseDetails.gsd.marksPublished in ?2 order by sm.examCourseDetails.date")
     List<StudentMarks> getStudentMarksByExamId(Long examId, List<Boolean> publishList);
 

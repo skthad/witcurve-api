@@ -72,6 +72,8 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     private String signature;
 
+    private String bindingId;
+
     private List<Long> courseContentIds;
 
     public Long getId() {
@@ -256,6 +258,14 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     public List<Long> getCourseContentIds() {
