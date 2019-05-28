@@ -7,8 +7,10 @@ import com.witcurve.service.EventService;
 import com.witcurve.service.SlotCourseDetailsService;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.EventDTO;
+import com.witcurve.service.dto.PeriodicTestDTO;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.EventMapper;
+import com.witcurve.service.util.LocalDateComparator;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -67,8 +69,14 @@ public class EventServiceImpl implements EventService {
     @Autowired
     StudentRepository studentRepository;
 
+    @Autowired
+    EventContentRepository eventContentRepository;
+
+    @Autowired
+    StudentMarksRepository studentMarksRepository;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
-        Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST));
+        Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
     private static final ArrayList<EventType> SECOND_LIST = new ArrayList<>(
         Arrays.asList(EventType.HOLIDAY, EventType.SCHOOL_EVENT));
@@ -87,6 +95,7 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
+        String bindingId = UUID.randomUUID().toString();
         if (eventDTOs.size() > 1) {
             for(EventDTO eventDTO : eventDTOs) {
                 if(eventDTO.getKeywords()!= null) {
@@ -94,11 +103,17 @@ public class EventServiceImpl implements EventService {
                         keywordRepository.save(new Keyword(keyword));
                     }
                 }
+                if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                    eventDTO.setBindingId(bindingId);
+                }
             }
         } else {
             if(eventDTOs.get(0).getKeywords()!= null) {
                 for (String keyword : eventDTOs.get(0).getKeywords()) {
                     keywordRepository.save(new Keyword(keyword));
+                }
+                if(eventDTOs.get(0).getType().equals(EventType.PERIODIC_TEST)) {
+                    eventDTOs.get(0).setBindingId(bindingId);
                 }
             }
         }
@@ -200,16 +215,18 @@ public class EventServiceImpl implements EventService {
             Set<Long> standardIds = new HashSet<>();
             Set<String> grades = new HashSet<>();
             Set<Long> courseTeacherIds = new HashSet<>();
+            Set<Long> courseIds = new HashSet<>();
             for(CourseTeacher courseTeacher : courseTeachers) {
                 standardIds.add(courseTeacher.getStandard().getId());
                 grades.add(courseTeacher.getStandard().getGrade().toString());
                 courseTeacherIds.add(courseTeacher.getId());
+                courseIds.add(courseTeacher.getCourse().getId());
             }
             Optional<Staff> staff = staffRepository.findById(staffId);
             if (!staff.isPresent()) {
                 throw new WitcurveException("No staff found with ID: " + staffId);
             }
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(eventDate, eventDate, staffId, courseTeacherIds, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DAY);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(eventDate, eventDate, staffId, courseTeacherIds, courseIds, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {
@@ -280,15 +297,19 @@ public class EventServiceImpl implements EventService {
                 .map(s -> s.getGrade().toString())
                 .collect(Collectors.toSet());
 
+            Set<Long> courseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+
             LocalDate monthStart = LocalDate.of(year,month,1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, courseTeacherIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, courseTeacherIds, courseIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
-        } else {
-            //result = eventRepository.findSchoolInfoEventsByDateRange(monthStart, monthEnd, staffId, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
-            Collections.sort(result, new EventDateAscComparator());
         }
+
         return eventMapper.toDto(result);
     }
 
@@ -367,7 +388,13 @@ public class EventServiceImpl implements EventService {
                 .map(s -> s.getGrade().toString())
                 .collect(Collectors.toSet());
 
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, courseTeacherIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
+            Set<Long> courseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, courseTeacherIds, courseIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {
@@ -465,6 +492,100 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Page<PeriodicTestDTO> getPeriodTestsBetweenDates(Pageable pageable, LocalDate startDate, LocalDate endDate, Long schoolInfoId, List<Grade> grades) throws WitcurveException {
+        List<Event> events = null;
+        if(grades != null && !grades.isEmpty()) {
+            List<String> bindingIds = eventRepository.findPeriodicTestBindingIdBySchoolInfoIdAndGrades(schoolInfoId, grades, startDate, endDate);
+            if(bindingIds!= null && !bindingIds.isEmpty()) {
+                events = eventRepository.findPeriodicTestByBindingIds(bindingIds);
+            } else {
+                return new PageImpl<>(new ArrayList<>(), pageable, 0);
+            }
+        } else {
+            events = eventRepository.findPeriodicTestsBySchoolInfoId(schoolInfoId, startDate, endDate);
+        }
+        List<PeriodicTestDTO> periodicTestDTOList = new ArrayList<>();
+        Map<String, PeriodicTestDTO> periodicTestMap= new HashMap<>();
+        if(events.isEmpty()) {
+            return new PageImpl<>(periodicTestDTOList, pageable, 0);
+        } else {
+            for (Event event : events) {
+                PeriodicTestDTO periodicTestDTO = periodicTestMap.get(event.getBindingId());
+                if(periodicTestDTO == null) {
+                    periodicTestDTO = new PeriodicTestDTO();
+                    periodicTestDTO.setCreatedBy(event.getCreatedBy());
+                    periodicTestDTO.setCreatedDate(event.getCreatedDate());
+                    periodicTestDTO.setLastModifiedBy(event.getLastModifiedBy());
+                    periodicTestDTO.setLastModifiedDate(event.getLastModifiedDate());
+                    periodicTestDTO.setBindingId(event.getBindingId());
+                    periodicTestDTO.setName(event.getName());
+                    periodicTestDTO.setDescription(event.getDescription());
+                    periodicTestDTO.setDateList(Arrays.asList(event.getDate()));
+                    periodicTestDTO.setGrades(Arrays.asList(event.getGrade()));
+                } else {
+                    if(event.getCreatedDate().isBefore(periodicTestDTO.getCreatedDate())) {
+                        periodicTestDTO.setCreatedDate(event.getCreatedDate());
+                    }
+                    List<LocalDate> dates = new ArrayList<>(periodicTestDTO.getDateList());
+                    if(!dates.contains(event.getDate())) {
+                        dates.add(event.getDate());
+                        periodicTestDTO.setDateList(dates);
+                    }
+                    List<Grade> gradeList = new ArrayList<>(periodicTestDTO.getGrades());
+                    if(!gradeList.contains(event.getGrade())) {
+                        gradeList.add(event.getGrade());
+                        periodicTestDTO.setGrades(gradeList);
+                    }
+                }
+                periodicTestMap.put(event.getBindingId(), periodicTestDTO);
+            }
+            periodicTestDTOList = new ArrayList<>(periodicTestMap.values());
+            for(PeriodicTestDTO periodicTestDTO : periodicTestDTOList) {
+                List<LocalDate> dates = periodicTestDTO.getDateList();
+                Collections.sort(dates, new LocalDateComparator());
+                periodicTestDTO.setDateList(dates);
+                SortedSet<Grade> gradeSet = new TreeSet<>();
+                gradeSet.addAll(periodicTestDTO.getGrades());
+                periodicTestDTO.setGrades(new ArrayList<>(gradeSet));
+            }
+            Collections.sort(periodicTestDTOList, new PeriodicTestDescComparator());
+            List<PeriodicTestDTO> result = new ArrayList<>();
+            int startIndex = pageable.getPageNumber()*pageable.getPageSize();
+            int endIndex = startIndex + pageable.getPageSize()-1;
+            for(int i=startIndex; i<=endIndex; i++ ) {
+                if(i>periodicTestDTOList.size()-1) {
+                    break;
+                }
+                result.add(periodicTestDTOList.get(i));
+            }
+            return new PageImpl<>(result, pageable, periodicTestDTOList.size());
+        }
+    }
+
+    @Override
+    public List<EventDTO> getPeriodicTestsByBindingId(String bindingId, List<Long> courseIds) {
+        log.debug("Get list of periodic tests by binding Id : {} and courseIds : {}", bindingId, courseIds);
+        if(courseIds!= null && !courseIds.isEmpty()) {
+            return eventMapper.toDto(eventRepository.findPeriodicEventsByBindingIdAndCourseIds(bindingId, courseIds));
+        } else {
+            return eventMapper.toDto(eventRepository.findPeriodicEventsByBindingId(bindingId));
+        }
+    }
+
+    @Override
+    public void deletePeriodicTestsByBindingId(String bindingId) throws WitcurveException {
+        log.debug("Delete list of periodic tests by binding Id : {}", bindingId);
+        List<Long> eventIds = eventRepository.findPeriodicEventIdsByBindingId(bindingId);
+        List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventId(eventIds);
+        if(!studentMarks.isEmpty()) {
+            throw new WitcurveException("This periodic test cannot be deleted as marks has already been entered");
+        }
+        eventContentRepository.deleteByEventId(eventIds);
+        eventRepository.deletePeriodicEventByBindingId(bindingId);
+
+    }
+
+    @Override
     public List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException {
         List<Event> events;
         if(ViewType.ASSIGNMENT.equals(type)){
@@ -472,9 +593,17 @@ public class EventServiceImpl implements EventService {
         }
         else if(ViewType.TEST.equals(type)){
             events = eventRepository.findTestsByTeacherInDateRange(staffId,eventStart,eventEnd);
+        } else if(ViewType.PERIODIC_TEST.equals(type)) {
+            List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+            Set<Long> courseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+            events = eventRepository.findPeriodicTestsByTeacherInDateRange(courseIds,eventStart,eventEnd);
         }
         else {
-            throw new WitcurveException("Event type should be only TEST and Assignment");
+            throw new WitcurveException("Event type should be TEST, ASSIGNMENT OR PERIODIC TEST");
         }
         Collections.sort(events, new EventDateDescComparator());
         return eventMapper.toDto(events);
@@ -493,7 +622,9 @@ public class EventServiceImpl implements EventService {
         } else if(type.equals(ViewType.TEST)) {
             events = eventRepository.findTestsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
         } else if (type.equals(ViewType.DAILY_UPDATE)) {
-            events = eventRepository.findDailyUpdatesByCourseTeachers(courseTeacherIds, eventStart, eventEnd);
+            events = eventRepository.findDailyUpdatesByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+        } else if (type.equals(ViewType.PERIODIC_TEST)) {
+            events = eventRepository.findPeriodicTestsByCourseTeachersInDateRange(courseId, eventStart, eventEnd);
         } else {
             throw new WitcurveException("Invalid Event Type");
         }
@@ -523,17 +654,34 @@ public class EventServiceImpl implements EventService {
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
         for(EventDTO eventDTO : eventDTOs) {
             if (!EventType.ATTENDANCE.equals(eventDTO.getType()) && eventDTO.getScd() != null && eventDTO.getCourseTeacher() != null) {
-                throw new WitcurveException("Invalid request body");
+                throw new WitcurveException("All event requests except ATTENDANCE type require scd or  course teacher id");
             }
             if(FIRST_LIST.contains(eventDTO.getType())) {
                 if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
                     if(eventDTO.getStandardId() == null) {
-                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId for event with date");
+                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId");
                         throw new WitcurveException("An assignment cannot have empty standardId for event with date");
                     }
-                    // add a check later
+                    Event event = eventRepository.findAssignmentOnDateAndCourseTeacher(eventDTO.getDate(),eventDTO.getCourseTeacher().getId());
+                    if(event != null && !event.getId().equals(eventDTO.getId())) {
+                        throw new WitcurveException("There already exists a record for given event type and date for course teacher with with id: " +eventDTO.getScd().getId());
+                    }
 
-                } else {
+                } else if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                    if(eventDTO.getGrade() == null || eventDTO.getSchoolInfoId() == null) {
+                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty grade or school info id");
+                        throw new WitcurveException("A periodic test creation need both grade id and school info id");
+                    }
+                    Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(eventDTO.getCourseTeacher().getId());
+                    if (!courseTeacher.isPresent()) {
+                        throw new WitcurveException("No course teacher with given id " + eventDTO.getCourseTeacher().getId());
+                    }
+                    Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), courseTeacher.get().getCourse().getId());
+                    if(event != null && !event.getId().equals(eventDTO.getId())) {
+                        throw new WitcurveException("There already exists a record for given event type and date for course with with id: " +courseTeacher.get().getCourse().getId());
+                    }
+                }
+                else{
                     if(eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
                         throw new WitcurveException("Event cannot have SCD without standardId");
                     }
@@ -541,7 +689,7 @@ public class EventServiceImpl implements EventService {
 //                    if(!slotCourseDetails.contains(eventDTO.getScd())) {
 //                        throw new WitcurveException("This scd doesn't belong to given standard id");
 //                    }
-                    Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getType(), eventDTO.getScd().getId());
+                    Event event = eventRepository.findTestOnDateAndSlot(eventDTO.getDate(), eventDTO.getScd().getId());
                     if(event != null && !event.getId().equals(eventDTO.getId())) {
                         throw new WitcurveException("There already exists a record for given event type and date for SCD with with id: " +eventDTO.getScd().getId());
                     }
@@ -549,12 +697,6 @@ public class EventServiceImpl implements EventService {
             } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
                 if(eventDTO.getSchoolInfoId() == null) {
                     throw new WitcurveException("A holiday must have schoolInfoId");
-                }
-
-                List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, eventDTO.getSchoolInfoId());
-                events = removeExistingEvent(events, eventDTO);
-                if(events.size() !=0) {
-                    throw new WitcurveException("Event of type : "+eventDTO.getType()+"cannot be posted on date : "+eventDTO.getDate()+" because there is already an event of type HOLIDAY or SCHOOL_EVENT");
                 }
             } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
                 if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
@@ -567,19 +709,12 @@ public class EventServiceImpl implements EventService {
                         throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
                     }
                     schoolInfoId = standard.getSchoolInfo().getId();
-
                 }
                 List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, schoolInfoId);
                 events = removeExistingEvent(events, eventDTO);
                 if(events.size() !=0) {
                     throw new WitcurveException("The event clashes with an existing holiday or school event");
                 }
-
-            } else if(eventDTO.getType().equals(EventType.SUBJECT_NOTE)) {
-                if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null ^ eventDTO.getStudentId() == null)) {
-                    throw new WitcurveException("A subject note must have only one of the fields [schoolInfoId, standardId, studentId]");
-                }
-
             }  else if(eventDTO.getType().equals(EventType.ATTENDANCE)) {
                 if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
                     log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
@@ -607,12 +742,12 @@ public class EventServiceImpl implements EventService {
                     events = removeExistingEvent(events, eventDTO);
                 }
                 if(events.size() !=0 ) {
-                    throw new WitcurveException("Attendance cannot be posted twice, or on a holiday");
+                    throw new WitcurveException("Attendance cannot be taken a holiday");
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
-               // if(eventDTO.getSchoolInfoId() == null) {
-                 //   throw new WitcurveException("School Info Id is a required field for creating notice");
-                //}
+                if(eventDTO.getSchoolInfoId() == null) {
+                    throw new WitcurveException("School Info Id is a required field for creating notice");
+                }
                 if (eventDTO.getStandardId() != null) {
                     Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
                     if(!standard.isPresent()) {
@@ -663,6 +798,20 @@ public class EventServiceImpl implements EventService {
                 } else {
                     return 0;
                 }
+            }
+        }
+    }
+
+    public class PeriodicTestDescComparator implements Comparator<PeriodicTestDTO> {
+
+        @Override
+        public int compare(PeriodicTestDTO o1, PeriodicTestDTO o2) {
+            if (o1.getCreatedDate().isAfter( o2.getCreatedDate())) {
+                return -1;
+            } else if(o1.getCreatedDate().isBefore( o2.getCreatedDate())) {
+                return 1;
+            } else {
+                return 0;
             }
         }
     }

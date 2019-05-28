@@ -10,5 +10,6 @@ public enum EventType {
     STAFF_NOTICE,
     SCHOOL_EVENT,
     SUBJECT_NOTE,
-    TEST
+    TEST,
+    PERIODIC_TEST
 }
