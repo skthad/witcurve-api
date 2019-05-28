@@ -9,8 +9,10 @@ import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.InvalidPasswordException;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ManagedUserVM;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -111,7 +113,12 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/reset-password")
     @Timed
-    public void resetPassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+    public void resetPassword(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) DateTime dateTime,
+                              @RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        if (dateTime.plusMinutes(10).isBefore(DateTime.now())) {
+            throw new WitcurveException("Link expired, the link is only valid for 10 minutes");
+        }
+
         checkValidPassword(passwordChangeDto.getNewPassword());
         userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword());
     }

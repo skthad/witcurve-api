@@ -15,6 +15,7 @@ import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.misc.BASE64Encoder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -220,14 +220,15 @@ public class UserService {
         if (StringUtils.isNotBlank(username)) {
             Optional<User> user = userRepository.findOneByLogin(username);
             if(user.isPresent()) {
+                String token = username + "|" + DateTime.now().toString();
                 Map<String, Object> params = new HashMap();
                 params.put("userName", user.get().getFirstName() + " " + user.get().getLastName());
                 params.put("resetUrl", applicationProperties.getDomain().getUrl()
-                    + Constants.RESET_URL + Base64.getEncoder().encodeToString(username.getBytes()));
+                    + Constants.RESET_URL + Base64.getEncoder().encodeToString(token.getBytes()));
                 mailService.sendResetPasswordMail(user.get().getEmail(), params);
                 log.debug("Reset password email sent for User: {}", user.get());
             } else {
-                throw new WitcurveException("There is no user with given user name!");
+                throw new WitcurveException("Password cannot be reset as we can’t find any user to reset password");
             }
         } else {
             throw new WitcurveException("Invalid request, user name is required!");
