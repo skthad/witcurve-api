@@ -97,12 +97,13 @@ public class AccountResource {
      * POST  /account/request-reset-password : request mail to reset password
      *
      * @param passwordChangeDto username for password reset
+     * @return email to which password reset url has been sent
      * @throws InvalidPasswordException 400 (Bad Request) if the user does not exist
      */
     @PostMapping(path = "/account/request-reset-password")
     @Timed
-    public void requestPasswordMail(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
-        userService.requestPasswordEmail(passwordChangeDto.getUsername());
+    public String requestPasswordMail(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        return userService.requestPasswordEmail(passwordChangeDto.getUsername());
     }
 
     /**

@@ -216,7 +216,7 @@ public class UserService {
         }
     }
 
-    public void requestPasswordEmail(String username) {
+    public String requestPasswordEmail(String username) {
         if (StringUtils.isNotBlank(username)) {
             Optional<User> user = userRepository.findOneByLogin(username);
             if(user.isPresent()) {
@@ -227,6 +227,8 @@ public class UserService {
                     + Constants.RESET_URL + Base64.getEncoder().encodeToString(token.getBytes()));
                 mailService.sendResetPasswordMail(user.get().getEmail(), params);
                 log.debug("Reset password email sent for User: {}", user.get());
+
+                return user.get().getEmail();
             } else {
                 throw new WitcurveException("Password cannot be reset as we can’t find any user to reset password");
             }
