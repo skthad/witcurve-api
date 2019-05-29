@@ -150,4 +150,5 @@ application:
         industryTypeId : Retail
         callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw-stage.paytm.in/order/status
-
+    domain:
+        url: http://witcurve.s3-website-us-east-1.amazonaws.com

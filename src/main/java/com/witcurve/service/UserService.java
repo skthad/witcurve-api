@@ -1,6 +1,8 @@
 package com.witcurve.service;
 
 import com.google.common.base.Strings;
+import com.witcurve.config.ApplicationProperties;
+import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
@@ -12,6 +14,8 @@ import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +47,12 @@ public class UserService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     private final CacheManager cacheManager;
 
@@ -178,9 +188,17 @@ public class UserService {
     public void setPassword(String newPassword) throws WitcurveException{
         Optional<String> userName = SecurityUtils.getCurrentUserLogin();
         if(userName.isPresent()) {
-            Optional<User> user = userRepository.findOneByLogin(userName.get());
+            resetPassword(userName.get(), newPassword);
+        } else {
+            throw new WitcurveException("Error getting user name from session!");
+        }
+    }
+
+    public void resetPassword(String username, String newPassword) {
+        if (StringUtils.isNotBlank(username)) {
+            Optional<User> user = userRepository.findOneByLogin(username);
             if(user.isPresent()) {
-                if (!Strings.isNullOrEmpty(user.get().getPassword())) {
+                if (Strings.isNullOrEmpty(user.get().getPassword())) {
                     throw new WitcurveException("Empty password");
 //                  throw new PasswordAlreadySetException();
                 }
@@ -191,10 +209,31 @@ public class UserService {
                 this.clearUserCaches(user.get());
                 log.debug("Set password for User: {}", user.get());
             } else {
-                throw new WitcurveException("There is no user with session user name in session!");
+                throw new WitcurveException("Password cannot be reset as we can’t find any user to reset password");
             }
         } else {
-            throw new WitcurveException("Error getting user name from session!");
+            throw new WitcurveException("Invalid request, user name is required!");
+        }
+    }
+
+    public String requestPasswordEmail(String username) {
+        if (StringUtils.isNotBlank(username)) {
+            Optional<User> user = userRepository.findOneByLogin(username);
+            if(user.isPresent()) {
+                String token = username + "|" + DateTime.now().toString();
+                Map<String, Object> params = new HashMap();
+                params.put("userName", user.get().getFirstName() + " " + user.get().getLastName());
+                params.put("resetUrl", applicationProperties.getDomain().getUrl()
+                    + Constants.RESET_URL + Base64.getEncoder().encodeToString(token.getBytes()));
+                mailService.sendResetPasswordMail(user.get().getEmail(), params);
+                log.debug("Reset password email sent for User: {}", user.get());
+
+                return user.get().getEmail();
+            } else {
+                throw new WitcurveException("Password cannot be reset as we can’t find any user to reset password");
+            }
+        } else {
+            throw new WitcurveException("Invalid request, user name is required!");
         }
     }
 
