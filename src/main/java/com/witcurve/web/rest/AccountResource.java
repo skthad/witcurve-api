@@ -13,9 +13,11 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 
 /**
  * REST controller for managing the current user's account.
@@ -102,8 +104,9 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/request-reset-password")
     @Timed
-    public String requestPasswordMail(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
-        return userService.requestPasswordEmail(passwordChangeDto.getUsername());
+    public ResponseEntity requestPasswordMail(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        String email = userService.requestPasswordEmail(passwordChangeDto.getUsername());
+        return ResponseEntity.ok(Collections.singletonMap("email", email));
     }
 
     /**
