@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDetails, Long> {
@@ -26,6 +27,14 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
         "cast(scd.gsd.start as int) + scd.gsd.duration <= ?2)) and " +
         "scd.dayOfWeek = ?3 and scd.courseTeacher.teacher.schoolInfo.id = ?4")
     List<Long> findAllocatedTeachersList(Integer startTime, Integer endTime, DayOfWeek dayOfWeek, Long schoolInfoId);
+
+    @Query("select distinct sub.teacher.id from Substitution sub where " +
+        "sub.date = ?1 and sub.scd.courseTeacher.teacher.schoolInfo.id = ?2" +
+        "((cast(sub.scd.gsd.start as int) >= ?1 and cast(sub.scd.gsd.start as int) < ?2) or " +
+        "(cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration > ?1 and " +
+        "cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration <= ?2)) and " +
+        "")
+    List<Long> findSubstitutedTeacherList(LocalDate date, Long schoolInfoId, Integer startTime, Integer endTime);
 
     @Query("select scd from SlotCourseDetails scd where scd.courseTeacher.id=?1 and scd.gsd.status = 'ACTIVE'")
     List<SlotCourseDetails> findByCourseTeacherId(Long courseTeacherId);
