@@ -124,7 +124,7 @@ public class AccountResource {
         }
 
         checkValidPassword(passwordChangeDto.getNewPassword());
-        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword());
+        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword(), false);
     }
 
     private static void checkValidPassword(String password) throws WitcurveException {

@@ -156,5 +156,5 @@ application:
         callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw-stage.paytm.in/order/status
     domain:
-        url: http://localhost:4200
+        url: http://witcurve.s3-website-us-east-1.amazonaws.com
 

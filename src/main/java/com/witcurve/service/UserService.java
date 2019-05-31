@@ -188,19 +188,20 @@ public class UserService {
     public void setPassword(String newPassword) throws WitcurveException{
         Optional<String> userName = SecurityUtils.getCurrentUserLogin();
         if(userName.isPresent()) {
-            resetPassword(userName.get(), newPassword);
+            resetPassword(userName.get(), newPassword, true);
         } else {
             throw new WitcurveException("Error getting user name from session!");
         }
     }
 
-    public void resetPassword(String username, String newPassword) {
+    public void resetPassword(String username, String newPassword, Boolean setNewPassword) {
         if (StringUtils.isNotBlank(username)) {
             Optional<User> user = userRepository.findOneByLogin(username);
             if(user.isPresent()) {
-                if (Strings.isNullOrEmpty(user.get().getPassword())) {
-                    throw new WitcurveException("Empty password");
-//                  throw new PasswordAlreadySetException();
+                if(setNewPassword) {
+                    if (!Strings.isNullOrEmpty(user.get().getPassword())) {
+                        throw new WitcurveException("Password already exists");
+                    }
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
                 user.get().setPassword(encryptedPassword);
