@@ -3,6 +3,7 @@ package com.witcurve.security;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.OtpPurpose;
 import com.witcurve.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -36,7 +37,7 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Username not found.");
         }
         User user = result.get();
-        if (!password.equals(user.getOtp())) {
+        if (!password.equals(user.getOtp()) || !OtpPurpose.AUTHENTICATION.equals(user.getOtpPurpose())) {
             throw new BadCredentialsException("Wrong Otp.");
         } else {
             if(user.getOtpExpiry().isBefore(Instant.now())) {

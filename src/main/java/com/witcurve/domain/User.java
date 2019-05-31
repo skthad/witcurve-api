@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.witcurve.domain.enumeration.OtpPurpose;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.util.InstantTimeConverter;
 import org.hibernate.annotations.BatchSize;
@@ -74,6 +75,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JsonIgnore
     @Convert(converter = InstantTimeConverter.class)
     private Instant otpExpiry;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OtpPurpose otpPurpose;
 
     @JsonIgnore
     @ManyToMany
@@ -179,6 +184,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public OtpPurpose getOtpPurpose() {
+        return otpPurpose;
+    }
+
+    public void setOtpPurpose(OtpPurpose otpPurpose) {
+        this.otpPurpose = otpPurpose;
     }
 
     public void addAuthority(Authority authority) {
