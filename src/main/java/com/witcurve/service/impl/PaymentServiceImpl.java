@@ -91,7 +91,7 @@ public class PaymentServiceImpl implements PaymentService {
             PaytmRequestDTO paytmRequestDTO = new PaytmRequestDTO();
             paytmRequestDTO.setMerchantMid(applicationProperties.getPaytm().getMerchantId());
             paytmRequestDTO.setOrderId(String.valueOf(paymentOrder.getId()));
-            paytmRequestDTO.setChannelId("WAP");
+            paytmRequestDTO.setChannelId("WEB");
             paytmRequestDTO.setCustomerId(String.valueOf(paymentOrder.getStudent().getId()));
             if (StringUtils.isNotBlank(mobileNumber)) {
                 paytmRequestDTO.setMobileNo(mobileNumber);
