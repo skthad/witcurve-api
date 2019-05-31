@@ -52,8 +52,7 @@ public class SubstitutionResource {
 
     /**
      * get substitute teacher suggestions
-     * @param gsdId
-     * @param teacherId
+     * @param scdId
      * @param date
      *
      * @return
@@ -62,11 +61,10 @@ public class SubstitutionResource {
 
     @GetMapping("/substitutions/suggestions")
     @Timed
-    public ResponseEntity<List<StaffDTO>> getStaffListForSubstituteSuggestion(@RequestParam("gsdId") Long gsdId,
-                                                                                                         @RequestParam("teacherId") Long teacherId,
-                                                                                                         @RequestParam("date") LocalDate date) throws WitcurveException {
-        log.debug("Request to get substitute teacher for {} on {}", teacherId, date);
-        List<StaffDTO> result = substitutionService.getSubstituteSuggestion(gsdId, teacherId, date);
+    public ResponseEntity<List<StaffDTO>> getStaffListForSubstituteSuggestion(@RequestParam("scdId") Long scdId,
+                                                                              @RequestParam("date") LocalDate date) throws WitcurveException {
+        log.debug("Request to get substitute teacher for scdId {} on {}", scdId, date);
+        List<StaffDTO> result = substitutionService.getSubstituteSuggestion(scdId, date);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

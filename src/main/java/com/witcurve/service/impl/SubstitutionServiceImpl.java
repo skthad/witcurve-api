@@ -53,49 +53,71 @@ public class SubstitutionServiceImpl implements SubstitutionService {
     @Autowired
     StaffMapperLite staffMapperLite;
 
+    private List<Long> filterAvailableStaff(List<Long> availableStaff, SlotCourseDetails scd, Long schoolInfoId, LocalDate date, Long teacherId) {
+
+
+        if (availableStaff.size() > 0) {
+
+            Integer startTime = Integer.parseInt(scd.getGsd().getStart());
+            Integer endTime = startTime + scd.getGsd().getDuration();
+
+            List<Long> allocatedTeachers = slotCourseDetailsRepository
+                .findAllocatedTeachersList(startTime, endTime, scd.getDayOfWeek(), schoolInfoId);
+            allocatedTeachers.addAll(slotCourseDetailsRepository.findSubstitutedTeacherList(date, schoolInfoId, startTime, endTime));
+            availableStaff.removeIf((Long a) -> (allocatedTeachers.indexOf(a) == teacherId || allocatedTeachers.indexOf(a) > -1));
+            log.info("Final list : {}", availableStaff);
+        }
+        return availableStaff;
+    }
+
     @Override
-    public List<StaffDTO> getSubstituteSuggestion(Long gsdId, Long teacherId, LocalDate date) throws WitcurveException {
+    public List<StaffDTO> getSubstituteSuggestion(Long scdId, LocalDate date) throws WitcurveException {
 
-        SlotCourseDetails scd = slotCourseDetailsRepository.findByGsdAndDayOfWeek(gsdId, date.getDayOfWeek());
+        Optional<SlotCourseDetails> result = slotCourseDetailsRepository.findById(scdId);
 
-        if (scd == null) {
-            throw new WitcurveException("No course is linked in this slot");
-        }
-        if (!scd.getCourseTeacher().getTeacher().getId().equals(teacherId)) {
-            throw new WitcurveException("staffId provided is not matching with teacher in gsd id");
+        if (!result.isPresent()) {
+            throw new WitcurveException("No SCD found with id " + scdId);
         }
 
+        SlotCourseDetails scd = result.get();
         CourseTeacher courseTeacher = scd.getCourseTeacher();
+        Long teacherId = courseTeacher.getTeacher().getId();
         Standard standard = courseTeacher.getStandard();
         Grade grade = standard.getGrade();
         MasterSubject masterSubject = courseTeacher.getCourse().getMasterSubject();
         Long schoolInfoId = scd.getCourseTeacher().getTeacher().getSchoolInfo().getId();
         // look for a staff who teaches given master subject in the given grade
         List<Long> availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolBySubjectAndGrade(
-            schoolInfoId, masterSubject, grade, teacherId);
+            schoolInfoId, masterSubject, grade, teacherId, date);
+        availableStaff = filterAvailableStaff(availableStaff, scd, schoolInfoId, date, teacherId);
+
         log.info("Grade and Subject Teachers : {}",availableStaff);
 
         if (availableStaff.size() == 0) {
             //look for a teacher who teaches any course in the given standard
             availableStaff = courseTeacherRepository.findAvailableTeacherByStandardId(
-                standard.getId(), teacherId);
+                standard.getId(), teacherId, date);
+            availableStaff = filterAvailableStaff(availableStaff, scd, schoolInfoId, date, teacherId);
             log.info("Standard Teachers : {}",availableStaff);
-        }
-        if (availableStaff.size() == 0) {
-            //look for a teacher who teaches any course in the given grade
-            availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolByGrade(
-                schoolInfoId, grade, teacherId);
-            log.info("Grade Teachers : {}",availableStaff);
         }
 
         if (availableStaff.size() == 0) {
 
             // look for a teacher who teaches the given master subject in the whole school
             availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolBySubject(
-                schoolInfoId, masterSubject, teacherId);
+                schoolInfoId, masterSubject, teacherId, date);
 
+            availableStaff = filterAvailableStaff(availableStaff, scd, schoolInfoId, date, teacherId);
             log.info("Subject Teachers : {}",availableStaff);
 
+        }
+
+        if (availableStaff.size() == 0) {
+            //look for a teacher who teaches any course in the given grade
+            availableStaff = staffEligibilityRepository.findAvailableStaffInSchoolByGrade(
+                schoolInfoId, grade, teacherId, date);
+            availableStaff = filterAvailableStaff(availableStaff, scd, schoolInfoId, date, teacherId);
+            log.info("Grade Teachers : {}",availableStaff);
         }
 
         if (availableStaff.size() == 0) {
@@ -104,42 +126,8 @@ public class SubstitutionServiceImpl implements SubstitutionService {
             availableStaff = courseTeacherRepository.findEligibleForSubstituteBySchoolInfoId(
                 teacherId, schoolInfoId);
 
+            availableStaff = filterAvailableStaff(availableStaff, scd, schoolInfoId, date, teacherId);
             log.info("Teachers : {}",availableStaff);
-        }
-
-        // should not be in substitution table already
-        if (availableStaff.size() > 0) {
-            List<Long> alreadySubstituted = substitutionRepository.alreadySubstitutedTeacherList(gsdId, availableStaff, date);
-            availableStaff.removeIf((Long a) -> alreadySubstituted.indexOf(a) > -1);
-            log.info("Teachers after removing already susbstituted: {}",availableStaff);
-        }
-
-        // should not be absent
-        if (availableStaff.size() > 0) {
-            List<Long> absentTeachers = eventRepository.findAbsentTeacherList(availableStaff, date);
-            availableStaff.removeIf((Long a) -> absentTeachers.indexOf(a) > -1);
-            log.info("Removing absent : {}", availableStaff);
-        }
-
-        /*if (availableStaff.size() > 0) {
-            List<SlotCourseDetails> allocatedCourses = slotCourseDetailsRepository.allocatedCourses(availableStaff, date.getDayOfWeek());
-            for (SlotCourseDetails allocatedScd : allocatedCourses) {
-                if (staffSCDMap.get(allocatedScd.getCourseTeacher().getTeacher().getId()) == null) {
-                    staffSCDMap.put(allocatedScd.getCourseTeacher().getTeacher().getId(),new ArrayList<>());
-                }
-                staffSCDMap.get(allocatedScd.getCourseTeacher().getTeacher().getId()).add(slotCourseDetailsMapper.toDto(allocatedScd));
-            }
-        }*/
-        if (availableStaff.size() > 0) {
-
-            Integer startTime = Integer.parseInt(scd.getGsd().getStart());
-            Integer endTime = startTime + scd.getGsd().getDuration();
-
-            List<Long> allocatedTeachers = slotCourseDetailsRepository
-                .findAllocatedTeachersList(startTime, endTime, scd.getDayOfWeek(), schoolInfoId);
-
-            availableStaff.removeIf((Long a) -> allocatedTeachers.indexOf(a) > -1);
-            log.info("Final list : {}", availableStaff);
         }
         List<Staff> staffList = staffRepository.findAllById(availableStaff);
         return staffMapperLite.toDto(staffList);
