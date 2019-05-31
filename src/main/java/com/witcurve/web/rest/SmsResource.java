@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.OtpPurpose;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.MailService;
 import com.witcurve.service.OtpService;
@@ -47,13 +48,15 @@ public class SmsResource {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
+        OtpPurpose otpPurpose = changePassword ? OtpPurpose.CHANGE_PASSWORD : OtpPurpose.AUTHENTICATION;
         if (result.isPresent()) {
             User user = result.get();
-            if (user.getOtp() != null && user.getOtpExpiry() != null && user.getOtpExpiry().isAfter(Instant.now())) {
+            if (user.getOtp() != null && user.getOtpExpiry() != null && user.getOtpExpiry().isAfter(Instant.now()) && otpPurpose.equals(user.getOtpPurpose())) {
                 otp = user.getOtp();
             } else {
                 otp = otpService.generateOTP(username);
                 user.setOtp(otp);
+                user.setOtpPurpose(otpPurpose);
                 user.setOtpExpiry(Instant.now().plusSeconds(300));
                 userRepository.save(user);
             }

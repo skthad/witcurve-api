@@ -6,6 +6,7 @@ import com.witcurve.config.ApplicationProperties;
 import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.OtpPurpose;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.AuthorityRepository;
 import com.witcurve.repository.StaffRepository;
@@ -174,7 +175,7 @@ public class UserService {
                     if(otp == null) {
                         throw new WitcurveException("Otp is empty");
                     }
-                    if(!otp.equals(user.get().getOtp())) {
+                    if(!otp.equals(user.get().getOtp()) || !OtpPurpose.CHANGE_PASSWORD.equals(user.get().getOtpPurpose())) {
                         throw new WitcurveException("Entered Otp doesn't match existing otp, please check again and enter correct otp");
                     }
                 } else {
