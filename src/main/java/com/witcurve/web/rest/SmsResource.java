@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.MailService;
@@ -42,7 +43,7 @@ public class SmsResource {
 
     @PostMapping("/generate-otp")
     @Timed
-    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber) throws WitcurveException, UnsupportedEncodingException {
+    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber, @RequestParam(required = false, defaultValue = "false") Boolean changePassword) throws WitcurveException, UnsupportedEncodingException {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
@@ -56,8 +57,14 @@ public class SmsResource {
                 user.setOtpExpiry(Instant.now().plusSeconds(300));
                 userRepository.save(user);
             }
-            smsService.sendSms(contactNumber,"Hello User, Your OTP for logging in to Witcurve is " + otp);
+            if(changePassword) {
+                smsService.sendSms(contactNumber,"Hello User, Your OTP for changing password from your mobile application is " + otp);
+            } else {
+                smsService.sendSms(contactNumber,"Hello User, Your OTP for logging in to your mobile application is " + otp);
+            }
+
             if (user.getEmail() != null) {
+                //TODO create otp mail for logging in and for changing password
                 mailService.sendOtpMail(user);
             }
         } else {
