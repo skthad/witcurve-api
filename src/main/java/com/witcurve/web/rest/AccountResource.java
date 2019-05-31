@@ -76,9 +76,9 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/change-password")
     @Timed
-    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto, @RequestParam(required = false, defaultValue = "false") Boolean otpMethod) throws WitcurveException{
         checkValidPassword(passwordChangeDto.getNewPassword());
-        userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
+        userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword(), passwordChangeDto.getOtp(), otpMethod);
    }
 
     /**
@@ -124,7 +124,7 @@ public class AccountResource {
         }
 
         checkValidPassword(passwordChangeDto.getNewPassword());
-        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword());
+        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword(), false);
     }
 
     private static void checkValidPassword(String password) throws WitcurveException {

@@ -1,6 +1,7 @@
 package com.witcurve.service;
 
 import com.google.common.base.Strings;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.witcurve.config.ApplicationProperties;
 import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
@@ -161,16 +162,31 @@ public class UserService {
         });
     }
 
-    public void changePassword(String currentClearTextPassword, String newPassword) throws WitcurveException{
+    public void changePassword(String currentClearTextPassword, String newPassword, String otp, Boolean otpMethod) throws WitcurveException{
         Optional<String> userName = SecurityUtils.getCurrentUserLogin();
+        if(newPassword == null) {
+            throw new WitcurveException("New Password is empty");
+        }
         if(userName.isPresent()) {
             Optional<User> user = userRepository.findOneByLogin(userName.get());
             if(user.isPresent()) {
-                String currentEncryptedPassword = user.get().getPassword();
-                if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
-                    throw new WitcurveException("Invalid Password!");
-//                    throw new InvalidPasswordException();
+                if(otpMethod) {
+                    if(otp == null) {
+                        throw new WitcurveException("Otp is empty");
+                    }
+                    if(!otp.equals(user.get().getOtp())) {
+                        throw new WitcurveException("Entered Otp doesn't match existing otp, please check again and enter correct otp");
+                    }
+                } else {
+                    if(currentClearTextPassword == null) {
+                        throw new WitcurveException("Current Password is empty");
+                    }
+                    String currentEncryptedPassword = user.get().getPassword();
+                    if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
+                        throw new WitcurveException("Current Password doesn't match existing password");
+                    }
                 }
+
                 String encryptedPassword = passwordEncoder.encode(newPassword);
                 user.get().setPassword(encryptedPassword);
                 user.get().setActivated(Boolean.TRUE);
@@ -188,19 +204,20 @@ public class UserService {
     public void setPassword(String newPassword) throws WitcurveException{
         Optional<String> userName = SecurityUtils.getCurrentUserLogin();
         if(userName.isPresent()) {
-            resetPassword(userName.get(), newPassword);
+            resetPassword(userName.get(), newPassword, true);
         } else {
             throw new WitcurveException("Error getting user name from session!");
         }
     }
 
-    public void resetPassword(String username, String newPassword) {
+    public void resetPassword(String username, String newPassword, Boolean setNewPassword) {
         if (StringUtils.isNotBlank(username)) {
             Optional<User> user = userRepository.findOneByLogin(username);
             if(user.isPresent()) {
-                if (Strings.isNullOrEmpty(user.get().getPassword())) {
-                    throw new WitcurveException("Empty password");
-//                  throw new PasswordAlreadySetException();
+                if(setNewPassword) {
+                    if (!Strings.isNullOrEmpty(user.get().getPassword())) {
+                        throw new WitcurveException("Password already exists");
+                    }
                 }
                 String encryptedPassword = passwordEncoder.encode(newPassword);
                 user.get().setPassword(encryptedPassword);
