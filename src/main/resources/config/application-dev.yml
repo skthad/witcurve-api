@@ -35,7 +35,7 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://localhost:3306/witcurve-qa
+        url: jdbc:mysql://localhost:3306/witcurve
         username: witcurve
         password: WitcurveAdmin@123
     jpa:
@@ -149,8 +149,8 @@ application:
         auth-key: 228729Ax0VORwQvEQ25b9cfff6
         sender-id: WCURVE
     paytm:
-        merchantId: cJVwMd54082818442940
-        secretKey : r8kh40On_Gf9pgZk
+        merchantId: WITCUR13574383497047
+        secretKey : 3WuVx2gN2#0ixC#!
         website: WEBSTAGING
         industryTypeId : Retail
         callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=

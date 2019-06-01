@@ -110,13 +110,13 @@ public class CourseContentServiceImpl implements CourseContentService {
         if (forExam) {
             Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(eventId);
             if (!ecd.isPresent()) {
-                throw new WitcurveException("No ECD with given id " + eventId);
+                throw new WitcurveException("Invalid Event ID " + eventId);
             }
             courseId = ecd.get().getCourse().getId();
         } else {
             Optional<Event> event = eventRepository.findById(eventId);
             if (!event.isPresent()) {
-                throw new WitcurveException("No Test/Assignment with given id " + eventId);
+                throw new WitcurveException("Invalid Event ID " + eventId);
             }
 
             switch (event.get().getType()) {
@@ -127,13 +127,14 @@ public class CourseContentServiceImpl implements CourseContentService {
                     courseId = event.get().getCourseTeacher().getCourse().getId();
                     break;
                 case TEST:
+                case DAILY_UPDATE:
                     if (event.get().getScd() == null || event.get().getScd().getCourseTeacher() == null) {
                         throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
                     }
                     courseId = event.get().getScd().getCourseTeacher().getCourse().getId();
                     break;
                 default:
-                    throw new WitcurveException("No Test/Assignment with given id " + eventId);
+                    throw new WitcurveException("Invalid Event ID " + eventId);
             }
         }
         Course course = courseRepository.findById(courseId).get();
