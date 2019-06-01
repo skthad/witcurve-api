@@ -102,16 +102,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/api/register").permitAll()
             .antMatchers("/api/activate").permitAll()
+            .antMatchers("/api/students/username/**").permitAll()
+            .antMatchers("/api/staff/username/**").permitAll()
             .antMatchers("/api/authenticate").permitAll()
             .antMatchers("/api/account/reset-password/init").permitAll()
             .antMatchers("/api/account/reset-password/finish").permitAll()
+            .antMatchers("/api/generate-otp").permitAll()
+            .antMatchers("/api/users/contact-numbers/**").permitAll()
+            .antMatchers("/api/mobile-meta-data/**").permitAll()
+            .antMatchers("/api/account/request-reset-password").permitAll()
+            .antMatchers("/api/account/reset-password").permitAll()
+
+
+            //temp permitAll, need to be changes once user service is fixed
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/info").permitAll()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/management/**").hasAuthority(PermissionsConstants.SUPER_ACCESS)
             .antMatchers("/v2/api-docs/**").permitAll()
             .antMatchers("/swagger-resources/configuration/ui").permitAll()
-            .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/swagger-ui/index.html").hasAuthority(PermissionsConstants.SUPER_ACCESS)
         .and()
             .apply(securityConfigurerAdapter());
 

@@ -1,0 +1,133 @@
+package com.witcurve.domain;
+
+import com.witcurve.service.util.LocalDateConverter;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
+
+@Entity
+@Table(name="course_content", uniqueConstraints = {
+    @UniqueConstraint( name= "course_parent_content_order_UK",
+        columnNames = {"course_id", "parent_content_id", "content_order"})
+})
+public class CourseContent extends AbstractAuditingEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_content_id")
+    private CourseContent parentContent;
+
+    @NotNull
+    @Column(name = "content_order", nullable = false)
+    private Integer contentOrder;
+
+    @Column
+    private String contentName;
+
+    @Column
+    private String description;
+
+    @Column(name = "target_date")
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate targetDate;
+
+    @Column(name = "target_periods")
+    private Integer targetPeriods;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public CourseContent getParentContent() {
+        return parentContent;
+    }
+
+    public void setParentContent(CourseContent parentContent) {
+        this.parentContent = parentContent;
+    }
+
+    public Integer getContentOrder() {
+        return contentOrder;
+    }
+
+    public void setContentOrder(Integer contentOrder) {
+        this.contentOrder = contentOrder;
+    }
+
+    public String getContentName() {
+        return contentName;
+    }
+
+    public void setContentName(String contentName) {
+        this.contentName = contentName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getTargetDate() {
+        return targetDate;
+    }
+
+    public void setTargetDate(LocalDate targetDate) {
+        this.targetDate = targetDate;
+    }
+
+    public Integer getTargetPeriods() {
+        return targetPeriods;
+    }
+
+    public void setTargetPeriods(Integer targetPeriods) {
+        this.targetPeriods = targetPeriods;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CourseContent courseContent = (CourseContent) o;
+        return Objects.equals(id, courseContent.id);
+    }
+
+    @Override
+    public String toString() {
+        return "CourseContent{" +
+            "id=" + id +
+            '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}

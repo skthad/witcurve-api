@@ -1,0 +1,133 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1557576165033-1">
+        <addColumn tableName="payroll">
+            <column name="payroll_cycle_id" type="bigint" afterColumn="id">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-2">
+        <addColumn tableName="payroll">
+            <column name="misc_deductions" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-3">
+        <addColumn tableName="payroll">
+            <column name="misc_earnings" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-4">
+        <addColumn tableName="payroll">
+            <column name="bonus" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-5">
+        <addColumn tableName="payroll">
+            <column name="late_entry_deductions" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-6">
+        <addColumn tableName="payroll">
+            <column name="income_tax" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-7">
+        <addColumn tableName="payroll">
+            <column name="professional_tax" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-8">
+        <addColumn tableName="payroll">
+            <column name="provident_fund" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-9">
+        <addColumn tableName="payroll">
+            <column name="leave_travel_allowance" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-10">
+        <addColumn tableName="payroll">
+            <column name="managerial_allowance" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-11">
+        <addColumn tableName="payroll">
+            <column name="medical_allowance" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-12">
+        <addColumn tableName="payroll">
+            <column name="conveyance_allowance" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-13">
+        <addColumn tableName="payroll">
+            <column name="house_rent_allowance" type="float" afterColumn="payroll_details_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-14">
+        <addColumn tableName="payroll">
+            <column defaultValueNumeric="0" name="basic_salary" type="int" afterColumn="payroll_details_id">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-15">
+        <addColumn tableName="payroll">
+            <column defaultValueNumeric="0" name="total_days" type="int" afterColumn="payroll_details_id">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-16">
+        <addColumn tableName="payroll">
+            <column defaultValueNumeric="0" name="paid_days" type="int" afterColumn="payroll_details_id">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-17">
+        <addForeignKeyConstraint baseColumnNames="payroll_cycle_id" baseTableName="payroll" constraintName="FKegga67tbkrny6b5nb3o8necsd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_cycle"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-18">
+        <dropForeignKeyConstraint baseTableName="payroll_details" constraintName="FK48fensxrr27vtfa9ipgiqraye"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-19">
+        <dropForeignKeyConstraint baseTableName="payroll_details" constraintName="FK1k2b8w88iroh77btb9uxfcih7"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-20">
+        <dropUniqueConstraint constraintName="staff_payroll_cycle_UK" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-21">
+        <dropColumn columnName="payroll_cycle_id" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-22">
+        <dropColumn columnName="income_tax" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-23">
+        <dropColumn columnName="late_entry_deductions" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-24">
+        <dropColumn columnName="misc_deductions" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-25">
+        <dropColumn columnName="paid_days" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-26">
+        <dropColumn columnName="total_days" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-27">
+        <dropColumn columnName="misc_earnings" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-28">
+        <dropColumn columnName="bonus" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-29">
+        <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="payroll_details" constraintName="FK1k2b8w88iroh77btb9uxfcih7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1557576165033-30">
+        <modifyDataType tableName="payroll" columnName="check_number" newDataType="VARCHAR(50)"/>
+    </changeSet>
+</databaseChangeLog>

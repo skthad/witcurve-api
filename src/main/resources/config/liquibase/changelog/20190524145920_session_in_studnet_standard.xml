@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1558709975023-1">
+        <addColumn tableName="student_standard">
+            <column name="session_id" type="bigint"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558709975023-2">
+        <addUniqueConstraint columnNames="student_id, standard_id, session_id" constraintName="student_standard_session_UK" tableName="student_standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558709975023-3">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="student_standard" constraintName="FKge1i1owd0o7uabj15xj7rj23e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558709975023-4">
+        <dropUniqueConstraint constraintName="student_standard_UK" tableName="student_standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558709975023-5">
+        <sql>update student_standard set session_id=1000</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1558709975023-6">
+        <addNotNullConstraint columnDataType="bigint" tableName="student_standard" columnName="session_id"/>
+    </changeSet>
+</databaseChangeLog>

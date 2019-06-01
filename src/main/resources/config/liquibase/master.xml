@@ -4,7 +4,18 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
-    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
-    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <include file="config/liquibase/changelog/0000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190511120230_payroll_design_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190511172907_added_entity_MobileMetaData.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190505144348_payment_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190512113734_added_end_date_to_event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190514152026_refactor_to_marks.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190516111958_added_subscription_to_institute.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190519111922_payroll_field_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190522141145_added_admin_booleans_for_message_thread.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190524145920_session_in_studnet_standard.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190525113948_config_settings_and_payroll_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190525135934_event_content_refactor.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190528161238_add_binding_id_in_event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190531064249_added_otp_purpose_in_user.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

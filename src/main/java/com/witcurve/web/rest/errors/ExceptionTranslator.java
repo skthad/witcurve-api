@@ -1,13 +1,18 @@
 package com.witcurve.web.rest.errors;
 
+import com.google.gson.JsonObject;
 import com.witcurve.web.rest.util.HeaderUtil;
 
+import org.json.JSONObject;
 import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.DefaultProblem;
 import org.zalando.problem.Problem;
@@ -19,7 +24,9 @@ import org.zalando.problem.spring.web.advice.validation.ConstraintViolationProbl
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -104,5 +111,14 @@ public class ExceptionTranslator implements ProblemHandling {
             .with("message", ErrorConstants.ERR_CONCURRENCY_FAILURE)
             .build();
         return create(ex, problem, request);
+    }
+
+    @ExceptionHandler(WitcurveException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String processIccWebappException(WitcurveException ex) {
+        JSONObject errorMessage = new JSONObject();
+        errorMessage.put("Error Message", ex.getMessage());
+        return errorMessage.toString();
     }
 }

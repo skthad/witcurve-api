@@ -1,0 +1,26 @@
+name;description
+SuperAccess;Read/write access to all institutes
+InstituteFullAccess;Read-only access to all modules in the institute
+ParentAccess;Access to only the parent app on mobile devices
+StaffDirectoryFullAccess;Read/write access to staff directory and permission to add/import/export staff
+StaffDirectoryReadOnlyAccess;Read-only access to staff directory
+StaffNotificationFullAccess;Read/write access to staff mail/SMS notification
+StaffAttendanceFullAccess;Read/write access to staff attendance and leaves
+StaffAttendanceReadOnlyAccess;Read-only access to staff attendance and leaves
+StaffAllocationFullAccess;Read/write access to staff allocation to courses
+StaffPayrollFullAccess;Read/write access to staff payroll
+StudentDirectoryFullAccess;Read/write access to student directory and permission to add/import/export student
+StudentDirectoryReadOnlyAccess;Read-only access to student directory
+StudentNotificationFullAccess;Read/write access to student mail/SMS notification
+StudentAttendanceFullAccess;Read/write access to student attendance and leaves
+StudentAttendanceReadOnlyAccess;Read-only access to student attendance and leaves
+StudentAllocationFullAccess;Read/write access to student allocation to classes and sections
+CourseFullAccess;Read/write access to courses
+CourseReadOnlyAccess;Read-only access to courses
+CurriculumFullAccess;Read/write access to curriculum setup
+CurriculumReadOnlyAccess;Read-only access to curriculum
+ExamFullAccess;Read/write access access to exam information
+ExamReadOnlyAccess;Read-only access to exam information
+ConfigFullAccess;Read/write access to config settings
+ResultEntryAccess;Read/write access to results and marks for tests, assignments and exams
+ResultPublishAccess;Permission to publish and lock the results for tests, assignments and exams

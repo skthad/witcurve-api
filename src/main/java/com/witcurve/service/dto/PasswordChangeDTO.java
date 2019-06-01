@@ -1,11 +1,18 @@
 package com.witcurve.service.dto;
 
+import java.io.Serializable;
+
 /**
  * A DTO representing a password change required data - current and new password.
  */
-public class PasswordChangeDTO {
+public class PasswordChangeDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private String username;
     private String currentPassword;
     private String newPassword;
+    private String otp;
 
     public PasswordChangeDTO() {
         // Empty constructor needed for Jackson.
@@ -14,6 +21,14 @@ public class PasswordChangeDTO {
     public PasswordChangeDTO(String currentPassword, String newPassword) {
         this.currentPassword = currentPassword;
         this.newPassword = newPassword;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getCurrentPassword() {
@@ -31,5 +46,13 @@ public class PasswordChangeDTO {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 }

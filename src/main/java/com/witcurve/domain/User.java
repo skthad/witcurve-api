@@ -1,51 +1,46 @@
 package com.witcurve.domain;
 
-import com.witcurve.config.Constants;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.StringUtils;
+import com.witcurve.domain.enumeration.OtpPurpose;
+import com.witcurve.domain.enumeration.UserType;
+import com.witcurve.service.util.InstantTimeConverter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.validation.constraints.Email;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
-import java.time.Instant;
 
 /**
  * A user.
  */
 @Entity
-@Table(name = "jhi_user")
+@Table(name = "wc_user")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserType type;
+
+    @NotNull
     @Size(min = 1, max = 50)
     @Column(length = 50, unique = true, nullable = false)
     private String login;
-
-    @JsonIgnore
-    @NotNull
-    @Size(min = 60, max = 60)
-    @Column(name = "password_hash", length = 60, nullable = false)
-    private String password;
 
     @Size(max = 50)
     @Column(name = "first_name", length = 50)
@@ -57,38 +52,38 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Email
     @Size(min = 5, max = 254)
-    @Column(length = 254, unique = true)
+    @Column(length = 254)
     private String email;
 
+    @JsonIgnore
+    @Size(min = 60, max = 60)
+    @Column(name = "password_hash", length = 60)
+    private String password;
+
     @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    @Column(name = "activated", nullable = false, columnDefinition = "boolean default true")
+    private Boolean activated = true;
 
-    @Size(min = 2, max = 6)
-    @Column(name = "lang_key", length = 6)
-    private String langKey;
+    @NotNull
+    @Column(name = "force_password", nullable = false, columnDefinition = "boolean default true")
+    private Boolean forcePassword = true;
 
-    @Size(max = 256)
-    @Column(name = "image_url", length = 256)
-    private String imageUrl;
+    @Column(name = "otp")
+    private String otp;
 
-    @Size(max = 20)
-    @Column(name = "activation_key", length = 20)
+    @Column(name = "otp_expiry")
     @JsonIgnore
-    private String activationKey;
+    @Convert(converter = InstantTimeConverter.class)
+    private Instant otpExpiry;
 
-    @Size(max = 20)
-    @Column(name = "reset_key", length = 20)
-    @JsonIgnore
-    private String resetKey;
-
-    @Column(name = "reset_date")
-    private Instant resetDate = null;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OtpPurpose otpPurpose;
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "jhi_user_authority",
+        name = "wc_user_authority",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -103,21 +98,20 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
+    }
+
     public String getLogin() {
         return login;
     }
 
-    // Lowercase the login before saving it in database
     public void setLogin(String login) {
-        this.login = StringUtils.lowerCase(login, Locale.ENGLISH);
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.login = login;
     }
 
     public String getFirstName() {
@@ -144,52 +138,44 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPassword() {
+        return password;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public boolean getActivated() {
+    public Boolean getActivated() {
         return activated;
     }
 
-    public void setActivated(boolean activated) {
+    public void setActivated(Boolean activated) {
         this.activated = activated;
     }
 
-    public String getActivationKey() {
-        return activationKey;
+    public Boolean getForcePassword() {
+        return forcePassword;
     }
 
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
+    public void setForcePassword(Boolean forcePassword) {
+        this.forcePassword = forcePassword;
     }
 
-    public String getResetKey() {
-        return resetKey;
+    public String getOtp() {
+        return otp;
     }
 
-    public void setResetKey(String resetKey) {
-        this.resetKey = resetKey;
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 
-    public Instant getResetDate() {
-        return resetDate;
+    public Instant getOtpExpiry() {
+        return otpExpiry;
     }
 
-    public void setResetDate(Instant resetDate) {
-        this.resetDate = resetDate;
-    }
-
-    public String getLangKey() {
-        return langKey;
-    }
-
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setOtpExpiry(Instant otpExpiry) {
+        this.otpExpiry = otpExpiry;
     }
 
     public Set<Authority> getAuthorities() {
@@ -198,6 +184,21 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public OtpPurpose getOtpPurpose() {
+        return otpPurpose;
+    }
+
+    public void setOtpPurpose(OtpPurpose otpPurpose) {
+        this.otpPurpose = otpPurpose;
+    }
+
+    public void addAuthority(Authority authority) {
+        if(this.authorities == null) {
+            this.authorities = new HashSet<>();
+        }
+        this.authorities.add(authority);
     }
 
     @Override
@@ -221,14 +222,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            ", activationKey='" + activationKey + '\'' +
+            "id='" + id + '\'' +
             "}";
     }
 }

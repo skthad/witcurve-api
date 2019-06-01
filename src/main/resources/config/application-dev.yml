@@ -18,6 +18,8 @@ logging:
         ROOT: DEBUG
         io.github.jhipster: DEBUG
         com.witcurve: DEBUG
+        org.hibernate.sql: DEBUG
+        org.hibernate.type.descriptor.sql: TRACE
 
 spring:
     profiles:
@@ -31,13 +33,14 @@ spring:
     jackson:
         serialization.indent_output: true
     datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://localhost:5432/witcurve
+        url: jdbc:mysql://localhost:3306/witcurve
         username: witcurve
-        password:
+        password: WitcurveAdmin@123
     jpa:
-        database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
-        database: POSTGRESQL
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        database: MYSQL
         show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true
@@ -48,14 +51,25 @@ spring:
     liquibase:
         contexts: dev
     mail:
-        host: localhost
-        port: 25
-        username:
-        password:
+        host: email-smtp.us-east-1.amazonaws.com
+        port: 465
+        username: AKIAVN6B32FD4UM6Y5ZH
+        password: BIFbduc/Ai2yXk4wxEHIsGt9saeEs4kb/a7RSr28WV/2
+        protocol: smtp
+        debug: true
+        properties.mail.smtp:
+            starttls.enable: true
+            starttls.required: true
+            ssl.enable: true
+        properties.mail.smtps:
+            auth: true
     messages:
         cache-duration: PT1S # 1 second, see the ISO 8601 standard
     thymeleaf:
         cache: false
+        enabled: true
+        prefix: classpath:/templates/
+        suffix: .html
 
 # ===================================================================
 # To enable SSL, generate a certificate using:
@@ -106,7 +120,7 @@ jhipster:
                 token-validity-in-seconds: 86400
                 token-validity-in-seconds-for-remember-me: 2592000
     mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: witcurve@localhost
+        from: admin@witcurve.com
         base-url: http://127.0.0.1:8080
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx:
@@ -130,4 +144,17 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+    sms:
+        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        sender-id: WCURVE
+    paytm:
+        merchantId: WITCUR13574383497047
+        secretKey : 3WuVx2gN2#0ixC#!
+        website: WEBSTAGING
+        industryTypeId : Retail
+        callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
+        transactionStatusApi: https://securegw-stage.paytm.in/order/status
+    domain:
+        url: http://witcurve.s3-website-us-east-1.amazonaws.com
+

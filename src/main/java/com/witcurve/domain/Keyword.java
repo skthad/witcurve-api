@@ -1,0 +1,60 @@
+package com.witcurve.domain;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Entity
+@Table(name="keyword")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+public class Keyword implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public Keyword(@NotNull String name) {
+        this.name = name;
+    }
+
+    public Keyword() {
+    }
+
+    @Id
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Keyword that = (Keyword) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String   toString() {
+        return "Keyword{" +
+            ", name='" + name + '\'' +
+            '}';
+    }
+}

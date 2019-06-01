@@ -1,0 +1,38 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="vishal" id="1558007852649-1">
+        <createTable tableName="subscription_pricing">
+            <column name="institute_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subscription_cost" type="DOUBLE"/>
+            <column name="subscription_package" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-2">
+        <addPrimaryKey columnNames="institute_id, subscription_package" tableName="subscription_pricing"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-3">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="subscription_package" tableName="payment_order"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-4">
+        <addForeignKeyConstraint baseColumnNames="institute_id" baseTableName="subscription_pricing" constraintName="FKbcn2p977s45ri9oow9lg1loex" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="institute"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-5">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="transaction_status" tableName="payment_order"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-6">
+        <addNotNullConstraint columnDataType="datetime" columnName="created_date" tableName="payment_order"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-7">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="payment_gateway" tableName="payment_order"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-8">
+        <modifyDataType columnName="transaction_amount" newDataType="double precision" tableName="payment_order"/>
+    </changeSet>
+    <changeSet author="vishal" id="1558007852649-9">
+        <addNotNullConstraint columnDataType="double precision" columnName="transaction_amount" tableName="payment_order"/>
+    </changeSet>
+</databaseChangeLog>

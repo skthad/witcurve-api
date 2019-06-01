@@ -1,0 +1,1674 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <property name="now" value="now()" dbms="mysql"/>
+
+    <changeSet author="WitCurve (generated)" id="0000000000001-1">
+        <createTable tableName="wc_user">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="wc_userPK"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(50)"/>
+            <column name="last_name" type="VARCHAR(50)"/>
+            <column name="email" type="VARCHAR(254)"/>
+            <column name="password_hash" type="VARCHAR(60)"/>
+            <column name="first_time_login" type="TINYINT(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activated" type="TINYINT(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="force_password" type="TINYINT(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="otp" type="VARCHAR(255)"/>
+            <column name="otp_expiry" type="TIMESTAMP"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-2">
+        <createTable tableName="wc_user_authority">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="authority_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-3">
+        <createTable tableName="wc_authority_permission">
+            <column name="authority_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-4">
+        <createTable tableName="wc_permission">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-5">
+        <createTable tableName="academic_session">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="academicSessionPK"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="TINYINT(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-6">
+        <createTable tableName="config_settings">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="configSettingsPK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT"/>
+            <column name="config_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_name" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field_value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-7">
+        <createTable tableName="course">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="coursePK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_subject_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_code" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="false" name="eligible_for_substitute" type="TINYINT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="active" type="TINYINT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-8">
+        <createTable tableName="course_content">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="courseContentPK"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_content_id" type="BIGINT"/>
+            <column name="content_order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_name" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-9">
+        <createTable tableName="course_teacher">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="courseTeacherPK"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="active" type="TINYINT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-10">
+        <createTable tableName="event">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="eventPK"/>
+            </column>
+            <column name="attendance_type" type="VARCHAR(50)" defaultValue="PRESENT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="binding_id" type="VARCHAR(255)"/>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="event_end_time" type="VARCHAR(255)"/>
+            <column name="event_start_time" type="VARCHAR(255)"/>
+            <column name="full_marks" type="INT"/>
+            <column name="grade" type="VARCHAR(50)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="send_sms" type="TINYINT(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_teacher_id" type="BIGINT"/>
+            <column name="scd_id" type="BIGINT"/>
+            <column name="school_info_id" type="BIGINT"/>
+            <column name="staff_id" type="BIGINT"/>
+            <column name="standard_id" type="BIGINT"/>
+            <column name="student_id" type="BIGINT"/>
+            <column name="signature" type="VARCHAR(255)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-11">
+        <createTable tableName="event_content">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="eventContentPK"/>
+            </column>
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_content_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-12">
+        <createTable tableName="event_keyword">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="keyword_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-13">
+        <createTable tableName="exam">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="examPK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)" defaultValue="DRAFT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-14">
+        <createTable tableName="exam_course_details">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="exam_course_detailsPK"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gsd_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_marks" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-15">
+        <createTable tableName="general_slot_details">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="general_slot_detailsPK"/>
+            </column>
+            <column name="binding_id" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_id" type="BIGINT"/>
+            <column name="grade" type="VARCHAR(50)"/>
+            <column name="start" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_recess" type="TINYINT(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_id" type="BIGINT"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-16">
+        <createTable tableName="guardian">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="guardianPK"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="relation_with_student" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="qualification" type="VARCHAR(50)"/>
+            <column name="occupation" type="VARCHAR(50)"/>
+            <column name="annual_income" type="BIGINT"/>
+            <column name="mobile_no" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_id" type="VARCHAR(50)"/>
+            <column name="residence_address1" type="VARCHAR(255)"/>
+            <column name="residence_address2" type="VARCHAR(255)"/>
+            <column name="residence_city" type="VARCHAR(50)"/>
+            <column name="residence_state" type="VARCHAR(50)"/>
+            <column name="residence_pincode" type="VARCHAR(50)"/>
+            <column name="office_address1" type="VARCHAR(255)"/>
+            <column name="office_address2" type="VARCHAR(255)"/>
+            <column name="office_city" type="VARCHAR(50)"/>
+            <column name="office_state" type="VARCHAR(50)"/>
+            <column name="office_pincode" type="VARCHAR(50)"/>
+            <column name="ration_card_no" type="VARCHAR(50)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-17">
+        <createTable tableName="institute">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="institutePK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="primary_phone" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_phone" type="VARCHAR(50)"/>
+            <column name="primary_email" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_email" type="VARCHAR(50)"/>
+            <column name="fax" type="VARCHAR(50)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-18">
+        <createTable tableName="keyword">
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-19">
+        <createTable tableName="leave_application">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="leave_applicationPK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applied_staff_id" type="BIGINT"/>
+            <column name="applied_student_id" type="BIGINT"/>
+            <column name="from_leave_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_leave_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved_by_id" type="BIGINT"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-20">
+        <createTable tableName="leave_event">
+            <column name="leave_application_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-21">
+        <createTable tableName="master_subject">
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-22">
+        <createTable tableName="message">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="messagePK"/>
+            </column>
+            <column name="message_thread_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_user_id" type="BIGINT"/>
+            <column name="subject" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="body" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read" type="TINYINT(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-23">
+        <createTable tableName="message_thread">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="message_threadPK"/>
+            </column>
+            <column name="message_type" type="VARCHAR(255)"/>
+            <column name="meeting_date" type="date"/>
+            <column name="meeting_time" type="VARCHAR(255)"/>
+            <column name="course_teacher_id" type="BIGINT"/>
+            <column name="from_user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_user_unread_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="from_user_last_message_date" type="TIMESTAMP"/>
+            <column name="to_user_id" type="BIGINT"/>
+            <column name="to_user_unread_count" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_user_last_message_date" type="TIMESTAMP"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="leave_application_id" type="BIGINT"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-24">
+        <createTable tableName="payroll">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="payrollPK"/>
+            </column>
+            <column name="payroll_details_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mode_of_payment" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="check_number" type="INT"/>
+            <column name="initiated_on" type="date"/>
+            <column name="closed_on" type="date"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-25">
+        <createTable tableName="payroll_cycle">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="payroll_cyclePK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="month" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="year" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cycle_start" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cycle_end" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-26">
+        <createTable tableName="payroll_details">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="payroll_detailsPK"/>
+            </column>
+            <column name="staff_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payroll_cycle_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deactivation_date" type="TIMESTAMP"/>
+            <column name="paid_days" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_days" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="basic_salary" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="house_rent_allowance" type="FLOAT4"/>
+            <column name="conveyance_allowance" type="FLOAT4"/>
+            <column name="medical_allowance" type="FLOAT4"/>
+            <column name="managerial_allowance" type="FLOAT4"/>
+            <column name="leave_travel_allowance" type="FLOAT4"/>
+            <column name="provident_fund" type="FLOAT4"/>
+            <column name="professional_tax" type="FLOAT4"/>
+            <column name="income_tax" type="FLOAT4"/>
+            <column name="late_entry_deductions" type="FLOAT4"/>
+            <column name="bonus" type="FLOAT4"/>
+            <column name="misc_earnings" type="FLOAT4"/>
+            <column name="misc_deductions" type="FLOAT4"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-27">
+        <createTable tableName="school">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="schoolPK"/>
+            </column>
+            <column name="institute_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="affiliation_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address1" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address2" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="district" type="VARCHAR(50)"/>
+            <column name="state" type="VARCHAR(50)"/>
+            <column name="country" type="VARCHAR(50)"/>
+            <column name="pincode" type="VARCHAR(50)"/>
+            <column name="primary_phone" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_phone" type="VARCHAR(50)"/>
+            <column name="primary_email" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_email" type="VARCHAR(50)"/>
+            <column name="fax" type="VARCHAR(50)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-28">
+        <createTable tableName="school_info">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="school_infoPK"/>
+            </column>
+            <column name="board" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="medium" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-29">
+        <createTable tableName="sibling_info">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="sibling_infoPK"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_during_admission" type="VARCHAR(50)"/>
+            <column name="studying_since" type="date"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-30">
+        <createTable tableName="slot_course_details">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="slot_course_detailsPK"/>
+            </column>
+            <column name="gsd_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day_of_week" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-31">
+        <createTable tableName="staff">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="staffPK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="highest_educational_qualification" type="VARCHAR(255)"/>
+            <column name="joining_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(50)"/>
+            <column name="last_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address1" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address2" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="district" type="VARCHAR(50)"/>
+            <column name="state" type="VARCHAR(50)"/>
+            <column name="country" type="VARCHAR(50)"/>
+            <column name="pincode" type="VARCHAR(50)"/>
+            <column name="blood_group" type="VARCHAR(255)"/>
+            <column name="primary_phone" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="secondary_phone" type="VARCHAR(50)"/>
+            <column name="aadhaar_no" type="VARCHAR(16)"/>
+            <column name="pan_no" type="VARCHAR(10)"/>
+            <column name="bank_name" type="VARCHAR(255)"/>
+            <column name="account_name" type="VARCHAR(255)"/>
+            <column name="account_number" type="VARCHAR(255)"/>
+            <column name="ifsc_code" type="VARCHAR(255)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-32">
+        <createTable tableName="staff_eligibility">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="staff_eligibilityPK"/>
+            </column>
+            <column name="staff_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_subject_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-33">
+        <createTable tableName="standard">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="standardPK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="grade" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="section" type="VARCHAR(50)"/>
+            <column name="class_teacher_id" type="BIGINT"/>
+            <column name="active" type="TINYINT(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-34">
+        <createTable tableName="student">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="studentPK"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="admission_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="admission_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address1" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address2" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="district" type="VARCHAR(50)"/>
+            <column name="state" type="VARCHAR(50)"/>
+            <column name="country" type="VARCHAR(50)"/>
+            <column name="pincode" type="VARCHAR(50)"/>
+            <column name="blood_group" type="VARCHAR(50)"/>
+            <column name="registered_mobile_number" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alternate_mobile_numbers" type="VARCHAR(255)"/>
+            <column name="aadhaar_no" type="VARCHAR(16)"/>
+            <column name="nationality" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="religion" type="VARCHAR(50)"/>
+            <column name="mother_tongue" type="VARCHAR(50)"/>
+            <column name="caste" type="VARCHAR(50)"/>
+            <column name="sub_caste" type="VARCHAR(50)"/>
+            <column name="category" type="VARCHAR(50)"/>
+            <column name="birth_place" type="VARCHAR(50)"/>
+            <column name="identification_mark1" type="VARCHAR(255)"/>
+            <column name="identification_mark2" type="VARCHAR(255)"/>
+            <column name="previous_school_name" type="VARCHAR(255)"/>
+            <column name="previous_school_address" type="VARCHAR(255)"/>
+            <column name="previous_school_standard" type="VARCHAR(50)"/>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-35">
+        <createTable tableName="student_marks">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_marksPK"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_id" type="BIGINT"/>
+            <column name="marks" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_course_details_id" type="BIGINT"/>
+            <column name="published" type="TINYINT(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-36">
+        <createTable tableName="student_standard">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_standardPK"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="roll_no" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="TINYINT(1)" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-37">
+        <createTable tableName="substitution">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="substitutionPK"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scd_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-38">
+        <createTable tableName="term">
+            <column incrementBy="1" startWith="1000" autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="termPK"/>
+            </column>
+            <column name="session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-39">
+        <createTable tableName="wc_authority">
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="VARCHAR(100)"/>
+            <column name="institute_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-40">
+        <createTable tableName="wc_persistent_audit_event">
+            <column name="event_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="wc_persistent_audit_eventPK"/>
+            </column>
+            <column name="event_date" type="TIMESTAMP"/>
+            <column name="event_type" type="VARCHAR(255)"/>
+            <column name="principal" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-41">
+        <createTable tableName="wc_persistent_audit_evt_data">
+            <column name="event_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-42">
+        <addPrimaryKey columnNames="authority_name, permission_name" tableName="wc_authority_permission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-43">
+        <addPrimaryKey columnNames="name" constraintName="wc_permissionPK" tableName="wc_permission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-44">
+        <addPrimaryKey columnNames="event_id, keyword_name" tableName="event_keyword"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-45">
+        <addPrimaryKey columnNames="leave_application_id, event_id" tableName="leave_event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-46">
+        <addPrimaryKey columnNames="event_id, name" tableName="wc_persistent_audit_evt_data"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-47">
+        <addPrimaryKey columnNames="user_id, authority_name" tableName="wc_user_authority"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-48">
+        <addPrimaryKey columnNames="name" constraintName="keywordPK" tableName="keyword"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-49">
+        <addPrimaryKey columnNames="name" constraintName="master_subjectPK" tableName="master_subject"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-50">
+        <addPrimaryKey columnNames="name" constraintName="wc_authorityPK" tableName="wc_authority"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-51">
+        <addUniqueConstraint columnNames="leave_application_id" constraintName="UC_MESSAGE_THREADLEAVE_APPLICATION_ID_COL" tableName="message_thread"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-52">
+        <addUniqueConstraint columnNames="affiliation_id" constraintName="UC_SCHOOLAFFILIATION_ID_COL" tableName="school"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-53">
+        <addUniqueConstraint columnNames="class_teacher_id" constraintName="UC_STANDARDCLASS_TEACHER_ID_COL" tableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-55">
+        <addUniqueConstraint columnNames="login" constraintName="UC_WC_USERLOGIN_COL" tableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-56">
+        <addUniqueConstraint columnNames="admission_id, school_info_id" constraintName="admission_school_info_id_UK" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-57">
+        <addUniqueConstraint columnNames="board, medium, school_id" constraintName="board_medium_school_UK" tableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-58">
+        <addUniqueConstraint columnNames="course_code, grade, school_info_id" constraintName="course_code_grade_school_info_id_UK" tableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-59">
+        <addUniqueConstraint columnNames="course_id, parent_content_id, content_order" constraintName="course_parent_content_order_UK" tableName="course_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-60">
+        <addUniqueConstraint columnNames="course_id, teacher_id, standard_id" constraintName="course_teacher_standard_UK" tableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-61">
+        <addUniqueConstraint columnNames="gsd_id, date, course_id" constraintName="ecd_slot_date_course_UK" tableName="exam_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-62">
+        <addUniqueConstraint columnNames="event_id, course_content_id" constraintName="event_content_id_UK" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-63">
+        <addUniqueConstraint columnNames="grade, section, school_info_id" constraintName="grade_section_schoolInfo_UK" tableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-64">
+        <addUniqueConstraint columnNames="name" constraintName="institute_name_UK" tableName="institute"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-65">
+        <addUniqueConstraint columnNames="school_info_id, month, year" constraintName="payroll_cycle_school_info_month_year_UK" tableName="payroll_cycle"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-66">
+        <addUniqueConstraint columnNames="scd_id, date" constraintName="scd_date_id_UK" tableName="substitution"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-67">
+        <addUniqueConstraint columnNames="gsd_id, day_of_week" constraintName="scd_slot_day_UK" tableName="slot_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-68">
+        <addUniqueConstraint columnNames="start_date, school_info_id" constraintName="session_start_date_school_info_id_UK" tableName="academic_session"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-69">
+        <addUniqueConstraint columnNames="master_subject_name, staff_id, grade" constraintName="staff_eligibility_subject_staff_grade_UK" tableName="staff_eligibility"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-70">
+        <addUniqueConstraint columnNames="staff_id, payroll_cycle_id" constraintName="staff_payroll_cycle_UK" tableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-71">
+        <addUniqueConstraint columnNames="employee_id, school_info_id" constraintName="employee_school_info_id_UK" tableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-72">
+        <addUniqueConstraint columnNames="student_id, standard_id" constraintName="student_standard_UK" tableName="student_standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-73">
+        <addUniqueConstraint columnNames="start_date, session_id" constraintName="term_start_date_session_id_UK" tableName="term"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-74">
+        <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="payroll_details" constraintName="FK1k2b8w88iroh77btb9uxfcih7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-75">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="wc_user_authority" constraintName="FK21ky41nj8qtpgknqt1f0plyjk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-76">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="academic_session" constraintName="FK2eu7xrd5gykudxd2chg0i32lp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-77">
+        <addForeignKeyConstraint baseColumnNames="message_thread_id" baseTableName="message" constraintName="FK34fio3ckeu9d8o6nhgk8k3kxq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="message_thread"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-78">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="course_teacher" constraintName="FK36p7krf88xq4n6rare0g23k2n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-79">
+        <addForeignKeyConstraint baseColumnNames="exam_course_details_id" baseTableName="student_marks" constraintName="FK3m9k1yr3pbkrkkvg6jfehwvit" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-80">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="standard" constraintName="FK3wxoja42l83bnj2vu00vi93fr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-81">
+        <addForeignKeyConstraint baseColumnNames="authority_name" baseTableName="wc_user_authority" constraintName="FK424xaxg1ma636j5ivmtt9jwi9" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="wc_authority"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-82">
+        <addForeignKeyConstraint baseColumnNames="payroll_cycle_id" baseTableName="payroll_details" constraintName="FK48fensxrr27vtfa9ipgiqraye" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_cycle"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-83">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="message" constraintName="FK4tatqxf6if2ubj6ackme8uqtc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-84">
+        <addForeignKeyConstraint baseColumnNames="keyword_name" baseTableName="event_keyword" constraintName="FK5xxg1fejxxk596wg2l4gjpiah" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="keyword"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-85">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="event" constraintName="FK60ua7upltt4d7k4uqrg6b0vhq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-86">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_standard" constraintName="FK66sifxvykufthsqqmxn361ess" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-87">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="substitution" constraintName="FK6cu37sn92c14d7g17rw6lt5w2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-88">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="guardian" constraintName="FK6se6uphr11hxnhh62rrrymto6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-89">
+        <addForeignKeyConstraint baseColumnNames="applied_student_id" baseTableName="leave_application" constraintName="FK6vqsed9cy9vs457hyqw05333" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-90">
+        <addForeignKeyConstraint baseColumnNames="payroll_details_id" baseTableName="payroll" constraintName="FK7xbcnin67n2c6308pdi0uvf35" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="payroll_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-91">
+        <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="slot_course_details" constraintName="FK9y0yt7d4g5x592m3mv7ert0pc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-92">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="sibling_info" constraintName="FKa8rdoywjipg3yg66mb22w6krk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-93">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="event" constraintName="FKacuuvjn9xmvvjtl0kx1lkkdlh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-94">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="exam" constraintName="FKb3atfb980yit73nespxeruiq8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-95">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="leave_event" constraintName="FKbexxlwmcx5aksx9lkj8v6n340" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-96">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="message_thread" constraintName="FKbgrahylbbqkg2de7a1ifx93ih" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-97">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="general_slot_details" constraintName="FKbrtr1a33b97h23t8wejdphfo8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-98">
+        <addForeignKeyConstraint baseColumnNames="approved_by_id" baseTableName="leave_application" constraintName="FKc5cucs02up7abbrqjrmkj7jhf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-99">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="slot_course_details" constraintName="FKc6gligqh1aqmbak2qmda72d75" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-100">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="payroll_cycle" constraintName="FKc7m7so9ik7ey3iscr2i5x6ebm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-101">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="student" constraintName="FKcrr73quao254gb90itdygl8qd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-102">
+        <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="event" constraintName="FKd2wl2tdsomrp5th0jhp5nr6gr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-103">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="course_teacher" constraintName="FKddm8d9rfgge8fdpk76tesgi1g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-104">
+        <addForeignKeyConstraint baseColumnNames="scd_id" baseTableName="substitution" constraintName="FKdsr2lx6h5k45wl1hayx3d2v8p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-105">
+        <addForeignKeyConstraint baseColumnNames="parent_content_id" baseTableName="course_content" constraintName="FKe58pa5d9nbtl8xqyjqsdy7opg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-106">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="event" constraintName="FKea2nmp8m2b8u3bckpl2x08unn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-107">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="leave_application" constraintName="FKebwqwt2jnes65ua7spxvfox8j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-108">
+        <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="staff_eligibility" constraintName="FKecfpqxuyqcegslvtvijgnjwmw" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-109">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="course" constraintName="FKegxywtkptju795vsy3f18glo2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-110">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="term" constraintName="FKfa37vnb6yypg7osr3wcqf3odg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-111">
+        <addForeignKeyConstraint baseColumnNames="course_content_id" baseTableName="event_content" constraintName="FKfuoxk6ep853qdug81ov183awq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-112">
+        <addForeignKeyConstraint baseColumnNames="applied_staff_id" baseTableName="leave_application" constraintName="FKg7g6k6e38pc29cbbfo596dj19" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-113">
+        <addForeignKeyConstraint baseColumnNames="leave_application_id" baseTableName="leave_event" constraintName="FKgdckuvwa3ettys896sqrvpsg9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="leave_application"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-114">
+        <addForeignKeyConstraint baseColumnNames="leave_application_id" baseTableName="message_thread" constraintName="FKgnssdc59lafqw2pcv7bs1sp5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="leave_application"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-115">
+        <addForeignKeyConstraint baseColumnNames="scd_id" baseTableName="event" constraintName="FKhlxo94ac3s2ng8e3ot142coso" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="slot_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-116">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="school_info" constraintName="FKj04lleyrvp6l6k1fg3ew0f0bd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-117">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="event_keyword" constraintName="FKjj6x75xwnt9b02shxjvfxkxyg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-118">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="student_marks" constraintName="FKjvaeekk7twhbugmqy56u7w9im" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-119">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_content" constraintName="FKknr61ctevkwqhoxi6wpem4dk6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-120">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="student" constraintName="FKknya7m8erxyg8i1uwna24g5to" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-121">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="staff" constraintName="FKl5t2bilqa83t0xpj5seluwi3c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-122">
+        <addForeignKeyConstraint baseColumnNames="class_teacher_id" baseTableName="standard" constraintName="FKlabdi8wgp9u6yabqmxq2jx3n2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-123">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="message" constraintName="FKlgohkk9qg53mg7q5s2bpaa2a9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-124">
+        <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="exam_course_details" constraintName="FKlqudtt9lpcj958aofwjaoiwyk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-125">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="event" constraintName="FKnpjm01180erflii53u3dqx5cf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-126">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="student_standard" constraintName="FKoihv1q043fm2w1r7nl2fmnf9a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-127">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="wc_persistent_audit_evt_data" constraintName="FKpfgsj7qgspl2sdg9m1gi3yoy1" deferrable="false" initiallyDeferred="false" referencedColumnNames="event_id" referencedTableName="wc_persistent_audit_event"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-128">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="exam_course_details" constraintName="FKpp70w86kxm992wp0ognh0enrt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-129">
+        <addForeignKeyConstraint baseColumnNames="staff_id" baseTableName="staff_eligibility" constraintName="FKq70xgtv2m6r2uhvnxvnjswsan" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="staff"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-130">
+        <addForeignKeyConstraint baseColumnNames="institute_id" baseTableName="school" constraintName="FKrh24djgqkiw9hjmlwphpf8wvy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="institute"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-131">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_teacher" constraintName="FKrna6ik293g84mo3rslnkk7m1a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-132">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="staff" constraintName="FKruxs9808bivxikwn2hydnoemd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-133">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_marks" constraintName="FKrwo5tmg1dbm4vm2ywmmufmiwi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-134">
+        <addForeignKeyConstraint baseColumnNames="to_user_id" baseTableName="message_thread" constraintName="FKsgfa069ojxn4upg129vi8wncb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-135">
+        <addForeignKeyConstraint baseColumnNames="from_user_id" baseTableName="message_thread" constraintName="FKsnmwber7vy0li4b7c0761myrx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-136">
+        <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="general_slot_details" constraintName="FKt2cmdy4f0qmk0jrythjpr2b9g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-137">
+        <addForeignKeyConstraint baseColumnNames="master_subject_name" baseTableName="course" constraintName="FKthbyd7ay47e8m5obfrdd7efpe" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="master_subject"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-138">
+        <addForeignKeyConstraint baseColumnNames="permission_name" baseTableName="wc_authority_permission" constraintName="FKhybt5200sypcopj8i4w09ktxv" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="wc_permission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-139">
+        <addForeignKeyConstraint baseColumnNames="authority_name" baseTableName="wc_authority_permission" constraintName="FKi7g4hrifxiubaftxllqt0oa4n" deferrable="false" initiallyDeferred="false" referencedColumnNames="name" referencedTableName="wc_authority"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-140">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_permissions.csv"
+                  separator=";"
+                  tableName="wc_permission">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_authorities.csv"
+                  separator=";"
+                  tableName="wc_authority">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_authorities_permissions.csv"
+                  separator=";"
+                  tableName="wc_authority_permission">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_users.csv"
+                  separator=";"
+                  tableName="wc_user">
+        </loadData>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_users_authorities.csv"
+                  separator=";"
+                  tableName="wc_user_authority">
+        </loadData>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-141">
+        <addColumn tableName="institute">
+            <column name="sms_signature" type="VARCHAR(6)" afterColumn="fax"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-142">
+        <addColumn tableName="student">
+            <column name="house" type="VARCHAR(50)" afterColumn="category"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-143">
+        <addColumn tableName="student">
+            <column name="day_scholar" type="TINYINT(1)" afterColumn="category" defaultValueBoolean="true"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-144">
+        <addColumn tableName="student">
+            <column name="sub_category" type="VARCHAR(50)" afterColumn="category"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-145">
+        <sql> update institute set sms_signature = substring(upper(replace(name, ' ', '')),1,6) </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-146">
+        <addNotNullConstraint columnDataType="VARCHAR(6)" tableName="institute" columnName="sms_signature"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-147">
+        <sql> update student set category =  'N/A' </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-148">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="category"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-149">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="city"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-150">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="district"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-151">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="state"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-152">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="country"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-153">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="pincode"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-154">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="city"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-155">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="district"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-156">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="state"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-157">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="country"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-158">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="staff" columnName="pincode"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-159">
+        <addDefaultValue tableName="wc_user" columnName="activated" defaultValueBoolean="true"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-160">
+        <dropColumn tableName="wc_user" columnName="first_time_login"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-161">
+        <addNotNullConstraint columnDataType="TINYINT(1)" columnName="day_scholar" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-162">
+        <addDefaultValue columnDataType="varchar(50)" columnName="category" defaultValue="NA" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-163">
+        <addDefaultValue columnDataType="TINYINT(1)" columnName="day_scholar" defaultValueBoolean="true" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-164">
+        <addColumn tableName="student">
+            <column name="type" type="varchar(50)" afterColumn="day_scholar" defaultValue="DAY_SCHOLAR"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-165">
+        <sql> update student set type = 'DAY_SCHOLAR' </sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-166">
+        <addNotNullConstraint columnDataType="VARCHAR(50)" tableName="student" columnName="type"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-167">
+        <dropColumn tableName="student" columnName="day_scholar"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-168">
+        <addDefaultValue columnDataType="varchar(50)" columnName="type" defaultValue="DAY_SCHOLAR" tableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-169">
+        <addColumn tableName="staff">
+            <column name="designation" type="varchar(255)" afterColumn="type"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-170">
+        <addColumn tableName="student">
+            <column name="adjustment" type="Decimal(10, 2)" afterColumn="previous_school_standard"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-171">
+        <addColumn tableName="student">
+            <column name="fee_amount" type="Decimal(10, 2)" afterColumn="previous_school_standard"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-172">
+        <addColumn tableName="student">
+            <column name="previous_school_percentage" type="integer" afterColumn="previous_school_standard"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-173">
+        <addColumn tableName="config_settings">
+            <column name="institute_id" type="bigint" afterColumn="school_info_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-174">
+        <addColumn tableName="config_settings">
+            <column name="school_id" type="bigint" afterColumn="school_info_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-175">
+        <dropUniqueConstraint constraintName="event_content_id_UK" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-176">
+        <addColumn tableName="event_content">
+            <column name="for_exam" type="TINYINT(1)" afterColumn="course_content_id"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-177">
+        <sql>update event_content set for_exam = false where for_exam is null</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-178">
+        <addNotNullConstraint columnDataType="TINYINT(1)" columnName="for_exam" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-179">
+        <addUniqueConstraint columnNames="event_id, course_content_id, for_exam" constraintName="event_content_id_UK" tableName="event_content"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-180">
+        <addDefaultValue tableName="event_content" columnName="for_exam" defaultValueBoolean="false"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-181">
+        <addColumn tableName="message">
+            <column defaultValueBoolean="false" name="is_read" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-182">
+        <dropColumn columnName="read" tableName="message"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-183">
+        <modifyDataType tableName="config_settings" columnName="field_name" newDataType="VARCHAR(255)"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-184">
+        <addColumn tableName="config_settings">
+            <column name="display_field_name" type="VARCHAR(255)" afterColumn="field_name"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-185">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" tableName="config_settings" columnName="display_field_name"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-186">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/initial_data_config_settings.csv"
+                  separator=";"
+                  tableName="config_settings">
+        </loadData>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-187">
+        <renameColumn tableName="config_settings" oldColumnName="order" newColumnName="display_order" columnDataType="INT"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-188">
+        <addNotNullConstraint columnDataType="INT" columnName="display_order" tableName="config_settings"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-189">
+        <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="field_name" tableName="config_settings"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-190">
+        <sql>update config_settings set field_value = '0800' where id = 1</sql>
+        <sql>update config_settings set field_value = 'Grace duration in minutes' where id = 2</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-191">
+        <dropNotNullConstraint tableName="event" columnName="attendance_type" columnDataType="VARCHAR(50)"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-192">
+        <sql>update event set attendance_type = null where type != 'ATTENDANCE'</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-193">
+        <dropColumn tableName="event" columnName="binding_id"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-194">
+        <sql>delete from event_content where for_exam = true and event_id not in (select id from exam_course_details)</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-195">
+        <dropColumn columnName="grade" tableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-196">
+        <modifyDataType columnName="grade"
+                        newDataType="int"
+                        tableName="general_slot_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-197">
+        <addColumn tableName="course">
+            <column name="content_published" type="TINYINT(1)" afterColumn="eligible_for_substitute"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-198">
+        <addColumn tableName="course_content">
+            <column name="target_date" type="date" afterColumn="description"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-199">
+        <addColumn tableName="general_slot_details">
+            <column name="order" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-200">
+        <renameColumn columnDataType="integer"
+                      newColumnName="slot_order"
+                      oldColumnName="order"
+                      tableName="general_slot_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-201">
+        <addColumn tableName="student">
+            <column name="father_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-202">
+        <addColumn tableName="student">
+            <column name="guardian_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-203">
+        <addColumn tableName="student">
+            <column name="mother_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-204">
+        <addColumn tableName="student">
+            <column name="email" type="varchar(254)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-205">
+        <addColumn tableName="staff">
+            <column name="email" type="varchar(254)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-206">
+        <sql>UPDATE staff SET    email = 'saichand@witcurve.com';</sql>
+        <sql>UPDATE wc_user SET  email = 'saichand@witcurve.com' where type='TEACHING_STAFF';</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="0000000000001-207">
+        <addNotNullConstraint columnDataType="varchar(254)"
+                              columnName="email"
+                              tableName="staff"/>
+    </changeSet>
+</databaseChangeLog>

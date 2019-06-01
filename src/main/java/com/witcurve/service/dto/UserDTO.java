@@ -1,27 +1,36 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.config.Constants;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.witcurve.domain.Authority;
+import com.witcurve.domain.Permission;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.UserType;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * A DTO representing a user, with his authorities.
  */
-public class UserDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
+    @NotNull
+    private UserType type;
+
     @NotBlank
-    @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     private String login;
 
@@ -35,13 +44,20 @@ public class UserDTO {
     @Size(min = 5, max = 254)
     private String email;
 
-    @Size(max = 256)
-    private String imageUrl;
+    private String password;
 
-    private boolean activated = false;
+    @NotNull
+    private boolean activated = true;
 
-    @Size(min = 2, max = 6)
-    private String langKey;
+    @NotNull
+    private Boolean hasPassword = false;
+
+    @NotNull
+    private Boolean forcePassword = true;
+
+    private String otp;
+
+    private Instant otpExpiry;
 
     private String createdBy;
 
@@ -53,19 +69,26 @@ public class UserDTO {
 
     private Set<String> authorities;
 
+    private Set<String> permissions;
+
+    private StudentDTO studentDTO;
+
+    private StaffDTO staffDTO;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
 
     public UserDTO(User user) {
         this.id = user.getId();
+        this.type = user.getType();
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.getActivated();
-        this.imageUrl = user.getImageUrl();
-        this.langKey = user.getLangKey();
+        this.hasPassword = user.getPassword() == null ? Boolean.FALSE : Boolean.TRUE;
+        this.forcePassword = user.getForcePassword();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
@@ -73,6 +96,17 @@ public class UserDTO {
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
             .collect(Collectors.toSet());
+        for (Authority authority : user.getAuthorities()) {
+            if (authority.getPermissions().size() != 0) {
+                if (this.permissions == null) {
+                    this.permissions = new HashSet<>();
+                }
+                for (Permission permission : authority.getPermissions()) {
+                    this.permissions.add(permission.getName());
+                }
+            }
+        }
+
     }
 
     public Long getId() {
@@ -81,6 +115,14 @@ public class UserDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 
     public String getLogin() {
@@ -115,14 +157,6 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public boolean isActivated() {
         return activated;
     }
@@ -131,42 +165,74 @@ public class UserDTO {
         this.activated = activated;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public Boolean getHasPassword() {
+        return hasPassword;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setHasPassword(Boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 
+    public Boolean getForcePassword() {
+        return forcePassword;
+    }
+
+    public void setForcePassword(Boolean forcePassword) {
+        this.forcePassword = forcePassword;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public Instant getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(Instant otpExpiry) {
+        this.otpExpiry = otpExpiry;
+    }
+
+    @Override
     public String getCreatedBy() {
         return createdBy;
     }
 
+    @Override
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
+    @Override
     public Instant getCreatedDate() {
         return createdDate;
     }
 
+    @Override
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
+    @Override
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
 
+    @Override
     public void setLastModifiedBy(String lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    @Override
     public Instant getLastModifiedDate() {
         return lastModifiedDate;
     }
 
+    @Override
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
@@ -179,21 +245,63 @@ public class UserDTO {
         this.authorities = authorities;
     }
 
+    public void addAuthority(String authority) {
+        if(this.authorities == null) {
+            this.authorities = new HashSet<>();
+        }
+        authorities.add(authority);
+    }
+
+    public Set<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Set<String> permissions) {
+        this.permissions = permissions;
+    }
+
+    public StudentDTO getStudentDTO() {
+        return studentDTO;
+    }
+
+    public void setStudentDTO(StudentDTO studentDTO) {
+        this.studentDTO = studentDTO;
+    }
+
+    public StaffDTO getStaffDTO() {
+        return staffDTO;
+    }
+
+    public void setStaffDTO(StaffDTO staffDTO) {
+        this.staffDTO = staffDTO;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            "}";
+            "id=" + id +
+            '}';
     }
 }

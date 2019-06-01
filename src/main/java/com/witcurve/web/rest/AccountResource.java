@@ -1,27 +1,23 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-
-import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
-import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.MailService;
 import com.witcurve.service.UserService;
+import com.witcurve.service.dto.PasswordChangeDTO;
 import com.witcurve.service.dto.UserDTO;
-import com.witcurve.web.rest.errors.*;
-import com.witcurve.web.rest.vm.KeyAndPasswordVM;
+import com.witcurve.web.rest.errors.InvalidPasswordException;
+import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ManagedUserVM;
-
-import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import com.witcurve.service.dto.PasswordChangeDTO;
-import java.util.*;
+import java.util.Collections;
 
 /**
  * REST controller for managing the current user's account.
@@ -46,42 +42,6 @@ public class AccountResource {
     }
 
     /**
-     * POST  /register : register the user.
-     *
-     * @param managedUserVM the managed user View Model
-     * @throws InvalidPasswordException 400 (Bad Request) if the password is incorrect
-     * @throws EmailAlreadyUsedException 400 (Bad Request) if the email is already used
-     * @throws LoginAlreadyUsedException 400 (Bad Request) if the login is already used
-     */
-    @PostMapping("/register")
-    @Timed
-    @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
-        if (!checkPasswordLength(managedUserVM.getPassword())) {
-            throw new InvalidPasswordException();
-        }
-        userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase()).ifPresent(u -> {throw new LoginAlreadyUsedException();});
-        userRepository.findOneByEmailIgnoreCase(managedUserVM.getEmail()).ifPresent(u -> {throw new EmailAlreadyUsedException();});
-        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
-        mailService.sendActivationEmail(user);
-    }
-
-    /**
-     * GET  /activate : activate the registered user.
-     *
-     * @param key the activation key
-     * @throws RuntimeException 500 (Internal Server Error) if the user couldn't be activated
-     */
-    @GetMapping("/activate")
-    @Timed
-    public void activateAccount(@RequestParam(value = "key") String key) {
-        Optional<User> user = userService.activateRegistration(key);
-        if (!user.isPresent()) {
-            throw new InternalServerErrorException("No user was found for this activation key");
-        }
-    }
-
-    /**
      * GET  /authenticate : check if the user is authenticated, and return its login.
      *
      * @param request the HTTP request
@@ -102,34 +62,11 @@ public class AccountResource {
      */
     @GetMapping("/account")
     @Timed
-    public UserDTO getAccount() {
+    public UserDTO getAccount() throws  WitcurveException {
         return userService.getUserWithAuthorities()
             .map(UserDTO::new)
-            .orElseThrow(() -> new InternalServerErrorException("User could not be found"));
+            .orElseThrow(() -> new WitcurveException("User could not be found"));
     }
-
-    /**
-     * POST  /account : update the current user information.
-     *
-     * @param userDTO the current user information
-     * @throws EmailAlreadyUsedException 400 (Bad Request) if the email is already used
-     * @throws RuntimeException 500 (Internal Server Error) if the user login wasn't found
-     */
-    @PostMapping("/account")
-    @Timed
-    public void saveAccount(@Valid @RequestBody UserDTO userDTO) {
-        final String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new InternalServerErrorException("Current user login not found"));
-        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getLogin().equalsIgnoreCase(userLogin))) {
-            throw new EmailAlreadyUsedException();
-        }
-        Optional<User> user = userRepository.findOneByLogin(userLogin);
-        if (!user.isPresent()) {
-            throw new InternalServerErrorException("User could not be found");
-        }
-        userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
-            userDTO.getLangKey(), userDTO.getImageUrl());
-   }
 
     /**
      * POST  /account/change-password : changes the current user's password
@@ -139,52 +76,64 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/change-password")
     @Timed
-    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto) {
-        if (!checkPasswordLength(passwordChangeDto.getNewPassword())) {
-            throw new InvalidPasswordException();
-        }
-        userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
+    public void changePassword(@RequestBody PasswordChangeDTO passwordChangeDto, @RequestParam(required = false, defaultValue = "false") Boolean otpMethod) throws WitcurveException{
+        checkValidPassword(passwordChangeDto.getNewPassword());
+        userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword(), passwordChangeDto.getOtp(), otpMethod);
    }
 
     /**
-     * POST   /account/reset-password/init : Send an email to reset the password of the user
+     * POST  /account/set-password : sets the current user's password
      *
-     * @param mail the mail of the user
-     * @throws EmailNotFoundException 400 (Bad Request) if the email address is not registered
+     * @param passwordChangeDto new password
+     * @throws InvalidPasswordException 400 (Bad Request) if the new password is incorrect
      */
-    @PostMapping(path = "/account/reset-password/init")
+    @PostMapping(path = "/account/set-password")
     @Timed
-    public void requestPasswordReset(@RequestBody String mail) {
-       mailService.sendPasswordResetMail(
-           userService.requestPasswordReset(mail)
-               .orElseThrow(EmailNotFoundException::new)
-       );
+    public void setPassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        checkValidPassword(passwordChangeDto.getNewPassword());
+        userService.setPassword(passwordChangeDto.getNewPassword());
+    }
+
+
+    /**
+     * POST  /account/request-reset-password : request mail to reset password
+     *
+     * @param passwordChangeDto username for password reset
+     * @return email to which password reset url has been sent
+     * @throws InvalidPasswordException 400 (Bad Request) if the user does not exist
+     */
+    @PostMapping(path = "/account/request-reset-password")
+    @Timed
+    public ResponseEntity requestPasswordMail(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        String email = userService.requestPasswordEmail(passwordChangeDto.getUsername());
+        return ResponseEntity.ok(Collections.singletonMap("email", email));
     }
 
     /**
-     * POST   /account/reset-password/finish : Finish to reset the password of the user
+     * POST  /account/reset-password : resets the given user's password
      *
-     * @param keyAndPassword the generated key and the new password
-     * @throws InvalidPasswordException 400 (Bad Request) if the password is incorrect
-     * @throws RuntimeException 500 (Internal Server Error) if the password could not be reset
+     * @param passwordChangeDto with username and new password
+     * @throws InvalidPasswordException 400 (Bad Request) if the new password is incorrect or user does not exist
      */
-    @PostMapping(path = "/account/reset-password/finish")
+    @PostMapping(path = "/account/reset-password")
     @Timed
-    public void finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
-        if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
-            throw new InvalidPasswordException();
+    public void resetPassword(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) DateTime tokenDateTime,
+                              @RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
+        if (tokenDateTime.plusMinutes(10).isBefore(DateTime.now())) {
+            throw new WitcurveException("The reset password link has been expired!");
         }
-        Optional<User> user =
-            userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey());
 
-        if (!user.isPresent()) {
-            throw new InternalServerErrorException("No user was found for this reset key");
-        }
+        checkValidPassword(passwordChangeDto.getNewPassword());
+        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword(), false);
     }
 
-    private static boolean checkPasswordLength(String password) {
-        return !StringUtils.isEmpty(password) &&
-            password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
-            password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
+    private static void checkValidPassword(String password) throws WitcurveException {
+        if(!password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{"+
+            ManagedUserVM.PASSWORD_MIN_LENGTH+","+ManagedUserVM.PASSWORD_MAX_LENGTH+"}$")) {
+            throw new WitcurveException("Password must be at least "+ManagedUserVM.PASSWORD_MIN_LENGTH
+                +" characters, no more than "+ManagedUserVM.PASSWORD_MAX_LENGTH+" characters," +
+                " and must include at least one upper case letter, one lower case letter, and" +
+                " one numeric digit and a special character (@, #, $, %, &. etc..)");
+        }
     }
 }

@@ -1,0 +1,129 @@
+package com.witcurve.service.dto;
+
+import com.witcurve.domain.enumeration.Grade;
+
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
+
+public class CourseDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Long id;
+
+    @NotNull
+    private Long schoolInfoId;
+
+    @NotNull
+    private Grade grade;
+
+    @NotNull
+    private String masterSubject;
+
+    @NotNull
+    private String courseCode;
+
+    private String description;
+
+    @NotNull
+    private Boolean eligibleForSubstitute = false;
+
+    private Boolean contentPublished;
+
+    @NotNull
+    private Boolean active = true;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSchoolInfoId() {
+        return schoolInfoId;
+    }
+
+    public void setSchoolInfoId(Long schoolInfoId) {
+        this.schoolInfoId = schoolInfoId;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public String getMasterSubject() {
+        return masterSubject;
+    }
+
+    public void setMasterSubject(String masterSubject) {
+        this.masterSubject = masterSubject;
+    }
+
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getEligibleForSubstitute() {
+        return eligibleForSubstitute;
+    }
+
+    public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
+        this.eligibleForSubstitute = eligibleForSubstitute;
+    }
+
+    public Boolean getContentPublished() {
+        return contentPublished;
+    }
+
+    public void setContentPublished(Boolean contentPublished) {
+        this.contentPublished = contentPublished;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CourseDTO)) return false;
+        CourseDTO courseDTO = (CourseDTO) o;
+        return Objects.equals(getId(), courseDTO.getId());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "CourseDTO{" +
+            "id=" + id +
+            '}';
+    }
+}

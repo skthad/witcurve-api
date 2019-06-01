@@ -1,0 +1,81 @@
+package com.witcurve.service.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+public class CourseTeacherDTO extends AbstractAuditingDTO implements Serializable {
+
+    private Long id;
+
+    private CourseDTO course;
+
+    private StaffDTO teacher;
+
+    private StandardDTO standard;
+
+    private Boolean active = true;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public CourseDTO getCourse() {
+        return course;
+    }
+
+    public void setCourse(CourseDTO course) {
+        this.course = course;
+    }
+
+    public StaffDTO getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(StaffDTO teacher) {
+        this.teacher = teacher;
+    }
+
+    public StandardDTO getStandard() {
+        return standard;
+    }
+
+    public void setStandard(StandardDTO standard) {
+        this.standard = standard;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CourseTeacherDTO)) return false;
+        CourseTeacherDTO that = (CourseTeacherDTO) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "CourseTeacherDTO{" +
+            "id=" + id +
+            ", course=" + course +
+            ", teacher=" + teacher +
+            ", standard=" + standard +
+            '}';
+    }
+}
