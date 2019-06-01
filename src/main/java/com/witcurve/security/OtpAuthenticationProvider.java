@@ -43,6 +43,7 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             if(user.getOtpExpiry().isBefore(Instant.now())) {
                 user.setOtp(null);
                 user.setOtpExpiry(null);
+                user.setOtpPurpose(null);
                 userRepository.save(user);
                 throw new BadCredentialsException("Otp Expired.");
             }
@@ -64,6 +65,7 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
 
         user.setOtp(null);
         user.setOtpExpiry(null);
+        user.setOtpPurpose(null);
         userRepository.save(user);
 
         return new UsernamePasswordAuthenticationToken(user.getLogin(), password, grantedAuthorities);
