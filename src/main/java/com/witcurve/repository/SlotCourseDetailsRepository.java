@@ -29,7 +29,7 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
     List<Long> findAllocatedTeachersList(Integer startTime, Integer endTime, DayOfWeek dayOfWeek, Long schoolInfoId);
 
     @Query("select distinct sub.teacher.id from Substitution sub where " +
-        "sub.date = ?1 and sub.scd.courseTeacher.teacher.schoolInfo.id = ?2" +
+        "sub.date = ?1 and sub.scd.courseTeacher.teacher.schoolInfo.id = ?2 and " +
         "((cast(sub.scd.gsd.start as int) >= ?1 and cast(sub.scd.gsd.start as int) < ?2) or " +
         "(cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration > ?1 and " +
         "cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration <= ?2))")
