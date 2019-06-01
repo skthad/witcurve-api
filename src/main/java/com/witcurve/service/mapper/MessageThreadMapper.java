@@ -57,16 +57,22 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
 
     default String getUserType(MessageThread messageThread) {
         if(messageThread.getSchoolBoardAdminMessage()) {
-            if (messageThread.getFromUser().getType().equals(UserType.TEACHING_STAFF)) {
-                return "Teacher";
-            } else if (messageThread.getFromUser().getType().equals(UserType.PARENT)) {
-                return "Parent";
+            if(messageThread.getFromUser().getType() != null) {
+                if (messageThread.getFromUser().getType().equals(UserType.TEACHING_STAFF)) {
+                    return "Teacher";
+                } else if (messageThread.getFromUser().getType().equals(UserType.PARENT)) {
+                    return "Parent";
+                }
+            } else {
+                return null;
             }
             if (messageThread.getToUser() != null) {
-                if (messageThread.getToUser().getType().equals(UserType.TEACHING_STAFF)) {
-                    return "Teacher";
-                } else if (messageThread.getToUser().getType().equals(UserType.PARENT)) {
-                    return "Parent";
+                if(messageThread.getToUser().getType() != null) {
+                    if (messageThread.getToUser().getType().equals(UserType.TEACHING_STAFF)) {
+                        return "Teacher";
+                    } else if (messageThread.getToUser().getType().equals(UserType.PARENT)) {
+                        return "Parent";
+                    }
                 }
             }
             return null;
