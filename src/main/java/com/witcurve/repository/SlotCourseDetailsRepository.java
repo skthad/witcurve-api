@@ -32,8 +32,7 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
         "sub.date = ?1 and sub.scd.courseTeacher.teacher.schoolInfo.id = ?2" +
         "((cast(sub.scd.gsd.start as int) >= ?1 and cast(sub.scd.gsd.start as int) < ?2) or " +
         "(cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration > ?1 and " +
-        "cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration <= ?2)) and " +
-        "")
+        "cast(sub.scd.gsd.start as int) + sub.scd.gsd.duration <= ?2))")
     List<Long> findSubstitutedTeacherList(LocalDate date, Long schoolInfoId, Integer startTime, Integer endTime);
 
     @Query("select scd from SlotCourseDetails scd where scd.courseTeacher.id=?1 and scd.gsd.status = 'ACTIVE'")
