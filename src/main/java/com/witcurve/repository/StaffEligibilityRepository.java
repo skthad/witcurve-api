@@ -41,14 +41,14 @@ public interface StaffEligibilityRepository extends JpaRepository<StaffEligibili
     void deleteByStaffId(Long staffId);
 
     @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.grade = ?3 and se.staff.id <> ?4 " +
-        "and se.staff.id in (select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.date = ?5 and e.attendanceType <> 'ABSENT') order by staff.employeeId")
+        "and se.staff.id in (select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.date = ?5 and e.attendanceType <> 'ABSENT') order by se.staff.employeeId")
     List<Long> findAvailableStaffInSchoolBySubjectAndGrade(Long schoolInfoId, MasterSubject masterSubject, Grade grade, Long staffId, LocalDate date);
 
     @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.masterSubject = ?2 and se.staff.id <> ?3 " +
-        "and se.staff.id in (select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.date = ?4 and e.attendanceType <> 'ABSENT') order by staff.employeeId")
+        "and se.staff.id in (select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.date = ?4 and e.attendanceType <> 'ABSENT') order by se.staff.employeeId")
     List<Long> findAvailableStaffInSchoolBySubject(Long schoolInfoId, MasterSubject masterSubject, Long staffId, LocalDate date);
 
     @Query("Select distinct se.staff.id from StaffEligibility se where se.staff.schoolInfo.id = ?1 and se.grade = ?2 and se.staff.id <> ?3 " +
-        "and se.staff.id in (select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.date = ?3 and e.attendanceType <> 'ABSENT') order by staff.employeeId")
+        "and se.staff.id in (select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.date = ?3 and e.attendanceType <> 'ABSENT') order by se.staff.employeeId")
     List<Long> findAvailableStaffInSchoolByGrade(Long schoolInfoId, Grade grade, Long staffId, LocalDate date);
 }
