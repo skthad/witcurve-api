@@ -28,9 +28,9 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://witcurve-remote.cyjmhkroztgc.us-east-2.rds.amazonaws.com:3306/witcurve?useUnicode=true&characterEncoding=utf8&useSSL=false
-        username: witcurve
-        password: witcurve
+        url: jdbc:mysql://witcurve-prod.c5vr76lp2kaf.ap-south-1.rds.amazonaws.com:3306/witcurve?useUnicode=true&characterEncoding=utf8&useSSL=false
+        username: witcurve_admin
+        password: 1StrongPassword!
     jpa:
         database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         database: MYSQL
