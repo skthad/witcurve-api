@@ -117,14 +117,9 @@ public class AccountResource {
      */
     @PostMapping(path = "/account/reset-password")
     @Timed
-    public void resetPassword(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) DateTime tokenDateTime,
-                              @RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
-        if (tokenDateTime.plusMinutes(10).isBefore(DateTime.now())) {
-            throw new WitcurveException("The reset password link has been expired!");
-        }
-
+    public void resetPassword(@RequestBody PasswordChangeDTO passwordChangeDto) throws WitcurveException{
         checkValidPassword(passwordChangeDto.getNewPassword());
-        userService.resetPassword(passwordChangeDto.getUsername(), passwordChangeDto.getNewPassword(), false);
+        userService.resetPassword(passwordChangeDto.getResetToken(), passwordChangeDto.getNewPassword());
     }
 
     private static void checkValidPassword(String password) throws WitcurveException {
