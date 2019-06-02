@@ -239,16 +239,22 @@ public class UserService {
     public void resetPassword(String resetToken, String newPassword) {
         if (StringUtils.isNotBlank(resetToken)) {
             String decryptedToken = encryptionService.decrypt(resetToken);
-            int delimiterIndex = decryptedToken.lastIndexOf('|');
 
-            String username = decryptedToken.substring(0, delimiterIndex);
-            DateTime tokenDateTime = DateTime.parse(decryptedToken.substring(delimiterIndex + 1));
+            if (StringUtils.isNotBlank(decryptedToken) && decryptedToken.contains("|")) {
 
-            if (tokenDateTime.plusMinutes(10).isBefore(DateTime.now())) {
-                throw new WitcurveException("The reset password link has been expired!");
+                int delimiterIndex = decryptedToken.lastIndexOf("|");
+                String username = decryptedToken.substring(0, delimiterIndex);
+                DateTime tokenDateTime = DateTime.parse(decryptedToken.substring(delimiterIndex + 1));
+
+                if (tokenDateTime.plusMinutes(10).isBefore(DateTime.now())) {
+                    throw new WitcurveException("The reset password link has been expired!");
+                }
+
+                setPassword(username, newPassword, false);
+            } else {
+                throw new WitcurveException("Invalid token, unable to reset the password");
             }
 
-            setPassword(username, newPassword, false);
         } else {
             throw new WitcurveException("Invalid request, reset token is required!");
         }
