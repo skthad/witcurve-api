@@ -157,5 +157,5 @@ application:
         transactionStatusApi: https://securegw-stage.paytm.in/order/status
     witcurve:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
-        url: http://witcurve.s3-website-us-east-1.amazonaws.com
+        url: http://localhost:4200
 

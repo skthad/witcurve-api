@@ -55,6 +55,9 @@ public class UserService {
     @Autowired
     private ApplicationProperties applicationProperties;
 
+    @Autowired
+    private EncryptionService encryptionService;
+
     private final CacheManager cacheManager;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
@@ -204,13 +207,13 @@ public class UserService {
     public void setPassword(String newPassword) throws WitcurveException{
         Optional<String> userName = SecurityUtils.getCurrentUserLogin();
         if(userName.isPresent()) {
-            resetPassword(userName.get(), newPassword, true);
+            setPassword(userName.get(), newPassword, true);
         } else {
             throw new WitcurveException("Error getting user name from session!");
         }
     }
 
-    public void resetPassword(String username, String newPassword, Boolean setNewPassword) {
+    public void setPassword(String username, String newPassword, Boolean setNewPassword) throws WitcurveException{
         if (StringUtils.isNotBlank(username)) {
             Optional<User> user = userRepository.findOneByLogin(username);
             if(user.isPresent()) {
@@ -233,6 +236,24 @@ public class UserService {
         }
     }
 
+    public void resetPassword(String resetToken, String newPassword) {
+        if (StringUtils.isNotBlank(resetToken)) {
+            String decryptedToken = encryptionService.decrypt(resetToken);
+            int delimiterIndex = decryptedToken.lastIndexOf('|');
+
+            String username = decryptedToken.substring(0, delimiterIndex);
+            DateTime tokenDateTime = DateTime.parse(decryptedToken.substring(delimiterIndex + 1));
+
+            if (tokenDateTime.plusMinutes(10).isBefore(DateTime.now())) {
+                throw new WitcurveException("The reset password link has been expired!");
+            }
+
+            setPassword(username, newPassword, false);
+        } else {
+            throw new WitcurveException("Invalid request, reset token is required!");
+        }
+    }
+
     public String requestPasswordEmail(String username) {
         if (StringUtils.isNotBlank(username)) {
             Optional<User> user = userRepository.findOneByLogin(username);
@@ -241,7 +262,7 @@ public class UserService {
                 Map<String, Object> params = new HashMap();
                 params.put("userName", user.get().getFirstName() + " " + user.get().getLastName());
                 params.put("resetUrl", applicationProperties.getWitcurve().getUrl()
-                    + Constants.RESET_URL + Base64.getEncoder().encodeToString(token.getBytes()));
+                    + Constants.RESET_URL + encryptionService.encrypt(token));
                 mailService.sendResetPasswordMail(user.get().getEmail(), params);
                 log.debug("Reset password email sent for User: {}", user.get());
 
