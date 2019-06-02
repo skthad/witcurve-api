@@ -2,7 +2,6 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.OtpPurpose;
 import com.witcurve.repository.UserRepository;
@@ -13,6 +12,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import com.witcurve.web.rest.vm.LoginVM;
 import com.witcurve.web.rest.vm.SmsVM;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,9 @@ public class SmsResource {
 
     @PostMapping("/generate-otp")
     @Timed
-    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM, @RequestParam(name = "contactNumber") String contactNumber, @RequestParam(required = false, defaultValue = "false") Boolean changePassword) throws WitcurveException, UnsupportedEncodingException {
+    public ResponseEntity<Void> generateOTP(@RequestBody LoginVM loginVM,
+                                            @RequestParam(name = "contactNumber") String contactNumber,
+                                            @RequestParam(required = false, defaultValue = "false") Boolean changePassword) throws WitcurveException, UnsupportedEncodingException {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
@@ -66,9 +68,12 @@ public class SmsResource {
                 smsService.sendSms(contactNumber,"Hello User, Your OTP for logging in to your mobile application is " + otp);
             }
 
-            if (user.getEmail() != null) {
-                //TODO create otp mail for logging in and for changing password
-                mailService.sendOtpMail(user);
+            if (StringUtils.isNotBlank(user.getEmail())) {
+                if (changePassword) {
+                    mailService.sendChangePasswordOtpMail(user);
+                } else {
+                    mailService.sendAuthenticationOtpMail(user);
+                }
             }
         } else {
             throw new WitcurveException("User doesn't exist with given login id");

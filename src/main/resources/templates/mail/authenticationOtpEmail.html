@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{email.otp.title}">OTP - Witcurve Login</title>
+    <title th:text="#{email.auth.otp.title}">OTP - Witcurve Login</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>
 <body>
-<p th:text="#{email.otp.greeting(${user.login})}">
+<p th:text="#{email.auth.otp.greeting(${user.firstName}, ${user.lastName})}">
     Dear
 </p>
-<p th:text="#{email.otp.text1(${user.otp})}">
-    Your JHipster account has been created, please click on the URL below to access it:
+<p th:text="#{email.auth.otp.text1(${user.otp})}">
+    Your OTP for logging in to your mobile application is ####.
 </p>
-<p th:text="#{email.otp.text2}">
+<p th:text="#{email.auth.otp.text2}">
     This OTP will expire soon!
 </p>
 <p>
-    <span th:text="#{email.otp.text3}">Regards, </span>
+    <span th:text="#{email.auth.otp.text3}">Regards, </span>
     <br/>
     <em th:text="#{email.signature}">Witcurve Team.</em>
 </p>
