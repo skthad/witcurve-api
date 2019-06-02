@@ -110,10 +110,20 @@ public class ApplicationProperties {
         return paytm;
     }
 
-    public final Domain domain = new Domain();
+    public final Witcurve witcurve = new Witcurve();
 
-    public static class Domain {
+    public static class Witcurve {
+        private String cryptoKey;
+
         private String url;
+
+        public String getCryptoKey() {
+            return cryptoKey;
+        }
+
+        public void setCryptoKey(String cryptoKey) {
+            this.cryptoKey = cryptoKey;
+        }
 
         public String getUrl() {
             return url;
@@ -124,7 +134,7 @@ public class ApplicationProperties {
         }
     }
 
-    public Domain getDomain() {
-        return domain;
+    public Witcurve getWitcurve() {
+        return witcurve;
     }
 }
