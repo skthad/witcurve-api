@@ -88,9 +88,16 @@ public class MailService {
 
 
     @Async
-    public void sendOtpMail(User user) {
-        log.debug("Sending OTP email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/otpEmail", "email.otp.title");
+    public void sendAuthenticationOtpMail(User user) {
+        log.debug("Sending Authentication OTP email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/authenticationOtpEmail", "email.auth.otp.title");
+    }
+
+
+    @Async
+    public void sendChangePasswordOtpMail(User user) {
+        log.debug("Sending Change Password OTP email to '{}'", user.getEmail());
+        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/changePasswordOtpEmail", "email.pass.otp.title");
     }
 
     @Async

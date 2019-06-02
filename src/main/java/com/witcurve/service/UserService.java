@@ -1,7 +1,6 @@
 package com.witcurve.service;
 
 import com.google.common.base.Strings;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.witcurve.config.ApplicationProperties;
 import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
@@ -241,7 +240,7 @@ public class UserService {
                 String token = username + "|" + DateTime.now().toString();
                 Map<String, Object> params = new HashMap();
                 params.put("userName", user.get().getFirstName() + " " + user.get().getLastName());
-                params.put("resetUrl", applicationProperties.getDomain().getUrl()
+                params.put("resetUrl", applicationProperties.getWitcurve().getUrl()
                     + Constants.RESET_URL + Base64.getEncoder().encodeToString(token.getBytes()));
                 mailService.sendResetPasswordMail(user.get().getEmail(), params);
                 log.debug("Reset password email sent for User: {}", user.get());
