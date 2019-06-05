@@ -29,7 +29,13 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     @Query("select distinct staff.primaryPhone from Staff staff where staff.schoolInfo.id = ?1 and staff.user.activated = true")
     Set<String> findActiveStaffPhoneNumbersInSchoolInfoId(Long schoolInfoId);
 
+    @Query("select distinct staff.email from Staff staff where staff.schoolInfo.id = ?1 and staff.user.activated = true")
+    Set<String> findActiveStaffEmailsInSchoolInfoId(Long schoolInfoId);
+
     @Query("select distinct staff.primaryPhone from Staff staff where staff.schoolInfo.id = ?1 and staff.id in ?2")
     Set<String> getPhoneNumbersBySchoolInfoAndStaffIds(Long schoolInfoId, List<Long> staffIds);
+
+    @Query("select distinct staff.email from Staff staff where staff.schoolInfo.id = ?1 and staff.id in ?2")
+    Set<String> getEmailsBySchoolInfoAndStaffIds(Long schoolInfoId, List<Long> staffIds);
 
 }
