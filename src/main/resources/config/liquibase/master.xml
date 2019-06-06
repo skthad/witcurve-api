@@ -18,4 +18,5 @@
     <include file="config/liquibase/changelog/20190525135934_event_content_refactor.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190528161238_add_binding_id_in_event.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190531064249_added_otp_purpose_in_user.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190606103030_removed_curriculum_read_only_acess_to_faculty.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
