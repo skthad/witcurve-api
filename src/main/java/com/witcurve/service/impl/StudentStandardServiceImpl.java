@@ -137,17 +137,27 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     }
 
     @Override
-    public List<StudentStandardDTO> getByStaffId(Long staffId) throws WitcurveException {
+    public List<StudentStandardDTO> getByStaffId(Long staffId, Grade grade, Long standardId) throws WitcurveException {
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
         if(courseTeachers.size() ==0) {
             throw new WitcurveException("This teacher is not attached to any courses or standards");
         }
-        Set<Long> standardIds = courseTeachers
-            .stream()
-            .map(CourseTeacher::getStandard)
-            .map(s -> s.getId())
-            .collect(Collectors.toSet());
-
+        Set<Long> standardIds = new HashSet<>();
+        if(standardId == null && grade == null) {
+            standardIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getStandard)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+        } else if(standardId!= null) {
+            standardIds.add(standardId);
+        } else {
+            for (CourseTeacher courseTeacher : courseTeachers) {
+                if(courseTeacher.getStandard().getGrade().equals(grade)) {
+                    standardIds.add(courseTeacher.getStandard().getId());
+                }
+            }
+        }
         List<StudentStandard> studentStandards = studentStandardRepository.getByStandardsId(new ArrayList<>(standardIds));
         return studentStandardMapper.toDto(studentStandards);
 
