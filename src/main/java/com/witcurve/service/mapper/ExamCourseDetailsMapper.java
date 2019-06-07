@@ -2,7 +2,6 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.EventContent;
 import com.witcurve.domain.ExamCourseDetails;
-import com.witcurve.domain.StudentMarks;
 import com.witcurve.service.dto.ExamCourseDetailsDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +14,6 @@ public interface ExamCourseDetailsMapper extends EntityMapper<ExamCourseDetailsD
     ExamCourseDetails toEntity(ExamCourseDetailsDTO examCourseDetailsDTO);
 
     @Mapping(target = "courseContentAttached", expression = "java(courseContentAttached(examCourseDetails.getEventContents()))")
-    @Mapping(target = "doesStudentMarksExist", expression = "java(doesStudentMarksExist(examCourseDetails.getStudentMarks()))")
     ExamCourseDetailsDTO toDto(ExamCourseDetails examCourseDetails);
 
     default ExamCourseDetails fromId(Long id) {
@@ -29,14 +27,6 @@ public interface ExamCourseDetailsMapper extends EntityMapper<ExamCourseDetailsD
 
     default Boolean courseContentAttached(Set<EventContent> eventContents) {
         if(eventContents != null && eventContents.size()!=0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    default Boolean doesStudentMarksExist(Set<StudentMarks> studentMarks) {
-        if(studentMarks != null && studentMarks.size()!=0) {
             return true;
         } else {
             return false;

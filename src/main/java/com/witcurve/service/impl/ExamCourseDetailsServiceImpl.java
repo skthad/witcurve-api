@@ -1,13 +1,9 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.CourseTeacher;
-import com.witcurve.domain.Exam;
-import com.witcurve.domain.ExamCourseDetails;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.repository.CourseTeacherRepository;
-import com.witcurve.repository.ExamCourseDetailsRepository;
-import com.witcurve.repository.ExamRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.ExamCourseDetailsService;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.ExamCourseDetailsDTO;
@@ -21,12 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +44,12 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
 
     @Autowired
     private StudentStandardService studentStandardService;
+
+    @Autowired
+    private StandardRepository standardRepository;
+
+    @Autowired
+    private StudentMarksRepository studentMarksRepository;
 
     @Override
     public List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTOs, Long examId) throws WitcurveException {
@@ -91,7 +89,17 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         } else {
             examCourseDetailsList = examCourseDetailsRepository.findByExamId(examId);
         }
-        return examCourseDetailsMapper.toDto(examCourseDetailsList);
+        List<ExamCourseDetailsDTO> result = examCourseDetailsMapper.toDto(examCourseDetailsList);
+        for(ExamCourseDetailsDTO examCourseDetails : result) {
+            List<Standard> standards = standardRepository.findByGradeAndSchoolInfoId(examCourseDetails.getGsd().getGrade(), examCourseDetails.getCourse().getSchoolInfoId());
+            for(Standard standard : standards) {
+                List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEcdIdAndStandardId(examCourseDetails.getId(), standard.getId(), Arrays.asList(true, false));
+                if(studentMarks.size() ==0) {
+                    examCourseDetails.setDoesAllStudentMarksExist(false);
+                }
+            }
+        }
+        return result;
     }
 
     @Override

@@ -28,6 +28,9 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Column
+    private String description;
+
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -47,11 +50,6 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     @Size(min=1, max=1)
     private Set<EventContent> eventContents;
 
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name="exam_course_details_id", insertable = false, updatable = false)
-    @Size(min=1, max=1)
-    private Set<StudentMarks> studentMarks;
-
     public Long getId() {
         return id;
     }
@@ -66,6 +64,14 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public GeneralSlotDetails getGsd() {
@@ -98,14 +104,6 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
 
     public void setEventContents(Set<EventContent> eventContents) {
         this.eventContents = eventContents;
-    }
-
-    public Set<StudentMarks> getStudentMarks() {
-        return studentMarks;
-    }
-
-    public void setStudentMarks(Set<StudentMarks> studentMarks) {
-        this.studentMarks = studentMarks;
     }
 
     @Override

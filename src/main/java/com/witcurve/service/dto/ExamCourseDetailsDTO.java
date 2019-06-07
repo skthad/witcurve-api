@@ -19,6 +19,8 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate date;
 
+    private String description;
+
     @NotNull
     private GeneralSlotDetailsDTO gsd;
 
@@ -30,7 +32,7 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     private Boolean courseContentAttached;
 
-    private Boolean doesStudentMarksExist;
+    private Boolean doesAllStudentMarksExist;
 
     public Long getId() {
         return id;
@@ -42,6 +44,14 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setDate(LocalDate date) {
@@ -80,12 +90,12 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
         this.courseContentAttached = courseContentAttached;
     }
 
-    public Boolean getDoesStudentMarksExist() {
-        return doesStudentMarksExist;
+    public Boolean getDoesAllStudentMarksExist() {
+        return doesAllStudentMarksExist;
     }
 
-    public void setDoesStudentMarksExist(Boolean doesStudentMarksExist) {
-        this.doesStudentMarksExist = doesStudentMarksExist;
+    public void setDoesAllStudentMarksExist(Boolean doesAllStudentMarksExist) {
+        this.doesAllStudentMarksExist = doesAllStudentMarksExist;
     }
 
     @Override
