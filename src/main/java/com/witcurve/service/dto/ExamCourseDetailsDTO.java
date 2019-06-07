@@ -28,6 +28,10 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @NotNull
     private Integer fullMarks;
 
+    private Boolean courseContentAttached;
+
+    private Boolean doesStudentMarksExist;
+
     public Long getId() {
         return id;
     }
@@ -66,6 +70,22 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     public void setFullMarks(Integer fullMarks) {
         this.fullMarks = fullMarks;
+    }
+
+    public Boolean getCourseContentAttached() {
+        return courseContentAttached;
+    }
+
+    public void setCourseContentAttached(Boolean courseContentAttached) {
+        this.courseContentAttached = courseContentAttached;
+    }
+
+    public Boolean getDoesStudentMarksExist() {
+        return doesStudentMarksExist;
+    }
+
+    public void setDoesStudentMarksExist(Boolean doesStudentMarksExist) {
+        this.doesStudentMarksExist = doesStudentMarksExist;
     }
 
     @Override
