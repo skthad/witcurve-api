@@ -151,12 +151,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO getEventById(Long eventId) throws WitcurveException {
         log.debug("Request to get event with id : {}", eventId);
-        Event event = eventRepository.findById(eventId).get();
-
-        if (event ==  null) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (!event.isPresent()) {
             throw new WitcurveException("No Event with given id");
         }
-        return eventMapper.toDto(event);
+        return eventMapper.toDto(event.get());
     }
 
     @Override
