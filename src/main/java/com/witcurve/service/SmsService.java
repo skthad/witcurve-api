@@ -2,7 +2,9 @@ package com.witcurve.service;
 
 import com.google.common.base.Strings;
 import com.witcurve.config.ApplicationProperties;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.StudentStandardRepository;
@@ -35,6 +37,9 @@ public class SmsService {
     StudentRepository studentRepository;
 
     @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
     StaffRepository staffRepository;
 
     @Autowired
@@ -47,7 +52,7 @@ public class SmsService {
     private static final String ROUTE="4";
 
     @Async
-    public void sendSms(String mobileNumber, String body) throws WitcurveException, UnsupportedEncodingException {
+    public void sendSms(String mobileNumber, String body, String smsSignature) throws UnsupportedEncodingException {
 
         URLConnection myURLConnection;
         URL myURL;
@@ -60,7 +65,7 @@ public class SmsService {
         sbPostData.append("&mobiles="+COUNTRY_CODE+mobileNumber);
         sbPostData.append("&message="+ URLEncoder.encode(body, "UTF-8"));
         sbPostData.append("&route="+ROUTE);
-        sbPostData.append("&sender="+applicationProperties.getSms().getSenderId());
+        sbPostData.append("&sender="+(Strings.isNullOrEmpty(smsSignature)? applicationProperties.getSms().getSenderId(): smsSignature));
         sbPostData.append("&country="+0);
 
         String finalApiUrl = sbPostData.toString();
@@ -83,7 +88,13 @@ public class SmsService {
         log.info("Sms sent successfully to '{}'", COUNTRY_CODE+mobileNumber);
     }
 
+    @Async
     public void sendBulkSMS(Long schoolInfoId, SmsVM smsVM) throws UnsupportedEncodingException {
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No school Info found for ID: " + schoolInfo);
+        }
         Set<String> recipientsList = new HashSet<>();
         if (!Strings.isNullOrEmpty(smsVM.getStudentList())) {
             if (smsVM.getStudentList().equals("-1")) {
@@ -109,7 +120,7 @@ public class SmsService {
             recipientsList.addAll(studentStandardRepository.getActiveStudentPhoneNumbersBySchoolInfoIdAndStandardIds(schoolInfoId, standardIds));
         }
         if (!Strings.isNullOrEmpty(smsVM.getGradeList())) {
-            List<Grade> gradeList= new ArrayList<>();
+            List<Grade> gradeList;
             try {
                  gradeList = Arrays.asList(smsVM.getGradeList().split(","))
                     .stream().map(s -> Grade.valueOf(s.trim())).collect(Collectors.toList());
@@ -121,7 +132,7 @@ public class SmsService {
         }
         if(recipientsList.size()!=0) {
             String mobileNumbers = String.join(",91", recipientsList);
-            sendSms(mobileNumbers, smsVM.getBody());
+            sendSms(mobileNumbers, smsVM.getBody(), schoolInfo.get().getSchool().getInstitute().getSmsSignature());
         } else {
             throw new WitcurveException("There are no phone records available for given recipient list");
         }

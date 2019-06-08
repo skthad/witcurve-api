@@ -2,8 +2,10 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.OtpPurpose;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.service.MailService;
 import com.witcurve.service.OtpService;
@@ -34,6 +36,9 @@ public class SmsResource {
     UserRepository userRepository;
 
     @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
     OtpService otpService;
 
     @Autowired
@@ -50,9 +55,23 @@ public class SmsResource {
         String username = loginVM.getUsername();
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
+        String smsSignature = null;
+        String body = "";
         OtpPurpose otpPurpose = changePassword ? OtpPurpose.CHANGE_PASSWORD : OtpPurpose.AUTHENTICATION;
         if (result.isPresent()) {
             User user = result.get();
+            int index = user.getLogin().indexOf("-");
+            if(index >  0) {
+               Long schoolInfoId;
+                try {
+                    schoolInfoId = Long.parseLong(username.substring(0, index));
+                    Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+                    smsSignature = schoolInfo.get().getSchool().getInstitute().getSmsSignature();
+                } catch (NumberFormatException e) {
+                    log.error("Entered school info id in user name is wrong : {}", username);
+                    throw new WitcurveException("Invalid username, please enter the correct username");
+                }
+            }
             if (user.getOtp() != null && user.getOtpExpiry() != null && user.getOtpExpiry().isAfter(Instant.now()) && otpPurpose.equals(user.getOtpPurpose())) {
                 otp = user.getOtp();
             } else {
@@ -63,11 +82,11 @@ public class SmsResource {
                 userRepository.save(user);
             }
             if(changePassword) {
-                smsService.sendSms(contactNumber,"Hello User, Your OTP for changing password from your mobile application is " + otp);
+                body = "Hello User, Your OTP for changing password from your mobile application is " + otp;
             } else {
-                smsService.sendSms(contactNumber,"Hello User, Your OTP for logging in to your mobile application is " + otp);
+                body = "Hello User, Your OTP for logging in to your mobile application is " + otp;
             }
-
+            smsService.sendSms(contactNumber, body, smsSignature);
             if (StringUtils.isNotBlank(user.getEmail())) {
                 if (changePassword) {
                     mailService.sendChangePasswordOtpMail(user);

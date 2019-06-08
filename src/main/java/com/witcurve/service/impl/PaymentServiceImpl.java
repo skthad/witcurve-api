@@ -180,7 +180,7 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             smsService.sendSms(student.getRegisteredMobileNumber(),
                 "Dear " + notificationParams.get("studentName") +
-                    ", Your have been subscribed to Witcurve, it will expire on " + notificationParams.get("subscriptionEndDate") + ".");
+                    ", Your have been subscribed to Witcurve, it will expire on " + notificationParams.get("subscriptionEndDate") + ".", student.getSchoolInfo().getSchool().getInstitute().getSmsSignature());
         } catch (UnsupportedEncodingException e) {
             log.error("Unable to send Subscription message", e);
         }

@@ -123,9 +123,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO getStaffByUsername(String username) throws WitcurveException {
-        log.debug("Request to get staff with username : {}", username);
+        log.info("Request to get staff with username : {}", username);
         int index = username.indexOf("-");
-        log.debug("Index value : {} ",index);
         if(index >  0 ) {
             Long schoolInfoId;
             try {
