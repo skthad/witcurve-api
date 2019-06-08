@@ -2,9 +2,7 @@ package com.witcurve.service;
 
 import com.google.common.base.Strings;
 import com.witcurve.config.Constants;
-import com.witcurve.domain.School;
 import com.witcurve.domain.SchoolInfo;
-import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StaffRepository;
@@ -24,7 +22,6 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
-import javax.swing.text.html.Option;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,9 +36,7 @@ public class MailService {
 
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
-    private static final String USER = "user";
-
-    private static final String BASE_URL = "baseUrl";
+    private static final String PARAMS_MAP = "paramsMap";
 
     private final JHipsterProperties jHipsterProperties;
 
@@ -74,6 +69,13 @@ public class MailService {
     }
 
     @Async
+    public void sendEmail(String to, String from, String subject, String content, boolean isMultipart, boolean isHtml) {
+        String[] toEmails = new String[1];
+        toEmails[0] = to;
+        sendEmail(toEmails, from, subject, content, isMultipart, isHtml);
+    }
+
+    @Async
     public void sendEmail(String[] to, String from, String subject, String content, boolean isMultipart, boolean isHtml) {
         log.debug("Send email[multipart '{}' and html '{}'] to '{}' with subject '{}' and content={}",
             isMultipart, isHtml, to, subject, content);
@@ -97,12 +99,13 @@ public class MailService {
         }
     }
 
+    @Async
     public void sendBulkEmail(EmailVM emailVM, Long schoolInfoId)  throws WitcurveException {
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
         }
-        String fromEmail = schoolInfo.get().getSchool().getInstitute().getPrimaryEmail();
+        String fromEmail = schoolInfo.get().getSchool().getInstitute().getSmsSignature().toLowerCase() + "@witcurve.com";
         Set<String> recipientsList = new HashSet<>();
         if (!Strings.isNullOrEmpty(emailVM.getStudentList())) {
             if (emailVM.getStudentList().equals("-1")) {
@@ -128,7 +131,7 @@ public class MailService {
             recipientsList.addAll(studentStandardRepository.getActiveStudentEmailsBySchoolInfoIdAndStandardIds(schoolInfoId, standardIds));
         }
         if (!Strings.isNullOrEmpty(emailVM.getGradeList())) {
-            List<Grade> gradeList= new ArrayList<>();
+            List<Grade> gradeList;
             try {
                 gradeList = Arrays.asList(emailVM.getGradeList().split(","))
                     .stream().map(s -> Grade.valueOf(s.trim())).collect(Collectors.toList());
@@ -148,67 +151,27 @@ public class MailService {
     }
 
     @Async
-    public void sendEmailFromTemplate(String to, Map<String, Object> params, String templateName, String titleKey) {
-        Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
-        Context context = new Context(locale);
-        context.setVariables(params);
-        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
-        String content = templateEngine.process(templateName, context);
-        String subject = messageSource.getMessage(titleKey, null, locale);
-        String[] toArray = new String[1];
-        toArray[0] = to;
-        sendEmail(toArray, jHipsterProperties.getMail().getFrom(), subject, content, false, true);
-
-    }
-
-
-    @Async
-    public void sendAuthenticationOtpMail(User user) {
-        log.debug("Sending Authentication OTP email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/authenticationOtpEmail", "email.auth.otp.title");
-    }
-
-
-    @Async
-    public void sendChangePasswordOtpMail(User user) {
-        log.debug("Sending Change Password OTP email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/changePasswordOtpEmail", "email.pass.otp.title");
+    public void sendEmailFromTemplate(String toEmail, Map<String, Object> paramsMap, String templateName, String titleKey, String smsSignature) {
+        HashMap<String, Map<String, Object>> params = new HashMap<>();
+        params.put(toEmail, paramsMap);
+        sendEmailFromTemplate(Arrays.asList(toEmail), params, templateName, titleKey, smsSignature);
     }
 
     @Async
-    public void sendSubscriptionTransactionMail(String to, Map<String, Object> params) {
-        log.debug("Sending Subscription Transaction email to '{}'", to);
-        sendEmailFromTemplate(to, params, "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
-    }
-
-    @Async
-    public void sendResetPasswordMail(String to, Map<String, Object> params) {
-        log.debug("Sending Reset Password email to '{}'", to);
-        sendEmailFromTemplate(to, params, "mail/resetPasswordEmail", "email.reset.password.title");
-    }
-
-    @Async
-    public void sendSubscriptionTransactionMail(User user) {
-        log.debug("Sending Subscription Transaction email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/subscriptionTransactionEmail", "email.subscription.transaction.title");
-    }
-
-    @Async
-    public void sendLeaveApplicationMail(User user) {
-        log.debug("Sending Leave Application email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/leaveApplicationEmail", "email.leave.application.title");
-    }
-
-    @Async
-    public void sendMeetingRequestMail(User user) {
-        log.debug("Sending Meeting Request email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/meetingRequestEmail", "email.meeting.request.title");
-    }
-
-    @Async
-    public void sendPersonalMessageMail(User user) {
-        log.debug("Sending Personal Message email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user.getEmail(), Collections.singletonMap(USER, user), "mail/personalMessageEmail", "email.personal.message.title");
+    public void sendEmailFromTemplate(List<String> toEmails, Map<String, Map<String, Object>> paramsMap, String templateName, String titleKey, String smsSignature) {
+        String fromEmail = (Strings.isNullOrEmpty(smsSignature) ? "admin" : smsSignature.toLowerCase()) + "@witcurve.com";
+        for (String toEmail : toEmails) {
+            if (paramsMap.get(toEmail) != null) {
+                log.debug("Sending mail for template with name : {} and title Key : {} to email : {}", templateName, titleKey, toEmail);
+                Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
+                Context context = new Context(locale);
+                context.setVariables(paramsMap.get(toEmail));
+                context.setVariable(Constants.PARAM_BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+                String content = templateEngine.process(templateName, context);
+                String subject = messageSource.getMessage(titleKey, null, locale);
+                sendEmail(toEmail, fromEmail, subject, content, false, true);
+            }
+        }
     }
 
 }

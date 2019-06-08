@@ -6,16 +6,18 @@
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>
 <body>
-<p th:text="#{email.subscription.transaction.greeting(${studentName})}">
+<p th:text="#{email.subscription.transaction.greeting(${fullName})}">
     Dear
 </p>
 <p th:text="#{email.subscription.transaction.text1(${subscriptionEndDate})}">
-
 </p>
 <p>
-    <span th:text="#{email.subscription.transaction.text2}">Regards, </span>
+    This is an auto-generated email. Please do not reply.
+</p>
+<p>
+    <span>Warm Regards, </span>
     <br/>
-    <em th:text="#{email.signature}">Witcurve Team.</em>
+    <em th:text="#{instituteName}">Institute Name.</em>
 </p>
 </body>
 </html>

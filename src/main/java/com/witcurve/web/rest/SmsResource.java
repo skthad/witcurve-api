@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Strings;
+import com.witcurve.config.Constants;
 import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.OtpPurpose;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -56,17 +59,19 @@ public class SmsResource {
         Optional<User> result = userRepository.findOneByLogin(username);
         String otp;
         String smsSignature = null;
+        String instituteName = null;
         String body = "";
         OtpPurpose otpPurpose = changePassword ? OtpPurpose.CHANGE_PASSWORD : OtpPurpose.AUTHENTICATION;
         if (result.isPresent()) {
             User user = result.get();
             int index = user.getLogin().indexOf("-");
-            if(index >  0) {
+            if(index > 0) {
                Long schoolInfoId;
                 try {
                     schoolInfoId = Long.parseLong(username.substring(0, index));
                     Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
                     smsSignature = schoolInfo.get().getSchool().getInstitute().getSmsSignature();
+                    instituteName = schoolInfo.get().getSchool().getInstitute().getName();
                 } catch (NumberFormatException e) {
                     log.error("Entered school info id in user name is wrong : {}", username);
                     throw new WitcurveException("Invalid username, please enter the correct username");
@@ -81,17 +86,21 @@ public class SmsResource {
                 user.setOtpExpiry(Instant.now().plusSeconds(300));
                 userRepository.save(user);
             }
+            Map paramsMap = new HashMap();
+            paramsMap.put(Constants.PARAM_FULL_NAME, user.getFirstName() + " " + user.getLastName());
+            paramsMap.put(Constants.PARAM_OTP, otp);
+            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
             if(changePassword) {
-                body = "Hello User, Your OTP for changing password from your mobile application is " + otp;
+                body = String.format("Hello %s, Your OTP for changing password from your mobile application is %s", paramsMap.get(Constants.PARAM_FULL_NAME), paramsMap.get(Constants.PARAM_OTP));
             } else {
-                body = "Hello User, Your OTP for logging in to your mobile application is " + otp;
+                body = String.format("Hello %s, Your OTP for logging in to your mobile application is %s", paramsMap.get(Constants.PARAM_FULL_NAME), paramsMap.get(Constants.PARAM_OTP));
             }
             smsService.sendSms(contactNumber, body, smsSignature);
             if (StringUtils.isNotBlank(user.getEmail())) {
                 if (changePassword) {
-                    mailService.sendChangePasswordOtpMail(user);
+                    mailService.sendEmailFromTemplate(user.getEmail(), paramsMap,  "mail/changePasswordOtpEmail", "email.pass.otp.title", smsSignature);
                 } else {
-                    mailService.sendAuthenticationOtpMail(user);
+                    mailService.sendEmailFromTemplate(user.getEmail(), paramsMap,  "mail/authenticationOtpEmail", "email.auth.otp.title", smsSignature);
                 }
             }
         } else {

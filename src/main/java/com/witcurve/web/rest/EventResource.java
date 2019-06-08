@@ -48,7 +48,8 @@ public class EventResource {
      */
     @PostMapping("/events")
     @Timed
-    public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+    public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs,
+                                                       @RequestParam(required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request Save Events : {}",eventDTOs);
 
         for(EventDTO eventDTO: eventDTOs) {
@@ -57,7 +58,7 @@ public class EventResource {
             }
         }
         try {
-            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [")) {
@@ -78,11 +79,12 @@ public class EventResource {
      */
     @PostMapping("/events/periodic-tests")
     @Timed
-    public ResponseEntity<List<EventDTO>> createPeriodicEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+    public ResponseEntity<List<EventDTO>> createPeriodicEvents(@RequestBody List<EventDTO> eventDTOs,
+                                                               @RequestParam(required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request Save Periodic Test Events : {}",eventDTOs);
 
         try {
-            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [")) {
@@ -102,14 +104,15 @@ public class EventResource {
 
     @PutMapping("/events")
     @Timed
-    public ResponseEntity<List<EventDTO>> updateEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+    public ResponseEntity<List<EventDTO>> updateEvents(@RequestBody List<EventDTO> eventDTOs,
+                                                       @RequestParam(required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request to update events : {}",eventDTOs);
         for(EventDTO eventDTO : eventDTOs) {
             if (eventDTO.getId() == null) {
                 throw new WitcurveException("Id is required for update request");
             }
         }
-        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
         return ResponseEntity.ok(result);
     }
 

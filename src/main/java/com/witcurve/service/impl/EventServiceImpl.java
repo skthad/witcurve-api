@@ -4,6 +4,7 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.EventService;
+import com.witcurve.service.MailService;
 import com.witcurve.service.SlotCourseDetailsService;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.EventDTO;
@@ -75,6 +76,12 @@ public class EventServiceImpl implements EventService {
     @Autowired
     StudentMarksRepository studentMarksRepository;
 
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    MailService mailService;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
@@ -92,33 +99,30 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
+    public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
+        /*Optional<SchoolInfo> result = schoolInfoRepository.findById(schoolInfoId);
+        if (!result.isPresent()) {
+            throw new WitcurveException("No school info found with ID: " + schoolInfoId);
+        }*/
         String bindingId = UUID.randomUUID().toString();
-        if (eventDTOs.size() > 1) {
-            for(EventDTO eventDTO : eventDTOs) {
-                if(eventDTO.getKeywords()!= null) {
-                    for (String keyword : eventDTO.getKeywords()) {
-                        keywordRepository.save(new Keyword(keyword));
-                    }
-                }
-                if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
-                    eventDTO.setBindingId(bindingId);
-                }
-            }
-        } else {
-            if(eventDTOs.get(0).getKeywords()!= null) {
-                for (String keyword : eventDTOs.get(0).getKeywords()) {
+        for(EventDTO eventDTO : eventDTOs) {
+            if(eventDTO.getKeywords()!= null) {
+                for (String keyword : eventDTO.getKeywords()) {
                     keywordRepository.save(new Keyword(keyword));
                 }
-                if(eventDTOs.get(0).getType().equals(EventType.PERIODIC_TEST)) {
-                    eventDTOs.get(0).setBindingId(bindingId);
-                }
+            }
+            if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                eventDTO.setBindingId(bindingId);
             }
         }
 
         List<Event> events = eventMapper.toEntity(eventDTOs);
+
+        Map<Long, Set<LocalDate>> studentIdAndDatesMap = null;
+        Map<Long, Set<LocalDate>> staffIdAndDatesMap = null;
+
         for(Event event : events){
             if(event.getType().equals(EventType.ATTENDANCE)) {
                 if (event.getAttendanceType() == null) {
@@ -132,6 +136,15 @@ public class EventServiceImpl implements EventService {
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
                         event.setDescription(la.get(0).getDescription());
                     }
+                    if (event.getId() == null && event.getAttendanceType().equals(AttendanceType.ABSENT)) {
+                        if (studentIdAndDatesMap == null) {
+                            studentIdAndDatesMap = new HashMap<>();
+                        }
+                        if (studentIdAndDatesMap.get(event.getStudent().getId()) == null) {
+                            studentIdAndDatesMap.put(event.getStudent().getId(), new HashSet<>());
+                        }
+                        studentIdAndDatesMap.get(event.getStudent().getId()).add(event.getDate());
+                    }
                 }
                 if(event.getStaff() != null) {
                     LocalDate date = event.getDate();
@@ -141,9 +154,28 @@ public class EventServiceImpl implements EventService {
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
                         event.setDescription(la.get(0).getDescription());
                     }
+                    if (event.getId() == null && event.getAttendanceType().equals(AttendanceType.ABSENT)) {
+                        if (staffIdAndDatesMap == null) {
+                            staffIdAndDatesMap = new HashMap<>();
+                        }
+                        if (staffIdAndDatesMap.get(event.getStaff().getId()) == null) {
+                            staffIdAndDatesMap.put(event.getStaff().getId(), new HashSet<>());
+                        }
+                        staffIdAndDatesMap.get(event.getStaff().getId()).add(event.getDate());
+                    }
                 }
             }
         }
+
+        /*if (studentIdAndDatesMap != null || staffIdAndDatesMap != null) {
+            String instituteName = result.get().getSchool().getInstitute().getName();
+
+            Map paramsMap = new HashMap();
+            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
+            //Set<String> mobileNumbers = studentRepository.getPhoneNumbersByStudentIds(studentIdAndDatesMap.keySet());
+            Set<String> emails = studentRepository.getEmailsBySchoolInfoAndStudentIds(schoolInfoId, studentIdAndDatesMap.keySet());
+        }*/
+
         events = eventRepository.saveAll(events);
         return eventMapper.toDto(events);
     }
@@ -165,6 +197,11 @@ public class EventServiceImpl implements EventService {
 
         if (event == null){
             throw new WitcurveException("No Event with given id");
+        }
+        if (event.getType() == EventType.TEST
+            || event.getType() == EventType.ASSIGNMENT
+            || event.getType() == EventType.DAILY_UPDATE) {
+            eventContentRepository.deleteByEventId(event.getId());
         }
         eventRepository.delete(event);
     }

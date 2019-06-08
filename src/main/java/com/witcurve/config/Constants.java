@@ -13,6 +13,16 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String RESET_URL = "?context=reset-password&token=";
 
+    // Mail template param keys
+    public static final String PARAM_BASE_URL = "baseUrl";
+    public static final String PARAM_RESET_URL = "resetUrl";
+    public static final String PARAM_FULL_NAME = "fullName";
+    public static final String PARAM_OTP = "otp";
+    public static final String PARAM_SUBSCRIPTION_END_DATE = "subscriptionEndDate";
+    public static final String PARAM_INSTITUTE_NAME = "instituteName";
+    public static final String PARAM_DATE = "date";
+    public static final String PARAM_TINY_URL = "tinyUrl";
+
     private Constants() {
     }
 }

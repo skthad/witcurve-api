@@ -1,12 +1,10 @@
 package com.witcurve.service;
 
-import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.PeriodicTestDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +13,7 @@ import java.util.List;
 
 public interface EventService {
 
-    List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException;
+    List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException;
 
     EventDTO getEventById(Long eventId) throws WitcurveException;
 

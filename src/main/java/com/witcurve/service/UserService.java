@@ -4,13 +4,11 @@ import com.google.common.base.Strings;
 import com.witcurve.config.ApplicationProperties;
 import com.witcurve.config.Constants;
 import com.witcurve.domain.Authority;
+import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.OtpPurpose;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.AuthorityRepository;
-import com.witcurve.repository.StaffRepository;
-import com.witcurve.repository.StudentRepository;
-import com.witcurve.repository.UserRepository;
+import com.witcurve.repository.*;
 import com.witcurve.security.AuthoritiesConstants;
 import com.witcurve.security.SecurityUtils;
 import com.witcurve.service.dto.UserDTO;
@@ -44,10 +42,7 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     @Autowired
-    private StaffRepository staffRepository;
-
-    @Autowired
-    private StudentRepository studentRepository;
+    private SchoolInfoRepository schoolInfoRepository;
 
     @Autowired
     private MailService mailService;
@@ -262,17 +257,34 @@ public class UserService {
 
     public String requestPasswordEmail(String username) {
         if (StringUtils.isNotBlank(username)) {
-            Optional<User> user = userRepository.findOneByLogin(username);
-            if(user.isPresent()) {
+            Optional<User> result = userRepository.findOneByLogin(username);
+            if(result.isPresent()) {
+                String smsSignature = "";
+                String instituteName = "";
+                User user = result.get();
+                int index = user.getLogin().indexOf("-");
+                if(index > 0) {
+                    Long schoolInfoId;
+                    try {
+                        schoolInfoId = Long.parseLong(username.substring(0, index));
+                        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+                        smsSignature = schoolInfo.get().getSchool().getInstitute().getSmsSignature();
+                        instituteName = schoolInfo.get().getSchool().getInstitute().getName();
+                    } catch (NumberFormatException e) {
+                        log.error("Entered school info id in user name is wrong : {}", username);
+                        throw new WitcurveException("Invalid username, please enter the correct username");
+                    }
+                }
                 String token = username + "|" + DateTime.now().toString();
-                Map<String, Object> params = new HashMap();
-                params.put("userName", user.get().getFirstName() + " " + user.get().getLastName());
-                params.put("resetUrl", applicationProperties.getWitcurve().getUrl()
+                Map<String, Object> paramsMap = new HashMap();
+                paramsMap.put(Constants.PARAM_FULL_NAME, result.get().getFirstName() + " " + result.get().getLastName());
+                paramsMap.put(Constants.PARAM_RESET_URL, applicationProperties.getWitcurve().getUrl()
                     + Constants.RESET_URL + encryptionService.encrypt(token));
-                mailService.sendResetPasswordMail(user.get().getEmail(), params);
-                log.debug("Reset password email sent for User: {}", user.get());
+                paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
+                mailService.sendEmailFromTemplate(result.get().getEmail(), paramsMap, "mail/resetPasswordEmail", "email.reset.password.title", smsSignature);
+                log.debug("Reset password email sent for User: {}", result.get());
 
-                return user.get().getEmail();
+                return result.get().getEmail();
             } else {
                 throw new WitcurveException("Password cannot be reset as we can’t find any user to reset password");
             }
