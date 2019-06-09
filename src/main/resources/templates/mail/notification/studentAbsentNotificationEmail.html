@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{email.auth.otp.title(${fullName})}">OTP - Witcurve Login</title>
+    <title th:text="#{email.notification.student.absent.title(${smsSignature}, ${fullName}, ${date})}">Student is Absent</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>
 <body>
-<p th:text="#{email.auth.otp.greeting(${fullName})}">
-    Dear
-</p>
-<p th:text="#{email.auth.otp.text1(${otp})}">
-    Your OTP for logging in to your mobile application is ####.
-</p>
-<p th:text="#{email.auth.otp.text2}">
-    This OTP will expire soon!
-</p>
+<p th:text="#{email.notification.parent.greeting}">Dear Parent,</p>
+<p th:text="#{email.notification.subscription(${instituteName})}">
+<p th:text="#{email.notification.student.absent.body(${fullName}, ${date})}"/>
+<p th:text="#{email.notification.tinyUrl(${tinyUrl})}"/>
 <p>
     This is an auto-generated email. Please do not reply.
 </p>

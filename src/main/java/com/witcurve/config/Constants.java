@@ -20,6 +20,7 @@ public final class Constants {
     public static final String PARAM_OTP = "otp";
     public static final String PARAM_SUBSCRIPTION_END_DATE = "subscriptionEndDate";
     public static final String PARAM_INSTITUTE_NAME = "instituteName";
+    public static final String PARAM_SMS_SIGNATURE = "smsSignature";
     public static final String PARAM_DATE = "date";
     public static final String PARAM_TINY_URL = "tinyUrl";
 

@@ -8,12 +8,13 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface EventService {
 
-    List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException;
+    List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException;
 
     EventDTO getEventById(Long eventId) throws WitcurveException;
 

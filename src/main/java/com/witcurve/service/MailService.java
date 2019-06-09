@@ -151,26 +151,27 @@ public class MailService {
     }
 
     @Async
-    public void sendEmailFromTemplate(String toEmail, Map<String, Object> paramsMap, String templateName, String titleKey, String smsSignature) {
-        HashMap<String, Map<String, Object>> params = new HashMap<>();
-        params.put(toEmail, paramsMap);
-        sendEmailFromTemplate(Arrays.asList(toEmail), params, templateName, titleKey, smsSignature);
+    public void sendEmailFromTemplate(String toEmail, Map<String, Object> singleMap, String templateName, String titleKey, String smsSignature) {
+        HashMap<String, Map<String, Object>> paramsMap = new HashMap<>();
+        paramsMap.put(toEmail, singleMap);
+        sendEmailFromTemplate(paramsMap, templateName, titleKey, smsSignature);
     }
 
     @Async
-    public void sendEmailFromTemplate(List<String> toEmails, Map<String, Map<String, Object>> paramsMap, String templateName, String titleKey, String smsSignature) {
+    public void sendEmailFromTemplate(Map<String, Map<String, Object>> emailIdParamsMap, String templateName, String titleKey, String smsSignature) {
         String fromEmail = (Strings.isNullOrEmpty(smsSignature) ? "admin" : smsSignature.toLowerCase()) + "@witcurve.com";
-        for (String toEmail : toEmails) {
-            if (paramsMap.get(toEmail) != null) {
-                log.debug("Sending mail for template with name : {} and title Key : {} to email : {}", templateName, titleKey, toEmail);
-                Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
-                Context context = new Context(locale);
-                context.setVariables(paramsMap.get(toEmail));
-                context.setVariable(Constants.PARAM_BASE_URL, jHipsterProperties.getMail().getBaseUrl());
-                String content = templateEngine.process(templateName, context);
-                String subject = messageSource.getMessage(titleKey, null, locale);
-                sendEmail(toEmail, fromEmail, subject, content, false, true);
+        for (String toEmail : emailIdParamsMap.keySet()) {
+            log.debug("Sending mail for template with name : {} and title Key : {} to email : {}", templateName, titleKey, toEmail);
+            Locale locale = Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
+            Context context = new Context(locale);
+            if (emailIdParamsMap.get(toEmail) != null) {
+                context.setVariables(emailIdParamsMap.get(toEmail));
             }
+            context.setVariable(Constants.PARAM_SMS_SIGNATURE, smsSignature);
+            context.setVariable(Constants.PARAM_BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+            String content = templateEngine.process(templateName, context);
+            String subject = messageSource.getMessage(titleKey, null, locale);
+            sendEmail(toEmail, fromEmail, subject, content, false, true);
         }
     }
 
