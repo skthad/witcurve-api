@@ -30,9 +30,9 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @NotNull
     private Integer fullMarks;
 
-    private Boolean courseContentAttached;
+    private Boolean courseContentAttached = false;
 
-    private Boolean doesAllStudentMarksExist;
+    private Boolean doesAllStudentMarksExist = true;
 
     public Long getId() {
         return id;
