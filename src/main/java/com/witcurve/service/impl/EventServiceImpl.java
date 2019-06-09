@@ -3,10 +3,8 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
-import com.witcurve.service.EventService;
-import com.witcurve.service.MailService;
-import com.witcurve.service.SlotCourseDetailsService;
-import com.witcurve.service.StudentStandardService;
+import com.witcurve.service.*;
+import com.witcurve.service.dto.AcademicSessionDTO;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.PeriodicTestDTO;
 import com.witcurve.service.dto.StudentStandardDTO;
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,6 +80,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    AcademicSessionService academicSessionService;
 
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
@@ -231,10 +233,23 @@ public class EventServiceImpl implements EventService {
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         if(studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
-            Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
 
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
+            AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, LocalDate.now());
+            List<BigInteger> eventIds =  new ArrayList<>();
+            long substractDays = 6;
+            boolean breakCycle = false;
+            while(eventIds.size() < 20) {
+                if(eventDate.minusDays(substractDays).isBefore(currentSession.getStartDate())) {
+                    substractDays = Period.between(eventDate.minusDays(substractDays), currentSession.getStartDate()).getDays();
+                    breakCycle = true;
+                }
+                eventIds = eventRepository.findDirayEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, standardId, Arrays.asList(EventType.DAILY_UPDATE.toString()));
+                if(breakCycle) {
+                    break;
+                }
+                substractDays += 7;
+            }
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateDescComparator());
         }
