@@ -37,6 +37,14 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query(value = "select distinct e.id from event e\n" +
         "left join slot_course_details scd on scd.id = e.scd_id\n" +
         "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
+        "where e.date BETWEEN ?1 AND ?2 AND \n" +
+        "(gsd.standard_id = ?3 and e.type in ?4)", nativeQuery = true)
+    List<BigInteger> findDirayEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
+                                                    Long standardId, List<String> types);
+
+    @Query(value = "select distinct e.id from event e\n" +
+        "left join slot_course_details scd on scd.id = e.scd_id\n" +
+        "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
         "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.staff_id = ?3 and e.type = 'ATTENDANCE') or \n" +
