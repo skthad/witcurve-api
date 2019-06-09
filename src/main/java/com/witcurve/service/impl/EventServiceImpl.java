@@ -204,10 +204,15 @@ public class EventServiceImpl implements EventService {
                         String fullName = student.getFirstName() + " " + student.getLastName();
                         paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
                         //TODO: add logic for tiny Urls
+                        List<String> subjectParams = new ArrayList<>();
+                        subjectParams.add(smsSignature);
+                        subjectParams.add(fullName);
                         String tinyUrl = "http://witcurve.com/tiny";
                         paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
                         for (LocalDate date: studentIdAndDatesMap.get(studentId)) {
                             paramsMap.put(Constants.PARAM_DATE, date);
+                            subjectParams.add(date.toString());
+                            paramsMap.put(Constants.PARAM_SUBJECT, subjectParams );
                             mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", smsSignature);
                             smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), smsSignature);
                         }
@@ -231,8 +236,11 @@ public class EventServiceImpl implements EventService {
                         //TODO: add logic for tiny Urls
                         String tinyUrl = "http://witcurve.com/tiny";
                         paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
+                        List<String> subjectParams = new ArrayList<>();
+                        subjectParams.add(smsSignature);
                         for (LocalDate date: staffIdAndDatesMap.get(staffId)) {
                             paramsMap.put(Constants.PARAM_DATE, date);
+                            subjectParams.add(date.toString());
                             mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/staffAbsentNotificationEmail", "email.notification.staff.absent.title", smsSignature);
                             smsService.sendSms(staff.getPrimaryPhone(), String.format(smsBody, date, tinyUrl), smsSignature);
                         }

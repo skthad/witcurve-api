@@ -23,6 +23,7 @@ public final class Constants {
     public static final String PARAM_SMS_SIGNATURE = "smsSignature";
     public static final String PARAM_DATE = "date";
     public static final String PARAM_TINY_URL = "tinyUrl";
+    public static final String PARAM_SUBJECT = "subject";
 
     private Constants() {
     }
