@@ -179,7 +179,7 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        if (result.isPresent()) { //TODO: remove 'if' condition once schoolInfoId is made mandatory
+        if (result != null && result.isPresent()) { //TODO: remove 'if' condition once schoolInfoId is made mandatory
 
             if (studentIdAndDatesMap != null || staffIdAndDatesMap != null) {
 
