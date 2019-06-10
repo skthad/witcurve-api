@@ -109,6 +109,20 @@ public class InstituteResource {
     }
 
     /**
+     * get instituteMap by subDomainName
+     * @param subDomainName
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/institutes/{subDomainName}")
+    @Timed
+    public ResponseEntity<InstituteDTO> getInstituteMapBSubDomainName(@PathVariable("subDomainName") String subDomainName) throws WitcurveException {
+        log.debug("Request to get Institute with sub domain name : {}", subDomainName);
+        InstituteDTO result = instituteService.getInstituteMapBySubDomainName(subDomainName);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
      * get all institutes
      * @return
      * @throws WitcurveException

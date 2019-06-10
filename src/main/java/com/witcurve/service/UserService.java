@@ -261,6 +261,7 @@ public class UserService {
             if(result.isPresent()) {
                 String smsSignature = "";
                 String instituteName = "";
+                String subDomainName = "";
                 User user = result.get();
                 int index = user.getLogin().indexOf("-");
                 if(index > 0) {
@@ -270,15 +271,17 @@ public class UserService {
                         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
                         smsSignature = schoolInfo.get().getSchool().getInstitute().getSmsSignature();
                         instituteName = schoolInfo.get().getSchool().getInstitute().getName();
+                        subDomainName = schoolInfo.get().getSchool().getInstitute().getSubDomainName();
                     } catch (NumberFormatException e) {
                         log.error("Entered school info id in user name is wrong : {}", username);
                         throw new WitcurveException("Invalid username, please enter the correct username");
                     }
                 }
+                String resetUrl = "http://"+subDomainName+"."+applicationProperties.getWitcurve().getDomainUrl();
                 String token = username + "|" + DateTime.now().toString();
                 Map<String, Object> paramsMap = new HashMap();
                 paramsMap.put(Constants.PARAM_FULL_NAME, result.get().getFirstName() + " " + result.get().getLastName());
-                paramsMap.put(Constants.PARAM_RESET_URL, applicationProperties.getWitcurve().getUrl()
+                paramsMap.put(Constants.PARAM_RESET_URL, resetUrl
                     + Constants.RESET_URL + encryptionService.encrypt(token));
                 paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
                 mailService.sendEmailFromTemplate(result.get().getEmail(), paramsMap, "mail/resetPasswordEmail", "email.reset.password.title", smsSignature);

@@ -50,6 +50,10 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     private String smsSignature;
 
     @NotNull
+    @Column(name="sub_domain_name", length = 6, nullable = false, unique = true)
+    private String subDomainName;
+
+    @NotNull
     @Column(name = "subscription_model", nullable=false)
     @Enumerated(EnumType.STRING)
     private SubscriptionModel subscriptionModel;
@@ -161,6 +165,14 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setPricing(Map<SubscriptionPackage, Double> pricing) {
         this.pricing = pricing;
+    }
+
+    public String getSubDomainName() {
+        return subDomainName;
+    }
+
+    public void setSubDomainName(String subDomainName) {
+        this.subDomainName = subDomainName;
     }
 
     @Override
