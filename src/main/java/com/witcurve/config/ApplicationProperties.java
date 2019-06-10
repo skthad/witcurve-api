@@ -115,7 +115,7 @@ public class ApplicationProperties {
     public static class Witcurve {
         private String cryptoKey;
 
-        private String url;
+        private String domainUrl;
 
         public String getCryptoKey() {
             return cryptoKey;
@@ -125,12 +125,12 @@ public class ApplicationProperties {
             this.cryptoKey = cryptoKey;
         }
 
-        public String getUrl() {
-            return url;
+        public String getDomainUrl() {
+            return domainUrl;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public void setDomainUrl(String domainUrl) {
+            this.domainUrl = domainUrl;
         }
     }
 
