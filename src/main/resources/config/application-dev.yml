@@ -155,6 +155,7 @@ application:
         industryTypeId : Retail
         callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw-stage.paytm.in/order/status
-    domain:
-        url: http://witcurve.s3-website-us-east-1.amazonaws.com
+    witcurve:
+        cryptoKey: 49742470EC1F73C42E31C02407AC0E69
+        domainUrl: witcurve-app.com
 

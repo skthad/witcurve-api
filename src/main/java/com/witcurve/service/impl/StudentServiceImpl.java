@@ -149,11 +149,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDTO getStudentByUsername(String username) throws WitcurveException {
-        log.debug("Request to get student with username: {}", username);
+        log.info("Request to get student with username: {}", username);
         int index = username.indexOf("-");
-        log.debug("Index value : {} ",index);
         if(index > 0) {
-            Long schoolInfoId = null;
+            Long schoolInfoId;
             try {
                 schoolInfoId = Long.parseLong(username.substring(0, index));
             } catch (NumberFormatException e) {

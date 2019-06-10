@@ -1,11 +1,12 @@
 package com.witcurve.service.impl;
 
+import com.google.common.base.Strings;
+import com.witcurve.config.Constants;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
-import com.witcurve.service.EventService;
-import com.witcurve.service.SlotCourseDetailsService;
-import com.witcurve.service.StudentStandardService;
+import com.witcurve.service.*;
+import com.witcurve.service.dto.AcademicSessionDTO;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.PeriodicTestDTO;
 import com.witcurve.service.dto.StudentStandardDTO;
@@ -22,8 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,6 +78,18 @@ public class EventServiceImpl implements EventService {
     @Autowired
     StudentMarksRepository studentMarksRepository;
 
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    MailService mailService;
+
+    @Autowired
+    AcademicSessionService academicSessionService;
+
+    @Autowired
+    SmsService smsService;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
@@ -92,33 +107,34 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs) throws WitcurveException {
+    public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
-        String bindingId = UUID.randomUUID().toString();
-        if (eventDTOs.size() > 1) {
-            for(EventDTO eventDTO : eventDTOs) {
-                if(eventDTO.getKeywords()!= null) {
-                    for (String keyword : eventDTO.getKeywords()) {
-                        keywordRepository.save(new Keyword(keyword));
-                    }
-                }
-                if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
-                    eventDTO.setBindingId(bindingId);
-                }
+        Optional<SchoolInfo> result = null;
+
+        if (schoolInfoId != null) {//TODO: remove 'if' condition after making schoolInfoId mandatory
+            result = schoolInfoRepository.findById(schoolInfoId);
+            if (!result.isPresent()) {
+                throw new WitcurveException("No school info found with ID: " + schoolInfoId);
             }
-        } else {
-            if(eventDTOs.get(0).getKeywords()!= null) {
-                for (String keyword : eventDTOs.get(0).getKeywords()) {
+        }
+        String bindingId = UUID.randomUUID().toString();
+        for(EventDTO eventDTO : eventDTOs) {
+            if(eventDTO.getKeywords()!= null) {
+                for (String keyword : eventDTO.getKeywords()) {
                     keywordRepository.save(new Keyword(keyword));
                 }
-                if(eventDTOs.get(0).getType().equals(EventType.PERIODIC_TEST)) {
-                    eventDTOs.get(0).setBindingId(bindingId);
-                }
+            }
+            if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                eventDTO.setBindingId(bindingId);
             }
         }
 
         List<Event> events = eventMapper.toEntity(eventDTOs);
+
+        Map<Long, Set<LocalDate>> studentIdAndDatesMap = null;
+        Map<Long, Set<LocalDate>> staffIdAndDatesMap = null;
+
         for(Event event : events){
             if(event.getType().equals(EventType.ATTENDANCE)) {
                 if (event.getAttendanceType() == null) {
@@ -132,6 +148,15 @@ public class EventServiceImpl implements EventService {
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
                         event.setDescription(la.get(0).getDescription());
                     }
+                    if (event.getId() == null && event.getAttendanceType().equals(AttendanceType.ABSENT)) {
+                        if (studentIdAndDatesMap == null) {
+                            studentIdAndDatesMap = new HashMap<>();
+                        }
+                        if (studentIdAndDatesMap.get(event.getStudent().getId()) == null) {
+                            studentIdAndDatesMap.put(event.getStudent().getId(), new HashSet<>());
+                        }
+                        studentIdAndDatesMap.get(event.getStudent().getId()).add(event.getDate());
+                    }
                 }
                 if(event.getStaff() != null) {
                     LocalDate date = event.getDate();
@@ -141,9 +166,89 @@ public class EventServiceImpl implements EventService {
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
                         event.setDescription(la.get(0).getDescription());
                     }
+                    if (event.getId() == null && event.getAttendanceType().equals(AttendanceType.ABSENT)) {
+                        if (staffIdAndDatesMap == null) {
+                            staffIdAndDatesMap = new HashMap<>();
+                        }
+                        if (staffIdAndDatesMap.get(event.getStaff().getId()) == null) {
+                            staffIdAndDatesMap.put(event.getStaff().getId(), new HashSet<>());
+                        }
+                        staffIdAndDatesMap.get(event.getStaff().getId()).add(event.getDate());
+                    }
                 }
             }
         }
+
+        if (result != null && result.isPresent()) { //TODO: remove 'if' condition once schoolInfoId is made mandatory
+
+            if (studentIdAndDatesMap != null || staffIdAndDatesMap != null) {
+
+                SchoolInfo schoolInfo = result.get();
+                String instituteName = schoolInfo.getSchool().getInstitute().getName();
+                String smsSignature = schoolInfo.getSchool().getInstitute().getSmsSignature();
+
+                Map paramsMap = new HashMap();
+                paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
+
+                if (staffIdAndDatesMap != null) {
+                    String[] subjectParamArray = new String[]{smsSignature, ""};
+                    Map<Long, Staff> staffIdMap = new HashMap<>();
+                    List<Staff> staffList = staffRepository.findAllById(staffIdAndDatesMap.keySet());
+                    for (Staff staff: staffList) {
+                        if (staffIdMap == null) {
+                            staffIdMap = new HashMap<>();
+                        }
+                        staffIdMap.put(staff.getId(), staff);
+                    }
+                    String smsBody = "This is to notify you that your attendance is marked absent on %s. Visit %s for more.";
+                    for (Long staffId: staffIdAndDatesMap.keySet()) {
+                        Staff staff = staffIdMap.get(staffId);
+                        String fullName = staff.getFirstName() + " " + staff.getLastName();
+                        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
+                        //TODO: add logic for tiny Urls
+                        String tinyUrl = "http://witcurve.com/tiny";
+                        paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
+                        for (LocalDate date: staffIdAndDatesMap.get(staffId)) {
+                            paramsMap.put(Constants.PARAM_DATE, date);
+                            subjectParamArray[1] = date.toString();
+                            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+                            mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/staffAbsentNotificationEmail", "email.notification.staff.absent.title", smsSignature);
+                            smsService.sendSms(staff.getPrimaryPhone(), String.format(smsBody, date, tinyUrl), smsSignature);
+                        }
+                    }
+                }
+
+                if (studentIdAndDatesMap != null) {
+                    String[] subjectParamArray = new String[]{smsSignature, "", ""};
+                    Map<Long, Student> studentIdMap = new HashMap<>();
+                    List<Student> studentList = studentRepository.findAllById(studentIdAndDatesMap.keySet());
+                    for (Student student: studentList) {
+                        studentIdMap.put(student.getId(), student);
+                    }
+                    String smsBody = "This is to notify you that your ward %s is absent on %s. Visit %s for more.";
+                    for (Long studentId: studentIdAndDatesMap.keySet()) {
+                        Student student = studentIdMap.get(studentId);
+                        if (Strings.isNullOrEmpty(student.getEmail())) {
+                            continue;
+                        }
+                        String fullName = student.getFirstName() + " " + student.getLastName();
+                        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
+                        //TODO: add logic for tiny Urls
+                        String tinyUrl = "http://witcurve.com/tiny";
+                        paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
+                        subjectParamArray[1] = fullName;
+                        for (LocalDate date: studentIdAndDatesMap.get(studentId)) {
+                            paramsMap.put(Constants.PARAM_DATE, date);
+                            subjectParamArray[2] = date.toString();
+                            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+                            mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", smsSignature);
+                            smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), smsSignature);
+                        }
+                    }
+                }
+            }
+        }
+
         events = eventRepository.saveAll(events);
         return eventMapper.toDto(events);
     }
@@ -151,12 +256,11 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDTO getEventById(Long eventId) throws WitcurveException {
         log.debug("Request to get event with id : {}", eventId);
-        Event event = eventRepository.findById(eventId).get();
-
-        if (event ==  null) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (!event.isPresent()) {
             throw new WitcurveException("No Event with given id");
         }
-        return eventMapper.toDto(event);
+        return eventMapper.toDto(event.get());
     }
 
     @Override
@@ -166,6 +270,11 @@ public class EventServiceImpl implements EventService {
 
         if (event == null){
             throw new WitcurveException("No Event with given id");
+        }
+        if (event.getType() == EventType.TEST
+            || event.getType() == EventType.ASSIGNMENT
+            || event.getType() == EventType.DAILY_UPDATE) {
+            eventContentRepository.deleteByEventId(event.getId());
         }
         eventRepository.delete(event);
     }
@@ -195,10 +304,23 @@ public class EventServiceImpl implements EventService {
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
         if(studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
-            Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
 
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
+            AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, LocalDate.now());
+            List<BigInteger> eventIds =  new ArrayList<>();
+            long substractDays = 6;
+            boolean breakCycle = false;
+            while(eventIds.size() < 20) {
+                if(eventDate.minusDays(substractDays).isBefore(currentSession.getStartDate())) {
+                    substractDays = Period.between(eventDate.minusDays(substractDays), currentSession.getStartDate()).getDays();
+                    breakCycle = true;
+                }
+                eventIds = eventRepository.findDirayEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, standardId, Arrays.asList(EventType.DAILY_UPDATE.toString()));
+                if(breakCycle) {
+                    break;
+                }
+                substractDays += 7;
+            }
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateDescComparator());
         }
@@ -722,6 +844,7 @@ public class EventServiceImpl implements EventService {
                 }
                 Long schoolInfoId;
                 List<Event> events;
+                Boolean forStudent = true;
                 if(eventDTO.getStudentId() != null) {
                     if(eventDTO.getStandardId() == null) {
                         throw new WitcurveException("An attendance record for student must have standardId");
@@ -737,12 +860,13 @@ public class EventServiceImpl implements EventService {
                     events = eventRepository.eventsBlockingAttendanceForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
                     events = removeExistingEvent(events, eventDTO);
                 } else {
+                    forStudent = false;
                     schoolInfoId = staffRepository.findById(eventDTO.getStaffId()).get().getSchoolInfo().getId();
                     events = eventRepository.eventsBlockingAttendanceForStaff(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStaffId());
                     events = removeExistingEvent(events, eventDTO);
                 }
                 if(events.size() !=0 ) {
-                    throw new WitcurveException("Attendance cannot be taken a holiday");
+                    throw new WitcurveException(String.format("Either attendance already taken on this day for given %s or this is a holiday", forStudent? "student": "staff"));
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
                 if(eventDTO.getSchoolInfoId() == null) {

@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paytm.pg.merchant.CheckSumServiceHelper;
 import com.witcurve.config.ApplicationProperties;
+import com.witcurve.config.Constants;
 import com.witcurve.domain.PaymentOrder;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.enumeration.PaymentGateway;
@@ -173,20 +174,21 @@ public class PaymentServiceImpl implements PaymentService {
                 .plusMonths(subscriptionPackage.getMonths()));
         }
 
-        Map notificationParams = new HashMap();
-        notificationParams.put("studentName", student.getFirstName() + " " + student.getLastName());
-        notificationParams.put("subscriptionEndDate", WitcurveUtil.format(student.getSubscriptionEndDate()));
+        Map paramsMap = new HashMap();
+        paramsMap.put(Constants.PARAM_FULL_NAME, student.getFirstName() + " " + student.getLastName());
+        paramsMap.put(Constants.PARAM_SUBSCRIPTION_END_DATE, WitcurveUtil.format(student.getSubscriptionEndDate()));
+        paramsMap.put(Constants.PARAM_INSTITUTE_NAME, student.getSchoolInfo().getSchool().getInstitute().getName());
 
         try {
             smsService.sendSms(student.getRegisteredMobileNumber(),
-                "Dear " + notificationParams.get("studentName") +
-                    ", Your have been subscribed to Witcurve, it will expire on " + notificationParams.get("subscriptionEndDate") + ".");
+                "Dear " + paramsMap.get("studentName") +
+                    ", Your have been subscribed to Witcurve, it will expire on " + paramsMap.get("subscriptionEndDate") + ".", student.getSchoolInfo().getSchool().getInstitute().getSmsSignature());
         } catch (UnsupportedEncodingException e) {
             log.error("Unable to send Subscription message", e);
         }
 
         if (student.getUser().getEmail() != null) {
-            mailService.sendSubscriptionTransactionMail(student.getUser().getEmail(), notificationParams);
+            mailService.sendEmailFromTemplate(student.getUser().getEmail(), paramsMap, "mail/subscriptionTransactionEmail", "email.subscription.transaction.title", student.getSchoolInfo().getSchool().getInstitute().getSmsSignature());
         }
     }
 }

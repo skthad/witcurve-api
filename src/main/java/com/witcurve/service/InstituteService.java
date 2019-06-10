@@ -22,4 +22,6 @@ public interface InstituteService {
     void deleteCustomAuthority(Long instituteId, String name);
 
     List<Authority> getAuthorities(Long instituteId);
+
+    InstituteDTO getInstituteMapBySubDomainName(String subDomainName) throws WitcurveException;
 }

@@ -32,11 +32,20 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true")
     Set<String> getActiveStudentPhoneNumbersBySchoolInfoId(Long schoolInfoId);
 
+    @Query("select distinct ss.student.email from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.active = true and ss.student.email is not null")
+    Set<String> getActiveStudentEmailsBySchoolInfoId(Long schoolInfoId);
+
     @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade in ?2 and ss.active = true")
     Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndGradeList(Long schoolInfoId, List<Grade> grades);
 
+    @Query("select distinct ss.student.email from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade in ?2 and ss.active = tru and ss.student.email is not null")
+    Set<String> getActiveStudentEmailsBySchoolInfoIdAndGradeList(Long schoolInfoId, List<Grade> grades);
+
     @Query("select distinct ss.student.registeredMobileNumber from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.id in ?2 and ss.active = true")
     Set<String> getActiveStudentPhoneNumbersBySchoolInfoIdAndStandardIds(Long schoolInfoId, List<Long> standardIds);
+
+    @Query("select distinct ss.student.email from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.id in ?2 and ss.active = true and ss.student.email is not null")
+    Set<String> getActiveStudentEmailsBySchoolInfoIdAndStandardIds(Long schoolInfoId, List<Long> standardIds);
 
     @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.standard.grade = ?2 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getBySchoolInfoIdAndGrade(Long schoolInfoId, Grade grade);

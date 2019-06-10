@@ -1,17 +1,11 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Authority;
-import com.witcurve.domain.Institute;
-import com.witcurve.domain.Permission;
-import com.witcurve.domain.Student;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.SubscriptionModel;
-import com.witcurve.repository.AuthorityRepository;
-import com.witcurve.repository.InstituteRepository;
-import com.witcurve.repository.StudentRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.InstituteService;
-import com.witcurve.service.dto.AuthorityDTO;
-import com.witcurve.service.dto.InstituteDTO;
-import com.witcurve.service.mapper.InstituteMapper;
+import com.witcurve.service.dto.*;
+import com.witcurve.service.mapper.*;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -42,6 +33,18 @@ public class InstituteServiceImpl implements InstituteService {
 
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    SchoolRepository schoolRepository;
+
+    @Autowired
+    SchoolInfoMapperLite schoolInfoMapperLite;
+
+    @Autowired
+    SchoolMapperLite schoolMapperLite;
 
     @Override
     public InstituteDTO saveOrUpdate(InstituteDTO instituteDTO) {
@@ -130,6 +133,27 @@ public class InstituteServiceImpl implements InstituteService {
     @Override
     public List<Authority> getAuthorities(Long instituteId) {
         return authorityRepository.getByInstituteId(instituteId);
+    }
+
+    @Override
+    public InstituteDTO getInstituteMapBySubDomainName(String subDomainName) throws WitcurveException {
+        Institute institute = instituteRepository.findInstituteBySubDomainName(subDomainName);
+        if(institute == null) {
+            throw new WitcurveException("There is no institute registered with sub domain "+ subDomainName);
+        }
+        Map<Long, SchoolDTO> schoolDTOMap = new HashMap<>();
+        InstituteDTO instituteDTO = instituteMapper.toDto(institute);
+        List<School> schools = schoolRepository.findByInstituteId(institute.getId());
+        for(School school : schools) {
+            SchoolDTO schoolDTO = schoolMapperLite.toDto(school);
+            List<SchoolInfo> schoolInfos = schoolInfoRepository.findBySchoolId(school.getId());
+            for(SchoolInfo schoolInfo : schoolInfos) {
+                schoolDTO.addSchoolInfo(schoolInfoMapperLite.toDto(schoolInfo));
+            }
+            schoolDTOMap.put(school.getId(), schoolDTO);
+        }
+        instituteDTO.setSchoolMap(schoolDTOMap);
+        return instituteDTO;
     }
 
 }

@@ -110,21 +110,31 @@ public class ApplicationProperties {
         return paytm;
     }
 
-    public final Domain domain = new Domain();
+    public final Witcurve witcurve = new Witcurve();
 
-    public static class Domain {
-        private String url;
+    public static class Witcurve {
+        private String cryptoKey;
 
-        public String getUrl() {
-            return url;
+        private String domainUrl;
+
+        public String getCryptoKey() {
+            return cryptoKey;
         }
 
-        public void setUrl(String url) {
-            this.url = url;
+        public void setCryptoKey(String cryptoKey) {
+            this.cryptoKey = cryptoKey;
+        }
+
+        public String getDomainUrl() {
+            return domainUrl;
+        }
+
+        public void setDomainUrl(String domainUrl) {
+            this.domainUrl = domainUrl;
         }
     }
 
-    public Domain getDomain() {
-        return domain;
+    public Witcurve getWitcurve() {
+        return witcurve;
     }
 }

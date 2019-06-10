@@ -20,8 +20,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("select s from Student s where s.schoolInfo.id = ?1 and s.user.id in (select id from User where activated = true) and s.id not in (select distinct ss.student.id from StudentStandard ss where ss.student.schoolInfo.id = ?1 and ss.active = true)")
     List<Student> getUnallocatedStudentsBySchoolInfoId(Long schoolInfoId);
 
+    @Query("select distinct student.registeredMobileNumber from Student student where student.id in ?1")
+    Set<String> getPhoneNumbersByStudentIds(Set<Long> studentIds);
+
     @Query("select distinct student.registeredMobileNumber from Student student where student.schoolInfo.id = ?1 and student.id in ?2")
     Set<String> getPhoneNumbersBySchoolInfoAndStudentIds(Long schoolInfoId, List<Long> studentIds);
+
+    @Query("select distinct student.email from Student student where student.schoolInfo.id = ?1 and student.id in ?2 and student.email is not null")
+    Set<String> getEmailsBySchoolInfoAndStudentIds(Long schoolInfoId, List<Long> studentIds);
 
     @Query("select student from Student student where student.schoolInfo.school.institute.id = ?1")
     List<Student> getStudentsByInstituteId(Long instituteId);

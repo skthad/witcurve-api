@@ -38,6 +38,9 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
     private String smsSignature;
 
     @NotNull
+    private String subDomainName;
+
+    @NotNull
     private SubscriptionModel subscriptionModel;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
@@ -155,6 +158,14 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSchoolMap(Map<Long, SchoolDTO> schoolMap) {
         this.schoolMap = schoolMap;
+    }
+
+    public String getSubDomainName() {
+        return subDomainName;
+    }
+
+    public void setSubDomainName(String subDomainName) {
+        this.subDomainName = subDomainName;
     }
 
     @Override

@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -48,16 +49,17 @@ public class EventResource {
      */
     @PostMapping("/events")
     @Timed
-    public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+    public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs,
+                                                       @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request Save Events : {}",eventDTOs);
-
+//TODO: make schoolInfoId mandatory
         for(EventDTO eventDTO: eventDTOs) {
             if (eventDTO.getId() != null) {
                 throw new WitcurveException("New Event can't already have an id");
             }
         }
         try {
-            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [")) {
@@ -78,11 +80,12 @@ public class EventResource {
      */
     @PostMapping("/events/periodic-tests")
     @Timed
-    public ResponseEntity<List<EventDTO>> createPeriodicEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+    public ResponseEntity<List<EventDTO>> createPeriodicEvents(@RequestBody List<EventDTO> eventDTOs,
+                                                               @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request Save Periodic Test Events : {}",eventDTOs);
 
         try {
-            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [")) {
@@ -102,14 +105,15 @@ public class EventResource {
 
     @PutMapping("/events")
     @Timed
-    public ResponseEntity<List<EventDTO>> updateEvents(@RequestBody List<EventDTO> eventDTOs) throws WitcurveException {
+    public ResponseEntity<List<EventDTO>> updateEvents(@RequestBody List<EventDTO> eventDTOs,
+                                                       @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to update events : {}",eventDTOs);
         for(EventDTO eventDTO : eventDTOs) {
             if (eventDTO.getId() == null) {
                 throw new WitcurveException("Id is required for update request");
             }
         }
-        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs);
+        List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
         return ResponseEntity.ok(result);
     }
 

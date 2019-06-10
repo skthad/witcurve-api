@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{email.notification.student.absent.title(${smsSignature}, ${fullName}, ${date})}">Student is Absent</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+</head>
+<body>
+<p th:text="#{email.notification.parent.greeting}">Dear Parent,</p>
+<p th:text="#{email.notification.subscription(${instituteName})}">
+<p th:text="#{email.notification.student.absent.body(${fullName}, ${date})}"/>
+<p th:text="#{email.notification.tinyUrl(${tinyUrl})}"/>
+<p>
+    This is an auto-generated email. Please do not reply.
+</p>
+<p>
+    <span>Warm Regards, </span>
+    <br/>
+    <em th:text="#{email.signature(${instituteName})}">Institute Name.</em>
+</p>
+</body>
+</html>
