@@ -170,13 +170,7 @@ public class MailService {
             context.setVariable(Constants.PARAM_SMS_SIGNATURE, smsSignature);
             context.setVariable(Constants.PARAM_BASE_URL, jHipsterProperties.getMail().getBaseUrl());
             String content = templateEngine.process(templateName, context);
-            String subject = null;
-            if(emailIdParamsMap.get(toEmail).get(Constants.PARAM_SUBJECT) == null) {
-                subject= messageSource.getMessage(titleKey, null, locale);
-            } else {
-                String[] subjectParamArray = ((List<String>)emailIdParamsMap.get(toEmail).get(Constants.PARAM_SUBJECT)).toArray(new String[0]);
-                subject= messageSource.getMessage(titleKey, subjectParamArray, locale);
-            }
+            String subject = messageSource.getMessage(titleKey, (String[])emailIdParamsMap.get(toEmail).get(Constants.PARAM_MAIL_SUBJECT), locale);
             sendEmail(toEmail, fromEmail, subject, content, false, true);
         }
     }

@@ -189,37 +189,9 @@ public class EventServiceImpl implements EventService {
 
                 Map paramsMap = new HashMap();
                 paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
-                if (studentIdAndDatesMap != null) {
-                    Map<Long, Student> studentIdMap = new HashMap<>();
-                    List<Student> studentList = studentRepository.findAllById(studentIdAndDatesMap.keySet());
-                    for (Student student: studentList) {
-                        studentIdMap.put(student.getId(), student);
-                    }
-                    String smsBody = "This is to notify you that your ward %s is absent on %s. Visit %s for more.";
-                    for (Long studentId: studentIdAndDatesMap.keySet()) {
-                        Student student = studentIdMap.get(studentId);
-                        if (Strings.isNullOrEmpty(student.getEmail())) {
-                            continue;
-                        }
-                        String fullName = student.getFirstName() + " " + student.getLastName();
-                        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
-                        //TODO: add logic for tiny Urls
-                        List<String> subjectParams = new ArrayList<>();
-                        subjectParams.add(smsSignature);
-                        subjectParams.add(fullName);
-                        String tinyUrl = "http://witcurve.com/tiny";
-                        paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-                        for (LocalDate date: studentIdAndDatesMap.get(studentId)) {
-                            paramsMap.put(Constants.PARAM_DATE, date);
-                            subjectParams.add(date.toString());
-                            paramsMap.put(Constants.PARAM_SUBJECT, subjectParams );
-                            mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", smsSignature);
-                            smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), smsSignature);
-                        }
-                    }
-                }
 
                 if (staffIdAndDatesMap != null) {
+                    String[] subjectParamArray = new String[]{smsSignature, ""};
                     Map<Long, Staff> staffIdMap = new HashMap<>();
                     List<Staff> staffList = staffRepository.findAllById(staffIdAndDatesMap.keySet());
                     for (Staff staff: staffList) {
@@ -236,13 +208,41 @@ public class EventServiceImpl implements EventService {
                         //TODO: add logic for tiny Urls
                         String tinyUrl = "http://witcurve.com/tiny";
                         paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-                        List<String> subjectParams = new ArrayList<>();
-                        subjectParams.add(smsSignature);
                         for (LocalDate date: staffIdAndDatesMap.get(staffId)) {
                             paramsMap.put(Constants.PARAM_DATE, date);
-                            subjectParams.add(date.toString());
+                            subjectParamArray[1] = date.toString();
+                            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
                             mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/staffAbsentNotificationEmail", "email.notification.staff.absent.title", smsSignature);
                             smsService.sendSms(staff.getPrimaryPhone(), String.format(smsBody, date, tinyUrl), smsSignature);
+                        }
+                    }
+                }
+
+                if (studentIdAndDatesMap != null) {
+                    String[] subjectParamArray = new String[]{smsSignature, "", ""};
+                    Map<Long, Student> studentIdMap = new HashMap<>();
+                    List<Student> studentList = studentRepository.findAllById(studentIdAndDatesMap.keySet());
+                    for (Student student: studentList) {
+                        studentIdMap.put(student.getId(), student);
+                    }
+                    String smsBody = "This is to notify you that your ward %s is absent on %s. Visit %s for more.";
+                    for (Long studentId: studentIdAndDatesMap.keySet()) {
+                        Student student = studentIdMap.get(studentId);
+                        if (Strings.isNullOrEmpty(student.getEmail())) {
+                            continue;
+                        }
+                        String fullName = student.getFirstName() + " " + student.getLastName();
+                        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
+                        //TODO: add logic for tiny Urls
+                        String tinyUrl = "http://witcurve.com/tiny";
+                        paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
+                        subjectParamArray[1] = fullName;
+                        for (LocalDate date: studentIdAndDatesMap.get(studentId)) {
+                            paramsMap.put(Constants.PARAM_DATE, date);
+                            subjectParamArray[2] = date.toString();
+                            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+                            mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", smsSignature);
+                            smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), smsSignature);
                         }
                     }
                 }
@@ -866,7 +866,7 @@ public class EventServiceImpl implements EventService {
                     events = removeExistingEvent(events, eventDTO);
                 }
                 if(events.size() !=0 ) {
-                    throw new WitcurveException(String.format("Either attendance already taken on this day for this %s or this is a holiday", forStudent? "student": "staff"));
+                    throw new WitcurveException(String.format("Either attendance already taken on this day for given %s or this is a holiday", forStudent? "student": "staff"));
                 }
             } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
                 if(eventDTO.getSchoolInfoId() == null) {
