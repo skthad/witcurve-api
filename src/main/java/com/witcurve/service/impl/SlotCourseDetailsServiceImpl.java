@@ -4,6 +4,7 @@ import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.GeneralSlotDetails;
 import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.EventRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.repository.SlotCourseDetailsRepository;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -40,6 +43,9 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
 
     @Autowired
     private CourseTeacherRepository courseTeacherRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Override
     public SlotCourseDetailsDTO saveOrUpdate(SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException {
@@ -90,6 +96,7 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
         }
         if (softDelete) {
             slotCourseDetails.setDeleted(true);
+            eventRepository.deleteFutureTestByScdIds(Stream.of(slotCourseDetailsId).collect(Collectors.toSet()));
             slotCourseDetailsRepository.save(slotCourseDetails);
         } else {
             slotCourseDetailsRepository.delete(slotCourseDetails);

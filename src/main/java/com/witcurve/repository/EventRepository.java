@@ -223,5 +223,17 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where (e.date between ?1 and ?2) and (e.type = 'HOLIDAY' or e.type = 'SCHOOL_EVENT') and e.schoolInfo.id=?3 order by e.date desc ")
     List<Event> findHolidaysAndSchoolEventsBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
 
+    @Modifying
+    @Query("Delete from Event e where e.scd.id in ?1 and e.type='TEST' and e.date > current_date ")
+    void deleteFutureTestByScdIds(Set<Long> scdIds);
+
+    @Modifying
+    @Query("Delete from Event e where e.standard.id in ?1 and e.type='TEST' and e.date > current_date ")
+    void deleteFutureTestByStandardIds(Set<Long> standardIds);
+
+    @Modifying
+    @Query("Delete from Event e where e.courseTeacher.id in ?1 and e.type='ASSIGNMENT' and e.date > current_date ")
+    void deleteFutureAssignmentsByCourseTeacherIds(Set<Long> courseTeacherIds);
+
 }
 

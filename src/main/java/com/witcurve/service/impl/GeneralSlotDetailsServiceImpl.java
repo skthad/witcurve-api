@@ -45,6 +45,9 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Autowired
     private StudentMarksRepository studentMarksRepository;
 
+    @Autowired
+    private EventRepository eventRepository;
+
     @Override
     public List<GeneralSlotDetailsDTO> createGSDs(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) throws WitcurveException {
         log.debug("Request to create generalSlotDetails");
@@ -61,7 +64,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             }
             gsd.setBindingId(standardIdBindingValueMap.get(standardId));
         }
-        generalSlotDetailsRepository.deactivateSlotDetailsForStandards(standardIdBindingValueMap.keySet());
+        deactivateGSDsForStandards(new ArrayList<>(standardIdBindingValueMap.keySet()));
 
         List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
         List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));
@@ -119,6 +122,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
 
     @Override
     public void deactivateGSDsForStandards(List<Long> standardIds) {
+        eventRepository.deleteFutureTestByStandardIds(new HashSet<>(standardIds));
         generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(standardIds));
     }
 
@@ -130,7 +134,7 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
         if (existingSlots.size() == 0) {
             throw new WitcurveException("No ACTIVE exam slots found for standard ID: "  + sourceStandardId);
         }
-        generalSlotDetailsRepository.deactivateSlotDetailsForStandards(new HashSet<>(destinationStandardIds));
+        deactivateGSDsForStandards(destinationStandardIds);
 
         List<GeneralSlotDetailsDTO> slotsToCreate = new ArrayList<>();
         for (Long destinationStandardId : destinationStandardIds) {
