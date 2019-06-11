@@ -118,15 +118,14 @@ public class SlotCourseDetailsResource {
     public ResponseEntity<Void> deleteSlotCourseDetails(@PathVariable Long slotCourseDetailsId) throws WitcurveException {
         log.debug("REST request to delete SlotCourseDetails: {}", slotCourseDetailsId);
         try {
-            slotCourseDetailsService.deleteSlotCourseDetails(slotCourseDetailsId);
+            slotCourseDetailsService.deleteSlotCourseDetails(slotCourseDetailsId, false);
             return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A slotCourseDetails is deleted with identifier " + slotCourseDetailsId,
                 slotCourseDetailsId.toString())).build();
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
+            // retry soft delete
+            slotCourseDetailsService.deleteSlotCourseDetails(slotCourseDetailsId,true);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A slotCourseDetails is soft deleted with identifier " + slotCourseDetailsId,
+                slotCourseDetailsId.toString())).build();
         }
     }
 

@@ -33,6 +33,9 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     @JoinColumn(nullable = false)
     private CourseTeacher courseTeacher;
 
+    @Column
+    private Boolean deleted;
+
     public Long getId() {
         return id;
     }
@@ -63,6 +66,14 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
 
     public void setCourseTeacher(CourseTeacher courseTeacher) {
         this.courseTeacher = courseTeacher;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

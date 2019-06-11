@@ -82,13 +82,18 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     }
 
     @Override
-    public void deleteSlotCourseDetails(Long slotCourseDetailsId) throws WitcurveException {
+    public void deleteSlotCourseDetails(Long slotCourseDetailsId, Boolean softDelete) throws WitcurveException {
         log.debug("Request to delete slotCourseDetails by id : {}", slotCourseDetailsId);
         SlotCourseDetails slotCourseDetails = slotCourseDetailsRepository.findById(slotCourseDetailsId).get();
         if(slotCourseDetails == null) {
             throw new WitcurveException("No SlotCourseDetails exists for given id");
         }
-        slotCourseDetailsRepository.delete(slotCourseDetails);
+        if (softDelete) {
+            slotCourseDetails.setDeleted(true);
+            slotCourseDetailsRepository.save(slotCourseDetails);
+        } else {
+            slotCourseDetailsRepository.delete(slotCourseDetails);
+        }
     }
 
     @Override
