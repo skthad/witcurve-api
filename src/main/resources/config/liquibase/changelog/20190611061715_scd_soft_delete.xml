@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1560233847130-1">
+        <addColumn tableName="slot_course_details">
+            <column name="deleted" type="tinyint(1)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-2">
+        <dropColumn tableName="slot_course_details">
+            <column name="deleted"/>
+        </dropColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-3">
+        <addColumn tableName="slot_course_details">
+            <column name="deleted" type="tinyint(1)" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-4">
+        <addColumn tableName="course">
+            <column defaultValueBoolean="false" name="omit_slot_conflict" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-5">
+        <dropForeignKeyConstraint baseTableName="slot_course_details" constraintName="FK9y0yt7d4g5x592m3mv7ert0pc"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-6">
+        <dropForeignKeyConstraint baseTableName="slot_course_details" constraintName="FKc6gligqh1aqmbak2qmda72d75"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-7">
+        <dropUniqueConstraint constraintName="scd_slot_day_UK" tableName="slot_course_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-8">
+        <addForeignKeyConstraint baseColumnNames="gsd_id" baseTableName="slot_course_details" constraintName="FK9y0yt7d4g5x592m3mv7ert0pc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="general_slot_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560233847130-9">
+        <addForeignKeyConstraint baseColumnNames="course_teacher_id" baseTableName="slot_course_details" constraintName="FKc6gligqh1aqmbak2qmda72d75" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course_teacher"/>
+    </changeSet>
+</databaseChangeLog>

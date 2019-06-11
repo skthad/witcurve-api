@@ -7,10 +7,7 @@ import java.time.DayOfWeek;
 import java.util.Objects;
 
 @Entity
-@Table(name="slot_course_details", uniqueConstraints = {
-    @UniqueConstraint(name = "scd_slot_day_UK",
-        columnNames = {"gsd_id", "day_of_week"})
-})
+@Table(name="slot_course_details")
 public class SlotCourseDetails extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,6 +29,10 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     @ManyToOne
     @JoinColumn(nullable = false)
     private CourseTeacher courseTeacher;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean deleted = false;
 
     public Long getId() {
         return id;
@@ -63,6 +64,14 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
 
     public void setCourseTeacher(CourseTeacher courseTeacher) {
         this.courseTeacher = courseTeacher;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

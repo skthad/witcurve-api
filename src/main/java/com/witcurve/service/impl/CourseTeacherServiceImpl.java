@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -45,6 +47,9 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     @Autowired
     GeneralSlotDetailsRepository generalSlotDetailsRepository;
+
+    @Autowired
+    EventRepository eventRepository;
 
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
@@ -109,6 +114,7 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
                 throw new WitcurveException("This teacher and course is assigned to some slots," +
                     " please un-assign them and try again");
             }
+            eventRepository.deleteFutureAssignmentsByCourseTeacherIds(Stream.of(id).collect(Collectors.toSet()));
         }
         return courseTeacherMapper.toDto(courseTeacher.get());
     }

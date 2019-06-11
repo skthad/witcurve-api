@@ -205,14 +205,14 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.scd.courseTeacher.course.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findPeriodicTestsByTeacherInDateRange(Set<Long> courseIds, LocalDate eventStart, LocalDate eventEnd);
 
-    @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
-    List<Event> findAssignmentsByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate eDate);
+    @Query("Select e from Event e where e.type='ASSIGNMENT' and e.courseTeacher.standard.id = ?1 and e.courseTeacher.course.id = ?2 and e.date between ?3 and ?4 order by e.date desc")
+    List<Event> findAssignmentsByStandardAndCourseInDateRange(Long standardId, Long courseId, LocalDate sdate, LocalDate eDate);
 
-    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
-    List<Event> findTestsByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate eDate);
+    @Query("Select e from Event e where e.type='TEST' and e.scd.courseTeacher.standard.id = ?1 and e.scd.courseTeacher.course.id = ?2 and e.date between ?3 and ?4 order by e.date desc")
+    List<Event> findTestsByStandardAndCourseInDateRange(Long standardId, Long courseId, LocalDate sdate, LocalDate eDate);
 
-    @Query("Select e from Event e where e.type='DAILY_UPDATE' and e.scd.courseTeacher.id in ?1 and e.date between ?2 and ?3 order by e.date desc")
-    List<Event> findDailyUpdatesByCourseTeachersInDateRange(List<Long> courseTeacherIds, LocalDate sdate, LocalDate edate);
+    @Query("Select e from Event e where e.type='DAILY_UPDATE' and e.scd.courseTeacher.standard.id = ?1 and e.scd.courseTeacher.course.id = ?2 and e.date between ?3 and ?4 order by e.date desc")
+    List<Event> findDailyUpdatesByStandardAndCourseInDateRange(Long standardId, Long courseId, LocalDate sdate, LocalDate eDate);
 
     @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.scd.courseTeacher.course.id = ?1 and e.date between ?2 and ?3 order by e.date desc")
     List<Event> findPeriodicTestsByCourseTeachersInDateRange(Long courseId, LocalDate sdate, LocalDate edate);
@@ -222,6 +222,18 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where (e.date between ?1 and ?2) and (e.type = 'HOLIDAY' or e.type = 'SCHOOL_EVENT') and e.schoolInfo.id=?3 order by e.date desc ")
     List<Event> findHolidaysAndSchoolEventsBetweenFromDateAndToDate(LocalDate fromDate, LocalDate toDate, Long schoolInfoId);
+
+    @Modifying
+    @Query("Delete from Event e where e.scd.id in ?1 and e.type='TEST' and e.date > current_date ")
+    void deleteFutureTestByScdIds(Set<Long> scdIds);
+
+    @Modifying
+    @Query("Delete from Event e where e.standard.id in ?1 and e.type='TEST' and e.date > current_date ")
+    void deleteFutureTestByStandardIds(Set<Long> standardIds);
+
+    @Modifying
+    @Query("Delete from Event e where e.courseTeacher.id in ?1 and e.type='ASSIGNMENT' and e.date > current_date ")
+    void deleteFutureAssignmentsByCourseTeacherIds(Set<Long> courseTeacherIds);
 
 }
 

@@ -735,16 +735,12 @@ public class EventServiceImpl implements EventService {
     public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
         WitcurveUtil.correctDateFormat(eventStart, eventEnd);
         List<Event> events = null;
-        List<Long> courseTeacherIds = courseTeacherRepository.findActiveCourseTeachersByStandardIdAndCourseId(standardId, courseId);
-        if(courseTeacherIds.size() ==0) {
-            throw new WitcurveException("There are no teacher assigned to this for course in given standard");
-        }
         if(type.equals(ViewType.ASSIGNMENT)) {
-            events = eventRepository.findAssignmentsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+            events = eventRepository.findAssignmentsByStandardAndCourseInDateRange(standardId, courseId, eventStart, eventEnd);
         } else if(type.equals(ViewType.TEST)) {
-            events = eventRepository.findTestsByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+            events = eventRepository.findTestsByStandardAndCourseInDateRange(standardId, courseId, eventStart, eventEnd);
         } else if (type.equals(ViewType.DAILY_UPDATE)) {
-            events = eventRepository.findDailyUpdatesByCourseTeachersInDateRange(courseTeacherIds, eventStart, eventEnd);
+            events = eventRepository.findDailyUpdatesByStandardAndCourseInDateRange(standardId, courseId, eventStart, eventEnd);
         } else if (type.equals(ViewType.PERIODIC_TEST)) {
             events = eventRepository.findPeriodicTestsByCourseTeachersInDateRange(courseId, eventStart, eventEnd);
         } else {

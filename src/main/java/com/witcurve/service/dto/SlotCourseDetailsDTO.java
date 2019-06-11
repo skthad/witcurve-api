@@ -18,6 +18,9 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     private CourseTeacherDTO courseTeacher;
 
+    @NotNull
+    private Boolean deleted = false;
+
     public Long getId() {
         return id;
     }
@@ -49,6 +52,14 @@ public class SlotCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     public void setCourseTeacher(CourseTeacherDTO courseTeacher) {
         this.courseTeacher = courseTeacher;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

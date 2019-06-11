@@ -4,6 +4,7 @@ import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.GeneralSlotDetails;
 import com.witcurve.domain.SlotCourseDetails;
 import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.EventRepository;
 import com.witcurve.repository.GeneralSlotDetailsRepository;
 import com.witcurve.repository.SlotCourseDetailsRepository;
 import com.witcurve.service.SlotCourseDetailsService;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -41,6 +44,9 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     @Autowired
     private CourseTeacherRepository courseTeacherRepository;
 
+    @Autowired
+    private EventRepository eventRepository;
+
     @Override
     public SlotCourseDetailsDTO saveOrUpdate(SlotCourseDetailsDTO slotCourseDetailsDTO) throws WitcurveException {
         log.debug("Request to save or update slotCourseDetails");
@@ -55,6 +61,26 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
         if (!ct.isPresent()) {
             throw new WitcurveException("Could not find CourseTeacher with id: " + slotCourseDetailsDTO.getCourseTeacher().getId());
         }
+
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findActiveScdByGsdAndDayOfWeek(slotCourseDetailsDTO.getGsd().getId(), slotCourseDetailsDTO.getDayOfWeek());
+
+        //not allowing non delete scd to have gsd and week of day restriction.
+        if(slotCourseDetailsList.size() > 1) {
+            throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+        } else if(slotCourseDetailsList.size() ==1) {
+            if(slotCourseDetailsDTO.getId() != null) {
+                if(!slotCourseDetailsDTO.getId().equals(slotCourseDetailsList.get(0).getId())) {
+                    throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+                }
+            } else {
+                throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+            }
+        } else {
+           if(slotCourseDetailsDTO.getId() != null) {
+               throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+           }
+        }
+
 
         Integer startTime = Integer.parseInt(gsd.get().getStart());
         Integer endTime = startTime + gsd.get().getDuration();
@@ -82,13 +108,19 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
     }
 
     @Override
-    public void deleteSlotCourseDetails(Long slotCourseDetailsId) throws WitcurveException {
+    public void deleteSlotCourseDetails(Long slotCourseDetailsId, Boolean softDelete) throws WitcurveException {
         log.debug("Request to delete slotCourseDetails by id : {}", slotCourseDetailsId);
         SlotCourseDetails slotCourseDetails = slotCourseDetailsRepository.findById(slotCourseDetailsId).get();
         if(slotCourseDetails == null) {
             throw new WitcurveException("No SlotCourseDetails exists for given id");
         }
-        slotCourseDetailsRepository.delete(slotCourseDetails);
+        if (softDelete) {
+            slotCourseDetails.setDeleted(true);
+            eventRepository.deleteFutureTestByScdIds(Stream.of(slotCourseDetailsId).collect(Collectors.toSet()));
+            slotCourseDetailsRepository.save(slotCourseDetails);
+        } else {
+            slotCourseDetailsRepository.delete(slotCourseDetails);
+        }
     }
 
     @Override
