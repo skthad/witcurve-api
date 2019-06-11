@@ -29,6 +29,9 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Boolean eligibleForSubstitute = false;
 
+    @NotNull
+    private Boolean omitSlotConflict = false;
+
     private Boolean contentPublished;
 
     @NotNull
@@ -88,6 +91,14 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
         this.eligibleForSubstitute = eligibleForSubstitute;
+    }
+
+    public Boolean getOmitSlotConflict() {
+        return omitSlotConflict;
+    }
+
+    public void setOmitSlotConflict(Boolean omitSlotConflict) {
+        this.omitSlotConflict = omitSlotConflict;
     }
 
     public Boolean getContentPublished() {

@@ -33,8 +33,9 @@ public class SlotCourseDetails extends AbstractAuditingEntity implements Seriali
     @JoinColumn(nullable = false)
     private CourseTeacher courseTeacher;
 
-    @Column
-    private Boolean deleted;
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean deleted = false;
 
     public Long getId() {
         return id;

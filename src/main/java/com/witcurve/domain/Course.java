@@ -46,6 +46,10 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @Column(name = "eligible_for_substitute", nullable = false, columnDefinition = "boolean default false")
     private Boolean eligibleForSubstitute = false;
 
+    @NotNull
+    @Column(name = "omit_slot_conflict", nullable = false, columnDefinition = "boolean default false")
+    private Boolean omitSlotConflict = false;
+
     @Column
     private Boolean contentPublished;
 
@@ -110,6 +114,14 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.eligibleForSubstitute = eligibleForSubstitute;
     }
 
+    public Boolean getOmitSlotConflict() {
+        return omitSlotConflict;
+    }
+
+    public void setOmitSlotConflict(Boolean omitSlotConflict) {
+        this.omitSlotConflict = omitSlotConflict;
+    }
+
     public Boolean getContentPublished() {
         return contentPublished;
     }
@@ -138,12 +150,14 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Course{" +
             "id=" + id +
+            ", schoolInfo=" + schoolInfo +
+            ", grade=" + grade +
+            ", masterSubject=" + masterSubject +
             ", courseCode='" + courseCode + '\'' +
             ", description='" + description + '\'' +
             ", eligibleForSubstitute=" + eligibleForSubstitute +
-            ", grade=" + grade +
-            ", masterSubject=" + masterSubject +
-            ", schoolInfo=" + schoolInfo +
+            ", omitSlotConflict=" + omitSlotConflict +
+            ", contentPublished=" + contentPublished +
             ", active=" + active +
             '}';
     }
