@@ -50,7 +50,7 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     private String smsSignature;
 
     @NotNull
-    @Column(name="sub_domain_name", length = 6, nullable = false, unique = true)
+    @Column(name="sub_domain_name", length = 6, nullable = false, unique = true, columnDefinition = "varchar(6) default 'random'")
     private String subDomainName;
 
     @NotNull
