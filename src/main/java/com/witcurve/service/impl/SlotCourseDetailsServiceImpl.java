@@ -62,6 +62,26 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
             throw new WitcurveException("Could not find CourseTeacher with id: " + slotCourseDetailsDTO.getCourseTeacher().getId());
         }
 
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findActiveScdByGsdAndDayOfWeek(slotCourseDetailsDTO.getGsd().getId(), slotCourseDetailsDTO.getDayOfWeek());
+
+        //not allowing non delete scd to have gsd and week of day restriction.
+        if(slotCourseDetailsList.size() > 1) {
+            throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+        } else if(slotCourseDetailsList.size() ==1) {
+            if(slotCourseDetailsDTO.getId() != null) {
+                if(!slotCourseDetailsDTO.getId().equals(slotCourseDetailsList.get(0).getId())) {
+                    throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+                }
+            } else {
+                throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+            }
+        } else {
+           if(slotCourseDetailsDTO.getId() != null) {
+               throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+           }
+        }
+
+
         Integer startTime = Integer.parseInt(gsd.get().getStart());
         Integer endTime = startTime + gsd.get().getDuration();
         Long teacherId = ct.get().getTeacher().getId();
