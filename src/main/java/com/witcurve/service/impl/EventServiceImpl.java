@@ -780,10 +780,6 @@ public class EventServiceImpl implements EventService {
                         log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId");
                         throw new WitcurveException("An assignment cannot have empty standardId for event with date");
                     }
-                    Event event = eventRepository.findAssignmentOnDateAndCourseTeacher(eventDTO.getDate(),eventDTO.getCourseTeacher().getId());
-                    if(event != null && !event.getId().equals(eventDTO.getId())) {
-                        throw new WitcurveException("There already exists a record for given event type and date for course teacher with with id: " +eventDTO.getScd().getId());
-                    }
 
                 } else if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
                     if(eventDTO.getGrade() == null || eventDTO.getSchoolInfoId() == null) {
@@ -796,7 +792,9 @@ public class EventServiceImpl implements EventService {
                     }
                     Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), courseTeacher.get().getCourse().getId());
                     if(event != null && !event.getId().equals(eventDTO.getId())) {
-                        throw new WitcurveException("There already exists a record for given event type and date for course with with id: " +courseTeacher.get().getCourse().getId());
+                        if(event != null && !event.getId().equals(eventDTO.getId())) {
+                            throw new WitcurveException("There already exists a periodic test for this course on given date");
+                        }
                     }
                 }
                 else{
@@ -807,9 +805,15 @@ public class EventServiceImpl implements EventService {
 //                    if(!slotCourseDetails.contains(eventDTO.getScd())) {
 //                        throw new WitcurveException("This scd doesn't belong to given standard id");
 //                    }
-                    Event event = eventRepository.findTestOnDateAndSlot(eventDTO.getDate(), eventDTO.getScd().getId());
+                    Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getScd().getId(), eventDTO.getType());
                     if(event != null && !event.getId().equals(eventDTO.getId())) {
-                        throw new WitcurveException("There already exists a record for given event type and date for SCD with with id: " +eventDTO.getScd().getId());
+                        if(event != null && !event.getId().equals(eventDTO.getId())) {
+                            if(EventType.DAILY_UPDATE.equals(eventDTO.getType())) {
+                                throw new WitcurveException("There already exists a daily update for this course on given date");
+                            } else {
+                                throw new WitcurveException("There already exists a test for this course on given date");
+                            }
+                        }
                     }
                 }
             } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {

@@ -70,8 +70,8 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
                                                 Long studentId, Long standardId, String grade,
                                                 Long schoolInfoId, List<String> types);
 
-    @Query("Select e from Event e where e.date = ?1 and e.type = 'TEST' and e.scd.id = ?2")
-    Event findTestOnDateAndSlot(LocalDate date, Long scdId);
+    @Query("Select e from Event e where e.date = ?1 and e.type = ?3 and e.scd.id = ?2")
+    Event findEventOnDateAndSlot(LocalDate date, Long scdId, EventType type);
 
     @Query("Select e from Event e where e.date = ?1 and e.type = 'ASSIGNMENT' and e.courseTeacher.id = ?2")
     Event findAssignmentOnDateAndCourseTeacher(LocalDate date, Long courseTeacherId);

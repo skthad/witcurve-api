@@ -34,6 +34,8 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
 
     private Integer targetPeriods;
 
+    private Boolean courseContentPublished;
+
     public Long getId() {
         return id;
     }
@@ -104,6 +106,14 @@ public class CourseContentDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setTargetPeriods(Integer targetPeriods) {
         this.targetPeriods = targetPeriods;
+    }
+
+    public Boolean getCourseContentPublished() {
+        return courseContentPublished;
+    }
+
+    public void setCourseContentPublished(Boolean courseContentPublished) {
+        this.courseContentPublished = courseContentPublished;
     }
 
     @Override
