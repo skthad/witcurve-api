@@ -154,9 +154,9 @@ public class ExamServiceImpl implements ExamService {
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
             if(statuses != null && !statuses.isEmpty()) {
-                result = examRepository.findExamIdsForCourseIds(courseIds, fromDate, endDate);
-            } else {
                 result = examRepository.findExamIdsForCourseIdsWithStatus(courseIds, fromDate, endDate, statuses);
+            } else {
+                result = examRepository.findExamIdsForCourseIds(courseIds, fromDate, endDate);
             }
             return result;
         }
