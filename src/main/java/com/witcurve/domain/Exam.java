@@ -1,7 +1,6 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.ExamStatus;
-import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.util.LocalDateConverter;
 import org.hibernate.annotations.Where;
 

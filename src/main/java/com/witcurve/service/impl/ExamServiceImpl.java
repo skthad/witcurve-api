@@ -1,13 +1,10 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.AcademicSession;
+import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.Exam;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.repository.AcademicSessionRepository;
-import com.witcurve.repository.ExamCourseDetailsRepository;
-import com.witcurve.repository.ExamRepository;
-import com.witcurve.repository.GeneralSlotDetailsRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.ExamService;
 import com.witcurve.service.dto.ExamDTO;
 import com.witcurve.service.mapper.ExamMapper;
@@ -16,7 +13,6 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +22,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -48,6 +46,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     ExamMapper examMapper;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
 
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException {
@@ -137,6 +138,28 @@ public class ExamServiceImpl implements ExamService {
             }
         }
         return exams.map(examMapper::toDto);
+    }
+
+    @Override
+    public List<Long> getExamIdsForStaff(Long staffId, LocalDate fromDate, LocalDate endDate, List<ExamStatus> statuses) throws WitcurveException {
+        log.debug("Get list of exams ids for exams with staffId : {} between dates {} and {} of status : {}", staffId, fromDate, endDate, statuses);
+        List<Long> result = new ArrayList<>();
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
+        if(courseTeachers.isEmpty()) {
+            return result;
+        } else {
+            Set<Long> courseIds = courseTeachers
+                .stream()
+                .map(CourseTeacher::getCourse)
+                .map(s -> s.getId())
+                .collect(Collectors.toSet());
+            if(statuses != null && !statuses.isEmpty()) {
+                result = examRepository.findExamIdsForCourseIds(courseIds, fromDate, endDate);
+            } else {
+                result = examRepository.findExamIdsForCourseIdsWithStatus(courseIds, fromDate, endDate, statuses);
+            }
+            return result;
+        }
     }
 
     @Override

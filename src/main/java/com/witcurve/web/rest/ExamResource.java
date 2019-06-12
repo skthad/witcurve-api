@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -128,6 +127,25 @@ public class ExamResource {
                                                   @RequestParam(required = false) List<ExamStatus> statusList) throws WitcurveException {
         log.debug("Request to get Exams between dates {} and {} for school info with id : {} of grade : {} and of status : {}", fromDate, endDate, schoolInfoId, grade, statusList);
         Page<ExamDTO> result = examService.getExamsBetweenDates(schoolInfoId, fromDate, endDate, grade, statusList, pageable);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get exam between fromDate and endDate for school board with schoolInfoId
+     * @param schoolInfoId
+     * @param fromDate
+     * @param endDate
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/exams/staff/{staffId}")
+    @Timed
+    public ResponseEntity<List<Long>> getExamIdsForStaff(@PathVariable Long staffId,
+                                                  @RequestParam LocalDate fromDate, @RequestParam LocalDate endDate,
+                                                  @RequestParam(required = false) List<ExamStatus> statusList) throws WitcurveException {
+        log.debug("Request to get Exam Ids between dates {} and {} for staff with id : {} of status : {}", fromDate, endDate, staffId, statusList);
+        List<Long> result = examService.getExamIdsForStaff(staffId, fromDate, endDate, statusList);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
