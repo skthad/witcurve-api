@@ -4,13 +4,14 @@ import com.witcurve.domain.enumeration.ApprovalStatus;
 import com.witcurve.service.dto.LeaveApplicationDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 public interface LeaveApplicationService {
 
-    LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTOs, Boolean update) throws WitcurveException;
+    LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTOs, Boolean update) throws WitcurveException, UnsupportedEncodingException;
 
     LeaveApplicationDTO getLeaveApplicationById(Long leaveApplicationId) throws WitcurveException;
 

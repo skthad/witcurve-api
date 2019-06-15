@@ -1,6 +1,7 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.ConfigSettings;
+import com.witcurve.domain.enumeration.ConfigFieldName;
 import com.witcurve.domain.enumeration.ConfigType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,6 +15,9 @@ public interface ConfigSettingsRepository extends JpaRepository<ConfigSettings, 
 
     @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 order by cs.configType, cs.displayOrder")
     List<ConfigSettings> getConfigSettingsBySchoolId(Long schoolId);
+
+    @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 and cs.fieldName = ?2")
+    List<ConfigSettings> getConfigSettingsBySchoolIdAndFieldName(Long schoolId, ConfigFieldName fieldName);
 
     @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 and cs.configType in ?2 order by cs.displayOrder")
     List<ConfigSettings> getConfigSettingsBySchoolIdAndTypes(Long schoolId, ConfigType[] configTypes);

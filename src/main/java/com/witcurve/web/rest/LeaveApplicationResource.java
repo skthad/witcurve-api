@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
@@ -39,7 +40,7 @@ public class LeaveApplicationResource {
      */
     @PostMapping("/leave-application")
     @Timed
-    public ResponseEntity<LeaveApplicationDTO> createLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<LeaveApplicationDTO> createLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTOs) throws WitcurveException, URISyntaxException, UnsupportedEncodingException {
         log.debug("Request Save Leave Application", leaveApplicationDTOs);
         if (leaveApplicationDTOs.getId() == null) {
             LeaveApplicationDTO result = leaveApplicationService.saveOrUpdate(leaveApplicationDTOs, false);
@@ -75,7 +76,7 @@ public class LeaveApplicationResource {
 
     @PutMapping("/leave-application")
     @Timed
-    public ResponseEntity<LeaveApplicationDTO> updateLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTO) throws WitcurveException {
+    public ResponseEntity<LeaveApplicationDTO> updateLeaveApplication(@RequestBody @Valid LeaveApplicationDTO leaveApplicationDTO) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to update leave application");
         if (leaveApplicationDTO.getId() == null) {
             throw new WitcurveException("Id is required for update request");

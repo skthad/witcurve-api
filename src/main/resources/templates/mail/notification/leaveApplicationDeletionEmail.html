@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{email.notification.staff.absent.title(${smsSignature}, ${date})}">Student is Absent</title>
+    <title th:text="#{email.notification.leave.application.deletion.title(${titlePlaceholder})}">Leave application canceled</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>
 <body>
-<p th:text="#{email.notification.greeting(${fullName})}">Dear Staff,</p>
+<p th:text="#{email.notification.greeting(${greetingPlaceholder})}">Dear Staff,</p>
 <p th:text="#{email.notification.subscription(${instituteName})}"/>
-<p th:text="#{email.notification.staff.absent.body(${date})}"/>
+<p th:text="#{email.notification.leave.application.deletion.body(${fullName})}"/>
 <p th:text="#{email.notification.tinyUrl(${tinyUrl})}"/>
 <p>
     This is an auto-generated email. Please do not reply.
