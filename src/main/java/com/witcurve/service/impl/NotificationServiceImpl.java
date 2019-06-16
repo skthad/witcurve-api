@@ -9,6 +9,9 @@ import com.witcurve.repository.*;
 import com.witcurve.service.MailService;
 import com.witcurve.service.NotificationService;
 import com.witcurve.service.SmsService;
+import com.witcurve.service.dto.LeaveApplicationDTO;
+import com.witcurve.service.dto.NotificationInfo;
+import com.witcurve.service.mapper.LeaveApplicationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,12 @@ public class NotificationServiceImpl implements NotificationService {
     LeaveApplicationRepository leaveApplicationRepository;
 
     @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    LeaveApplicationMapper leaveApplicationMapper;
+
+    @Autowired
     SmsService smsService;
 
     @Autowired
@@ -49,99 +58,37 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Async
     public void sendAbsentNotification(SchoolInfo schoolInfo, Map<Long, Set<LocalDate>> studentIdAndDatesMap, Map<Long, Set<LocalDate>> staffIdAndDatesMap) throws UnsupportedEncodingException {
-        String instituteName = schoolInfo.getSchool().getInstitute().getName();
-        String smsSignature = schoolInfo.getSchool().getInstitute().getSmsSignature();
-        List<ConfigSettings> absentNotificationSetting = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(schoolInfo.getSchool().getId(), ConfigFieldName.STAFF_OR_STUDENT_ABSENT);
-        Boolean sendSMS = false;
-        Boolean sendEmail = false;
-        Boolean sendPush = false;
-        for (ConfigSettings configSettings: absentNotificationSetting) {
-            if (configSettings.getConfigType().equals(ConfigType.SMS_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendSMS = true;
-            }
-            if (configSettings.getConfigType().equals(ConfigType.EMAIL_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendEmail = true;
-            }
-            if (configSettings.getConfigType().equals(ConfigType.PUSH_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendPush = true;
-            }
-        }
+        NotificationInfo info = getNotificationInfo(schoolInfo, ConfigFieldName.STAFF_OR_STUDENT_ABSENT);
 
-        if (sendSMS || sendEmail || sendPush) {
-            sendStudentAbsentNotification(studentIdAndDatesMap, instituteName, smsSignature, sendSMS, sendEmail, sendPush);
-            sendStaffAbsentNotification(staffIdAndDatesMap, instituteName, smsSignature, sendSMS, sendEmail, sendPush);
+        if (info.getSendSMS() || info.getSendEmail() || info.getSendPush()) {
+            sendStudentAbsentNotification(studentIdAndDatesMap, info);
+            sendStaffAbsentNotification(staffIdAndDatesMap, info);
         }
     }
 
     @Override
     @Async
     public void sendSchoolEventNotification(SchoolInfo schoolInfo, List<Event> schoolEvents) throws UnsupportedEncodingException {
-        String instituteName = schoolInfo.getSchool().getInstitute().getName();
-        String smsSignature = schoolInfo.getSchool().getInstitute().getSmsSignature();
-        List<ConfigSettings> schoolEventNotificationSetting = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(schoolInfo.getSchool().getId(), ConfigFieldName.SCHOOL_EVENT_POSTED);
-        Boolean sendSMS = false;
-        Boolean sendEmail = false;
-        Boolean sendPush = false;
-        for (ConfigSettings configSettings: schoolEventNotificationSetting) {
-            if (configSettings.getConfigType().equals(ConfigType.SMS_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendSMS = true;
-            }
-            if (configSettings.getConfigType().equals(ConfigType.EMAIL_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendEmail = true;
-            }
-            if (configSettings.getConfigType().equals(ConfigType.PUSH_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendPush = true;
-            }
-        }
-        if (sendSMS || sendEmail || sendPush) {
-            sendSchoolEventNotification(schoolInfo, schoolEvents, instituteName, smsSignature, sendSMS, sendEmail, sendPush);
+        NotificationInfo info = getNotificationInfo(schoolInfo, ConfigFieldName.SCHOOL_EVENT_POSTED);
+        if (info.getSendSMS() || info.getSendEmail() || info.getSendPush()) {
+            sendSchoolEventNotification(schoolInfo, schoolEvents, info);
         }
     }
 
     @Override
     @Async
-    public void sendLeaveApplicationSaveOrUpdateNotification(Long leaveApplicationId, Boolean update) throws UnsupportedEncodingException {
-        LeaveApplication leaveApplication = leaveApplicationRepository.getOne(leaveApplicationId);
-        String instituteName = leaveApplication.getSchoolInfo().getSchool().getInstitute().getName();
-        String smsSignature = leaveApplication.getSchoolInfo().getSchool().getInstitute().getSmsSignature();
-        Boolean sendSMS = false;
-        Boolean sendEmail = false;
-        Boolean sendPush = false;
-        List<ConfigSettings> leaveApplicationNotificationSetting = null;
-        if (leaveApplication.getAppliedStudent() != null) {
-            if (update) {
-                leaveApplicationNotificationSetting = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(leaveApplication.getSchoolInfo().getSchool().getId(), ConfigFieldName.STUDENT_LEAVE_APPLICATION_MODIFIED);
-            } else {
-                leaveApplicationNotificationSetting = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(leaveApplication.getSchoolInfo().getSchool().getId(), ConfigFieldName.STUDENT_LEAVE_APPLICATION_POSTED);
-            }
-        } else if (leaveApplication.getAppliedStaff() != null) {
-            if (update) {
-                leaveApplicationNotificationSetting = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(leaveApplication.getSchoolInfo().getSchool().getId(), ConfigFieldName.STAFF_LEAVE_APPLICATION_MODIFIED);
-            } else {
-                leaveApplicationNotificationSetting = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(leaveApplication.getSchoolInfo().getSchool().getId(), ConfigFieldName.STAFF_LEAVE_APPLICATION_POSTED);
-            }
-        }
-        for (ConfigSettings configSettings: leaveApplicationNotificationSetting) {
-            if (configSettings.getConfigType().equals(ConfigType.SMS_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendSMS = true;
-            }
-            if (configSettings.getConfigType().equals(ConfigType.EMAIL_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendEmail = true;
-            }
-            if (configSettings.getConfigType().equals(ConfigType.PUSH_NOTIFICATION) && configSettings.getFieldValue().equals("TRUE")) {
-                sendPush = true;
-            }
-        }
-        if (sendSMS || sendEmail || sendPush) {
+    public void sendLeaveApplicationSaveOrUpdateNotification(LeaveApplication leaveApplication, Boolean update) throws UnsupportedEncodingException {
+
+        leaveApplication = leaveApplicationRepository.getOne(leaveApplication.getId());
+        NotificationInfo info = getNotificationInfo(leaveApplication, update);
+        if (info.getSendSMS() || info.getSendEmail() || info.getSendPush()) {
             String tinyUrl = "http://witcurve.com/tiny";
-            Map paramsMap = new HashMap();
-            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
-            paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "Staff");
+            String[] subjectParamArray = new String[]{info.getSmsSignature(), ""};
+            String titlePlaceholder = "";
+            Map paramsMap = getParamsMapForLeaveApplication(leaveApplicationMapper.toDto(leaveApplication), leaveApplication.getSchoolInfo(), info);
             paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-            String[] subjectParamArray = new String[]{smsSignature, ""};
             if (leaveApplication.getAppliedStudent() != null) {
                 List<String> emailIds = new ArrayList<>();
-                String fullName = leaveApplication.getAppliedStudent().getFirstName() + " " + leaveApplication.getAppliedStudent().getLastName();
                 List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(leaveApplication.getAppliedStudent().getId());
                 if (studentStandards.size() == 0) {
                     return;
@@ -149,69 +96,72 @@ public class NotificationServiceImpl implements NotificationService {
                 Standard standard = studentStandards.get(0).getStandard();
                 emailIds.add(standard.getClassTeacher().getEmail());
                 emailIds.add(standard.getSchoolInfo().getSchool().getPrimaryEmail());
-                String phone = standard.getClassTeacher().getPrimaryPhone();
-                fullName += " of " + standard.getGrade() + " " + standard.getSection();
-                paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
                 if (update) {
-                    String smsBody = String.format("This is to inform you that %s has modified leave application details. Visit %s for more.", fullName, tinyUrl);
-                    subjectParamArray[1] = "Student";
+                    titlePlaceholder = "Student";
+                    subjectParamArray[1] = titlePlaceholder;
+                    paramsMap.put(Constants.PARAM_TITLE_PLACEHOLDER, titlePlaceholder);
                     paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                    if (sendSMS) {
-                        smsService.sendSms(phone, smsBody, smsSignature);
+                    String smsBody = String.format("This is to inform you that %s has modified leave application details. Visit %s for more.", paramsMap.get(Constants.PARAM_FULL_NAME), tinyUrl);
+                    if (info.getSendSMS()) {
+                        smsService.sendSms(standard.getClassTeacher().getPrimaryPhone(), smsBody, info.getSmsSignature());
                     }
-                    if (sendEmail) {
+                    if (info.getSendEmail()) {
                         for (String email: emailIds) {
-                            mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationModificationEmail", "email.notification.leave.application.modification.title", smsSignature);
+                            mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationModificationEmail", "email.notification.leave.application.modification.title", info.getSmsSignature());
                         }
                     }
-                    if (sendPush) {
+                    if (info.getSendPush()) {
                         // TODO
                     }
                 } else {
-                    String smsBody = String.format("This is to inform you that %s has applied for leave. Visit %s for more.", fullName, tinyUrl);
-                    subjectParamArray[1] = "student";
+                    titlePlaceholder = "student";
+                    subjectParamArray[1] = titlePlaceholder;
+                    paramsMap.put(Constants.PARAM_TITLE_PLACEHOLDER, titlePlaceholder);
                     paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                    if (sendSMS) {
-                        smsService.sendSms(phone, smsBody, smsSignature);
+                    String smsBody = String.format("This is to inform you that %s has applied for leave. Visit %s for more.", paramsMap.get(Constants.PARAM_FULL_NAME), tinyUrl);
+                    if (info.getSendSMS()) {
+                        smsService.sendSms(standard.getClassTeacher().getPrimaryPhone(), smsBody, info.getSmsSignature());
                     }
-                    if (sendEmail) {
+                    if (info.getSendEmail()) {
                         for (String email: emailIds) {
-                            mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationCreationEmail", "email.notification.leave.application.creation.title", smsSignature);
+                            mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationCreationEmail", "email.notification.leave.application.creation.title", info.getSmsSignature());
                         }
                     }
-                    if (sendPush) {
+                    if (info.getSendPush()) {
                         // TODO
                     }
                 }
             } else if (leaveApplication.getAppliedStaff() != null) {
-                String fullName = leaveApplication.getAppliedStaff().getFirstName() + " " + leaveApplication.getAppliedStaff().getLastName();
                 String email = leaveApplication.getSchoolInfo().getSchool().getPrimaryEmail();
                 String phone = leaveApplication.getSchoolInfo().getSchool().getPrimaryPhone();
-                paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
                 if (update) {
-                    String smsBody = String.format("This is to inform you that %s has modified leave application details. Visit %s for more.", fullName, tinyUrl);
-                    subjectParamArray[1] = "Staff";
+                    titlePlaceholder = "Staff";
+                    subjectParamArray[1] = titlePlaceholder;
+                    paramsMap.put(Constants.PARAM_TITLE_PLACEHOLDER, titlePlaceholder);
                     paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                    if (sendSMS) {
-                        smsService.sendSms(phone, smsBody, smsSignature);
+                    String smsBody = String.format("This is to inform you that %s has modified leave application details. Visit %s for more.", paramsMap.get(Constants.PARAM_FULL_NAME), tinyUrl);
+                    if (info.getSendSMS()) {
+                        smsService.sendSms(phone, smsBody, info.getSmsSignature());
                     }
-                    if (sendEmail) {
-                        mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationModificationEmail", "email.notification.leave.application.modification.title", smsSignature);
+                    if (info.getSendEmail()) {
+                        mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationModificationEmail", "email.notification.leave.application.modification.title", info.getSmsSignature());
                     }
-                    if (sendPush) {
+                    if (info.getSendPush()) {
                         // TODO
                     }
                 } else {
-                    String smsBody = String.format("This is to inform you that %s has applied for leave. Visit %s for more.", fullName, tinyUrl);
-                    subjectParamArray[1] = "staff";
+                    titlePlaceholder = "staff";
+                    subjectParamArray[1] = titlePlaceholder;
+                    paramsMap.put(Constants.PARAM_TITLE_PLACEHOLDER, titlePlaceholder);
                     paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                    if (sendSMS) {
-                        smsService.sendSms(phone, smsBody, smsSignature);
+                    String smsBody = String.format("This is to inform you that %s has applied for leave. Visit %s for more.", paramsMap.get(Constants.PARAM_FULL_NAME), tinyUrl);
+                    if (info.getSendSMS()) {
+                        smsService.sendSms(phone, smsBody, info.getSmsSignature());
                     }
-                    if (sendEmail) {
-                        mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationCreationEmail", "email.notification.leave.application.creation.title", smsSignature);
+                    if (info.getSendEmail()) {
+                        mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationCreationEmail", "email.notification.leave.application.creation.title", info.getSmsSignature());
                     }
-                    if (sendPush) {
+                    if (info.getSendPush()) {
                         // TODO
                     }
                 }
@@ -221,23 +171,119 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Async
-    public void sendLeaveApplicationStatusNotification() throws UnsupportedEncodingException {
-
+    public void sendLeaveApplicationStatusNotification(LeaveApplicationDTO leaveApplication) throws UnsupportedEncodingException {
+        NotificationInfo info;
+        SchoolInfo schoolInfo = schoolInfoRepository.getOne(leaveApplication.getSchoolInfoId());
+        if (leaveApplication.getAppliedStudentId() != null) {
+            info = getNotificationInfo(schoolInfo, ConfigFieldName.STUDENT_LEAVE_APPLICATION_STATUS_UPDATED);
+        } else {
+            info = getNotificationInfo(schoolInfo, ConfigFieldName.STAFF_LEAVE_APPLICATION_STATUS_UPDATED);
+        }
+        if (info.getSendSMS() || info.getSendEmail() || info.getSendPush()) {
+            String tinyUrl = "http://witcurve.com/tiny";
+            Map paramsMap = new HashMap();
+            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, info.getInstituteName());
+            paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
+            String[] subjectParamArray = new String[]{info.getSmsSignature()};
+            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+            String smsBody = String.format("This is to notify you that your leave application status has been updated. Visit %s for more.", tinyUrl);
+            if (leaveApplication.getAppliedStudentId() != null) {
+                paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "Parent");
+                Student student = studentRepository.getOne(leaveApplication.getAppliedStudentId());
+                if (info.getSendSMS()) {
+                    smsService.sendSms(student.getRegisteredMobileNumber(), smsBody, info.getSmsSignature());
+                }
+                if (info.getSendEmail() && !Strings.isNullOrEmpty(student.getEmail())) {
+                    mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/leaveApplicationStatusEmail", "email.notification.leave.application.status.title", info.getSmsSignature());
+                }
+                if (info.getSendPush()) {
+                    // TODO
+                }
+            } else if (leaveApplication.getAppliedStaffId() != null) {
+                Staff staff = staffRepository.getOne(leaveApplication.getAppliedStaffId());
+                paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "Staff");
+                if (info.getSendSMS()) {
+                    smsService.sendSms(staff.getPrimaryPhone(), smsBody, info.getSmsSignature());
+                }
+                if (info.getSendEmail()) {
+                    mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/leaveApplicationStatusEmail", "email.notification.leave.application.status.title", info.getSmsSignature());
+                }
+                if (info.getSendPush()) {
+                    // TODO
+                }
+            }
+        }
     }
 
     @Override
     @Async
-    public void sendLeaveApplicationDeletionNotification() throws UnsupportedEncodingException {
-
+    public void sendLeaveApplicationDeletionNotification(LeaveApplicationDTO leaveApplication) throws UnsupportedEncodingException {
+        NotificationInfo info;
+        SchoolInfo schoolInfo = schoolInfoRepository.getOne(leaveApplication.getSchoolInfoId());
+        if (leaveApplication.getAppliedStudentId() != null) {
+            info = getNotificationInfo(schoolInfo, ConfigFieldName.STUDENT_LEAVE_APPLICATION_DELETED);
+        } else {
+            info = getNotificationInfo(schoolInfo, ConfigFieldName.STAFF_LEAVE_APPLICATION_DELETED);
+        }
+        if (info.getSendSMS() || info.getSendEmail() || info.getSendPush()) {
+            String tinyUrl = "http://witcurve.com/tiny";
+            Map paramsMap = getParamsMapForLeaveApplication(leaveApplication, schoolInfo, info);
+            paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
+            String[] subjectParamArray = new String[]{info.getSmsSignature(), ""};
+            String titlePlaceholder = "";
+            if (leaveApplication.getAppliedStudentId() != null) {
+                titlePlaceholder = "Student";
+                subjectParamArray[1] = titlePlaceholder;
+                paramsMap.put(Constants.PARAM_TITLE_PLACEHOLDER, titlePlaceholder);
+                paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+                List<String> emailIds = new ArrayList<>();
+                List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(leaveApplication.getAppliedStudentId());
+                if (studentStandards.size() == 0) {
+                    return;
+                }
+                Standard standard = studentStandards.get(0).getStandard();
+                emailIds.add(standard.getClassTeacher().getEmail());
+                emailIds.add(standard.getSchoolInfo().getSchool().getPrimaryEmail());
+                String smsBody = String.format("This is to inform you that %s has canceled the leave application. Visit %s for more.", paramsMap.get(Constants.PARAM_FULL_NAME), tinyUrl);
+                if (info.getSendSMS()) {
+                    smsService.sendSms(standard.getClassTeacher().getPrimaryPhone(), smsBody, info.getSmsSignature());
+                }
+                if (info.getSendEmail()) {
+                    for (String email: emailIds) {
+                        mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationDeletionEmail", "email.notification.leave.application.deletion.title", info.getSmsSignature());
+                    }
+                }
+                if (info.getSendPush()) {
+                    // TODO
+                }
+            } else {
+                titlePlaceholder = "Staff";
+                subjectParamArray[1] = titlePlaceholder;
+                paramsMap.put(Constants.PARAM_TITLE_PLACEHOLDER, titlePlaceholder);
+                paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+                String email = schoolInfo.getSchool().getPrimaryEmail();
+                String phone = schoolInfo.getSchool().getPrimaryPhone();
+                String smsBody = String.format("This is to inform you that %s has applied for leave. Visit %s for more.", paramsMap.get(Constants.PARAM_FULL_NAME), tinyUrl);
+                if (info.getSendSMS()) {
+                    smsService.sendSms(phone, smsBody, info.getSmsSignature());
+                }
+                if (info.getSendEmail()) {
+                    mailService.sendEmailFromTemplate(email, paramsMap, "mail/notification/leaveApplicationDeletionEmail", "email.notification.leave.application.deletion.title", info.getSmsSignature());
+                }
+                if (info.getSendPush()) {
+                    // TODO
+                }
+            }
+        }
     }
 
-    private void sendStaffAbsentNotification(Map<Long, Set<LocalDate>> staffIdAndDatesMap, String instituteName, String smsSignature, Boolean sendSMS, Boolean sendEmail, Boolean sendPush) throws UnsupportedEncodingException {
+    private void sendStaffAbsentNotification(Map<Long, Set<LocalDate>> staffIdAndDatesMap, NotificationInfo info) throws UnsupportedEncodingException {
 
         if (staffIdAndDatesMap != null) {
             Map paramsMap = new HashMap();
-            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
+            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, info.getInstituteName());
             paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "Staff");
-            String[] subjectParamArray = new String[]{smsSignature, ""};
+            String[] subjectParamArray = new String[]{info.getSmsSignature(), ""};
             Map<Long, Staff> staffIdMap = new HashMap<>();
             List<Staff> staffList = staffRepository.findAllById(staffIdAndDatesMap.keySet());
             for (Staff staff: staffList) {
@@ -258,13 +304,13 @@ public class NotificationServiceImpl implements NotificationService {
                     paramsMap.put(Constants.PARAM_DATE, date);
                     subjectParamArray[1] = date.toString();
                     paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                    if (sendSMS) {
-                        smsService.sendSms(staff.getPrimaryPhone(), String.format(smsBody, date, tinyUrl), smsSignature);
+                    if (info.getSendSMS()) {
+                        smsService.sendSms(staff.getPrimaryPhone(), String.format(smsBody, date, tinyUrl), info.getSmsSignature());
                     }
-                    if (sendEmail) {
-                        mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/staffAbsentNotificationEmail", "email.notification.staff.absent.title", smsSignature);
+                    if (info.getSendEmail()) {
+                        mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/staffAbsentNotificationEmail", "email.notification.staff.absent.title", info.getSmsSignature());
                     }
-                    if (sendPush) {
+                    if (info.getSendPush()) {
                         //TODO:
                     }
                 }
@@ -272,13 +318,13 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    private void sendStudentAbsentNotification(Map<Long, Set<LocalDate>> studentIdAndDatesMap, String instituteName, String smsSignature, Boolean sendSMS, Boolean sendEmail, Boolean sendPush) throws UnsupportedEncodingException {
+    private void sendStudentAbsentNotification(Map<Long, Set<LocalDate>> studentIdAndDatesMap, NotificationInfo info) throws UnsupportedEncodingException {
 
         if (studentIdAndDatesMap != null) {
             Map paramsMap = new HashMap();
-            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
+            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, info.getInstituteName());
             paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "Parent");
-            String[] subjectParamArray = new String[]{smsSignature, "", ""};
+            String[] subjectParamArray = new String[]{info.getSmsSignature(), "", ""};
             Map<Long, Student> studentIdMap = new HashMap<>();
             List<Student> studentList = studentRepository.findAllById(studentIdAndDatesMap.keySet());
             for (Student student: studentList) {
@@ -300,13 +346,13 @@ public class NotificationServiceImpl implements NotificationService {
                     paramsMap.put(Constants.PARAM_DATE, date);
                     subjectParamArray[2] = date.toString();
                     paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                    if (sendSMS) {
-                        smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), smsSignature);
+                    if (info.getSendSMS()) {
+                        smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), info.getSmsSignature());
                     }
-                    if (sendEmail) {
-                        mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", smsSignature);
+                    if (info.getSendEmail()) {
+                        mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", info.getSmsSignature());
                     }
-                    if (sendPush) {
+                    if (info.getSendPush()) {
                         //TODO:
                     }
                 }
@@ -314,12 +360,12 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    private void sendSchoolEventNotification(SchoolInfo schoolInfo, List<Event> schoolEvents, String instituteName, String smsSignature, Boolean sendSMS, Boolean sendEmail, Boolean sendPush) throws UnsupportedEncodingException {
+    private void sendSchoolEventNotification(SchoolInfo schoolInfo, List<Event> schoolEvents, NotificationInfo info) throws UnsupportedEncodingException {
 
         if (schoolEvents != null) {
             Map paramsMap = new HashMap();
-            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
-            String[] subjectParamArray = new String[]{smsSignature};
+            paramsMap.put(Constants.PARAM_INSTITUTE_NAME, info.getInstituteName());
+            String[] subjectParamArray = new String[]{info.getSmsSignature()};
             paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
 
             Set<String> allStudentMobileNos = studentStandardRepository.getActiveStudentPhoneNumbersBySchoolInfoId(schoolInfo.getId());
@@ -363,32 +409,87 @@ public class NotificationServiceImpl implements NotificationService {
                 paramsMap.put(Constants.PARAM_DATE, event.getDate());
                 paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "User");
                 String smsBody = "This is to notify you that %s is scheduled on %s. Visit %s for more.";
-                if (sendSMS) {
+                if (info.getSendSMS()) {
                     for (String studentMobileNumber: (event.getStandard() == null ? allStudentMobileNos : studentStandardMobileNosMap.get(event.getStandard().getId()))) {
                         String tinyUrl = "http://witcurve.com/tiny";
-                        smsService.sendSms(studentMobileNumber, String.format(smsBody, event.getName(), event.getDate(), tinyUrl), smsSignature);
+                        smsService.sendSms(studentMobileNumber, String.format(smsBody, event.getName(), event.getDate(), tinyUrl), info.getSmsSignature());
                     }
                     for (String staffMobileNumber: (event.getStandard() == null ? allStaffMobileNos : staffStandardMobileNosMap.get(event.getStandard().getId()))) {
                         String tinyUrl = "http://witcurve.com/tiny";
-                        smsService.sendSms(staffMobileNumber, String.format(smsBody, event.getName(), event.getDate(), tinyUrl), smsSignature);
+                        smsService.sendSms(staffMobileNumber, String.format(smsBody, event.getName(), event.getDate(), tinyUrl), info.getSmsSignature());
                     }
                 }
-                if (sendEmail) {
+                if (info.getSendEmail()) {
                     for (String studentEmailId: (event.getStandard() == null ? allStudentEmailIds : studentStandardEmailIdsMap.get(event.getStandard().getId()))) {
                         String tinyUrl = "http://witcurve.com/tiny";
                         paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-                        mailService.sendEmailFromTemplate(studentEmailId, paramsMap, "mail/notification/schoolEventNotificationEmail", "email.notification.school.event.title", smsSignature);
+                        mailService.sendEmailFromTemplate(studentEmailId, paramsMap, "mail/notification/schoolEventNotificationEmail", "email.notification.school.event.title", info.getSmsSignature());
                     }
                     for (String staffEmailId: (event.getStandard() == null ? allStaffEmailIds : staffStandardEmailIdsMap.get(event.getStandard().getId()))) {
                         String tinyUrl = "http://witcurve.com/tiny";
                         paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-                        mailService.sendEmailFromTemplate(staffEmailId, paramsMap, "mail/notification/schoolEventNotificationEmail", "email.notification.school.event.title", smsSignature);
+                        mailService.sendEmailFromTemplate(staffEmailId, paramsMap, "mail/notification/schoolEventNotificationEmail", "email.notification.school.event.title", info.getSmsSignature());
                     }
                 }
-                if (sendPush) {
+                if (info.getSendPush()) {
                     //TODO:
                 }
             }
         }
+    }
+
+    private NotificationInfo getNotificationInfo(LeaveApplication leaveApplication, Boolean update) {
+        if (leaveApplication.getAppliedStudent() != null) {
+            if (update) {
+                return getNotificationInfo(leaveApplication.getSchoolInfo(), ConfigFieldName.STUDENT_LEAVE_APPLICATION_MODIFIED);
+            } else {
+                return getNotificationInfo(leaveApplication.getSchoolInfo(), ConfigFieldName.STUDENT_LEAVE_APPLICATION_POSTED);
+            }
+        } else {
+            if (update) {
+                return getNotificationInfo(leaveApplication.getSchoolInfo(), ConfigFieldName.STAFF_LEAVE_APPLICATION_MODIFIED);
+            } else {
+                return getNotificationInfo(leaveApplication.getSchoolInfo(), ConfigFieldName.STAFF_LEAVE_APPLICATION_POSTED);
+            }
+        }
+    }
+
+    private Map getParamsMapForLeaveApplication(LeaveApplicationDTO leaveApplication, SchoolInfo schoolInfo, NotificationInfo info) {
+        Map paramsMap = new HashMap();
+        paramsMap.put(Constants.PARAM_INSTITUTE_NAME, info.getInstituteName());
+        paramsMap.put(Constants.PARAM_GREETING_PLACEHOLDER, "Staff");
+        String fullName = "";
+        if (leaveApplication.getAppliedStudentId() != null) {
+            fullName = leaveApplication.getStudentName();
+            List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(leaveApplication.getAppliedStudentId());
+            if (studentStandards.size() == 0) {
+                return paramsMap;
+            }
+            Standard standard = studentStandards.get(0).getStandard();
+            fullName += " of " + standard.getGrade() + " " + standard.getSection();
+        } else if (leaveApplication.getAppliedStaffId() != null) {
+            fullName = leaveApplication.getStaffName();
+        }
+        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
+        return paramsMap;
+    }
+
+    private NotificationInfo getNotificationInfo(SchoolInfo schoolInfo, ConfigFieldName fieldName) {
+        NotificationInfo notificationInfo = new NotificationInfo();
+        List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndFieldName(schoolInfo.getSchool().getId(), fieldName);
+        for (ConfigSettings configSetting: configSettings) {
+            if (configSetting.getConfigType().equals(ConfigType.SMS_NOTIFICATION) && configSetting.getFieldValue().equals("TRUE")) {
+                notificationInfo.setSendSMS(true);
+            }
+            if (configSetting.getConfigType().equals(ConfigType.EMAIL_NOTIFICATION) && configSetting.getFieldValue().equals("TRUE")) {
+                notificationInfo.setSendEmail(true);
+            }
+            if (configSetting.getConfigType().equals(ConfigType.PUSH_NOTIFICATION) && configSetting.getFieldValue().equals("TRUE")) {
+                notificationInfo.setSendPush(true);
+            }
+        }
+        notificationInfo.setInstituteName(schoolInfo.getSchool().getInstitute().getName());
+        notificationInfo.setSmsSignature(schoolInfo.getSchool().getInstitute().getSmsSignature());
+        return notificationInfo;
     }
 }

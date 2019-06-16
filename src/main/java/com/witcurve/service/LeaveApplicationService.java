@@ -15,9 +15,9 @@ public interface LeaveApplicationService {
 
     LeaveApplicationDTO getLeaveApplicationById(Long leaveApplicationId) throws WitcurveException;
 
-    void deleteLeaveApplication(Long leaveApplicationId) throws WitcurveException;
+    void deleteLeaveApplication(Long leaveApplicationId) throws WitcurveException, UnsupportedEncodingException;
 
-    LeaveApplicationDTO changeLeaveStatus(Long ApplicationId, Long StaffId, ApprovalStatus status, String note) throws WitcurveException;
+    LeaveApplicationDTO changeLeaveStatus(Long ApplicationId, Long StaffId, ApprovalStatus status, String note) throws WitcurveException, UnsupportedEncodingException;
 
     Long workingDays(LocalDate fromDate,LocalDate toDate, Long schoolInfoId, Boolean isSaturdayWorking) throws WitcurveException;
 

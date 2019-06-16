@@ -101,7 +101,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         LeaveApplicationDTO result = leaveApplicationMapper.toDto(leaveApplication);
         result.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(), false));
 
-        notificationService.sendLeaveApplicationSaveOrUpdateNotification(leaveApplication.getId(), update);
+        notificationService.sendLeaveApplicationSaveOrUpdateNotification(leaveApplication, update);
 
         return result;
     }
@@ -121,20 +121,22 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     @Override
-    public void deleteLeaveApplication(Long leaveApplicationId) throws WitcurveException {
+    public void deleteLeaveApplication(Long leaveApplicationId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to delete leave Application with id {}", leaveApplicationId);
         Optional<LeaveApplication> leaveApplication = leaveApplicationRepository.findById(leaveApplicationId);
         if (!leaveApplication.isPresent()) {
             throw new WitcurveException("No leave application with given id");
         }
+        LeaveApplicationDTO leaveApplicationDTO = leaveApplicationMapper.toDto(leaveApplication.get());
         leaveApplicationRepository.delete(leaveApplication.get());
+        notificationService.sendLeaveApplicationDeletionNotification(leaveApplicationDTO);
 
     }
 
     @Override
     public LeaveApplicationDTO changeLeaveStatus(Long leaveApplicationId,
                                                  Long staffId, ApprovalStatus status,
-                                                 String note) throws WitcurveException {
+                                                 String note) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Approval for leaveApplication with id {}, by staff id {}", leaveApplicationId, staffId);
         Optional<LeaveApplication> leaveApplication = leaveApplicationRepository.findById(leaveApplicationId);
         Optional<Staff> staff = staffRepository.findById(staffId);
@@ -151,6 +153,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         leaveApplicationDTO.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(),
             leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(),
             false));
+        notificationService.sendLeaveApplicationStatusNotification(leaveApplicationDTO);
         return leaveApplicationDTO;
     }
 

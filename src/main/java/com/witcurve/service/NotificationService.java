@@ -1,7 +1,9 @@
 package com.witcurve.service;
 
 import com.witcurve.domain.Event;
+import com.witcurve.domain.LeaveApplication;
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.service.dto.LeaveApplicationDTO;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
@@ -15,10 +17,10 @@ public interface NotificationService {
 
     void sendSchoolEventNotification(SchoolInfo schoolInfo, List<Event> schoolEvents) throws UnsupportedEncodingException;
 
-    void sendLeaveApplicationSaveOrUpdateNotification(Long leaveApplication, Boolean update) throws UnsupportedEncodingException;
+    void sendLeaveApplicationSaveOrUpdateNotification(LeaveApplication leaveApplication, Boolean update) throws UnsupportedEncodingException;
 
-    void sendLeaveApplicationStatusNotification() throws UnsupportedEncodingException;
+    void sendLeaveApplicationStatusNotification(LeaveApplicationDTO leaveApplication) throws UnsupportedEncodingException;
 
-    void sendLeaveApplicationDeletionNotification() throws UnsupportedEncodingException;
+    void sendLeaveApplicationDeletionNotification(LeaveApplicationDTO leaveApplication) throws UnsupportedEncodingException;
 
 }

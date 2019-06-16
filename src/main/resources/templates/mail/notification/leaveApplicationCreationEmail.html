@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{email.notification.leave.application.creation.title(${titlePlaceholder})}">A new leave application awaiting your response</title>
+    <title th:text="#{email.notification.leave.application.creation.title(${smsSignature}, ${titlePlaceholder})}">A new leave application awaiting your response</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>

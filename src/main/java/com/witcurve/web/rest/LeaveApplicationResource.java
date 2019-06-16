@@ -94,7 +94,7 @@ public class LeaveApplicationResource {
      */
     @DeleteMapping("/leave-application/{leaveApplicationId}")
     @Timed
-    public ResponseEntity<Void> deleteLeaveApplication(@PathVariable Long leaveApplicationId) throws WitcurveException {
+    public ResponseEntity<Void> deleteLeaveApplication(@PathVariable Long leaveApplicationId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("REST request to delete leave application: {}", leaveApplicationId);
 
         leaveApplicationService.deleteLeaveApplication(leaveApplicationId);
@@ -116,7 +116,7 @@ public class LeaveApplicationResource {
         @PathVariable("leaveApplicationId") Long applicationId,
         @RequestParam Long staffId,
         @RequestParam ApprovalStatus status,
-        @RequestParam(required = false) String note) throws WitcurveException {
+        @RequestParam(required = false) String note) throws WitcurveException, UnsupportedEncodingException {
         log.debug("The LeaveApplication approved by staff id {} for application with id : {}", staffId, applicationId);
         try {
             LeaveApplicationDTO result = leaveApplicationService.changeLeaveStatus(applicationId, staffId, status, note);
