@@ -22,4 +22,5 @@
     <include file="config/liquibase/changelog/20190607130031_added_description_to_ecd.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190610115900_added_subdomain_to_institute.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190611061715_scd_soft_delete.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190617153426_added_survey_details.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
