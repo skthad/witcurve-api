@@ -151,4 +151,13 @@
     <changeSet author="WitCurve (generated)" id="1560785678293-12">
         <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="survey_answer" constraintName="FKsmngcm3g1yf412nsre7h8j32e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="survey_question"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-13">
+        <addUniqueConstraint columnNames="form_id, user_id" constraintName="survey_form_user_id" tableName="survey_submission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-14">
+        <addUniqueConstraint columnNames="question_id, user_id" constraintName="survey_question_user_id" tableName="survey_answer"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-15">
+        <addNotNullConstraint columnDataType="bigint" columnName="school_info_id" tableName="survey_form"/>
+    </changeSet>
 </databaseChangeLog>

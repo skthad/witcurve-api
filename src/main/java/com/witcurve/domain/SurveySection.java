@@ -74,7 +74,7 @@ public class SurveySection extends AbstractAuditingEntity implements Serializabl
 
     @Override
     public String toString() {
-        return "SurveySection{" +
+        return "SurveySectionService{" +
             "id=" + id +
             '}';
     }

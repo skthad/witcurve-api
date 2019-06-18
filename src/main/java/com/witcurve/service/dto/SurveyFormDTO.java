@@ -1,12 +1,13 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.SurveyFormCreator;
-import com.witcurve.domain.enumeration.SurveyFromStatus;
+import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -24,9 +25,14 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
     private SurveyUserType type;
 
     @NotNull
-    private SurveyFromStatus status;
+    private SurveyFormStatus status;
 
+    @NotNull
     private Long schoolInfoId;
+
+    private Boolean userSubmitted;
+
+    private Set<SurveySectionDTO> sections;
 
     public Long getId() {
         return id;
@@ -68,11 +74,11 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
         this.type = type;
     }
 
-    public SurveyFromStatus getStatus() {
+    public SurveyFormStatus getStatus() {
         return status;
     }
 
-    public void setStatus(SurveyFromStatus status) {
+    public void setStatus(SurveyFormStatus status) {
         this.status = status;
     }
 
@@ -82,6 +88,22 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSchoolInfoId(Long schoolInfoId) {
         this.schoolInfoId = schoolInfoId;
+    }
+
+    public Boolean getUserSubmitted() {
+        return userSubmitted;
+    }
+
+    public void setUserSubmitted(Boolean userSubmitted) {
+        this.userSubmitted = userSubmitted;
+    }
+
+    public Set<SurveySectionDTO> getSections() {
+        return sections;
+    }
+
+    public void setSections(Set<SurveySectionDTO> sections) {
+        this.sections = sections;
     }
 
     @Override

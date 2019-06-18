@@ -1,5 +1,5 @@
 package com.witcurve.domain.enumeration;
 
-public enum SurveyFromStatus {
+public enum SurveyFormStatus {
     DRAFT, PUBLISHED, CLOSED
 }
