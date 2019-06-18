@@ -6,7 +6,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "survey_submission")
+@Table(name = "survey_submission", uniqueConstraints = {
+    @UniqueConstraint(name = "survey_form_user_id",
+        columnNames = {"form_id", "user_id"})
+})
 public class SurveySubmission extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

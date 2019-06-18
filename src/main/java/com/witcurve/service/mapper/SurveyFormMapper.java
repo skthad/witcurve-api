@@ -5,7 +5,7 @@ import com.witcurve.service.dto.SurveyFormDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class})
+@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class, SurveySectionMapper.class})
 public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm> {
 
     @Mapping(source = "schoolInfo.id", target = "schoolInfoId")

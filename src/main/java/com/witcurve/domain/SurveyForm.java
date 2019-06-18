@@ -1,13 +1,14 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.SurveyFormCreator;
-import com.witcurve.domain.enumeration.SurveyFromStatus;
+import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "survey_form")
@@ -39,10 +40,16 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private SurveyFromStatus status;
+    private SurveyFormStatus status;
 
+    @NotNull
+    @JoinColumn(nullable = false)
     @ManyToOne
     private SchoolInfo schoolInfo;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="form_id", insertable = false, updatable = false)
+    private Set<SurveySection> sections;
 
     public Long getId() {
         return id;
@@ -84,11 +91,11 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
         this.type = type;
     }
 
-    public SurveyFromStatus getStatus() {
+    public SurveyFormStatus getStatus() {
         return status;
     }
 
-    public void setStatus(SurveyFromStatus status) {
+    public void setStatus(SurveyFormStatus status) {
         this.status = status;
     }
 
@@ -98,6 +105,14 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
 
     public void setSchoolInfo(SchoolInfo schoolInfo) {
         this.schoolInfo = schoolInfo;
+    }
+
+    public Set<SurveySection> getSections() {
+        return sections;
+    }
+
+    public void setSections(Set<SurveySection> sections) {
+        this.sections = sections;
     }
 
     @Override

@@ -8,7 +8,10 @@ import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "survey_answer")
+@Table(name = "survey_answer", uniqueConstraints = {
+    @UniqueConstraint(name = "survey_question_user_id",
+        columnNames = {"question_id", "user_id"})
+})
 public class SurveyAnswer extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
