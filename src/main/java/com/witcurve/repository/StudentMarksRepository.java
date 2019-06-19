@@ -56,5 +56,9 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
         "and sm.event.date between ?4 and ?5 order by sm.event.date asc")
     List<StudentMarks> getByCourseIdAndStandardForEvent(Long courseId, Long standardId, EventType type, LocalDate startDate, LocalDate endDate);
 
+    @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 " +
+        "and sm.student.id =?2 and sm.examCourseDetails.gsd.marksPublished in ?3 order by sm.examCourseDetails.date asc")
+    List<StudentMarks> getByStudentIdForExam(Long examId, Long studentId, List<Boolean> publishList);
+
 }
 
