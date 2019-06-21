@@ -2,7 +2,9 @@ package com.witcurve.service;
 
 import com.google.common.base.Strings;
 import com.witcurve.config.Constants;
+import com.witcurve.domain.Institute;
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StaffRepository;
@@ -99,7 +101,6 @@ public class MailService {
         }
     }
 
-    @Async
     public void sendBulkEmail(EmailVM emailVM, Long schoolInfoId)  throws WitcurveException {
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
         if (!schoolInfo.isPresent()) {
@@ -146,6 +147,42 @@ public class MailService {
             sendEmail(to, fromEmail, emailVM.getSubject(), emailVM.getBody(), false, false);
         } else {
             throw new WitcurveException("There are no email records available for given recipient list");
+        }
+
+    }
+
+    public void sendIntoBulkEmail(EmailVM emailVM, Long schoolInfoId) throws WitcurveException {
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
+        }
+        Institute institute = schoolInfo.get().getSchool().getInstitute();
+        List<StudentStandard> studentStandards = new ArrayList<>();
+        if (!Strings.isNullOrEmpty(emailVM.getStudentList())) {
+            if (emailVM.getStudentList().equals("-1")) {
+                studentStandards = studentStandardRepository.getBySchoolInfoId(schoolInfoId);
+            } else {
+                List<Long> studentIds = Arrays.asList(emailVM.getStudentList().split(","))
+                    .stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+                studentStandards = studentStandardRepository.getByStudentIdsAndSchoolInfoId(schoolInfoId, studentIds);
+            }
+            for(StudentStandard studentStandard : studentStandards) {
+                if(studentStandard.getStudent().getEmail() != null) {
+                    Map<String, Object> params = new HashMap<>();
+                    String[] subjectParamArray = new String[]{institute.getName()};
+                    params.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
+                    params.put(Constants.PARAM_INSTITUTE_NAME, institute.getName());
+                    params.put("studentName", studentStandard.getStudent().getFirstName()+ " "+studentStandard.getStudent().getLastName());
+                    params.put("grade", studentStandard.getStandard().getGrade().toString());
+                    params.put("section", studentStandard.getStandard().getSection());
+                    params.put("androidLink", institute.getAndroidUrl());
+                    params.put("iosLink", institute.getIosUrl());
+                    params.put("username", studentStandard.getStudent().getAdmissionId());
+                    sendEmailFromTemplate(studentStandard.getStudent().getEmail(), params, "mail/studentAppIntroEmail", "student.app.intro.title", institute.getSmsSignature());
+                }
+            }
+        } else {
+            throw new WitcurveException("This api currently works for only students");
         }
 
     }

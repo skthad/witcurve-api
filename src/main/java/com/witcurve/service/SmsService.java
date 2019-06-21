@@ -2,7 +2,9 @@ package com.witcurve.service;
 
 import com.google.common.base.Strings;
 import com.witcurve.config.ApplicationProperties;
+import com.witcurve.domain.Institute;
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.repository.StaffRepository;
@@ -90,6 +92,7 @@ public class SmsService {
 
     @Async
     public void sendBulkSMS(Long schoolInfoId, SmsVM smsVM) throws UnsupportedEncodingException {
+
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
 
         if (!schoolInfo.isPresent()) {
@@ -135,6 +138,39 @@ public class SmsService {
             sendSms(mobileNumbers, smsVM.getBody(), schoolInfo.get().getSchool().getInstitute().getSmsSignature());
         } else {
             throw new WitcurveException("There are no phone records available for given recipient list");
+        }
+    }
+
+    public void sendBulkIntroSMS(Long schoolInfoId, SmsVM smsVM) throws UnsupportedEncodingException, WitcurveException {
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No school Info found for ID: " + schoolInfo);
+        }
+        Institute institute = schoolInfo.get().getSchool().getInstitute();
+        List<StudentStandard> studentStandards = new ArrayList<>();
+        if (!Strings.isNullOrEmpty(smsVM.getStudentList())) {
+            if (smsVM.getStudentList().equals("-1")) {
+                studentStandards = studentStandardRepository.getBySchoolInfoId(schoolInfoId);
+            } else {
+                List<Long> studentIds = Arrays.asList(smsVM.getStudentList().split(","))
+                    .stream().map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+                studentStandards = studentStandardRepository.getByStudentIdsAndSchoolInfoId(schoolInfoId, studentIds);
+            }
+            for(StudentStandard studentStandard : studentStandards) {
+                String body = "Hi Parent, \n" +
+                    "Your username is '"+studentStandard.getStudent().getAdmissionId()+"' for the '"+institute.getMobileAppName()+"' app available at  \n" +
+                    "Android : "+institute.getAndroidUrl()+"\n" +
+                    "Apple:  "+institute.getIosUrl()+"\n" +
+                    "\n" +
+                    "Login with one time password (OTP) to create password.\n" +
+                    "Kindly contact your school administration for assistance.";
+                    schoolInfo.get().getSchool().getInstitute().getIosUrl();
+                sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),
+                    body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+            }
+        } else {
+            throw new WitcurveException("This api currently works for only students");
         }
     }
 }
