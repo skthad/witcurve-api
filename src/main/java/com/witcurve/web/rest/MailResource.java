@@ -26,7 +26,18 @@ public class MailResource {
     @Timed
     public ResponseEntity<Void> sendBulkEmail(@Valid @RequestBody EmailVM emailVM, @PathVariable Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Send bulk email for school info with id : {} for {}", schoolInfoId, emailVM);
+        if(emailVM.getSubject() == null || emailVM.getBody() == null) {
+            throw new WitcurveException("Please make sure body and subject fields are not empty");
+        }
         mailService.sendBulkEmail(emailVM, schoolInfoId);
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/send-mail/intro/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<Void> sendIntroBulkEmail(@Valid @RequestBody EmailVM emailVM, @PathVariable Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
+        log.debug("Send bulk email for school info with id : {} for {}", schoolInfoId, emailVM);
+        mailService.sendIntoBulkEmail(emailVM, schoolInfoId);
         return ResponseEntity.ok(null);
     }
 }

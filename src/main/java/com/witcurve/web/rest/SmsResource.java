@@ -121,8 +121,26 @@ public class SmsResource {
             && Strings.isNullOrEmpty(smsVM.getStandardList())) {
             throw new WitcurveException("At least one of studentList, staffList, gradeList or standardList must be provided");
         }
-
+        if(smsVM.getBody() == null) {
+            throw new WitcurveException("Sms body is empty");
+        }
         smsService.sendBulkSMS(schoolInfoId, smsVM);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert("SMS sent successfully", null)).build();
+    }
+
+    @PostMapping("/send-sms/intro/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<Void> sendBulkIntroSMS(@Valid @RequestBody SmsVM smsVM, @PathVariable Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
+        log.debug("Request to send bulk SMS for schoolInfoId: " + schoolInfoId);
+
+        if (Strings.isNullOrEmpty(smsVM.getStudentList())
+            && Strings.isNullOrEmpty(smsVM.getStaffList())
+            && Strings.isNullOrEmpty(smsVM.getGradeList())
+            && Strings.isNullOrEmpty(smsVM.getStandardList())) {
+            throw new WitcurveException("At least one of studentList, staffList, gradeList or standardList must be provided");
+        }
+
+        smsService.sendBulkIntroSMS(schoolInfoId, smsVM);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert("SMS sent successfully", null)).build();
     }
 }

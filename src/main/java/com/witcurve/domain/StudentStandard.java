@@ -19,17 +19,17 @@ public class StudentStandard extends AbstractAuditingEntity implements Serializa
     private Long id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(nullable = false, name = "student_id")
     private Student student;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(nullable = false, name = "standard_id")
     private Standard standard;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(nullable = false, name = "session_id")
     private AcademicSession session;
 

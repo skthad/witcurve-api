@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{student.app.intro.title(${instituteName})}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+</head>
+<body>
+<p>
+    Dear Parent,
+</p>
+<p th:text="#{student.app.intro.first(${instituteName})}"></p>
+
+<p>
+    <span th:text="#{student.app.intro.studentName(${studentName})}"></span><br>
+    <span th:text="#{student.app.intro.grade(${grade})}"></span><br>
+    <span th:text="#{student.app.intro.section(${section})}"></span>
+</p>
+
+<p><strong>You can download the app with the following link:</strong><br>
+    <span th:text="#{student.app.intro.android(${androidLink})}"></span><br>
+    <span th:text="#{student.app.intro.ios(${iosLink})}"></span></p>
+
+<p>Please use the following credentials to login to the app:<br>
+    <strong>Username: </strong><span th:text="#{student.app.intro.username(${username})}"></span></p>
+
+<p><strong>Please login with OTP and create your password immediately using the following steps:</strong><br>
+    1. Download from android and iOS stores using the above links.<br>
+    2. Install and login using the username provided above, Click Next<br>
+    3. Select your mobile number from the school database, Click Send OTP<br>
+    4. Enter the OTP which you received to your mobile number. Click Submit<br>
+    &nbsp;&nbsp;a)If you did not receive any OTP , then check Network Reception and Click Resend OTP<br>
+    &nbsp;&nbsp;b) If you do not find your updated mobile number in school database, contact school administration for updating your phone number.<br>
+    5. Create a new password<br>
+    Password should be of length 8-15 characters size and should consist at least One Number(0-9), special character(!@#$%^&*), lowercase and uppercase alphabet.</p>
+
+<p>For security reasons we recommend you not to share your password with anyone.</p>
+
+
+<p>
+    This is an auto-generated email. Please do not reply.<br>
+</p>
+<p>
+    <span>Warm Regards, </span>
+    <br/>
+    <em th:text="#{email.signature(${instituteName})}">Institute Name.</em>
+</p>
+</body>
+</html>

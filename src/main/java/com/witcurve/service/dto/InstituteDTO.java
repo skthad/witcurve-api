@@ -7,7 +7,6 @@ import com.witcurve.domain.enumeration.SubscriptionPackage;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,6 +38,15 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private String subDomainName;
+
+    @NotNull
+    private String androidUrl;
+
+    @NotNull
+    private String iosUrl;
+
+    @NotNull
+    private String mobileAppName;
 
     @NotNull
     private SubscriptionModel subscriptionModel;
@@ -120,6 +128,14 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
         this.smsSignature = smsSignature;
     }
 
+    public String getMobileAppName() {
+        return mobileAppName;
+    }
+
+    public void setMobileAppName(String mobileAppName) {
+        this.mobileAppName = mobileAppName;
+    }
+
     public SubscriptionModel getSubscriptionModel() {
         return subscriptionModel;
     }
@@ -166,6 +182,22 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSubDomainName(String subDomainName) {
         this.subDomainName = subDomainName;
+    }
+
+    public String getAndroidUrl() {
+        return androidUrl;
+    }
+
+    public void setAndroidUrl(String androidUrl) {
+        this.androidUrl = androidUrl;
+    }
+
+    public String getIosUrl() {
+        return iosUrl;
+    }
+
+    public void setIosUrl(String iosUrl) {
+        this.iosUrl = iosUrl;
     }
 
     @Override
