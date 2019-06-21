@@ -141,7 +141,7 @@ public class SmsService {
         }
     }
 
-    public void sendBulkIntroSMS(Long schoolInfoId, SmsVM smsVM) throws UnsupportedEncodingException, WitcurveException {
+    public void sendBulkIntroSMS(Long schoolInfoId, SmsVM smsVM, Boolean primaryOnly, Boolean secondaryOnly) throws UnsupportedEncodingException, WitcurveException {
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
 
         if (!schoolInfo.isPresent()) {
@@ -166,8 +166,23 @@ public class SmsService {
                     "Login with one time password (OTP) to create password.\n" +
                     "Kindly contact your school administration for assistance.";
                     schoolInfo.get().getSchool().getInstitute().getIosUrl();
-                sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),
-                    body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+
+                if(primaryOnly && !secondaryOnly) {
+                    sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),
+                        body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                } else if(!primaryOnly && secondaryOnly) {
+                    for(String alternateNumber : studentStandard.getStudent().getAlternateMobileNumbers()) {
+                        sendSms(alternateNumber,
+                            body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                    }
+                } else {
+                    sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),
+                        body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                    for(String alternateNumber : studentStandard.getStudent().getAlternateMobileNumbers()) {
+                        sendSms(alternateNumber,
+                            body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                    }
+                }
             }
         } else {
             throw new WitcurveException("This api currently works for only students");
