@@ -121,6 +121,7 @@ public class CourseContentServiceImpl implements CourseContentService {
 
             switch (event.get().getType()) {
                 case ASSIGNMENT:
+                case PERIODIC_TEST:
                     if (event.get().getCourseTeacher() == null) {
                         throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
                     }
