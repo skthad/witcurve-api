@@ -106,7 +106,7 @@ public class EventResource {
     @PutMapping("/events")
     @Timed
     public ResponseEntity<List<EventDTO>> updateEvents(@RequestBody List<EventDTO> eventDTOs,
-                                                       @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
+                                                       @RequestParam Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to update events : {}",eventDTOs);
         for(EventDTO eventDTO : eventDTOs) {
             if (eventDTO.getId() == null) {

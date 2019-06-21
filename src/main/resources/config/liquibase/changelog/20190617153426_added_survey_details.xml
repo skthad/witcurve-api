@@ -1,0 +1,163 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1560785678293-1">
+        <createTable tableName="survey_answer">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="survey_answerPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="options" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-2">
+        <createTable tableName="survey_form">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="survey_formPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="creator" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="LONGTEXT"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_info_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-3">
+        <createTable tableName="survey_question">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="survey_questionPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="max_rating_value" type="INT"/>
+            <column name="min_rating_value" type="INT"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="options" type="VARCHAR(255)"/>
+            <column name="order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="required" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="section_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-4">
+        <createTable tableName="survey_section">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="survey_sectionPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="form_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-5">
+        <createTable tableName="survey_submission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="survey_submissionPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="form_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-6">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="survey_answer" constraintName="FK3if372g334tdo0qdsbgfwtg5u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-7">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="survey_form" constraintName="FK73d9ntm06oaprpqs7mkc5hapi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-8">
+        <addForeignKeyConstraint baseColumnNames="form_id" baseTableName="survey_submission" constraintName="FKbgogaxwg9cm3myawst8v2wtga" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="survey_form"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-9">
+        <addForeignKeyConstraint baseColumnNames="form_id" baseTableName="survey_section" constraintName="FKj0t4sq3h9yfbj5j4the9wyj2h" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="survey_form"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-10">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="survey_submission" constraintName="FKl75eikrygu0d0qlc5x7guc9v4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-11">
+        <addForeignKeyConstraint baseColumnNames="section_id" baseTableName="survey_question" constraintName="FKqx5177qbwq5tktrwsuiqox3dc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="survey_section"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-12">
+        <addForeignKeyConstraint baseColumnNames="question_id" baseTableName="survey_answer" constraintName="FKsmngcm3g1yf412nsre7h8j32e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="survey_question"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-13">
+        <addUniqueConstraint columnNames="form_id, user_id" constraintName="survey_form_user_id" tableName="survey_submission"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-14">
+        <addUniqueConstraint columnNames="question_id, user_id" constraintName="survey_question_user_id" tableName="survey_answer"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560785678293-15">
+        <addNotNullConstraint columnDataType="bigint" columnName="school_info_id" tableName="survey_form"/>
+    </changeSet>
+</databaseChangeLog>

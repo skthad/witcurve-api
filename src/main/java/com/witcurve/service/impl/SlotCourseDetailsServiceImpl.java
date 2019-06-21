@@ -62,25 +62,27 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
             throw new WitcurveException("Could not find CourseTeacher with id: " + slotCourseDetailsDTO.getCourseTeacher().getId());
         }
 
-        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findActiveScdByGsdAndDayOfWeek(slotCourseDetailsDTO.getGsd().getId(), slotCourseDetailsDTO.getDayOfWeek());
+        if (!gsd.get().getStandard().getId().equals(ct.get().getStandard().getId())) {
+            throw new WitcurveException("Standard ID mismatch between courseTeacher and GSD");
+        }
+        //List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findActiveScdByGsdAndDayOfWeek(slotCourseDetailsDTO.getGsd().getId(), slotCourseDetailsDTO.getDayOfWeek());
 
         //not allowing non delete scd to have gsd and week of day restriction.
-        if(slotCourseDetailsList.size() > 1) {
+        /*if(slotCourseDetailsList.size() > 0) {
             throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
         } else if(slotCourseDetailsList.size() ==1) {
-            if(slotCourseDetailsDTO.getId() != null) {
-                if(!slotCourseDetailsDTO.getId().equals(slotCourseDetailsList.get(0).getId())) {
+            if(slotCourseDetailsDTO.getId() != null) {//update request
+                if(!slotCourseDetailsDTO.getId().equals(slotCourseDetailsList.get(0).getId())) {// id should match
                     throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
                 }
-            } else {
+            } else { // not allowaing create
                 throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
             }
-        } else {
-           if(slotCourseDetailsDTO.getId() != null) {
-               throw new WitcurveException("There already exists an active slot within giving timings for this day of the week to a certain course");
+        } else { // does not exist any record
+           if(slotCourseDetailsDTO.getId() != null) { // update request
+               throw new WitcurveException("No such record with given ID exists");
            }
-        }
-
+        }*/
 
         Integer startTime = Integer.parseInt(gsd.get().getStart());
         Integer endTime = startTime + gsd.get().getDuration();

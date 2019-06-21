@@ -22,8 +22,12 @@ public final class Constants {
     public static final String PARAM_INSTITUTE_NAME = "instituteName";
     public static final String PARAM_SMS_SIGNATURE = "smsSignature";
     public static final String PARAM_DATE = "date";
+    public static final String PARAM_EVENT_NAME = "eventName";
     public static final String PARAM_TINY_URL = "tinyUrl";
     public static final String PARAM_MAIL_SUBJECT = "mailSubject";
+    public static final String PARAM_TITLE_PLACEHOLDER = "titlePlaceholder";
+    public static final String PARAM_GREETING_PLACEHOLDER = "greetingPlaceholder";
+
 
     private Constants() {
     }

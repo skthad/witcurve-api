@@ -65,6 +65,9 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.rollNo in ?2 and ss.active = true order by ss.rollNo")
     List<StudentStandard> getByStandardIdAndRollNos(Long standardId, List<String> rollNos);
 
+    @Query("select ss from StudentStandard ss where ss.standard.schoolInfo.id = ?1 and ss.student.id in ?2 and ss.active = true order by ss.rollNo")
+    List<StudentStandard> getByStudentIdsAndSchoolInfoId(Long schoolInfoId, List<Long> studentIds);
+
     @Modifying
     @Query("update StudentStandard set active = false where student.id in ?1")
     void deactivateByStudentIds(List<Long> studentIds);

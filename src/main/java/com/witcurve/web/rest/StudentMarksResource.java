@@ -97,6 +97,22 @@ public class StudentMarksResource {
     }
 
     /**
+     * get all student marks by student id for an exam
+     * @param studentId
+     * @param examId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/student-marks/students/{studentId}/exams/{examId}")
+    @Timed
+    public ResponseEntity<List<StudentMarksDTO>> getAllMarksForAStudentInACourse(@PathVariable("studentId")  Long studentId,
+                                                                                 @PathVariable("examId")  Long examId) throws WitcurveException {
+        log.debug("Request to get list of Student marks by student id : {} and  for exam with id : {}");
+        List<StudentMarksDTO> result = studentMarksService.getAllMarksForAStudentInAnExam(studentId, examId);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
      * get student marks by course id for a grade
      * @param courseId
      * @return

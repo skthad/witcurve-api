@@ -15,7 +15,6 @@ public class SmsVM {
 
     private String gradeList;
 
-    @NotNull
     private String body;
 
     public String getStudentList() {

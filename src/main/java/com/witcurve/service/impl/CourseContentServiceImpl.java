@@ -121,6 +121,7 @@ public class CourseContentServiceImpl implements CourseContentService {
 
             switch (event.get().getType()) {
                 case ASSIGNMENT:
+                case PERIODIC_TEST:
                     if (event.get().getCourseTeacher() == null) {
                         throw new WitcurveException("Event ID: " + eventId + " is not linked to any course and/or teacher");
                     }
@@ -157,7 +158,7 @@ public class CourseContentServiceImpl implements CourseContentService {
         for (CourseContentDTO cc : result) {
             cc.setIndex(courseContentIndexMap.get(cc.getId()));
         }
-        return result.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
+        return result.stream().sorted(Comparator.comparing(courseContent -> Float.valueOf(courseContent.getIndex()))).collect(Collectors.toList());
     }
 
     @Override
@@ -241,7 +242,7 @@ public class CourseContentServiceImpl implements CourseContentService {
                 }
             }
             log.info("No. of course contents: " + contents.size());
-            return contents.stream().sorted(Comparator.comparing(CourseContentDTO::getIndex)).collect(Collectors.toList());
+            return contents.stream().sorted(Comparator.comparing(courseContent -> Float.valueOf(courseContent.getIndex()))).collect(Collectors.toList());
         }
     }
 }

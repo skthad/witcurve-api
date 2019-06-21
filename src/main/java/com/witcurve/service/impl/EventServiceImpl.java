@@ -1,7 +1,5 @@
 package com.witcurve.service.impl;
 
-import com.google.common.base.Strings;
-import com.witcurve.config.Constants;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
@@ -90,6 +88,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     SmsService smsService;
 
+    @Autowired
+    NotificationService notificationService;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
@@ -110,13 +111,9 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
-        Optional<SchoolInfo> result = null;
-
-        if (schoolInfoId != null) {//TODO: remove 'if' condition after making schoolInfoId mandatory
-            result = schoolInfoRepository.findById(schoolInfoId);
-            if (!result.isPresent()) {
-                throw new WitcurveException("No school info found with ID: " + schoolInfoId);
-            }
+        Optional<SchoolInfo> result = schoolInfoRepository.findById(schoolInfoId);
+        if (!result.isPresent()) {
+            throw new WitcurveException("No school info found with ID: " + schoolInfoId);
         }
         String bindingId = UUID.randomUUID().toString();
         for(EventDTO eventDTO : eventDTOs) {
@@ -134,6 +131,7 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, Set<LocalDate>> studentIdAndDatesMap = null;
         Map<Long, Set<LocalDate>> staffIdAndDatesMap = null;
+        List<Event> schoolEvents = null;
 
         for(Event event : events){
             if(event.getType().equals(EventType.ATTENDANCE)) {
@@ -176,80 +174,24 @@ public class EventServiceImpl implements EventService {
                         staffIdAndDatesMap.get(event.getStaff().getId()).add(event.getDate());
                     }
                 }
-            }
-        }
-
-        if (result != null && result.isPresent()) { //TODO: remove 'if' condition once schoolInfoId is made mandatory
-
-            if (studentIdAndDatesMap != null || staffIdAndDatesMap != null) {
-
-                SchoolInfo schoolInfo = result.get();
-                String instituteName = schoolInfo.getSchool().getInstitute().getName();
-                String smsSignature = schoolInfo.getSchool().getInstitute().getSmsSignature();
-
-                Map paramsMap = new HashMap();
-                paramsMap.put(Constants.PARAM_INSTITUTE_NAME, instituteName);
-
-                if (staffIdAndDatesMap != null) {
-                    String[] subjectParamArray = new String[]{smsSignature, ""};
-                    Map<Long, Staff> staffIdMap = new HashMap<>();
-                    List<Staff> staffList = staffRepository.findAllById(staffIdAndDatesMap.keySet());
-                    for (Staff staff: staffList) {
-                        if (staffIdMap == null) {
-                            staffIdMap = new HashMap<>();
-                        }
-                        staffIdMap.put(staff.getId(), staff);
-                    }
-                    String smsBody = "This is to notify you that your attendance is marked absent on %s. Visit %s for more.";
-                    for (Long staffId: staffIdAndDatesMap.keySet()) {
-                        Staff staff = staffIdMap.get(staffId);
-                        String fullName = staff.getFirstName() + " " + staff.getLastName();
-                        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
-                        //TODO: add logic for tiny Urls
-                        String tinyUrl = "http://witcurve.com/tiny";
-                        paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-                        for (LocalDate date: staffIdAndDatesMap.get(staffId)) {
-                            paramsMap.put(Constants.PARAM_DATE, date);
-                            subjectParamArray[1] = date.toString();
-                            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                            mailService.sendEmailFromTemplate(staff.getEmail(), paramsMap, "mail/notification/staffAbsentNotificationEmail", "email.notification.staff.absent.title", smsSignature);
-                            smsService.sendSms(staff.getPrimaryPhone(), String.format(smsBody, date, tinyUrl), smsSignature);
-                        }
-                    }
+            } else if (event.getType().equals(EventType.SCHOOL_EVENT) && event.getId() == null) {
+                if (schoolEvents == null) {
+                    schoolEvents = new ArrayList<>();
                 }
-
-                if (studentIdAndDatesMap != null) {
-                    String[] subjectParamArray = new String[]{smsSignature, "", ""};
-                    Map<Long, Student> studentIdMap = new HashMap<>();
-                    List<Student> studentList = studentRepository.findAllById(studentIdAndDatesMap.keySet());
-                    for (Student student: studentList) {
-                        studentIdMap.put(student.getId(), student);
-                    }
-                    String smsBody = "This is to notify you that your ward %s is absent on %s. Visit %s for more.";
-                    for (Long studentId: studentIdAndDatesMap.keySet()) {
-                        Student student = studentIdMap.get(studentId);
-                        if (Strings.isNullOrEmpty(student.getEmail())) {
-                            continue;
-                        }
-                        String fullName = student.getFirstName() + " " + student.getLastName();
-                        paramsMap.put(Constants.PARAM_FULL_NAME, fullName);
-                        //TODO: add logic for tiny Urls
-                        String tinyUrl = "http://witcurve.com/tiny";
-                        paramsMap.put(Constants.PARAM_TINY_URL, tinyUrl);
-                        subjectParamArray[1] = fullName;
-                        for (LocalDate date: studentIdAndDatesMap.get(studentId)) {
-                            paramsMap.put(Constants.PARAM_DATE, date);
-                            subjectParamArray[2] = date.toString();
-                            paramsMap.put(Constants.PARAM_MAIL_SUBJECT, subjectParamArray);
-                            mailService.sendEmailFromTemplate(student.getEmail(), paramsMap, "mail/notification/studentAbsentNotificationEmail", "email.notification.student.absent.title", smsSignature);
-                            smsService.sendSms(student.getRegisteredMobileNumber(), String.format(smsBody, fullName, date, tinyUrl), smsSignature);
-                        }
-                    }
-                }
+                schoolEvents.add(event);
             }
         }
 
         events = eventRepository.saveAll(events);
+
+        if (studentIdAndDatesMap != null || staffIdAndDatesMap != null) {
+            Map<Long, Set<LocalDate>> finalStudentIdAndDatesMap = studentIdAndDatesMap;
+            Map<Long, Set<LocalDate>> finalStaffIdAndDatesMap = staffIdAndDatesMap;
+            notificationService.sendAbsentNotification(result.get(), finalStudentIdAndDatesMap, finalStaffIdAndDatesMap);
+        }
+        if (schoolEvents != null) {
+            notificationService.sendSchoolEventNotification(result.get(), schoolEvents);
+        }
         return eventMapper.toDto(events);
     }
 

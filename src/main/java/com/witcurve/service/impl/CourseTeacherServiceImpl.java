@@ -61,7 +61,10 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
 
         if (!standard.isPresent()) {
-            throw new WitcurveException("a valid standard id must be provided");
+            throw new WitcurveException("A valid standard id must be provided");
+        }
+        if (!course.get().getGrade().equals(standard.get().getGrade())) {
+            throw new WitcurveException("Standard does not belong the the course grade");
         }
         if (Boolean.TRUE.equals(courseTeacherDTO.getActive())) {
             List<StaffEligibility> se = staffEligibilityRepository

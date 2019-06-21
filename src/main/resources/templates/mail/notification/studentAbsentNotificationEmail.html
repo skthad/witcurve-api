@@ -6,7 +6,7 @@
     <link rel="shortcut icon" th:href="@{|${baseUrl}/favicon.ico|}" />
 </head>
 <body>
-<p th:text="#{email.notification.parent.greeting}">Dear Parent,</p>
+<p th:text="#{email.notification.greeting(${greetingPlaceholder})}">Dear Parent,</p>
 <p th:text="#{email.notification.subscription(${instituteName})}">
 <p th:text="#{email.notification.student.absent.body(${fullName}, ${date})}"/>
 <p th:text="#{email.notification.tinyUrl(${tinyUrl})}"/>

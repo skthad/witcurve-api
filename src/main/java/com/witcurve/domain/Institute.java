@@ -54,6 +54,18 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     private String subDomainName;
 
     @NotNull
+    @Column(name="android_short_url", length = 50, nullable = false, unique = true)
+    private String androidUrl;
+
+    @NotNull
+    @Column(name="ios_short_url", length = 50, nullable = false, unique = true)
+    private String iosUrl;
+
+    @NotNull
+    @Column(name="mobile_app_name", length = 50, nullable = false, unique = true)
+    private String mobileAppName;
+
+    @NotNull
     @Column(name = "subscription_model", nullable=false)
     @Enumerated(EnumType.STRING)
     private SubscriptionModel subscriptionModel;
@@ -157,6 +169,30 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
         this.subscriptionEndDate = subscriptionEndDate;
+    }
+
+    public String getAndroidUrl() {
+        return androidUrl;
+    }
+
+    public void setAndroidUrl(String androidUrl) {
+        this.androidUrl = androidUrl;
+    }
+
+    public String getIosUrl() {
+        return iosUrl;
+    }
+
+    public void setIosUrl(String iosUrl) {
+        this.iosUrl = iosUrl;
+    }
+
+    public String getMobileAppName() {
+        return mobileAppName;
+    }
+
+    public void setMobileAppName(String mobileAppName) {
+        this.mobileAppName = mobileAppName;
     }
 
     public Map<SubscriptionPackage, Double> getPricing() {

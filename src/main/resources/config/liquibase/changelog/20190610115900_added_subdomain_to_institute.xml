@@ -13,4 +13,46 @@
     <changeSet author="srujankuamar (generated)" id="1560167947934-3">
         <addUniqueConstraint columnNames="sub_domain_name" constraintName="UC_INSTITUTESUB_DOMAIN_NAME_COL" tableName="institute"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560167947934-4">
+        <addColumn tableName="institute">
+            <column name="android_short_url" type="VARCHAR(50)" defaultValue="NOT_AVAILABLE">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560167947934-5">
+        <addColumn tableName="institute">
+            <column name="ios_short_url" type="VARCHAR(50)" defaultValue="NOT_AVAILABLE">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560167947934-6">
+        <addColumn tableName="institute">
+            <column name="mobile_app_name" type="VARCHAR(50)" defaultValue="NOT_AVAILABLE">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1560167947934-7">
+        <sql>update institute set android_short_url=id, ios_short_url=id, mobile_app_name=id</sql>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560167947934-8">
+        <addUniqueConstraint columnNames="android_short_url" constraintName="UC_INSTITUTEANDROID_SHORT_URL_COL" tableName="institute"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560167947934-9">
+        <addUniqueConstraint columnNames="ios_short_url" constraintName="UC_INSTITUTEIOS_SHORT_URL_COL" tableName="institute"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1560167947934-10">
+        <addUniqueConstraint columnNames="mobile_app_name" constraintName="UC_INSTITUTEMOBILE_APP_NAME_COL" tableName="institute"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1560167947934-11">
+        <dropDefaultValue columnDataType="varchar(50)" columnName="android_short_url" tableName="institute"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1560167947934-12">
+        <dropDefaultValue columnDataType="varchar(50)" columnName="ios_short_url" tableName="institute"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1560167947934-13">
+        <dropDefaultValue columnDataType="varchar(50)" columnName="mobile_app_name" tableName="institute"/>
+    </changeSet>
 </databaseChangeLog>

@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -164,9 +162,6 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
         }
-        if (startDate.isAfter(endDate)) {
-            throw new WitcurveException("StartDate cannot be after EndDate");
-        }
         switch (type) {
             case TEST:
             case ASSIGNMENT:
@@ -182,6 +177,15 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         throw new WitcurveException("Not a valid type");
     }
 
+    @Override
+    public List<StudentMarksDTO> getAllMarksForAStudentInAnExam(Long studentId, Long examId) throws WitcurveException {
+        log.debug("Request to get all marks for student with id : {} and exam with id : {}", studentId, examId);
+        List<StudentMarks> result = studentMarksRepository.getByStudentIdForExam(examId, studentId, Arrays.asList(Boolean.TRUE));
+        return studentMarksMapper.toDto(result);
+
+    }
+
+    @Override
     public List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate,  Boolean publishedOnly) throws WitcurveException{
         log.debug("Request to get marks for all students {} in grade {} in course {}", type, grade, courseId);
         WitcurveUtil.correctDateFormat(startDate, endDate);

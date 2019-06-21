@@ -8,7 +8,6 @@ import java.util.Objects;
  */
 public class EmailVM extends SmsVM {
 
-    @NotNull
     private String subject;
 
     public String getSubject() {
