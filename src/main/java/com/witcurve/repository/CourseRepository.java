@@ -14,6 +14,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("select course from Course course where course.schoolInfo.id = ?1 and course.active=true and course.elective = false order by course.grade")
     List<Course> findNonElectivesBySchoolInfo(Long schoolInfoId);
 
+    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.active=true and course.elective = false order by course.grade")
+    List<Course> findNonElectivesByStandardId(Long standardId);
+
     @Query("select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.active=true")
     List<Course> findBySchoolInfoAndGrade(Long schoolInfoId, Grade grade);
 
