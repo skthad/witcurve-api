@@ -257,7 +257,7 @@ public class EventServiceImpl implements EventService {
                     substractDays = Period.between(eventDate.minusDays(substractDays), currentSession.getStartDate()).getDays();
                     breakCycle = true;
                 }
-                eventIds = eventRepository.findDirayEventsByDateRangeForStudent(eventDate.minusDays(6), eventDate, standardId, Arrays.asList(EventType.DAILY_UPDATE.toString()));
+                eventIds = eventRepository.findDirayEventsByDateRangeForStudent(eventDate.minusDays(substractDays), eventDate, standardId, Arrays.asList(EventType.DAILY_UPDATE.toString()));
                 if(breakCycle) {
                     break;
                 }
