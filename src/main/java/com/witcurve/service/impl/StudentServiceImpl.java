@@ -41,6 +41,9 @@ public class StudentServiceImpl implements StudentService {
     CourseRepository courseRepository;
 
     @Autowired
+    StandardRepository standardRepository;
+
+    @Autowired
     StudentMapperLite studentMapperLite;
 
     @Autowired
@@ -182,6 +185,35 @@ public class StudentServiceImpl implements StudentService {
         if (student.isPresent()) {
             studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
             student.get().getUser().setActivated(false);
+        }
+    }
+
+    @Override
+    public void mapStudentsInNonElectiveCourses(StudentStandard studentStandard) {
+        mapStudentsInNonElectiveCourses(Arrays.asList(studentStandard), studentStandard.getStandard().getId());
+    }
+
+    @Override
+    public void mapStudentsInNonElectiveCourses(List<StudentStandard> studentStandards, Long standardId) {
+        Optional<Standard> standard = standardRepository.findById(standardId);
+        if (!standard.isPresent()) {
+            throw new WitcurveException("No standard found with ID: " + standard);
+        }
+        List<Course> courses = courseRepository.findNonElectivesBySchoolInfo(standard.get().getSchoolInfo().getId());
+        List<StudentCourse> coursesToMap = null;
+        for (StudentStandard studentStandard: studentStandards) {
+            for (Course course: courses) {
+                if (coursesToMap == null) {
+                    coursesToMap = new ArrayList<>();
+                }
+                StudentCourse sc = new StudentCourse();
+                sc.setStudentStandard(studentStandard);
+                sc.setCourse(course);
+                coursesToMap.add(sc);
+            }
+        }
+        if (coursesToMap != null) {
+            studentCourseRepository.saveAll(coursesToMap);
         }
     }
 
