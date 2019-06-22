@@ -22,4 +22,8 @@ public interface StudentService {
     StudentDTO getStudentByUsername(String username) throws WitcurveException;
 
     void deactivate(Long studentId);
+
+    void mapUnmapStudentAndCourse(Long studentStandardId, Long courseId, Boolean map);
+
+    void mapOneTime(Long schoolInfoId);
 }

@@ -1,15 +1,11 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
-import com.witcurve.domain.SchoolInfo;
-import com.witcurve.domain.Student;
-import com.witcurve.domain.User;
+import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.SchoolInfoRepository;
-import com.witcurve.repository.StudentRepository;
-import com.witcurve.repository.StudentStandardRepository;
-import com.witcurve.repository.UserRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StudentDTO;
@@ -24,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -44,6 +38,9 @@ public class StudentServiceImpl implements StudentService {
     StudentMapper studentMapper;
 
     @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
     StudentMapperLite studentMapperLite;
 
     @Autowired
@@ -57,6 +54,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
 
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
@@ -182,6 +182,58 @@ public class StudentServiceImpl implements StudentService {
         if (student.isPresent()) {
             studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
             student.get().getUser().setActivated(false);
+        }
+    }
+
+    @Override
+    public void mapUnmapStudentAndCourse(Long studentStandardId, Long courseId, Boolean map) {
+        Optional<StudentStandard> ss = studentStandardRepository.findById(studentStandardId);
+        if (!ss.isPresent()) {
+            throw new WitcurveException("Given studentStandardId does not exist");
+        }
+        Optional<Course> course = courseRepository.findById(courseId);
+        if (!course.isPresent()) {
+            throw new WitcurveException("Given courseId does not exist");
+        }
+        if (map) {
+            StudentCourse sc = new StudentCourse();
+            sc.setStudentStandard(ss.get());
+            sc.setCourse(course.get());
+            studentCourseRepository.save(sc);
+        } else {
+            studentCourseRepository.unmapStudentCourse(studentStandardId, courseId);
+        }
+    }
+
+    @Override
+    public void mapOneTime(Long schoolInfoId) {
+        List<StudentStandard> studentStandards = studentStandardRepository.getBySchoolInfoId(schoolInfoId);
+        List<Course> courses = courseRepository.findNonElectivesBySchoolInfo(schoolInfoId);
+        Map<Grade, List<Course>> gradeCourseMap = new HashMap<>();
+        for (Course course: courses) {
+            if (gradeCourseMap.get(course.getGrade()) == null) {
+                gradeCourseMap.put(course.getGrade(), new ArrayList<>());
+            }
+            gradeCourseMap.get(course.getGrade()).add(course);
+        }
+        List<StudentCourse> studentCourses = null;
+        for (StudentStandard ss: studentStandards) {
+            if (studentCourses == null) {
+                studentCourses = new ArrayList<>();
+            }
+            List<Course> coursesToMap = gradeCourseMap.get(ss.getStandard().getGrade());
+            if (coursesToMap == null) {
+                continue;
+            }
+            for (Course courseToMap: coursesToMap) {
+                StudentCourse sc = new StudentCourse();
+                sc.setStudentStandard(ss);
+                sc.setCourse(courseToMap);
+                studentCourses.add(sc);
+            }
+        }
+        if (studentCourses != null) {
+            studentCourseRepository.saveAll(studentCourses);
         }
     }
 }
