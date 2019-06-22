@@ -37,6 +37,11 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Boolean active = true;
 
+    @NotNull
+    private Boolean elective = true;
+
+    private String alternateName;
+
     public Long getId() {
         return id;
     }
@@ -115,6 +120,22 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Boolean getElective() {
+        return elective;
+    }
+
+    public void setElective(Boolean elective) {
+        this.elective = elective;
+    }
+
+    public String getAlternateName() {
+        return alternateName;
+    }
+
+    public void setAlternateName(String alternateName) {
+        this.alternateName = alternateName;
     }
 
     @Override

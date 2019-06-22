@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.StudentStandard;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -22,4 +23,12 @@ public interface StudentService {
     StudentDTO getStudentByUsername(String username) throws WitcurveException;
 
     void deactivate(Long studentId);
+
+    void mapStudentsInNonElectiveCourses(StudentStandard studentStandard);
+
+    void mapStudentsInNonElectiveCourses(List<StudentStandard> studentStandards, Long standardId);
+
+    void mapUnmapStudentAndCourse(Long studentStandardId, Long courseId, Boolean map);
+
+    void mapOneTime(Long schoolInfoId);
 }

@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.service.StudentService;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -22,6 +23,9 @@ public class StudentStandardResource {
 
     @Autowired
     StudentStandardService studentStandardService;
+
+    @Autowired
+    StudentService studentService;
 
     /**
      * create StudentStandards

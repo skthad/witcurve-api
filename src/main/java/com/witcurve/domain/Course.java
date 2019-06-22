@@ -57,6 +57,11 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active = true;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean elective = false;
+
+    private String alternateName;
 
     public Long getId() {
         return id;
@@ -136,6 +141,22 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Boolean getElective() {
+        return elective;
+    }
+
+    public void setElective(Boolean elective) {
+        this.elective = elective;
+    }
+
+    public String getAlternateName() {
+        return alternateName;
+    }
+
+    public void setAlternateName(String alternateName) {
+        this.alternateName = alternateName;
     }
 
     @Override

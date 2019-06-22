@@ -109,4 +109,37 @@ public class StudentResource {
             studentId.toString())).build();
     }
 
+    @PostMapping("/students/courses")
+    @Timed
+    public ResponseEntity<Void> mapUnmapStudentToCourse(@RequestParam Long studentStandardId,
+                                                        @RequestParam Long courseId,
+                                                        @RequestParam(required = false, defaultValue = "true") Boolean map) throws WitcurveException {
+        log.debug(String.format("Request to {} student to course"), (map ? "map": "unmap"));
+
+        try {
+            studentService.mapUnmapStudentAndCourse(studentStandardId, courseId, map);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("Mapping/Unmapping done ",
+                null)).build();
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("student_course_unique_UK")) {
+                log.error("Unique constraint (student_standard_id, course_id) violated");
+                throw new WitcurveException("The student is already assigned to the intended course");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+    }
+
+    @PostMapping("/students/courses/map")
+    @Timed
+    public ResponseEntity<Void> mapOneTime(@RequestParam Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to map students to all courses");
+
+        studentService.mapOneTime(schoolInfoId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("One time mapping done ",
+            null)).build();
+    }
+
 }

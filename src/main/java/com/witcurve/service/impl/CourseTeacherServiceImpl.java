@@ -51,6 +51,9 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Autowired
     EventRepository eventRepository;
 
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
         log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
@@ -147,11 +150,18 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     @Override
     public List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException{
-        Long std = studentStandardRepository.getStandardIdByStudentId(studentId);
-            List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(std);
-        if(studentStandardRepository.getByStudentId(studentId).size()>1) {
-              throw new WitcurveException("standard repository is giving more than one rows at a time.");
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+        if (studentStandards.size() == 0) {
+            return null;
         }
+        if(studentStandards.size() > 1) {
+            throw new WitcurveException("Student is actively enrolled in multiple standards.");
+        }
+        Long standardId = studentStandards.get(0).getStandard().getId();
+        List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
+
+        List<Long> studentCourseIds = studentCourseRepository.findCourseIdsByStudentStandard(studentStandards.get(0).getId());
+        result.removeIf(x -> studentCourseIds.indexOf(x.getCourse().getId()) < 0);
         return courseTeacherMapper.toDto(result);
     }
 
