@@ -116,12 +116,12 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!exam.isPresent()) {
             throw new WitcurveException("Exam does not exist with id: " + examId);
         }
+        List<Boolean> flags = ALL;
+        if(publishedOnly) {
+            flags = PUBLISHED_ONLY;
+        }
         if (ecdId == null && standardId == null) {
-            if(publishedOnly) {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, PUBLISHED_ONLY));
-            } else {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, ALL));
-            }
+            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamId(examId, flags));
         } else if (ecdId != null) {
             Optional<ExamCourseDetails> ecd = examCourseDetailsRepository.findById(ecdId);
             if (!ecd.isPresent()) {
@@ -130,26 +130,14 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             if (!ecd.get().getGsd().getExam().getId().equals(examId)) {
                 throw new WitcurveException("ExamCourseDetails provided does not belong to the examId: " + examId);
             }
-            if(publishedOnly) {
-                if (standardId == null) {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdId(ecdId, PUBLISHED_ONLY));
-                } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, PUBLISHED_ONLY));
-                }
+            if (standardId == null) {
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdId(ecdId, flags));
             } else {
-                if (standardId == null) {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdId(ecdId, ALL));
-                } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, ALL));
-                }
+                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, flags));
             }
 
         } else {
-            if(publishedOnly) {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId, PUBLISHED_ONLY));
-            } else  {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId, ALL));
-            }
+            return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId, flags));
 
         }
     }
@@ -162,25 +150,29 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
         }
+        List<Boolean> flags = ALL;
+        if(publishedOnly) {
+            flags = PUBLISHED_ONLY;
+        }
         switch (type) {
             case TEST:
             case ASSIGNMENT:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForEvent(courseId, studentId, type, startDate, endDate));
             case EXAM:
-                if(publishedOnly) {
-                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate, PUBLISHED_ONLY));
-                } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate, ALL));
-                }
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate, flags));
 
         }
         throw new WitcurveException("Not a valid type");
     }
 
     @Override
-    public List<StudentMarksDTO> getAllMarksForAStudentInAnExam(Long studentId, Long examId) throws WitcurveException {
+    public List<StudentMarksDTO> getAllMarksForAStudentInAnExam(Long studentId, Long examId, Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get all marks for student with id : {} and exam with id : {}", studentId, examId);
-        List<StudentMarks> result = studentMarksRepository.getByStudentIdForExam(examId, studentId, Arrays.asList(Boolean.TRUE));
+        List<Boolean> flags = ALL;
+        if(publishedOnly) {
+            flags = PUBLISHED_ONLY;
+        }
+        List<StudentMarks> result = studentMarksRepository.getByStudentIdForExam(examId, studentId, flags);
         return studentMarksMapper.toDto(result);
 
     }
@@ -196,16 +188,16 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!course.get().getGrade().equals(grade)) {
             throw new WitcurveException("Provided grade does not have the course with ID: " + courseId);
         }
+        List<Boolean> flags = ALL;
+        if(publishedOnly) {
+            flags = PUBLISHED_ONLY;
+        }
         switch (type) {
             case TEST:
             case ASSIGNMENT:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForEvent(courseId, grade, type, startDate, endDate));
             case EXAM:
-                if(publishedOnly) {
-                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate, PUBLISHED_ONLY));
-                } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate, ALL));
-                }
+                return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate, flags));
 
         }
         throw new WitcurveException("Not a valid type");
