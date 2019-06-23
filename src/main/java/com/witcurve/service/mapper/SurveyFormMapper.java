@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm> {
 
     @Mapping(source = "schoolInfo.id", target = "schoolInfoId")
+    @Mapping(target = "userSubmitted", ignore = true)
     SurveyFormDTO toDto(SurveyForm surveyForm);
 
     @Mapping(source = "schoolInfoId", target = "schoolInfo")
