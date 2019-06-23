@@ -11,8 +11,10 @@ import java.util.Set;
 @Mapper(componentModel = "spring", uses = {CourseMapper.class, GeneralSlotDetailsMapper.class})
 public interface ExamCourseDetailsMapper extends EntityMapper<ExamCourseDetailsDTO, ExamCourseDetails> {
 
+    @Mapping(target = "eventContents", ignore = true)
     ExamCourseDetails toEntity(ExamCourseDetailsDTO examCourseDetailsDTO);
 
+    @Mapping(target = "doesAllStudentMarksExist", ignore = true)
     @Mapping(target = "courseContentAttached", expression = "java(courseContentAttached(examCourseDetails.getEventContents()))")
     ExamCourseDetailsDTO toDto(ExamCourseDetails examCourseDetails);
 

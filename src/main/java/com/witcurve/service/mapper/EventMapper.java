@@ -22,6 +22,7 @@ public interface EventMapper extends EntityMapper<EventDTO, Event>{
     @Mapping(source = "staffId", target = "staff")
     @Mapping(source = "studentId", target = "student")
     @Mapping(target = "keywords", expression = "java(getKeywords(eventDTO.getKeywords()))")
+    @Mapping(target = "eventContents", ignore = true)
     Event toEntity(EventDTO eventDTO);
 
     @Mapping(target = "schoolInfoId", source = "schoolInfo.id")
