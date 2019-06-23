@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationProperties {
 
     public final Sms sms = new Sms();
+    public final Aws aws = new Aws();
 
     public static class Sms {
 
@@ -37,8 +38,48 @@ public class ApplicationProperties {
 
     }
 
+    public static class Aws {
+
+        private Credentials credentials = new Credentials();
+
+        public static class Credentials {
+
+            private String accessKey;
+
+            private String secretKey;
+
+            public String getAccessKey() {
+                return accessKey;
+            }
+
+            public void setAccessKey(String accessKey) {
+                this.accessKey = accessKey;
+            }
+
+            public String getSecretKey() {
+                return secretKey;
+            }
+
+            public void setSecretKey(String secretKey) {
+                this.secretKey = secretKey;
+            }
+        }
+
+        public Credentials getCredentials() {
+            return credentials;
+        }
+
+        public void setCredentials(Credentials credentials) {
+            this.credentials = credentials;
+        }
+    }
+
     public Sms getSms() {
         return sms;
+    }
+
+    public Aws getAws() {
+        return aws;
     }
 
     public final Paytm paytm = new Paytm();

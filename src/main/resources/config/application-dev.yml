@@ -158,4 +158,8 @@ application:
     witcurve:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
         domainUrl: witcurve-app.com
+    aws:
+        credentials:
+            access-key: AKIAI6EBBUPKHJS4KS2A
+            secret-key: 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
 
