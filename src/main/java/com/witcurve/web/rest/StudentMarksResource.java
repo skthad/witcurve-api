@@ -106,9 +106,10 @@ public class StudentMarksResource {
     @GetMapping("/student-marks/students/{studentId}/exams/{examId}")
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getAllMarksForAStudentInACourse(@PathVariable("studentId")  Long studentId,
-                                                                                 @PathVariable("examId")  Long examId) throws WitcurveException {
+                                                                                 @PathVariable("examId")  Long examId,
+                                                                                 @RequestParam(defaultValue = "true") Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get list of Student marks by student id : {} and  for exam with id : {}");
-        List<StudentMarksDTO> result = studentMarksService.getAllMarksForAStudentInAnExam(studentId, examId);
+        List<StudentMarksDTO> result = studentMarksService.getAllMarksForAStudentInAnExam(studentId, examId, publishedOnly);
         return ResponseEntity.ok(result);
     }
 
@@ -125,7 +126,7 @@ public class StudentMarksResource {
                                                                               @RequestParam("type") EventType type,
                                                                               @RequestParam(value = "startDate") LocalDate startDate,
                                                                               @RequestParam(value = "endDate") LocalDate endDate,
-                                                                                         @RequestParam(defaultValue = "false") Boolean publishedOnly) throws WitcurveException {
+                                                                              @RequestParam(defaultValue = "false") Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get list of Student marks by course id and event type and grade");
         List<StudentMarksDTO> result = studentMarksService.getMarksForAllStudentsInAGradeAndCourse(grade, courseId, type, startDate, endDate, publishedOnly);
         return ResponseEntity.ok(result);

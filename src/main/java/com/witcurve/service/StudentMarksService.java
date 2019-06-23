@@ -19,7 +19,7 @@ public interface StudentMarksService {
 
     List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, EventType type, LocalDate startDate, LocalDate endDate, Boolean publishedOnly) throws WitcurveException;
 
-    List<StudentMarksDTO> getAllMarksForAStudentInAnExam(Long studentId, Long examId);
+    List<StudentMarksDTO> getAllMarksForAStudentInAnExam(Long studentId, Long examId, Boolean publishedOnly);
 
     List<StudentMarksDTO> getMarksForAllStudentsInAGradeAndCourse(Grade grade, Long courseId, EventType type, LocalDate startDate, LocalDate endDate, Boolean publishedOnly) throws WitcurveException;
 
