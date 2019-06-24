@@ -172,8 +172,8 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             } else if (standardId != null) {
                 List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
                 if (studentIds.size() > 0) {
-                    result = leaveApplicationMapper.toDto(
-                        leaveApplicationRepository.findByStudentList(studentIds, fromDate, toDate));
+                    result = leaveApplicationMapper.
+                        toDto(leaveApplicationRepository.findByStudentList(studentIds, fromDate, toDate));
                 }
             } else if (schoolInfoId != null) {
                 result = leaveApplicationMapper.toDto(
@@ -208,7 +208,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             resultMap.put(staffId, result);
         } else if (standardId != null) {
             for (LeaveApplicationDTO leaveApplicationDTO : result) {
-                List<LeaveApplicationDTO> leaveApplicationDTOs = resultMap.get(leaveApplicationDTO.getAppliedStaffId());
+                List<LeaveApplicationDTO> leaveApplicationDTOs = resultMap.get(leaveApplicationDTO.getAppliedStudentId());
                 if (leaveApplicationDTOs == null) {
                     leaveApplicationDTOs = new ArrayList<>();
                 }
