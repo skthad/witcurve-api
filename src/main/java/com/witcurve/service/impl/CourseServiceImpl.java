@@ -41,14 +41,19 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
         log.debug("Request to save or update Course: {}", courseDTO);
-        if(courseDTO.getId() == null) {
-            Course existingCourse = courseRepository.findBySchoolInfoAndGradeAndCourseCode(courseDTO.getSchoolInfoId(),
-                courseDTO.getGrade(), courseDTO.getCourseCode());
+        List<Course> existingCourses = courseRepository.findBySchoolInfoAndGradeAndCourseCode(courseDTO.getSchoolInfoId(),
+            courseDTO.getGrade(), courseDTO.getCourseCode());
+        for(Course existingCourse : existingCourses) {
             if(existingCourse != null) {
-                if(existingCourse.getActive()) {
-                    throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
+                if(courseDTO.getId() == null) {
+                    if(existingCourse.getActive()) {
+                        throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
+                    }
+                } else {
+                    if(existingCourse.getActive() && !existingCourse.getId().equals(courseDTO.getId())) {
+                        throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
+                    }
                 }
-                courseDTO.setId(existingCourse.getId());
             }
         }
         Course course = courseMapper.toEntity(courseDTO);
