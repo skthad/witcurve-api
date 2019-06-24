@@ -165,7 +165,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         if (status == null) {
             if (studentId != null) {
                 result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStudentId(studentId, fromDate, toDate));
+                    leaveApplicationRepository.findNonDeclinedByStudentId(studentId, fromDate, toDate));
             } else if (staffId != null) {
                 result = leaveApplicationMapper.toDto(
                     leaveApplicationRepository.findByStaffId(staffId, fromDate, toDate));
@@ -292,7 +292,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 throw new WitcurveException("total working days is 0 so leave application cannot be created !");
             }
             List<LeaveApplication> leaveApplications = leaveApplicationRepository.
-                findByStudentId(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
+                findNonDeclinedByStudentId(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
             if (update) {
                 if (leaveApplications.size() > 1) {
                     throw new WitcurveException("The Leave application for this student already exists in the date range !! ");
@@ -317,7 +317,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 throw new WitcurveException("total working days is 0 so leave application cannot be created !");
             }
             List<LeaveApplication> leaveApplications = leaveApplicationRepository.
-                findByStaffId(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
+                findNonDeclinedByStaffId(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
             if (update) {
                 if (leaveApplications.size() > 1) {
                     throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");

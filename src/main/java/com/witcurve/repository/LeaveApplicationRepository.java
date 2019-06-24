@@ -15,6 +15,9 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
     @Query("Select la from LeaveApplication la where la.appliedStudent.id = ?1 and la.fromLeaveDate between ?2 and ?3 order by la.fromLeaveDate")
     List<LeaveApplication> findByStudentId(Long appliedStudentId, LocalDate startDate, LocalDate endDate);
 
+    @Query("Select la from LeaveApplication la where la.appliedStudent.id = ?1 and la.fromLeaveDate between ?2 and ?3 and la.status in ('APPROVED', 'PENDING') order by la.fromLeaveDate")
+    List<LeaveApplication> findNonDeclinedByStudentId(Long appliedStudentId, LocalDate startDate, LocalDate endDate);
+
     @Query("Select la from LeaveApplication la where la.appliedStudent.id =?1 and la.fromLeaveDate between ?2 and ?3 and la.status = ?4 order by la.fromLeaveDate")
     List<LeaveApplication> findByStudentAndStatus(Long appliedStudentId, LocalDate startDate, LocalDate endDate, ApprovalStatus status);
 
@@ -26,6 +29,9 @@ public interface LeaveApplicationRepository extends JpaRepository<LeaveApplicati
 
     @Query("Select la from LeaveApplication la where la.appliedStaff.id = ?1 and la.fromLeaveDate between ?2 and ?3 order by la.fromLeaveDate")
     List<LeaveApplication> findByStaffId(Long appliedStaffId, LocalDate startDate, LocalDate endDate);
+
+    @Query("Select la from LeaveApplication la where la.appliedStaff.id = ?1 and la.fromLeaveDate between ?2 and ?3 and la.status in ('APPROVED', 'PENDING') order by la.fromLeaveDate")
+    List<LeaveApplication> findNonDeclinedByStaffId(Long appliedStaffId, LocalDate startDate, LocalDate endDate);
 
     @Query("Select la from LeaveApplication la where la.appliedStaff.id =?1 and la.fromLeaveDate between ?2 and ?3 and la.status = ?4 order by la.fromLeaveDate")
     List<LeaveApplication> findByStaffIdAndStatus(Long appliedStaffId, LocalDate startDate, LocalDate endDate, ApprovalStatus status);
