@@ -72,7 +72,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     @Override
     public LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException, UnsupportedEncodingException {
-        log.debug("Request to save or update leave applications : {}", leaveApplicationDTO.toString());
+        log.info("Request to save or update leave applications : {}", leaveApplicationDTO.toString());
 
         isLeaveApplicationValid(leaveApplicationDTO, update);
         Set<Event> events = new HashSet<>();
@@ -293,6 +293,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             }
             List<LeaveApplication> leaveApplications = leaveApplicationRepository.
                 findNonDeclinedByStudentId(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
+            log.info("found eixsting leaves : {}", leaveApplications.size());
             if (update) {
                 if (leaveApplications.size() > 1) {
                     throw new WitcurveException("The Leave application for this student already exists in the date range !! ");
