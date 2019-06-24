@@ -29,7 +29,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Transactional
 public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
-    private final Logger log = LoggerFactory.getLogger(LeaveApplicationService.class);
+    private final Logger log = LoggerFactory.getLogger(LeaveApplicationServiceImpl.class);
 
     @Autowired
     LeaveApplicationRepository leaveApplicationRepository;
@@ -293,6 +293,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             }
             List<LeaveApplication> leaveApplications = leaveApplicationRepository.
                 findNonDeclinedByStudentId(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
+            log.info("student id : {}", leaveApplicationDTO.getAppliedStudentId());
+            log.info("start date  : {}", leaveApplicationDTO.getFromLeaveDate());
+            log.info("end date : {}", leaveApplicationDTO.getToLeaveDate());
             log.info("found eixsting leaves : {}", leaveApplications.size());
             if (update) {
                 if (leaveApplications.size() > 1) {
