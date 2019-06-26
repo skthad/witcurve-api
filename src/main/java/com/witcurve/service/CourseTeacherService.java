@@ -1,5 +1,7 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.CourseTeacherDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -21,4 +23,6 @@ public interface CourseTeacherService {
     List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException;
 
     List<CourseTeacherDTO> getCourseTeacherSuggestionForSlot(Long gsdId, DayOfWeek dayOfWeek) throws WitcurveException;
+
+    List<CourseTeacherDTO> getCourseTeachersByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId, Boolean oneRecordForACourse);
 }

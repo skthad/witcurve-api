@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -181,5 +181,19 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         courseTeachers.removeIf((CourseTeacher ct) -> allocatedTeachers.indexOf(ct.getTeacher().getId()) > -1);
 
         return courseTeacherMapper.toDto(courseTeachers);
+    }
+
+    @Override
+    public List<CourseTeacherDTO> getCourseTeachersByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId, Boolean oneRecordForACourse) {
+        log.debug("Request to get all course teachers by grade : {} for school info with id : {} oneRecordForACourse ", grade, schoolInfoId, oneRecordForACourse);
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findActiveCourseTeacherByGradeAndSchoolInfoId(grade, schoolInfoId);
+        if(oneRecordForACourse) {
+            Map<Long, CourseTeacher> courseTeacherMap = new HashMap<>();
+            for(CourseTeacher courseTeacher : courseTeachers) {
+                courseTeacherMap.put(courseTeacher.getCourse().getId(), courseTeacher);
+            }
+            courseTeachers = new ArrayList<CourseTeacher>(courseTeacherMap.values());
+        }
+        return  courseTeacherMapper.toDto(courseTeachers);
     }
 }

@@ -1,5 +1,6 @@
 package com.witcurve.repository;
 
+import com.witcurve.domain.Course;
 import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.MasterSubject;
 import com.witcurve.domain.Standard;
@@ -53,5 +54,8 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
     @Query("select distinct ct.teacher.id from CourseTeacher ct where ct.course.eligibleForSubstitute = true " +
         "and ct.teacher.id <> ?1 and ct.teacher.schoolInfo.id = ?2 order by ct.teacher.employeeId")
     List<Long> findEligibleForSubstituteBySchoolInfoId(Long staffId, Long schoolInfoId);
+
+    @Query("select ct from CourseTeacher ct where ct.standard.grade = ?1 and ct.standard.schoolInfo.id=?2 and ct.active = true order by ct.course.courseCode asc")
+    List<CourseTeacher> findActiveCourseTeacherByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId);
 
 }
