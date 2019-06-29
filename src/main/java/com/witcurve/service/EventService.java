@@ -47,6 +47,8 @@ public interface EventService {
 
     List<EventDTO> getPeriodicTestsByBindingId(String bindingId, List<Long> courseIds);
 
+    void deletePeriodicTestsByIds(List<Long> ids) throws WitcurveException;
+
     void deletePeriodicTestsByBindingId(String bindingId) throws WitcurveException;
 
     List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException;
