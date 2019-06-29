@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
@@ -647,6 +648,18 @@ public class EventServiceImpl implements EventService {
         eventContentRepository.deleteByEventId(eventIds);
         eventRepository.deletePeriodicEventByBindingId(bindingId);
 
+    }
+
+    @Override
+    public void deletePeriodicTestsByIds(List<Long> ids) throws WitcurveException {
+        log.debug("Delete periodic events by ids : {}", ids);
+        List<Event> events = eventRepository.findAllById(ids);
+        for(Event event : events) {
+            if(!event.getType().equals(EventType.PERIODIC_TEST)) {
+                throw new WitcurveException("Only periodic tests can be deleted from this service");
+            }
+            eventRepository.delete(event);
+        }
     }
 
     @Override

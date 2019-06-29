@@ -402,6 +402,28 @@ public class EventResource {
     /**
      * delete periodic test events by binding id
      * * @param pageable
+     * @param ids
+     * @param
+     * @return
+     */
+    @DeleteMapping("/events/periodic-tests/delete")
+    @Timed
+    public ResponseEntity<Void> deletePeriodicTestsIds(@RequestParam List<Long> ids) throws WitcurveException, URISyntaxException {
+        try {
+            eventService.deletePeriodicTestsByIds(ids);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("This event cannot be deleted");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+        return new ResponseEntity<>(null,  HttpStatus.OK);
+    }
+
+    /**
+     * delete periodic test events by binding id
+     * * @param pageable
      * @param bindingId
      * @param
      * @return
