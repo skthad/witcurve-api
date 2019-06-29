@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -171,16 +172,20 @@ public class SmsService {
                     sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),
                         body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
                 } else if(!primaryOnly && secondaryOnly) {
-                    for(String alternateNumber : studentStandard.getStudent().getAlternateMobileNumbers()) {
-                        sendSms(alternateNumber,
-                            body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                    if(!StringUtils.isEmpty(studentStandard.getStudent().getAlternateMobileNumbers())) {
+                        for(String alternateNumber : studentStandard.getStudent().getAlternateMobileNumbers()) {
+                            sendSms(alternateNumber,
+                                body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                        }
                     }
                 } else {
                     sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),
                         body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
-                    for(String alternateNumber : studentStandard.getStudent().getAlternateMobileNumbers()) {
-                        sendSms(alternateNumber,
-                            body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                    if(!StringUtils.isEmpty(studentStandard.getStudent().getAlternateMobileNumbers())) {
+                        for(String alternateNumber : studentStandard.getStudent().getAlternateMobileNumbers()) {
+                            sendSms(alternateNumber,
+                                body, schoolInfo.get().getSchool().getInstitute().getSmsSignature());
+                        }
                     }
                 }
             }
