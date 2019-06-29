@@ -10,7 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
-@Table(name="payment_order")
+@Table(name="payment_order", uniqueConstraints = {
+    @UniqueConstraint(name = "order_id_UK",
+    columnNames = {"order_id"})
+})
 public class PaymentOrder extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,6 +21,10 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Column(name = "order_id", nullable = false)
+    private String orderId = String.valueOf(System.currentTimeMillis());
 
     @NotNull
     @ManyToOne
@@ -57,6 +64,14 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public Student getStudent() {

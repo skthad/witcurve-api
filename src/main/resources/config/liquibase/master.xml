@@ -25,5 +25,6 @@
     <include file="config/liquibase/changelog/20190617153426_added_survey_details.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190622131453_added_student_course_mapping.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190624185933_removed_course_code_unique_in_course.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190627163533_added_order_id.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
