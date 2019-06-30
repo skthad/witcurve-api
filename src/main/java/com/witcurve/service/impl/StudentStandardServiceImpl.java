@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
+import com.witcurve.service.StudentService;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.StudentStandardMapper;
@@ -40,6 +41,9 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     @Autowired
     AcademicSessionRepository academicSessionRepository;
 
+    @Autowired
+    StudentService studentService;
+
     @Override
     public List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId) throws WitcurveException {
         List<String> rollNos = new ArrayList<>();
@@ -59,6 +63,10 @@ public class StudentStandardServiceImpl implements StudentStandardService {
         studentStandardRepository.deactivateByStudentIds(studentIds);
         List<StudentStandard> studentStandards = studentStandardRepository.saveAll(
             studentStandardMapper.toEntity(studentStandardDTOs));
+
+        for (StudentStandard ss: studentStandards) {
+            studentService.mapStudentsInNonElectiveCourses(ss);
+        }
         return studentStandardMapper.toDto(studentStandards);
     }
 
@@ -99,6 +107,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                 throw new WitcurveException("There already exists a student in given standard with entered roll no.");
             }
             studentStandard = studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+            studentService.mapStudentsInNonElectiveCourses(studentStandard);
         }
         return studentStandardMapper.toDto(studentStandard);
     }

@@ -1,5 +1,6 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
@@ -471,7 +472,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId,
-                                        Long standardId, Long staffId, Long schoolInfoId) throws WitcurveException {
+                                        Long standardId, Long staffId, Long schoolInfoId, Boolean forStudent) throws WitcurveException {
         if (studentId == null && standardId == null && staffId == null && schoolInfoId == null) {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
@@ -481,11 +482,15 @@ public class EventServiceImpl implements EventService {
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
         } else if(standardId != null) {
-            attendance =eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
+            attendance = eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
         } else if(staffId != null) {
-            attendance =eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
+            attendance = eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
         } else {
-            attendance=eventRepository.findAttendanceForAllStaffInSchoolInfo(fromDate, toDate, schoolInfoId);
+            if (Boolean.TRUE.equals(forStudent)) {
+                attendance = eventRepository.findAttendanceForAllStudentInSchoolInfo(fromDate, toDate, schoolInfoId);
+            } else {
+                attendance = eventRepository.findAttendanceForAllStaffInSchoolInfo(fromDate, toDate, schoolInfoId);
+            }
         }
 
         return eventMapper.toDto(attendance);
@@ -650,6 +655,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public void deletePeriodicTestsByIds(List<Long> ids) throws WitcurveException {
+        log.debug("Delete periodic events by ids : {}", ids);
+        List<Event> events = eventRepository.findAllById(ids);
+        for(Event event : events) {
+            if(!event.getType().equals(EventType.PERIODIC_TEST)) {
+                throw new WitcurveException("Only periodic tests can be deleted from this service");
+            }
+            eventRepository.delete(event);
+        }
+    }
+
+    @Override
     public List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException {
         List<Event> events;
         if(ViewType.ASSIGNMENT.equals(type)){
@@ -674,7 +691,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
+    public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId, Long staffId) throws WitcurveException {
         WitcurveUtil.correctDateFormat(eventStart, eventEnd);
         List<Event> events = null;
         if(type.equals(ViewType.ASSIGNMENT)) {
@@ -689,6 +706,22 @@ public class EventServiceImpl implements EventService {
             throw new WitcurveException("Invalid Event Type");
         }
         events = new ArrayList<>(events);
+        List<Event> staffList = new ArrayList<>();
+        staffList.addAll(events);
+        if(staffId != null) {
+            for(Event event : events) {
+                if(event.getType().equals(EventType.TEST) || event.getType().equals(EventType.DAILY_UPDATE)) {
+                    if(!event.getScd().getCourseTeacher().getTeacher().getId().equals(staffId)) {
+                        staffList.remove(event);
+                    }
+                } else if(event.getType().equals(EventType.ASSIGNMENT)) {
+                    if(!event.getCourseTeacher().getTeacher().getId().equals(staffId)) {
+                        staffList.remove(event);
+                    }
+                }
+            }
+        }
+        events = staffList;
         Collections.sort(events, new EventDateDescComparator());
         List<Event> finalList = new ArrayList<>();
         int startIndex = pageable.getPageNumber()*pageable.getPageSize();

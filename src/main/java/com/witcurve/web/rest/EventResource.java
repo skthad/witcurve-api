@@ -135,13 +135,13 @@ public class EventResource {
     @GetMapping("/events/attendance")
     @Timed
     public ResponseEntity<Map<Long, List<EventDTO>>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
-                                                        @RequestParam(value = "toDate") LocalDate toDate,
-                                                  @RequestParam(value = "studentId", required = false) Long studentId,
-                                                  @RequestParam(value = "standardId", required = false) Long standardId,
-                                                  @RequestParam(value = "staffId", required = false) Long staffId,
-                                                @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
+                                                                   @RequestParam(value = "toDate") LocalDate toDate,
+                                                                   @RequestParam(value = "studentId", required = false) Long studentId,
+                                                                   @RequestParam(value = "standardId", required = false) Long standardId,
+                                                                   @RequestParam(value = "staffId", required = false) Long staffId,
+                                                                   @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get attendance");
-        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId, Boolean.FALSE);
         Map<Long, List<EventDTO>> resultMap = new HashMap<>();
 
         if (studentId != null) {
@@ -317,10 +317,11 @@ public class EventResource {
         @RequestParam(value = "eventStart") LocalDate eventStart,
         @RequestParam(value = "eventEnd") LocalDate eventEnd,
         @RequestParam(value = "type") ViewType type,
+        @RequestParam(required = false) Long staffId,
         @PathVariable Long courseId,
         @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
-        log.debug("Request to get events on between dates : {} and : {} for standard id : {} and course id : {}", eventStart, eventEnd, courseId, standardId);
-        Page<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(pageable, eventStart, eventEnd, type, standardId, courseId);
+        log.debug("Request to get events on between dates : {} and : {} for standard id : {} and course id : {} for staff with id : {}", eventStart, eventEnd, courseId, standardId, staffId);
+        Page<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(pageable, eventStart, eventEnd, type, standardId, courseId, staffId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
@@ -397,6 +398,28 @@ public class EventResource {
     public ResponseEntity<List<EventDTO>> getPeriodicTestsByBindingId(@PathVariable String bindingId, @RequestParam(required = false) List<Long> courseIds) throws WitcurveException, URISyntaxException {
         List<EventDTO> result = eventService.getPeriodicTestsByBindingId(bindingId, courseIds);
         return new ResponseEntity<>(result,  HttpStatus.OK);
+    }
+
+    /**
+     * delete periodic test events by binding id
+     * * @param pageable
+     * @param ids
+     * @param
+     * @return
+     */
+    @DeleteMapping("/events/periodic-tests/delete")
+    @Timed
+    public ResponseEntity<Void> deletePeriodicTestsIds(@RequestParam List<Long> ids) throws WitcurveException, URISyntaxException {
+        try {
+            eventService.deletePeriodicTestsByIds(ids);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("This event cannot be deleted");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
+        return new ResponseEntity<>(null,  HttpStatus.OK);
     }
 
     /**

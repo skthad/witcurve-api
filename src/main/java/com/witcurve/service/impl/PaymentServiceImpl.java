@@ -91,7 +91,7 @@ public class PaymentServiceImpl implements PaymentService {
         try {
             PaytmRequestDTO paytmRequestDTO = new PaytmRequestDTO();
             paytmRequestDTO.setMerchantMid(applicationProperties.getPaytm().getMerchantId());
-            paytmRequestDTO.setOrderId(String.valueOf(paymentOrder.getId()));
+            paytmRequestDTO.setOrderId(paymentOrder.getOrderId());
             paytmRequestDTO.setChannelId("WEB");
             paytmRequestDTO.setCustomerId(String.valueOf(paymentOrder.getStudent().getId()));
             if (StringUtils.isNotBlank(mobileNumber)) {
@@ -132,13 +132,17 @@ public class PaymentServiceImpl implements PaymentService {
      * @throws WitcurveException
      */
     @Override
-    public Boolean isTransactionComplete(Long orderId, Boolean updateSubscription) throws WitcurveException {
+    public Boolean isTransactionComplete(String orderId, Boolean updateSubscription) throws WitcurveException {
         try {
-            PaymentOrder paymentOrder = paymentOrderRepository.findById(orderId).orElseThrow(() -> new WitcurveException("No order with given id"));
-            PaytmVerificationRequestDTO request = new PaytmVerificationRequestDTO();
+            PaymentOrder paymentOrder = paymentOrderRepository.findByOrderId(orderId);
 
+            if (paymentOrder == null) {
+                throw new WitcurveException("No order with given id");
+            }
+
+            PaytmVerificationRequestDTO request = new PaytmVerificationRequestDTO();
             request.setMerchantId(applicationProperties.getPaytm().getMerchantId());
-            request.setOrderId(String.valueOf(paymentOrder.getId()));
+            request.setOrderId(paymentOrder.getOrderId());
 
             TreeMap paytmParams = (new ObjectMapper()).convertValue(request, TreeMap.class);
             String checkSumHash = CheckSumServiceHelper.getCheckSumServiceHelper()
@@ -170,8 +174,7 @@ public class PaymentServiceImpl implements PaymentService {
             student.setSubscriptionStartDate(LocalDate.now());
             student.setSubscriptionEndDate(LocalDate.now().plusMonths(subscriptionPackage.getMonths()));
         } else {
-            student.setSubscriptionEndDate(student.getSubscriptionEndDate().plusDays(1)
-                .plusMonths(subscriptionPackage.getMonths()));
+            student.setSubscriptionEndDate(student.getSubscriptionEndDate().plusMonths(subscriptionPackage.getMonths()));
         }
 
         Map paramsMap = new HashMap();

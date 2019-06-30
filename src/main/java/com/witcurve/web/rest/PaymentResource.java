@@ -32,7 +32,7 @@ public class PaymentResource {
     @PostMapping("/payment/paytm/verify-order-status")
     @Timed
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Boolean> verifyOrderStatus(@RequestParam Long orderId,
+    public ResponseEntity<Boolean> verifyOrderStatus(@RequestParam String orderId,
                                                      @RequestParam(required = false, defaultValue = "false") Boolean updateSubscription) throws WitcurveException {
         log.debug("Rest API for verification order status {}", orderId);
         return ResponseEntity.ok().body(paymentService.isTransactionComplete(orderId, updateSubscription));

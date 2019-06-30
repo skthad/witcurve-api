@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -164,6 +165,14 @@ public class CourseTeacherResource {
     public ResponseEntity<List<CourseTeacherDTO>> getCourseTeacherByStudentId(@PathVariable("studentId") Long studentId) throws WitcurveException {
         log.debug("Request to get Course teacher with studentId {}", studentId);
         List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByStudentId(studentId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/course-teacher/grades/{grade}")
+    @Timed
+    public ResponseEntity<List<CourseTeacherDTO>> getCourseTeachersByGradeAndSchoolInfoId(@PathVariable("grade") Grade grade, @RequestParam Long schoolInfoId, @RequestParam(defaultValue = "false") Boolean oneRecordForACourse) throws WitcurveException {
+        log.debug("Request to get Course teacher with course id {}", grade);
+        List<CourseTeacherDTO> result = courseTeacherService.getCourseTeachersByGradeAndSchoolInfoId(grade, schoolInfoId, oneRecordForACourse);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

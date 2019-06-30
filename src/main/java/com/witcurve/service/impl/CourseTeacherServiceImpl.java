@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseTeacherService;
 import com.witcurve.service.dto.CourseTeacherDTO;
@@ -13,8 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,6 +50,9 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
 
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
@@ -147,11 +150,19 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
 
     @Override
     public List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException{
-        Long std = studentStandardRepository.getStandardIdByStudentId(studentId);
-            List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(std);
-        if(studentStandardRepository.getByStudentId(studentId).size()>1) {
-              throw new WitcurveException("standard repository is giving more than one rows at a time.");
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+        if (studentStandards.size() == 0) {
+            return null;
         }
+        if(studentStandards.size() > 1) {
+            throw new WitcurveException("Student is actively enrolled in multiple standards.");
+        }
+        Long standardId = studentStandards.get(0).getStandard().getId();
+        List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
+        //TODO - Add this back once student standard refactor is done properly. For now each student will see all the course in a standard.
+
+//        List<Long> studentCourseIds = studentCourseRepository.findCourseIdsByStudentStandard(studentStandards.get(0).getId());
+//        result.removeIf(x -> studentCourseIds.indexOf(x.getCourse().getId()) < 0);
         return courseTeacherMapper.toDto(result);
     }
 
@@ -171,5 +182,19 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         courseTeachers.removeIf((CourseTeacher ct) -> allocatedTeachers.indexOf(ct.getTeacher().getId()) > -1);
 
         return courseTeacherMapper.toDto(courseTeachers);
+    }
+
+    @Override
+    public List<CourseTeacherDTO> getCourseTeachersByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId, Boolean oneRecordForACourse) {
+        log.debug("Request to get all course teachers by grade : {} for school info with id : {} oneRecordForACourse ", grade, schoolInfoId, oneRecordForACourse);
+        List<CourseTeacher> courseTeachers = courseTeacherRepository.findActiveCourseTeacherByGradeAndSchoolInfoId(grade, schoolInfoId);
+        if(oneRecordForACourse) {
+            Map<Long, CourseTeacher> courseTeacherMap = new HashMap<>();
+            for(CourseTeacher courseTeacher : courseTeachers) {
+                courseTeacherMap.put(courseTeacher.getCourse().getId(), courseTeacher);
+            }
+            courseTeachers = new ArrayList<CourseTeacher>(courseTeacherMap.values());
+        }
+        return  courseTeacherMapper.toDto(courseTeachers);
     }
 }
