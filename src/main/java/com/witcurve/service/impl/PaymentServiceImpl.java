@@ -174,8 +174,7 @@ public class PaymentServiceImpl implements PaymentService {
             student.setSubscriptionStartDate(LocalDate.now());
             student.setSubscriptionEndDate(LocalDate.now().plusMonths(subscriptionPackage.getMonths()));
         } else {
-            student.setSubscriptionEndDate(student.getSubscriptionEndDate().plusDays(1)
-                .plusMonths(subscriptionPackage.getMonths()));
+            student.setSubscriptionEndDate(student.getSubscriptionEndDate().plusMonths(subscriptionPackage.getMonths()));
         }
 
         Map paramsMap = new HashMap();
