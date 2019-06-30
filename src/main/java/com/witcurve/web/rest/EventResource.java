@@ -135,13 +135,13 @@ public class EventResource {
     @GetMapping("/events/attendance")
     @Timed
     public ResponseEntity<Map<Long, List<EventDTO>>> getAttendance(@RequestParam(value = "fromDate") LocalDate fromDate,
-                                                        @RequestParam(value = "toDate") LocalDate toDate,
-                                                  @RequestParam(value = "studentId", required = false) Long studentId,
-                                                  @RequestParam(value = "standardId", required = false) Long standardId,
-                                                  @RequestParam(value = "staffId", required = false) Long staffId,
-                                                @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
+                                                                   @RequestParam(value = "toDate") LocalDate toDate,
+                                                                   @RequestParam(value = "studentId", required = false) Long studentId,
+                                                                   @RequestParam(value = "standardId", required = false) Long standardId,
+                                                                   @RequestParam(value = "staffId", required = false) Long staffId,
+                                                                   @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get attendance");
-        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId, Boolean.FALSE);
         Map<Long, List<EventDTO>> resultMap = new HashMap<>();
 
         if (studentId != null) {

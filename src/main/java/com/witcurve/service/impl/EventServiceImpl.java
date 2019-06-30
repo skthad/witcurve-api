@@ -472,7 +472,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId,
-                                        Long standardId, Long staffId, Long schoolInfoId) throws WitcurveException {
+                                        Long standardId, Long staffId, Long schoolInfoId, Boolean forStudent) throws WitcurveException {
         if (studentId == null && standardId == null && staffId == null && schoolInfoId == null) {
             throw new WitcurveException("Student ID and Standard ID both cannot be null");
         }
@@ -482,11 +482,15 @@ public class EventServiceImpl implements EventService {
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
         } else if(standardId != null) {
-            attendance =eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
+            attendance = eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
         } else if(staffId != null) {
-            attendance =eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
+            attendance = eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
         } else {
-            attendance=eventRepository.findAttendanceForAllStaffInSchoolInfo(fromDate, toDate, schoolInfoId);
+            if (Boolean.TRUE.equals(forStudent)) {
+                attendance = eventRepository.findAttendanceForAllStudentInSchoolInfo(fromDate, toDate, schoolInfoId);
+            } else {
+                attendance = eventRepository.findAttendanceForAllStaffInSchoolInfo(fromDate, toDate, schoolInfoId);
+            }
         }
 
         return eventMapper.toDto(attendance);
