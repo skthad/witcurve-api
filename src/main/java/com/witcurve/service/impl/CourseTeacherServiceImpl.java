@@ -159,9 +159,10 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         }
         Long standardId = studentStandards.get(0).getStandard().getId();
         List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
+        //TODO - Add this back once student standard refactor is done properly. For now each student will see all the course in a standard.
 
-        List<Long> studentCourseIds = studentCourseRepository.findCourseIdsByStudentStandard(studentStandards.get(0).getId());
-        result.removeIf(x -> studentCourseIds.indexOf(x.getCourse().getId()) < 0);
+//        List<Long> studentCourseIds = studentCourseRepository.findCourseIdsByStudentStandard(studentStandards.get(0).getId());
+//        result.removeIf(x -> studentCourseIds.indexOf(x.getCourse().getId()) < 0);
         return courseTeacherMapper.toDto(result);
     }
 
