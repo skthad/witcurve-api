@@ -317,10 +317,11 @@ public class EventResource {
         @RequestParam(value = "eventStart") LocalDate eventStart,
         @RequestParam(value = "eventEnd") LocalDate eventEnd,
         @RequestParam(value = "type") ViewType type,
+        @RequestParam(required = false) Long staffId,
         @PathVariable Long courseId,
         @PathVariable Long standardId) throws WitcurveException, URISyntaxException{
-        log.debug("Request to get events on between dates : {} and : {} for standard id : {} and course id : {}", eventStart, eventEnd, courseId, standardId);
-        Page<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(pageable, eventStart, eventEnd, type, standardId, courseId);
+        log.debug("Request to get events on between dates : {} and : {} for standard id : {} and course id : {} for staff with id : {}", eventStart, eventEnd, courseId, standardId, staffId);
+        Page<EventDTO> result = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(pageable, eventStart, eventEnd, type, standardId, courseId, staffId);
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 

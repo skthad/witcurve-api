@@ -691,7 +691,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId) throws WitcurveException {
+    public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId, Long staffId) throws WitcurveException {
         WitcurveUtil.correctDateFormat(eventStart, eventEnd);
         List<Event> events = null;
         if(type.equals(ViewType.ASSIGNMENT)) {
@@ -706,6 +706,22 @@ public class EventServiceImpl implements EventService {
             throw new WitcurveException("Invalid Event Type");
         }
         events = new ArrayList<>(events);
+        List<Event> staffList = new ArrayList<>();
+        staffList.addAll(events);
+        if(staffId != null) {
+            for(Event event : events) {
+                if(event.getType().equals(EventType.TEST) || event.getType().equals(EventType.DAILY_UPDATE)) {
+                    if(!event.getScd().getCourseTeacher().getTeacher().getId().equals(staffId)) {
+                        staffList.remove(event);
+                    }
+                } else if(event.getType().equals(EventType.ASSIGNMENT)) {
+                    if(!event.getCourseTeacher().getTeacher().getId().equals(staffId)) {
+                        staffList.remove(event);
+                    }
+                }
+            }
+        }
+        events = staffList;
         Collections.sort(events, new EventDateDescComparator());
         List<Event> finalList = new ArrayList<>();
         int startIndex = pageable.getPageNumber()*pageable.getPageSize();
