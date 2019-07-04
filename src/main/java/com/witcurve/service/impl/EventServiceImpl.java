@@ -141,7 +141,8 @@ public class EventServiceImpl implements EventService {
                 }
                 if(event.getStudent() != null) {
                     LocalDate date = event.getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentId(event.getStudent().getId(), date, date);
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentAndStatuses(event.getStudent().getId(), date, date,
+                        Arrays.asList(ApprovalStatus.APPROVED, ApprovalStatus.PENDING));
                     if (la.size() > 0) {
                         la.get(0).addEvents(event);
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
@@ -159,7 +160,8 @@ public class EventServiceImpl implements EventService {
                 }
                 if(event.getStaff() != null) {
                     LocalDate date = event.getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffId(event.getStaff().getId(), date, date);
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffIdAndStatus(event.getStaff().getId(), date, date,
+                        Arrays.asList(ApprovalStatus.APPROVED, ApprovalStatus.PENDING));
                     if (la.size() > 0) {
                         la.get(0).addEvents(event);
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
