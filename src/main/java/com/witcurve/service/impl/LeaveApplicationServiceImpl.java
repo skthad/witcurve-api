@@ -31,6 +31,10 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     private final Logger log = LoggerFactory.getLogger(LeaveApplicationServiceImpl.class);
 
+    private final List<ApprovalStatus>ALL_STATUS_LIST = Arrays.asList(ApprovalStatus.values());
+
+    private final List<ApprovalStatus>NON_DECLINED_STATUS_LIST = Arrays.asList(ApprovalStatus.PENDING, ApprovalStatus.APPROVED);
+
     @Autowired
     LeaveApplicationRepository leaveApplicationRepository;
 
@@ -139,16 +143,17 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                                                  String note) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Approval for leaveApplication with id {}, by staff id {}", leaveApplicationId, staffId);
         Optional<LeaveApplication> leaveApplication = leaveApplicationRepository.findById(leaveApplicationId);
-        Optional<Staff> staff = staffRepository.findById(staffId);
         if (!leaveApplication.isPresent()) {
             throw new WitcurveException("No leave application with given id");
         }
-        if (!staff.isPresent()) {
-            throw new WitcurveException("No Staff with given id");
-        }
         leaveApplication.get().setStatus(status);
-        leaveApplication.get().setApprovedBy(staff.get());
-
+        if(staffId != null) {
+            Optional<Staff> staff = staffRepository.findById(staffId);
+            if (!staff.isPresent()) {
+                throw new WitcurveException("No Staff with given id");
+            }
+            leaveApplication.get().setApprovedBy(staff.get());
+        }
         LeaveApplicationDTO leaveApplicationDTO = leaveApplicationMapper.toDto(leaveApplication.get());
         leaveApplicationDTO.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(),
             leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(),
@@ -162,45 +167,32 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             throw new WitcurveException("One of studentId, standardId, staffId or schoolInfoId is required");
         }
         List<LeaveApplicationDTO> result = new ArrayList<>();
-        if (status == null) {
-            if (studentId != null) {
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findNonDeclinedByStudentId(studentId, fromDate, toDate));
-            } else if (staffId != null) {
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStaffId(staffId, fromDate, toDate));
-            } else if (standardId != null) {
-                List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
-                if (studentIds.size() > 0) {
-                    result = leaveApplicationMapper.
-                        toDto(leaveApplicationRepository.findByStudentList(studentIds, fromDate, toDate));
-                }
-            } else if (schoolInfoId != null) {
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStaffInSchoolInfoId(schoolInfoId, fromDate, toDate));
+        Map<Long, List<LeaveApplicationDTO>> resultMap = new HashMap<>();
+        List<ApprovalStatus> statuses;
+        if(status == null) {
+            statuses = ALL_STATUS_LIST;
+        } else {
+            statuses = Arrays.asList(status);
+        }
+        if (studentId != null) {
+            result = leaveApplicationMapper.toDto(
+                leaveApplicationRepository.findByStudentAndStatuses(studentId, fromDate, toDate, statuses));
+        } else if (staffId != null) {
+            result = leaveApplicationMapper.toDto(
+                leaveApplicationRepository.findByStaffIdAndStatus(staffId, fromDate, toDate, statuses));
+        } else if (standardId != null) {
+            List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
+            if (studentIds.size() > 0) {
+                result = leaveApplicationMapper.
+                    toDto(leaveApplicationRepository.findByStudentListAndStatuses(studentIds, fromDate, toDate, statuses));
             }
-        } else if (status != null) {
-            if (studentId != null) {
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStudentAndStatus(studentId, fromDate, toDate, status));
-            } else if (staffId != null) {
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStaffIdAndStatus(staffId, fromDate, toDate, status));
-            } else if (standardId != null) {
-                List<Long> studentIds = studentStandardRepository.findStudentIdByStandardId(standardId);
-                if (studentIds.size() > 0) {
-                    result = leaveApplicationMapper.toDto(
-                        leaveApplicationRepository.findByStudentListAndStatus(studentIds, fromDate, toDate, status));
-                }
-            } else if (schoolInfoId != null) {
-                result = leaveApplicationMapper.toDto(
-                    leaveApplicationRepository.findByStaffInSchoolInfoIdAndStatus(schoolInfoId, fromDate, toDate, status));
-            }
+        } else if (schoolInfoId != null) {
+            result = leaveApplicationMapper.toDto(
+                leaveApplicationRepository.findByStaffInSchoolInfoIdAndStatus(schoolInfoId, fromDate, toDate, statuses));
         }
         if (result.size() != 0) {
             result = insertLeaveDays(result);
         }
-        Map<Long, List<LeaveApplicationDTO>> resultMap = new HashMap<>();
 
         if (studentId != null) {
             resultMap.put(studentId, result);
@@ -244,7 +236,6 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     }
 
     private Boolean isHoliday(LocalDate date, Long schoolInfoId) throws WitcurveException {
-
         if (eventRepository.findHolidaysBetweenFromDateAndToDate(date, date, schoolInfoId) == 1)
             return true;
         else
@@ -260,7 +251,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         LocalDate startDate = academicSession.getStartDate();
         LocalDate endDate = startDate.plusYears(1);
         Long workingDays = DAYS.between(fromDate, toDate) + 1;
-        Long noOfSundays = 0L;
+        Long noOfSundays;
         Long noOfSaturdays = 0L;
         if (fromDate.isAfter(toDate)) {
             throw new WitcurveException("from date cannot be after to date.");
@@ -289,27 +280,24 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(),
                 false);
             if (workingDays == 0) {
-                throw new WitcurveException("total working days is 0 so leave application cannot be created !");
+                throw new WitcurveException("Total working days is 0, so leave application cannot be created !");
             }
             List<LeaveApplication> leaveApplications = leaveApplicationRepository.
-                findNonDeclinedByStudentId(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
-            log.info("student id : {}", leaveApplicationDTO.getAppliedStudentId());
-            log.info("start date  : {}", leaveApplicationDTO.getFromLeaveDate());
-            log.info("end date : {}", leaveApplicationDTO.getToLeaveDate());
-            log.info("found eixsting leaves : {}", leaveApplications.size());
+                findByStudentAndStatuses(leaveApplicationDTO.getAppliedStudentId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate(),
+                    NON_DECLINED_STATUS_LIST);
             if (update) {
                 if (leaveApplications.size() > 1) {
-                    throw new WitcurveException("The Leave application for this student already exists in the date range !! ");
+                    throw new WitcurveException("Another leave application for this student already exists in the given date range !");
                 } else if (leaveApplications.size() == 1) {
                     if (!leaveApplicationDTO.getId().equals(leaveApplications.get(0).getId())) {
-                        throw new WitcurveException("The Leave application for this student  already exists in the date range !! ");
+                        throw new WitcurveException("Another leave application for this student already exists in the given date range !");
                     }
                 } else {
                     throw new WitcurveException("Leave application doesn't exist with give id");
                 }
             } else {
                 if (leaveApplications.size() != 0) {
-                    throw new WitcurveException("The Leave application for this student already exists in the date range !! ");
+                    throw new WitcurveException("Another leave application for this student already exists in the given date range !");
                 }
             }
         } else if (leaveApplicationDTO.getAppliedStaffId() != null) {
@@ -318,23 +306,24 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
                 leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(),
                 false);
             if (workingDays == 0) {
-                throw new WitcurveException("total working days is 0 so leave application cannot be created !");
+                throw new WitcurveException("Total working days is 0, so leave application cannot be created !");
             }
             List<LeaveApplication> leaveApplications = leaveApplicationRepository.
-                findNonDeclinedByStaffId(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate());
+                findByStaffIdAndStatus(leaveApplicationDTO.getAppliedStaffId(), leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate(),
+                    NON_DECLINED_STATUS_LIST);
             if (update) {
                 if (leaveApplications.size() > 1) {
-                    throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");
+                    throw new WitcurveException("Another leave application for this staff already exists in the given date range !");
                 } else if (leaveApplications.size() == 1) {
                     if (!leaveApplicationDTO.getId().equals(leaveApplications.get(0).getId())) {
-                        throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");
+                        throw new WitcurveException("Another leave application for this staff already exists in the given date range !");
                     }
                 } else {
                     throw new WitcurveException("Leave application doesn't exist with give id");
                 }
             } else {
                 if (leaveApplications.size() != 0) {
-                    throw new WitcurveException("The Leave application for this staff already exists in the date range !! ");
+                    throw new WitcurveException("Another leave application for this staff already exists in the given date range !");
                 }
             }
         } else {
