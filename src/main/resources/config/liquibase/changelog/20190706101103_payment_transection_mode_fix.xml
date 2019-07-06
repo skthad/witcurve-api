@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="vishal (generated)" id="1561653356676-1">
+        <modifyDataType tableName="payment_order" columnName="transaction_mode" newDataType="VARCHAR(50)"/>
+    </changeSet>
+    <changeSet author="vishal (generated)" id="1561653356676-2">
+        <sql>update payment_order set transaction_mode = null where transaction_mode is not null</sql>
+    </changeSet>
+    <changeSet author="vishal" id="1561653356676-3">
+        <modifyDataType columnName="transaction_charge" newDataType="double precision" tableName="payment_order"/>
+    </changeSet>
+</databaseChangeLog>
