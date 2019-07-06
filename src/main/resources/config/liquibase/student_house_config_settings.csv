@@ -1,0 +1,6 @@
+id;school_id;config_type;field_type;field_name;display_field_name;field_value;display_order;created_by
+76;-1;STUDENT_HOUSE;BOOLEAN;STUDENT_HOUSE_ENABLED;Student house enabled;FALSE;1;System
+77;-1;STUDENT_HOUSE;STRING;HOUSE;House;Blue;1;System
+78;-1;STUDENT_HOUSE;STRING;HOUSE;House;Green;2;System
+79;-1;STUDENT_HOUSE;STRING;HOUSE;House;Red;3;System
+80;-1;STUDENT_HOUSE;STRING;HOUSE;House;Yellow;4;System
