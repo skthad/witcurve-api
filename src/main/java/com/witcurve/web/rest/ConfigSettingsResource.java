@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ConfigFieldName;
 import com.witcurve.domain.enumeration.ConfigType;
 import com.witcurve.service.ConfigSettingsService;
 import com.witcurve.service.dto.ConfigSettingsDTO;
@@ -79,8 +80,10 @@ public class ConfigSettingsResource {
         log.debug("Request to create config setting");
         if (configSetting.getId() != null) {
             throw new WitcurveException("ID must be null for a create request");
-        } else if (!configSetting.getConfigType().equals(ConfigType.GRADING_SCALE)) {
-            throw new WitcurveException("Create not supported for given config type");
+        } else if (!configSetting.getConfigType().equals(ConfigType.GRADING_SCALE)
+            && !(configSetting.getConfigType().equals(ConfigType.STUDENT_HOUSE)
+            && configSetting.getFieldName().equals(ConfigFieldName.HOUSE))) {
+            throw new WitcurveException("Create not supported for given config type/field name");
         } else if (!schoolId.equals(configSetting.getSchoolId())) {
             throw new WitcurveException("School ID provided does not match the schoolId in the object to be created");
         }

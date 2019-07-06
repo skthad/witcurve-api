@@ -79,9 +79,20 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
                 ConfigType.GRADING_SCALE, configSetting.getDisplayFieldName().trim(), configSetting.getFieldValue().trim(), configSetting.getDisplayOrder());
 
             if (exisingSettings.size() > 0) {
-                throw new WitcurveException("Invalid configuration provided");
+                throw new WitcurveException("Invalid configuration values provided");
             }
-        } else {
+        } else if (configSetting.getConfigType().equals(ConfigType.STUDENT_HOUSE)) {
+            configSetting.setFieldType(ConfigFieldType.STRING);
+            configSetting.setFieldName(ConfigFieldName.HOUSE);
+            configSetting.setDisplayFieldName("House");
+
+            List<ConfigSettings> exisingSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypeAndFieldNameAndValueAndOrder(schoolId,
+                ConfigType.STUDENT_HOUSE, configSetting.getFieldName(), configSetting.getFieldValue().trim(), configSetting.getDisplayOrder());
+
+            if (exisingSettings.size() > 0) {
+                throw new WitcurveException("Invalid configuration values provided");
+            }
+        } else{
             throw new WitcurveException("Create not supported for given config type");
         }
         ConfigSettings result = configSettingsRepository.save(configSettingsMapper.toEntity(configSetting));
@@ -108,14 +119,14 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
                 Pattern pattern = Pattern.compile("^([01]\\d|2[0-3])([0-5]\\d)$");
                 Matcher matcher = pattern.matcher(fieldValue);
                 if (!matcher.matches()){
-                    throw new WitcurveException("");
+                    throw new WitcurveException("Invalid time format provided");
                 }
                 break;
             case INTEGER:
                 try {
                     Integer.parseInt(fieldValue);
                 } catch (NumberFormatException e) {
-                    throw new WitcurveException("");
+                    throw new WitcurveException("Cannot parse the value into an integer");
                 }
                 if (existingSetting.getConfigType().equals(ConfigType.GRADING_SCALE)) {
                     existingSetting.setDisplayFieldName(configSetting.getDisplayFieldName().trim());
@@ -129,7 +140,7 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
                         break;
                     }
                 } catch (IllegalArgumentException e) {
-                    throw new WitcurveException("");
+                    throw new WitcurveException("Invalid enum provided");
                 }
                 break;
             case STRING:
@@ -137,13 +148,14 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
                 break;
             case BOOLEAN:
                 if (!fieldValue.equalsIgnoreCase("TRUE") && !fieldValue.equalsIgnoreCase("FALSE")) {
-                    throw new WitcurveException("");
+                    throw new WitcurveException("Wrong boolean value provided");
                 }
                 fieldValue = fieldValue.toUpperCase();
                 break;
             default:
         }
         existingSetting.setFieldValue(fieldValue);
+        existingSetting.setFieldDescription(configSetting.getFieldDescription());
         return configSettingsMapper.toDto(existingSetting);
     }
 
