@@ -26,6 +26,10 @@ public interface ConfigSettingsRepository extends JpaRepository<ConfigSettings, 
         "and (cs.displayFieldName = ?3 or cs.fieldValue = ?4 or cs.displayOrder = ?5)")
     List<ConfigSettings> getConfigSettingsBySchoolIdAndTypeAndDisplayNameAndValueAndOrder(Long schoolId, ConfigType type, String displayName, String value, Integer order);
 
+    @Query("select cs from ConfigSettings cs where cs.schoolId = ?1 and cs.configType = ?2 " +
+        "and cs.fieldName = ?3 and (cs.fieldValue = ?4 or cs.displayOrder = ?5)")
+    List<ConfigSettings> getConfigSettingsBySchoolIdAndTypeAndFieldNameAndValueAndOrder(Long schoolId, ConfigType type, ConfigFieldName fieldName, String value, Integer order);
+
     @Modifying
     @Query("delete from ConfigSettings where schoolId = ?1")
     void deleteBySchoolId(Long schoolId);

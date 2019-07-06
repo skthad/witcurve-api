@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1561653356680-1">
+        <loadData file="config/liquibase/student_house_config_settings.csv"
+                  separator=";"
+                  tableName="config_settings">
+        </loadData>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1561653356680-2">
+        <sql>update config_settings set field_description = 'Staff will be considered present if entry time is before the specified time' where id = 1</sql>
+        <sql>update config_settings set field_description = 'Staff will be given a grece time of specified number of minutes if entry is late' where id = 2</sql>
+        <sql>update config_settings set field_description = 'Staff will be allocated specified number of leave credits per month' where id = 3</sql>
+        <sql>update config_settings set display_field_name = 'No. of late days considered as one day salary deduction' where id = 53</sql>
+        <sql>update config_settings set display_field_name = 'No. of grace days considered as one day salary deduction' where id = 54</sql>
+        <sql>update config_settings set field_description = 'Blue House' where id = 77</sql>
+        <sql>update config_settings set field_description = 'Green House' where id = 78</sql>
+        <sql>update config_settings set field_description = 'Red House' where id = 79</sql>
+        <sql>update config_settings set field_description = 'Yellow House' where id = 80</sql>
+    </changeSet>
+</databaseChangeLog>
