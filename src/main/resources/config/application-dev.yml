@@ -149,12 +149,12 @@ application:
         auth-key: 228729Ax0VORwQvEQ25b9cfff6
         sender-id: WCURVE
     paytm:
-        merchantId: Witcur27804517818624
-        secretKey: WVhxMveXM@8DPg2@
-        website: APPPROD
-        industryTypeId: PrivateEducation
-        callbackUrl: https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=
-        transactionStatusApi: https://securegw.paytm.in/order/status
+        merchantId: WITCUR13574383497047
+        secretKey : 3WuVx2gN2#0ixC#!
+        website: WEBSTAGING
+        industryTypeId : Retail
+        callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
+        transactionStatusApi: https://securegw-stage.paytm.in/order/status
     witcurve:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
         domainUrl: witcurve-app.com
