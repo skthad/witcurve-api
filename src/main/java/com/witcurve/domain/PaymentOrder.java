@@ -50,9 +50,10 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
     private TransactionStatus transactionStatus;
 
     @Column(name = "transaction_charge")
-    private Long transactionCharge;
+    private Double transactionCharge;
 
     @Column(name = "transaction_mode")
+    @Enumerated(EnumType.STRING)
     private TransactionMode transactionMode;
 
     @Column(name = "transaction_id")
@@ -114,11 +115,11 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
         this.transactionStatus = transactionStatus;
     }
 
-    public Long getTransactionCharge() {
+    public Double getTransactionCharge() {
         return transactionCharge;
     }
 
-    public void setTransactionCharge(Long transactionCharge) {
+    public void setTransactionCharge(Double transactionCharge) {
         this.transactionCharge = transactionCharge;
     }
 
