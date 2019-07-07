@@ -726,13 +726,17 @@ public class EventServiceImpl implements EventService {
         events = staffList;
         Collections.sort(events, new EventDateDescComparator());
         List<Event> finalList = new ArrayList<>();
-        int startIndex = pageable.getPageNumber()*pageable.getPageSize();
-        int endIndex = startIndex + pageable.getPageSize()-1;
-        for(int i=startIndex; i<=endIndex; i++ ) {
-            if(i>events.size()-1) {
-                break;
+        if (pageable.isPaged()) {
+            int startIndex = pageable.getPageNumber()*pageable.getPageSize();
+            int endIndex = startIndex + pageable.getPageSize() - 1;
+            for(int i=startIndex; i<=endIndex; i++ ) {
+                if (i > events.size() - 1) {
+                    break;
+                }
+                finalList.add(events.get(i));
             }
-            finalList.add(events.get(i));
+        } else {
+            finalList.addAll(events);
         }
         List<EventDTO> result =  eventMapper.toDto(finalList);
         return new PageImpl<>(new ArrayList<>(result), pageable, events.size());

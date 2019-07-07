@@ -1,24 +1,23 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Course;
-import com.witcurve.domain.CourseTeacher;
-import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.repository.CourseRepository;
-import com.witcurve.repository.CourseTeacherRepository;
-import com.witcurve.repository.SchoolInfoRepository;
-import com.witcurve.service.CourseService;
-import com.witcurve.service.dto.CourseDTO;
+import com.witcurve.domain.enumeration.ViewType;
+import com.witcurve.repository.*;
+import com.witcurve.service.*;
+import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.CourseMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @Transactional
@@ -31,6 +30,18 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     CourseMapper courseMapper;
+
+    @Autowired
+    CourseContentService courseContentService;
+
+    @Autowired
+    EventService eventService;
+
+    @Autowired
+    StandardRepository standardRepository;
+
+    @Autowired
+    AcademicSessionService academicSessionService;
 
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
@@ -71,6 +82,8 @@ public class CourseServiceImpl implements CourseService {
         return courseMapper.toDto(course.get());
     }
 
+
+
     @Override
     public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade) throws WitcurveException {
         log.debug("Request to get courses in schoolInfo {} with grade : {}", schoolInfoId, grade);
@@ -94,5 +107,32 @@ public class CourseServiceImpl implements CourseService {
             throw new WitcurveException("There are some faculty assigned to this course, please deactivate them and try again");
         }
         course.get().setActive(false);
+    }
+
+    @Override
+    public CourseTrackDTO getCourseTrackById(Long courseId, Long staffId) throws WitcurveException {
+        CourseDTO courseDTO = getCourseById(courseId);
+        List<CourseContentDTO> courseContentDTOS = courseContentService.getCourseContentsByCourseId(courseId, Boolean.TRUE);
+
+        AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(courseDTO.getSchoolInfoId(), LocalDate.now());
+        List<Standard> standards = standardRepository.findByGradeAndSchoolInfoId(courseDTO.getGrade(), courseDTO.getSchoolInfoId());
+
+        Map<String, Map<String, Long>> sectionTopicCountMap = new HashMap<>();
+        for (Standard standard: standards) {
+            sectionTopicCountMap.computeIfAbsent(standard.getSection(), k -> new HashMap<>());
+            Map<String, Long> topicCountMap = sectionTopicCountMap.get(standard.getSection());
+
+            List<EventDTO> dailyUpdates = eventService.findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable.unpaged(), currentSession.getStartDate(),
+                currentSession.getStartDate().plusYears(1).minusDays(1), ViewType.DAILY_UPDATE, standard.getId(), courseDTO.getId(), staffId).getContent();
+
+            for (CourseContentDTO courseContentDTO : courseContentDTOS) {
+                Long count = dailyUpdates.stream()
+                    .filter(eventDTO -> !CollectionUtils.isEmpty(eventDTO.getCourseContentIds()) && eventDTO.getCourseContentIds().contains(courseContentDTO.getId()))
+                    .count();
+                topicCountMap.put(courseContentDTO.getIndex(), count);
+            }
+        }
+
+        return new CourseTrackDTO(courseDTO, courseContentDTOS, sectionTopicCountMap);
     }
 }
