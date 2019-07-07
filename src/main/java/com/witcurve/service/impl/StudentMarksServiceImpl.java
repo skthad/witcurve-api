@@ -31,6 +31,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     private final List<Boolean> ALL = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
     private final List<Boolean> PUBLISHED_ONLY = Arrays.asList(Boolean.TRUE);
+    private final List<EventType> ALLOWED_EVENT_TYPES = Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST);
 
     @Autowired
     StudentMarksMapper studentMarksMapper;
@@ -101,7 +102,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!event.isPresent()) {
             throw new WitcurveException("Event does not exist with id: " + eventId);
         }
-        if(EventType.TEST.equals(event.get().getType()) || EventType.ASSIGNMENT.equals(event.get().getType())){
+        if(ALLOWED_EVENT_TYPES.contains(event.get().getType())){
             studentMarks=studentMarksRepository.getStudentMarksByEventId(eventId);
         } else  {
             throw new WitcurveException("The eventId must be TEST or ASSIGNMENT");
@@ -157,6 +158,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         switch (type) {
             case TEST:
             case ASSIGNMENT:
+            case PERIODIC_TEST:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForEvent(courseId, studentId, type, startDate, endDate));
             case EXAM:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentIdForExam(courseId,studentId, startDate, endDate, flags));
@@ -195,6 +197,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         switch (type) {
             case TEST:
             case ASSIGNMENT:
+            case PERIODIC_TEST:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForEvent(courseId, grade, type, startDate, endDate));
             case EXAM:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndGradeForExam(courseId, grade, startDate, endDate, flags));
@@ -220,6 +223,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         switch (type) {
             case TEST:
             case ASSIGNMENT:
+            case PERIODIC_TEST:
                 return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStandardForEvent(courseId, standardId, type, startDate, endDate));
         }
         throw new WitcurveException("Not a valid type");
