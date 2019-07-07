@@ -141,7 +141,8 @@ public class EventServiceImpl implements EventService {
                 }
                 if(event.getStudent() != null) {
                     LocalDate date = event.getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentId(event.getStudent().getId(), date, date);
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStudentAndStatuses(event.getStudent().getId(), date, date,
+                        Arrays.asList(ApprovalStatus.APPROVED, ApprovalStatus.PENDING));
                     if (la.size() > 0) {
                         la.get(0).addEvents(event);
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
@@ -159,7 +160,8 @@ public class EventServiceImpl implements EventService {
                 }
                 if(event.getStaff() != null) {
                     LocalDate date = event.getDate();
-                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffId(event.getStaff().getId(), date, date);
+                    List<LeaveApplication> la = leaveApplicationRepository.findByStaffIdAndStatus(event.getStaff().getId(), date, date,
+                        Arrays.asList(ApprovalStatus.APPROVED, ApprovalStatus.PENDING));
                     if (la.size() > 0) {
                         la.get(0).addEvents(event);
                         event.setName("LEAVE-"+la.get(0).getReason().toString());
@@ -724,13 +726,17 @@ public class EventServiceImpl implements EventService {
         events = staffList;
         Collections.sort(events, new EventDateDescComparator());
         List<Event> finalList = new ArrayList<>();
-        int startIndex = pageable.getPageNumber()*pageable.getPageSize();
-        int endIndex = startIndex + pageable.getPageSize()-1;
-        for(int i=startIndex; i<=endIndex; i++ ) {
-            if(i>events.size()-1) {
-                break;
+        if (pageable.isPaged()) {
+            int startIndex = pageable.getPageNumber()*pageable.getPageSize();
+            int endIndex = startIndex + pageable.getPageSize() - 1;
+            for(int i=startIndex; i<=endIndex; i++ ) {
+                if (i > events.size() - 1) {
+                    break;
+                }
+                finalList.add(events.get(i));
             }
-            finalList.add(events.get(i));
+        } else {
+            finalList.addAll(events);
         }
         List<EventDTO> result =  eventMapper.toDto(finalList);
         return new PageImpl<>(new ArrayList<>(result), pageable, events.size());

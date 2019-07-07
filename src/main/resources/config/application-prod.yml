@@ -144,10 +144,10 @@ application:
         auth-key: 228729Ax0VORwQvEQ25b9cfff6
         sender-id: WCURVE
     paytm:
-        merchantId: Witcur55101968128401
-        secretKey: E@7!ALyWs!v&wyfk
-        website: WEBPROD
-        industryTypeId: Retail100
+        merchantId: Witcur27804517818624
+        secretKey: WVhxMveXM@8DPg2@
+        website: APPPROD
+        industryTypeId: PrivateEducation
         callbackUrl: https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw.paytm.in/order/status
     witcurve:

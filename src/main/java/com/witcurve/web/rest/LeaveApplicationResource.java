@@ -112,9 +112,9 @@ public class LeaveApplicationResource {
 
     @PatchMapping("/leave-application/{leaveApplicationId}")
     @Timed
-    public ResponseEntity<LeaveApplicationDTO> getLeaveApplicationApproval(
+    public ResponseEntity<LeaveApplicationDTO> changeLeaveApplicationStatus(
         @PathVariable("leaveApplicationId") Long applicationId,
-        @RequestParam Long staffId,
+        @RequestParam(required = false) Long staffId,
         @RequestParam ApprovalStatus status,
         @RequestParam(required = false) String note) throws WitcurveException, UnsupportedEncodingException {
         log.debug("The LeaveApplication approved by staff id {} for application with id : {}", staffId, applicationId);
@@ -129,60 +129,6 @@ public class LeaveApplicationResource {
             }
         }
     }
-
-    /**
-     * get leave-application of staff by id
-     *
-     * @param staffId,sessionId
-     * @return
-     * @throws WitcurveException
-     *//*
-
-    @GetMapping("/leave-application/staff/{staffId}")
-    @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStaffId(@PathVariable Long staffId,
-                                                                                  @RequestParam(value = "startDate") LocalDate startDate,
-                                                                                  @RequestParam(value = "endDate") LocalDate endDate,
-     @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
-        log.debug("Request to get LeaveApplication with staff id : {}", staffId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStaff(staffId, startDate, endDate, status);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    *//**
-     * get leave-application of student by id
-     *
-     * @param studentId,sessionId
-     * @return
-     * @throws WitcurveException
-     *//*
-
-    @GetMapping("/leave-application/students/{studentId}")
-    @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStudentIdAndSessionId
-    (@PathVariable Long studentId, @RequestParam Long sessionId,
-     @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
-        log.debug("Request to get LeaveApplication with session id : {} and student id : {}", sessionId, studentId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStudent(studentId, sessionId, status);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    *//**
-     * get leave-application for standard by id
-     *
-     * @param standardId
-     * @return
-     * @throws WitcurveException
-     *//*
-
-    @GetMapping("/leave-application/standard/{standardId}")
-    @Timed
-    public ResponseEntity<List<LeaveApplicationDTO>> getLeaveApplicationByStandardIdAndSessionId
-    (@PathVariable Long standardId, @RequestParam(required = false) ApprovalStatus status) throws WitcurveException {
-        log.debug("Request to get LeaveApplication with standard id : {}", standardId);
-        List<LeaveApplicationDTO> result = leaveApplicationService.getLeaveApplicationsForStandard(standardId, status);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }*/
 
     /**
      * get leave-application count

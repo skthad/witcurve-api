@@ -152,15 +152,21 @@ public class PaymentServiceImpl implements PaymentService {
             Response response = RestClientUtil.post(applicationProperties.getPaytm().getTransactionStatusApi(), request);
             PaytmResponseDTO paytmResponseDTO = (new ObjectMapper()).readValue(response.body().string(), PaytmResponseDTO.class);
 
-            paymentOrder.setTransactionMode(TransactionMode.valueOf(paytmResponseDTO.getPaymentMode()));
+            if (StringUtils.isNotBlank(paytmResponseDTO.getPaymentMode())) {
+                paymentOrder.setTransactionMode(TransactionMode.valueOf(paytmResponseDTO.getPaymentMode()));
+                paymentOrder.setTransactionCharge(getPaytmTransactionCharge(paymentOrder.getTransactionAmount(), paymentOrder.getTransactionMode()));
+            }
+
             paymentOrder.setTransactionStatus(TransactionStatus.valueOf(paytmResponseDTO.getStatus()));
             paymentOrder.setTransactionId(paytmResponseDTO.getTransactionId());
 
-            if (Boolean.TRUE.equals(updateSubscription)) {
+            boolean isSuccess = paymentOrder.getTransactionStatus() == TransactionStatus.TXN_SUCCESS;
+
+            if (isSuccess && Boolean.TRUE.equals(updateSubscription)) {
                 subscribeStudent(paymentOrder.getStudent().getId(), paymentOrder.getSubscriptionPackage());
             }
 
-            return paymentOrder.getTransactionStatus() == TransactionStatus.TXN_SUCCESS;
+            return isSuccess;
         } catch (Exception e) {
             log.error("Unable to verify paytm request", e);
             throw new WitcurveException("Unable to process the request at the moment");
@@ -178,14 +184,15 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         Map paramsMap = new HashMap();
-        paramsMap.put(Constants.PARAM_FULL_NAME, student.getFirstName() + " " + student.getLastName());
+        paramsMap.put(Constants.PARAM_FULL_NAME, student.getFirstName() + " " + student.getLastName() + " parent");
         paramsMap.put(Constants.PARAM_SUBSCRIPTION_END_DATE, WitcurveUtil.format(student.getSubscriptionEndDate()));
         paramsMap.put(Constants.PARAM_INSTITUTE_NAME, student.getSchoolInfo().getSchool().getInstitute().getName());
 
         try {
             smsService.sendSms(student.getRegisteredMobileNumber(),
-                "Dear " + paramsMap.get("studentName") +
-                    ", Your have been subscribed to Witcurve, it will expire on " + paramsMap.get("subscriptionEndDate") + ".", student.getSchoolInfo().getSchool().getInstitute().getSmsSignature());
+                "Dear " + paramsMap.get(Constants.PARAM_FULL_NAME) +
+                    ", Your have been subscribed to Witcurve, it will expire on " + paramsMap.get(Constants.PARAM_SUBSCRIPTION_END_DATE) +
+                    ".", student.getSchoolInfo().getSchool().getInstitute().getSmsSignature());
         } catch (UnsupportedEncodingException e) {
             log.error("Unable to send Subscription message", e);
         }
@@ -193,5 +200,27 @@ public class PaymentServiceImpl implements PaymentService {
         if (student.getUser().getEmail() != null) {
             mailService.sendEmailFromTemplate(student.getUser().getEmail(), paramsMap, "mail/subscriptionTransactionEmail", "email.subscription.transaction.title", student.getSchoolInfo().getSchool().getInstitute().getSmsSignature());
         }
+    }
+
+    private Double getPaytmTransactionCharge(Double transactionAmount, TransactionMode transactionMode) {
+        double paytmCharge;
+        switch (transactionMode) {
+            case PPI:
+                paytmCharge = transactionAmount * .015;
+                break;
+            case CC:
+                paytmCharge = transactionAmount * .011;
+                break;
+            case NB:
+                paytmCharge = 16.0;
+                break;
+            case PAYTM_DIGITAL_CREDIT:
+                paytmCharge = transactionAmount * .0185;
+                break;
+            default:
+                paytmCharge = 0.0;
+        }
+
+        return paytmCharge + (paytmCharge * .18);
     }
 }

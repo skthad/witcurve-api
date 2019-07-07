@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.dto.CourseDTO;
+import com.witcurve.service.dto.CourseTrackDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -142,5 +143,20 @@ public class CourseResource {
         }
     }
 
+    /**
+     * get course tracking by id
+     * @param courseId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/courses/{courseId}/track")
+    @Timed
+    public ResponseEntity<CourseTrackDTO> getCourseTrackById(@PathVariable Long courseId,
+                                                             @RequestParam(required = false) Long staffId) throws WitcurveException {
+        log.debug("Request to course tracking with id {} and staff id {}", courseId, staffId);
+        CourseTrackDTO result = courseService.getCourseTrackById(courseId, staffId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 }
