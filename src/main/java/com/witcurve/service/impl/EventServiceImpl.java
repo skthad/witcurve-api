@@ -767,14 +767,16 @@ public class EventServiceImpl implements EventService {
                         log.error("Event of type : "+eventDTO.getType()+"cannot have empty grade or school info id");
                         throw new WitcurveException("A periodic test creation need both grade id and school info id");
                     }
-                    Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(eventDTO.getCourseTeacher().getId());
-                    if (!courseTeacher.isPresent()) {
-                        throw new WitcurveException("No course teacher with given id " + eventDTO.getCourseTeacher().getId());
-                    }
-                    Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), courseTeacher.get().getCourse().getId());
-                    if(event != null && !event.getId().equals(eventDTO.getId())) {
+                    if(eventDTO.getCourseTeacher() != null) {
+                        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(eventDTO.getCourseTeacher().getId());
+                        if (!courseTeacher.isPresent()) {
+                            throw new WitcurveException("No course teacher with given id " + eventDTO.getCourseTeacher().getId());
+                        }
+                        Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), courseTeacher.get().getCourse().getId());
                         if(event != null && !event.getId().equals(eventDTO.getId())) {
-                            throw new WitcurveException("There already exists a periodic test for this course on given date");
+                            if(event != null && !event.getId().equals(eventDTO.getId())) {
+                                throw new WitcurveException("There already exists a periodic test for this course on given date");
+                            }
                         }
                     }
                 }
