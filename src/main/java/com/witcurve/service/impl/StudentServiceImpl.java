@@ -141,9 +141,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> getStudentsBySchoolInfoId(Long schoolInfoId) {
+    public List<StudentDTO> getUnAllocatedStudentsBySchoolInfoId(Long schoolInfoId) {
         log.debug("Request to get unallocated students in schoolInfo with id : {}", schoolInfoId);
         List<Student> students = studentRepository.getUnallocatedStudentsBySchoolInfoId(schoolInfoId);
+        return studentMapperLite.toDto(students);
+    }
+
+    @Override
+    public List<StudentDTO> getInActiveStudentsBySchoolInfoId(Long schoolInfoId) {
+        log.debug("Request to get in-active students in schoolInfo with id : {}", schoolInfoId);
+        List<Student> students = studentRepository.getInactiveStudentsBySchoolInfoId(schoolInfoId);
         return studentMapperLite.toDto(students);
     }
 
@@ -180,11 +187,23 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deactivate(Long studentId) {
+    public void deactivate(Long studentId) throws WitcurveException {
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
             studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
             student.get().getUser().setActivated(false);
+        } else {
+            throw new WitcurveException("No student with given id");
+        }
+    }
+
+    @Override
+    public void activate(Long studentId) throws WitcurveException {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (student.isPresent()) {
+            student.get().getUser().setActivated(true);
+        } else {
+            throw new WitcurveException("No student with given id");
         }
     }
 
