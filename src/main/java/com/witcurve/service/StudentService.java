@@ -18,11 +18,15 @@ public interface StudentService {
 
     List<StudentDTO> getStudentsByStandardId(Long standardId) throws WitcurveException;
 
-    List<StudentDTO> getStudentsBySchoolInfoId(Long schoolInfoId);
+    List<StudentDTO> getUnAllocatedStudentsBySchoolInfoId(Long schoolInfoId);
+
+    List<StudentDTO> getInActiveStudentsBySchoolInfoId(Long schoolInfoId);
 
     StudentDTO getStudentByUsername(String username) throws WitcurveException;
 
     void deactivate(Long studentId);
+
+    void activate(Long studentId);
 
     void mapStudentsInNonElectiveCourses(StudentStandard studentStandard);
 

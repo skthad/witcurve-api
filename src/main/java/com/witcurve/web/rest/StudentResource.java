@@ -95,9 +95,14 @@ public class StudentResource {
 
     @GetMapping("/students/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<StudentDTO>> getStudentsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
-        log.debug("Request to get unallocated students in schoolInfo with id: "+ schoolInfoId);
-        List<StudentDTO> result = studentService.getStudentsBySchoolInfoId(schoolInfoId);
+    public ResponseEntity<List<StudentDTO>> getStudentsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(defaultValue = "true") Boolean activated) throws WitcurveException {
+        log.debug("Request to get unallocated students in schoolInfo with id: {} of active status : {}", schoolInfoId, activated);
+        List<StudentDTO> result;
+        if(activated) {
+            result = studentService.getUnAllocatedStudentsBySchoolInfoId(schoolInfoId);
+        } else {
+            result = studentService.getInActiveStudentsBySchoolInfoId(schoolInfoId);
+        }
         return ResponseEntity.ok(result);
     }
 
@@ -105,6 +110,14 @@ public class StudentResource {
     public ResponseEntity<Void> deactivateStudent(@PathVariable Long studentId) throws WitcurveException, URISyntaxException {
         log.debug("Request to deactivate student with ID: " + studentId);
         studentService.deactivate(studentId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("A student is deactivated with identifier " + studentId,
+            studentId.toString())).build();
+    }
+
+    @PatchMapping("/students/{studentId}/activate")
+    public ResponseEntity<Void> activateStudent(@PathVariable Long studentId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to activate student with ID: " + studentId);
+        studentService.activate(studentId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("A student is deactivated with identifier " + studentId,
             studentId.toString())).build();
     }

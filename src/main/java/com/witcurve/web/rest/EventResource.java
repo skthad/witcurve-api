@@ -139,14 +139,15 @@ public class EventResource {
                                                                    @RequestParam(value = "studentId", required = false) Long studentId,
                                                                    @RequestParam(value = "standardId", required = false) Long standardId,
                                                                    @RequestParam(value = "staffId", required = false) Long staffId,
-                                                                   @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId) throws WitcurveException {
+                                                                   @RequestParam(value = "schoolInfoId", required = false) Long schoolInfoId,
+                                                                   @RequestParam(defaultValue = "false") Boolean forStudent) throws WitcurveException {
         log.debug("Request to get attendance");
-        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId, Boolean.FALSE);
+        List<EventDTO> result = eventService.getAttendance(fromDate, toDate, studentId, standardId, staffId, schoolInfoId, forStudent);
         Map<Long, List<EventDTO>> resultMap = new HashMap<>();
 
         if (studentId != null) {
             resultMap.put(studentId, result);
-        } else if(standardId != null) {
+        } else if(standardId != null || (schoolInfoId  != null && forStudent)) {
             for(EventDTO eventDTO : result ) {
                 List<EventDTO> studentAttendanceList = resultMap.get(eventDTO.getStudentId());
                 if(studentAttendanceList == null) {
