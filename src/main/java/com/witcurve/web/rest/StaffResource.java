@@ -97,9 +97,11 @@ public class StaffResource {
      */
     @GetMapping("/staff/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(defaultValue = "false") Boolean areClassTeacher) throws WitcurveException {
-        log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {}", schoolInfoId, areClassTeacher);
-        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher);
+    public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId,
+                                                                 @RequestParam(defaultValue = "false") Boolean areClassTeacher,
+                                                                 @RequestParam(defaultValue = "true") Boolean activated) throws WitcurveException {
+        log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {} and of active status : {}", schoolInfoId, areClassTeacher, activated);
+        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher, activated);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -163,5 +165,20 @@ public class StaffResource {
             }
         }
 
+    }
+
+
+    /**
+     * activate deleted staff
+     * @param staffId
+     * @return
+     * @throws WitcurveException
+     */
+    @PatchMapping("/staff/{staffId}/activate")
+    @Timed
+    public ResponseEntity<Void> activateStaff(@PathVariable Long staffId) throws WitcurveException {
+        log.debug("REST request to delete Staff: {}", staffId);
+        staffService.activate(staffId);
+        return ResponseEntity.ok(null);
     }
 }
