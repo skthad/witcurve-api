@@ -150,16 +150,16 @@ public class PayrollServiceImpl implements PayrollService {
                     presentCount.put(staffId, presentCount.get(staffId) + 1);
                     break;
                 case GRACE:
-                    graceCount.put(staffId, presentCount.get(staffId) + 1);
+                    graceCount.put(staffId, graceCount.get(staffId) + 1);
                     break;
                 case LATE:
-                    lateCount.put(staffId, presentCount.get(staffId) + 1);
+                    lateCount.put(staffId, lateCount.get(staffId) + 1);
                     break;
                 case ABSENT:
-                    absentCount.put(staffId, presentCount.get(staffId) + 1);
+                    absentCount.put(staffId, absentCount.get(staffId) + 1);
                     break;
                 case HALF_DAY:
-                    halfDayCount.put(staffId, presentCount.get(staffId) + 1);
+                    halfDayCount.put(staffId, halfDayCount.get(staffId) + 1);
                     break;
                 default:
             }
