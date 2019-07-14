@@ -155,9 +155,14 @@ public class SlotCourseDetailsResource {
 
     @GetMapping("/slot-course-details/teachers/{teacherId}")
     @Timed
-    public ResponseEntity<List<SlotCourseDetailsDTO>> getSlotCourseDetailsByTeacherId(@PathVariable("teacherId") Long teacherId) {
-        log.debug("Request to get SlotCourseDetails with teacher id : {} ", teacherId);
-        List<SlotCourseDetailsDTO> result = slotCourseDetailsService.getSlotCourseDetailsByTeacherId(teacherId);
+    public ResponseEntity<List<SlotCourseDetailsDTO>> getSlotCourseDetailsByTeacherId(@PathVariable("teacherId") Long teacherId, @RequestParam(required = false) Long standardId) {
+        log.debug("Request to get SlotCourseDetails with teacher id : {} for standard id : {} ", teacherId, standardId);
+        List<SlotCourseDetailsDTO> result;
+        if(standardId == null) {
+            result = slotCourseDetailsService.getSlotCourseDetailsByTeacherId(teacherId);
+        } else {
+            result = slotCourseDetailsService.getSlotCourseDetailsByTeacherIdAndStandardId(teacherId, standardId);
+        }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
