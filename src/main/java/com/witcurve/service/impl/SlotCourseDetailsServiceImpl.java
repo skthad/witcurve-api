@@ -127,15 +127,22 @@ public class SlotCourseDetailsServiceImpl implements SlotCourseDetailsService {
 
     @Override
     public List<SlotCourseDetailsDTO> getSlotCourseDetailsByStandardId(Long standardId) {
-        log.debug("Requqest to get list of slotCourseDetails for given standard id : {}", standardId);
+        log.debug("Requqest to get list of slotCourseDetails for given standard Id : {}", standardId);
         List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByStandardIdOrderByGsdStartTime(standardId);
         return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 
     @Override
     public List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherId(Long teacherId) {
-        log.debug("Requqest to get list of slotCourseDetails for given teacher id  and term id: {}", teacherId);
+        log.debug("Requqest to get list of slotCourseDetails for given teacher Id : {}", teacherId);
         List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByTeacherIdOrderByGsdStartTime(teacherId);
+        return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
+    }
+
+    @Override
+    public List<SlotCourseDetailsDTO> getSlotCourseDetailsByTeacherIdAndStandardId(Long teacherId, Long standardId) {
+        log.debug("Requqest to get list of slotCourseDetails for given teacher Id : {} and standard Id id: {}", teacherId, standardId);
+        List<SlotCourseDetails> slotCourseDetailsList = slotCourseDetailsRepository.findByTeacherIdAndStandardIdOrderByGsdStartTime(teacherId, standardId);
         return slotCourseDetailsMapper.toDto(slotCourseDetailsList);
     }
 
