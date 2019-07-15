@@ -76,6 +76,8 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     private List<Long> courseContentIds;
 
+    private Boolean doesAllStudentMarksExistForPeriodicTest = true;
+
     public Long getId() {
         return id;
     }
@@ -274,6 +276,14 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setCourseContentIds(List<Long> courseContentIds) {
         this.courseContentIds = courseContentIds;
+    }
+
+    public Boolean getDoesAllStudentMarksExistForPeriodicTest() {
+        return doesAllStudentMarksExistForPeriodicTest;
+    }
+
+    public void setDoesAllStudentMarksExistForPeriodicTest(Boolean doesAllStudentMarksExistForPeriodicTest) {
+        this.doesAllStudentMarksExistForPeriodicTest = doesAllStudentMarksExistForPeriodicTest;
     }
 
     @Override
