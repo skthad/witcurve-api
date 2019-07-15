@@ -50,6 +50,9 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
 
+    @Autowired
+    EventContentRepository eventContentRepository;
+
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException {
         log.debug("Request to save or update exam: {}", examDTO);
@@ -172,6 +175,7 @@ public class ExamServiceImpl implements ExamService {
         if(!(ExamStatus.DRAFT.equals(exam.get().getStatus()) || ExamStatus.PUBLISHED.equals(exam.get().getStatus()))) {
             throw new WitcurveException("Only PUBLISHED or DRAFT exams can be deleted");
         }
+        eventContentRepository.deleteByExamId(examId);
         examCourseDetailsRepository.deleteByExamId(examId);
         generalSlotDetailsRepository.deleteByExamId(examId);
         examRepository.delete(exam.get());
