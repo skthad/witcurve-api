@@ -105,7 +105,7 @@ public class StaffServiceImpl implements StaffService {
         log.debug("Request to get staff with id : {}", staffId);
         Optional<Staff> staff = staffRepository.findById(staffId);
         if (!staff.isPresent()) {
-            throw new WitcurveException("No staff exists with given id " + staffId);
+            throw new WitcurveException("No staff found");
         }
         StaffDTO staffDTO = staffMapper.toDto(staff.get());
         return staffDTO;
@@ -116,7 +116,7 @@ public class StaffServiceImpl implements StaffService {
         log.debug("Request to get staff with user id : {}", userId);
         Staff staff = staffRepository.getStaffByUserId(userId);
         if (staff == null) {
-            throw new WitcurveException("No staff exists with given id");
+            throw new WitcurveException("No staff exists with given user id");
         }
         return staffMapper.toDto(staff);
     }
@@ -162,7 +162,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher) {
+    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher, Boolean activated) {
         log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId, areClassTeacher);
         List<Staff> staffList = null;
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
@@ -171,6 +171,8 @@ public class StaffServiceImpl implements StaffService {
         }
         if(areClassTeacher) {
             staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
+        } else if(!activated) {
+            staffList = staffRepository.findDeletedTeachersBySchoolInfoId(schoolInfoId);
         } else {
             staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
         }
@@ -191,15 +193,31 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public void deactivate(Long staffId) {
+    public void deactivate(Long staffId) throws WitcurveException {
         Optional<Staff> staff = staffRepository.findById(staffId);
-        if (staff.isPresent() && StaffType.TEACHING.equals(staff.get().getType())) {
-            int activeCourseTeacherCount = courseTeacherRepository.findByTeacherId(staffId).size();
-            if (activeCourseTeacherCount > 0) {
-                throw new WitcurveException("This staff is already linked to active courses. Please deactive before proceeding.");
+        if (staff.isPresent()) {
+            if(StaffType.TEACHING.equals(staff.get().getType())) {
+                int activeCourseTeacherCount = courseTeacherRepository.findByTeacherId(staffId).size();
+                if (activeCourseTeacherCount > 0) {
+                    throw new WitcurveException("This staff is already linked to active courses. Please deactive before proceeding.");
+                }
+                staffEligibilityRepository.deleteByStaffId(staffId);
             }
-            staffEligibilityRepository.deleteByStaffId(staffId);
+            staff.get().getUser().setActivated(false);
+        } else {
+            throw new WitcurveException("No staff found");
         }
-        staff.get().getUser().setActivated(false);
     }
+
+    @Override
+    public void activate(Long staffId) throws WitcurveException {
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (staff.isPresent()) {
+            staff.get().getUser().setActivated(true);
+        } else {
+            throw new WitcurveException("No staff found");
+        }
+    }
+
+
 }

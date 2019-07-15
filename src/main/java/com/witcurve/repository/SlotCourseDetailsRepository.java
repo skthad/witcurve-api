@@ -16,6 +16,9 @@ public interface SlotCourseDetailsRepository extends JpaRepository<SlotCourseDet
     @Query("Select scd from SlotCourseDetails scd where scd.courseTeacher.teacher.id=?1 and scd.gsd.exam is null and scd.deleted=false and scd.gsd.status = 'ACTIVE' order by scd.dayOfWeek asc, scd.gsd.start asc")
     List<SlotCourseDetails> findByTeacherIdOrderByGsdStartTime(Long teacherId);
 
+    @Query("Select scd from SlotCourseDetails scd where scd.courseTeacher.teacher.id=?1 and scd.courseTeacher.standard.id=?2 and scd.gsd.exam is null and scd.deleted=false and scd.gsd.status = 'ACTIVE' order by scd.dayOfWeek asc, scd.gsd.start asc")
+    List<SlotCourseDetails> findByTeacherIdAndStandardIdOrderByGsdStartTime(Long teacherId, Long standardId);
+
     @Query("Select scd from SlotCourseDetails scd where scd.gsd.id=?1 and scd.dayOfWeek = ?2 and scd.deleted=false")
     List<SlotCourseDetails> findActiveScdByGsdAndDayOfWeek(Long gsdId, DayOfWeek dayOfWeek);
 

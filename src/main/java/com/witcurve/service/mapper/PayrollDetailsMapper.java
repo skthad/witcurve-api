@@ -31,6 +31,10 @@ public interface PayrollDetailsMapper extends EntityMapper<PayrollDetailsDTO, Pa
     default StaffDTO toStaffDTO(Staff staff) {
         StaffDTO staffDTO = new StaffDTO();
         staffDTO.setId(staff.getId());
+        staffDTO.setFirstName(staff.getFirstName());
+        staffDTO.setMiddleName(staff.getMiddleName());
+        staffDTO.setLastName(staff.getLastName());
+        staffDTO.setEmployeeId(staff.getEmployeeId());
         return staffDTO;
     }
 }

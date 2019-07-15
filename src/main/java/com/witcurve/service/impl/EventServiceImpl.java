@@ -636,11 +636,22 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> getPeriodicTestsByBindingId(String bindingId, List<Long> courseIds) {
         log.debug("Get list of periodic tests by binding Id : {} and courseIds : {}", bindingId, courseIds);
+        List<EventDTO> result;
         if(courseIds!= null && !courseIds.isEmpty()) {
-            return eventMapper.toDto(eventRepository.findPeriodicEventsByBindingIdAndCourseIds(bindingId, courseIds));
+            result = eventMapper.toDto(eventRepository.findPeriodicEventsByBindingIdAndCourseIds(bindingId, courseIds));
         } else {
-            return eventMapper.toDto(eventRepository.findPeriodicEventsByBindingId(bindingId));
+            result = eventMapper.toDto(eventRepository.findPeriodicEventsByBindingId(bindingId));
         }
+        for(EventDTO eventDTO : result) {
+            List<Standard> standards = standardRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
+            for(Standard standard : standards) {
+                List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventIdAndStandardId(eventDTO.getId(), standard.getId());
+                if(studentMarks.size() ==0) {
+                    eventDTO.setDoesAllStudentMarksExistForPeriodicTest(false);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -651,7 +662,7 @@ public class EventServiceImpl implements EventService {
         if(!studentMarks.isEmpty()) {
             throw new WitcurveException("This periodic test cannot be deleted as marks has already been entered");
         }
-        eventContentRepository.deleteByEventId(eventIds);
+        eventContentRepository.deleteByEventIds(eventIds);
         eventRepository.deletePeriodicEventByBindingId(bindingId);
 
     }
