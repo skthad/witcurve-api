@@ -41,6 +41,7 @@ public class UserMapper {
             user.setLastName(userDTO.getLastName());
             user.setEmail(userDTO.getEmail());
             user.setActivated(userDTO.isActivated());
+            user.setFirstTimeLogin(userDTO.getFirstTimeLogin());
             Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
             if (authorities != null) {
                 user.setAuthorities(authorities);

@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,7 @@ public class SmsService {
         sbPostData.append("&mobiles="+COUNTRY_CODE+mobileNumber);
         sbPostData.append("&message="+ URLEncoder.encode(body, "UTF-8"));
         sbPostData.append("&route="+ROUTE);
+        sbPostData.append("&unicode=1");
         sbPostData.append("&sender="+(Strings.isNullOrEmpty(smsSignature)? applicationProperties.getSms().getSenderId(): smsSignature));
         sbPostData.append("&country="+0);
 
@@ -142,7 +144,7 @@ public class SmsService {
         }
     }
 
-    public void sendBulkIntroSMS(Long schoolInfoId, SmsVM smsVM, Boolean primaryOnly, Boolean secondaryOnly) throws UnsupportedEncodingException, WitcurveException {
+    public void sendBulkIntroSMS(Long schoolInfoId, SmsVM smsVM, Boolean primaryOnly, Boolean secondaryOnly, String language) throws UnsupportedEncodingException, WitcurveException {
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
 
         if (!schoolInfo.isPresent()) {
@@ -166,7 +168,18 @@ public class SmsService {
                     "\n" +
                     "Login with one time password (OTP) to create password.\n" +
                     "Kindly contact your school administration for assistance.";
-                    schoolInfo.get().getSchool().getInstitute().getIosUrl();
+                //Temp to serve rise marathi sms support
+                if("Marathi".equalsIgnoreCase(language)) {
+                    body = "प्रिय पालकए, \n" +
+                        "Login id :"+studentStandard.getStudent().getAdmissionId()+"\n" +
+                        "Android वर '"+institute.getMobileAppName()+"' अॅपसाठी  अॅप्लिकेशन्स लिंक' आहे: "+institute.getAndroidUrl()+"\n" +
+                        "Apple: "+institute.getIosUrl()+" \n" +
+                        "\n" +
+                        "पासवर्ड तयार करण्यासाठी एक वेळ पासवर्ड (OTP) लॉगिन करा. कृपया मदतीसाठी आपल्या शाळेच्या प्रशासनाशी संपर्क साधा.\n" +
+                        "विनम्र \n" +
+                        "रेडियन्ट इंटरनॅशनल स्कूल";
+                    body = new String(body.getBytes(), Charset.forName("UTF-8"));
+                }
 
                 if(primaryOnly && !secondaryOnly) {
                     sendSms(studentStandard.getStudent().getRegisteredMobileNumber(),

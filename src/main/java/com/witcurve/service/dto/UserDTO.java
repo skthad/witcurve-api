@@ -55,6 +55,9 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Boolean forcePassword = true;
 
+    @NotNull
+    private Boolean firstTimeLogin=false;
+
     private String otp;
 
     private Instant otpExpiry;
@@ -89,6 +92,7 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
         this.activated = user.getActivated();
         this.hasPassword = user.getPassword() == null ? Boolean.FALSE : Boolean.TRUE;
         this.forcePassword = user.getForcePassword();
+        this.firstTimeLogin = user.getFirstTimeLogin();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
@@ -179,6 +183,14 @@ public class UserDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setForcePassword(Boolean forcePassword) {
         this.forcePassword = forcePassword;
+    }
+
+    public Boolean getFirstTimeLogin() {
+        return firstTimeLogin;
+    }
+
+    public void setFirstTimeLogin(Boolean firstTimeLogin) {
+        this.firstTimeLogin = firstTimeLogin;
     }
 
     public String getOtp() {
