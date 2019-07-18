@@ -658,7 +658,7 @@ public class EventServiceImpl implements EventService {
     public void deletePeriodicTestsByBindingId(String bindingId) throws WitcurveException {
         log.debug("Delete list of periodic tests by binding Id : {}", bindingId);
         List<Long> eventIds = eventRepository.findPeriodicEventIdsByBindingId(bindingId);
-        List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventId(eventIds);
+        List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventIds(eventIds);
         if(!studentMarks.isEmpty()) {
             throw new WitcurveException("This periodic test cannot be deleted as marks has already been entered");
         }
@@ -675,6 +675,11 @@ public class EventServiceImpl implements EventService {
             if(!event.getType().equals(EventType.PERIODIC_TEST)) {
                 throw new WitcurveException("Only periodic tests can be deleted from this service");
             }
+            List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventId(event.getId());
+            if(!studentMarks.isEmpty()) {
+                throw new WitcurveException("This periodic test cannot be deleted as marks has already been entered");
+            }
+            eventContentRepository.deleteByEventId(event.getId());
             eventRepository.delete(event);
         }
     }
