@@ -69,6 +69,7 @@ public class SmsService {
         sbPostData.append("&mobiles="+COUNTRY_CODE+mobileNumber);
         sbPostData.append("&message="+ URLEncoder.encode(body, "UTF-8"));
         sbPostData.append("&route="+ROUTE);
+        //need this to support multi-language body
         sbPostData.append("&unicode=1");
         sbPostData.append("&sender="+(Strings.isNullOrEmpty(smsSignature)? applicationProperties.getSms().getSenderId(): smsSignature));
         sbPostData.append("&country="+0);
@@ -170,10 +171,11 @@ public class SmsService {
                     "Kindly contact your school administration for assistance.";
                 //Temp to serve rise marathi sms support
                 if("Marathi".equalsIgnoreCase(language)) {
-                    body = "प्रिय पालकए, \n" +
-                        "Login id :"+studentStandard.getStudent().getAdmissionId()+"\n" +
+                    body = "प्रिय पालक, \n" +
+                        "Login id : "+studentStandard.getStudent().getAdmissionId()+"\n" +
                         "Android वर '"+institute.getMobileAppName()+"' अॅपसाठी  अॅप्लिकेशन्स लिंक' आहे: "+institute.getAndroidUrl()+"\n" +
-                        "Apple: "+institute.getIosUrl()+" \n" +
+                        "\n" +
+                        "Apple:  "+institute.getIosUrl()+"\n" +
                         "\n" +
                         "पासवर्ड तयार करण्यासाठी एक वेळ पासवर्ड (OTP) लॉगिन करा. कृपया मदतीसाठी आपल्या शाळेच्या प्रशासनाशी संपर्क साधा.\n" +
                         "विनम्र \n" +
