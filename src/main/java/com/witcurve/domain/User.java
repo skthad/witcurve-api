@@ -68,6 +68,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "force_password", nullable = false, columnDefinition = "boolean default true")
     private Boolean forcePassword = true;
 
+    @NotNull
+    @Column(name = "first_time_login", nullable = false, columnDefinition = "boolean default false")
+    private Boolean firstTimeLogin = false;
+
     @Column(name = "otp")
     private String otp;
 
@@ -160,6 +164,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setForcePassword(Boolean forcePassword) {
         this.forcePassword = forcePassword;
+    }
+
+    public Boolean getFirstTimeLogin() {
+        return firstTimeLogin;
+    }
+
+    public void setFirstTimeLogin(Boolean firstTimeLogin) {
+        this.firstTimeLogin = firstTimeLogin;
     }
 
     public String getOtp() {

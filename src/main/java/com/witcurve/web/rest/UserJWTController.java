@@ -2,6 +2,7 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.witcurve.domain.User;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.OtpAuthenticationProvider;
 import com.witcurve.security.jwt.JWTConfigurer;
@@ -11,12 +12,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Controller to authenticate users.
@@ -55,6 +58,17 @@ public class UserJWTController {
             authentication = this.otpAuthenticationProvider.authenticate(authenticationToken);
         } else {
             authentication = this.authenticationManager.authenticate(authenticationToken);
+        }
+
+        String username = authentication.getName();
+        Optional<User> result = userRepository.findOneWithAuthoritiesByLogin(username);
+        if (!result.isPresent()) {
+            throw new BadCredentialsException("Username not found.");
+        }
+        User user = result.get();
+        if(!user.getFirstTimeLogin()) {
+            user.setFirstTimeLogin(true);
+            userRepository.save(user);
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
