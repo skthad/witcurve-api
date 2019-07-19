@@ -21,6 +21,13 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <repository>
+            <id>repository.spring.release</id>
+            <name>Spring GA Repository</name>
+            <url>https://repo.spring.io/plugins-release/</url>
+        </repository>
+
     </repositories>
 
     <properties>
@@ -384,6 +391,13 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>3.14.1</version>
+        </dependency>
+
+        <!--https://mvnrepository.com/artifact/net.swisstech/bitly-api-client/0.8.0-->
+        <dependency>
+            <groupId>net.swisstech</groupId>
+            <artifactId>bitly-api-client</artifactId>
+            <version>0.8.0</version>
         </dependency>
 
         <!-- jhipster-needle-maven-add-dependency -->
