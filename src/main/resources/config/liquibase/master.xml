@@ -29,5 +29,6 @@
     <include file="config/liquibase/changelog/20190706164633_added_student_house_settings.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190706101103_payment_transection_mode_fix.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190717123925_added_first_time_login_to_user.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190720081355_added_entity_UserMobileEndPoint.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

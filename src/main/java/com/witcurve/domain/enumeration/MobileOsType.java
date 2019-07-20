@@ -1,12 +1,12 @@
 package com.witcurve.domain.enumeration;
 
-public enum MobileMetaDataStatus {
+public enum MobileOsType {
     IOS("ios"),
     ANDROID("android");
 
     private final String value;
 
-    private MobileMetaDataStatus(String value) {
+    private MobileOsType(String value) {
         this.value = value;
     }
 
@@ -18,9 +18,9 @@ public enum MobileMetaDataStatus {
         return this.value;
     }
 
-    public static MobileMetaDataStatus getMobileMetaDataStatus(String value) {
+    public static MobileOsType getMobileMetaDataStatus(String value) {
         if(value != null) {
-            for(MobileMetaDataStatus m : values()) {
+            for(MobileOsType m : values()) {
                 if(m.toString().equals(value)) {
                     return m;
                 }
