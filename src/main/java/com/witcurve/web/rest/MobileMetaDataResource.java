@@ -1,7 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.enumeration.MobileMetaDataStatus;
+import com.witcurve.domain.enumeration.MobileOsType;
 import com.witcurve.service.MobileMetaDataService;
 import com.witcurve.service.dto.MobileMetaDataDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -130,7 +130,7 @@ public class MobileMetaDataResource {
             rootMetaData.put("minimum", mobileMetaDataDTO.getMinimum());
             rootMetaData.put("url",mobileMetaDataDTO.getUrl());
             rootMetaData.put("enabled", mobileMetaDataDTO.getEnabled().toString());
-            if(mobileMetaDataDTO.getType().equals(MobileMetaDataStatus.ANDROID)) {
+            if(mobileMetaDataDTO.getType().equals(MobileOsType.ANDROID)) {
                 result.put("android", rootMetaData);
             } else {
                 result.put("ios", rootMetaData);
