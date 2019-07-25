@@ -2,7 +2,10 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.witcurve.domain.Student;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.SubscriptionModel;
+import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.UserRepository;
 import com.witcurve.security.OtpAuthenticationProvider;
 import com.witcurve.security.jwt.JWTConfigurer;
@@ -19,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -36,14 +40,18 @@ public class UserJWTController {
 
     private final UserRepository userRepository;
 
+    private final StudentRepository studentRepository;
+
     public UserJWTController(TokenProvider tokenProvider,
                              AuthenticationManager authenticationManager,
                              OtpAuthenticationProvider otpAuthenticationProvider,
-                             UserRepository userRepository) {
+                             UserRepository userRepository,
+                             StudentRepository studentRepository) {
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.otpAuthenticationProvider = otpAuthenticationProvider;
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
     }
 
     @PostMapping("/authenticate")
@@ -69,6 +77,12 @@ public class UserJWTController {
         if(!user.getFirstTimeLogin()) {
             user.setFirstTimeLogin(true);
             userRepository.save(user);
+            Student student = studentRepository.getStudentByUserId(user.getId());
+            if(student.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel().equals(SubscriptionModel.STUDENT)) {
+                student.setSubscriptionStartDate(LocalDate.now());
+                student.setSubscriptionEndDate(LocalDate.now().plusDays(5));
+                studentRepository.save(student);
+            }
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
