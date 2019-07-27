@@ -80,7 +80,7 @@ public class HomeServiceImpl implements HomeService {
         //birthdays for student and staff
         homeDTO.setBirthdayStudents(studentStandardService.getBySchoolInfoId(schoolInfoId, null ,null).stream()
             .filter(ss -> isBirthdayToday(ss.getStudent().getDateOfBirth())).collect(Collectors.toList()));
-        homeDTO.setBirthdayStaff(staffService.getStaffBySchoolInfoId(schoolInfoId, Boolean.FALSE, Boolean.FALSE).stream()
+        homeDTO.setBirthdayStaff(staffService.getStaffBySchoolInfoId(schoolInfoId, Boolean.FALSE, Boolean.FALSE, null).stream()
             .filter(staffDTO -> isBirthdayToday(staffDTO.getDateOfBirth())).collect(Collectors.toList()));
 
         return homeDTO;
