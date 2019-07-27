@@ -7,4 +7,10 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1563367176705-2">
+        <modifyDataType
+            columnName="description"
+            newDataType="varchar(1000)"
+            tableName="event"/>
+    </changeSet>
 </databaseChangeLog>
