@@ -1,12 +1,7 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.Institute;
-import com.witcurve.domain.enumeration.MobileMetaDataStatus;
+import com.witcurve.domain.enumeration.MobileOsType;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,7 +23,7 @@ public class MobileMetaDataDTO extends AbstractAuditingDTO implements Serializab
     private Boolean enabled;
 
     @NotNull
-    private MobileMetaDataStatus type;
+    private MobileOsType type;
 
     @NotNull
     private Long instituteId;
@@ -73,11 +68,11 @@ public class MobileMetaDataDTO extends AbstractAuditingDTO implements Serializab
         this.enabled = enabled;
     }
 
-    public MobileMetaDataStatus getType() {
+    public MobileOsType getType() {
         return type;
     }
 
-    public void setType(MobileMetaDataStatus type) {
+    public void setType(MobileOsType type) {
         this.type = type;
     }
 

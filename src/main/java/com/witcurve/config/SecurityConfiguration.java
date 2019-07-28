@@ -112,6 +112,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/mobile-meta-data/**").permitAll()
             .antMatchers("/api/account/request-reset-password").permitAll()
             .antMatchers("/api/account/reset-password").permitAll()
+            .antMatchers("/api/user-mobile-end-points/user/**").permitAll()
 
 
             //temp permitAll, need to be changes once user service is fixed

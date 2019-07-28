@@ -1,6 +1,6 @@
 package com.witcurve.domain;
 
-import com.witcurve.domain.enumeration.MobileMetaDataStatus;
+import com.witcurve.domain.enumeration.MobileOsType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,7 +38,7 @@ public class MobileMetaData extends AbstractAuditingEntity implements Serializab
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MobileMetaDataStatus type;
+    private MobileOsType type;
 
     @NotNull
     @ManyToOne
@@ -85,11 +85,11 @@ public class MobileMetaData extends AbstractAuditingEntity implements Serializab
         this.enabled = enabled;
     }
 
-    public MobileMetaDataStatus getType() {
+    public MobileOsType getType() {
         return type;
     }
 
-    public void setType(MobileMetaDataStatus type) {
+    public void setType(MobileOsType type) {
         this.type = type;
     }
 
