@@ -162,7 +162,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher, Boolean activated) {
+    public List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher, Boolean activated, StaffType type) {
         log.debug("Request to get staff with schoolInfo id : {} ", schoolInfoId, areClassTeacher);
         List<Staff> staffList = null;
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
@@ -173,6 +173,8 @@ public class StaffServiceImpl implements StaffService {
             staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
         } else if(!activated) {
             staffList = staffRepository.findDeletedTeachersBySchoolInfoId(schoolInfoId);
+        } else if(type != null) {
+            staffList = staffRepository.findBySchoolInfoIdAndType(schoolInfoId, type);
         } else {
             staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
         }
