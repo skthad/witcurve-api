@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -222,5 +223,26 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return paytmCharge + (paytmCharge * .18);
+    }
+
+    /**
+     * scheduled process runs at midnight IST
+     * updates the transactions and subscription dates for all pending payment transactions
+     */
+    @Override
+    @Scheduled(cron = "0 0 0 * * *", zone = "IST")
+    public void processPendingTransactions() {
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByTransactionStatus(TransactionStatus.PENDING);
+
+        if (!CollectionUtils.isEmpty(paymentOrders)) {
+            for (PaymentOrder paymentOrder: paymentOrders) {
+                try {
+                    boolean isSuccess = isTransactionComplete(paymentOrder.getOrderId(), true);
+                    log.info("Transaction with order id {} " + (isSuccess ? "Succeeded" : "Failed"), paymentOrder.getOrderId());
+                } catch (WitcurveException e) {
+                    log.error("Unable to update payment status for order id : {}", paymentOrder.getId(), e);
+                }
+            }
+        }
     }
 }
