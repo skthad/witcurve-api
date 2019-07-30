@@ -1,6 +1,5 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
@@ -929,9 +928,9 @@ public class EventServiceImpl implements EventService {
 
         @Override
         public int compare(PeriodicTestDTO o1, PeriodicTestDTO o2) {
-            if (o1.getCreatedDate().isAfter( o2.getCreatedDate())) {
+            if (o1.getDateList().get(0).isAfter( o2.getDateList().get(0))) {
                 return -1;
-            } else if(o1.getCreatedDate().isBefore( o2.getCreatedDate())) {
+            } else if(o1.getDateList().get(0).isBefore( o2.getDateList().get(0))) {
                 return 1;
             } else {
                 return 0;

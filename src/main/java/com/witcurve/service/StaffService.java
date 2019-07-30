@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -17,7 +18,7 @@ public interface StaffService {
 
     List<StaffDTO> getStaffBySchoolId(Long schoolId);
 
-    List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher, Boolean activated);
+    List<StaffDTO> getStaffBySchoolInfoId(Long schoolInfoId, Boolean areClassTeacher, Boolean activated, StaffType type);
 
     StaffDTO getStaffByUsername(String username) throws WitcurveException;
 

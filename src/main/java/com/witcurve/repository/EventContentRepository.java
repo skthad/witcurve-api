@@ -31,7 +31,7 @@ public interface EventContentRepository extends JpaRepository<EventContent, Long
     void deleteByEcdId(Long ecdId);
 
     @Modifying
-    @Query("delete from EventContent ec where ec.ecd.gsd.exam.id = ?1")
+    @Query("delete from EventContent ec  where ec.ecd.id in (select ecd.id from ExamCourseDetails ecd where ecd.gsd.id in (select gsd.id from GeneralSlotDetails gsd where gsd.exam.id in ?1))")
     void deleteByExamId(Long examId);
 
     @Modifying

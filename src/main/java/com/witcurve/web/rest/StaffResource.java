@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -99,9 +100,10 @@ public class StaffResource {
     @Timed
     public ResponseEntity<List<StaffDTO>> getStaffBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId,
                                                                  @RequestParam(defaultValue = "false") Boolean areClassTeacher,
-                                                                 @RequestParam(defaultValue = "true") Boolean activated) throws WitcurveException {
+                                                                 @RequestParam(defaultValue = "true") Boolean activated,
+                                                                 @RequestParam(required = false)StaffType type) throws WitcurveException {
         log.debug("Request to get Staff with schoolInfo id {} who are class teachers : {} and of active status : {}", schoolInfoId, areClassTeacher, activated);
-        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher, activated);
+        List<StaffDTO> result = staffService.getStaffBySchoolInfoId(schoolInfoId, areClassTeacher, activated, type);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

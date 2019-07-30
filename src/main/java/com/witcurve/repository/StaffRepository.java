@@ -1,6 +1,7 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.Staff;
+import com.witcurve.domain.enumeration.StaffType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,9 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 and staff.user.id in (select id from User where activated = false ) order by staff.employeeId")
     List<Staff> findDeletedTeachersBySchoolInfoId(Long schoolInfoId);
+
+    @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 and staff.type=?2 and staff.user.id in (select id from User where activated = true ) order by staff.employeeId")
+    List<Staff> findBySchoolInfoIdAndType(Long schoolInfoId, StaffType type);
 
     @Query("select staff from Staff staff where staff.schoolInfo.id = ?1 and staff.id in (Select s.classTeacher.id from Standard s where s.classTeacher.id=staff.id) order by staff.employeeId")
     List<Staff> findClassTeachersBySchoolInfoId(Long schoolInfoId);
