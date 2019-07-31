@@ -59,6 +59,12 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
     @Column(name = "transaction_id")
     private String transactionId;
 
+    @Column(name = "response_code", length = 10)
+    private String responseCode;
+
+    @Column(name = "response_message", length = 500)
+    private String responseMessage;
+
     public Long getId() {
         return id;
     }
@@ -137,5 +143,21 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public String getResponseCode() {
+        return responseCode;
+    }
+
+    public void setResponseCode(String responseCode) {
+        this.responseCode = responseCode;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
     }
 }

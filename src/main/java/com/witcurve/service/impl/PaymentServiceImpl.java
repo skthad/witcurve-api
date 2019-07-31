@@ -160,6 +160,8 @@ public class PaymentServiceImpl implements PaymentService {
 
             paymentOrder.setTransactionStatus(TransactionStatus.valueOf(paytmResponseDTO.getStatus()));
             paymentOrder.setTransactionId(paytmResponseDTO.getTransactionId());
+            paymentOrder.setResponseCode(paytmResponseDTO.getResponseCode());
+            paymentOrder.setResponseMessage(paytmResponseDTO.getResponseMessage());
 
             boolean isSuccess = paymentOrder.getTransactionStatus() == TransactionStatus.TXN_SUCCESS;
 
