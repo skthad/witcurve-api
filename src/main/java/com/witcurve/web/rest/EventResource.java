@@ -1,9 +1,13 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.Staff;
+import com.witcurve.domain.enumeration.AttendanceType;
+import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.KeywordRepository;
+import com.witcurve.repository.StaffRepository;
 import com.witcurve.service.EventService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.PeriodicTestDTO;
@@ -39,6 +43,9 @@ public class EventResource {
 
     @Autowired
     KeywordRepository keywordRepository;
+
+    @Autowired
+    StaffRepository staffRepository;
 
     /**
      * creates events
@@ -459,4 +466,19 @@ public class EventResource {
         return new ResponseEntity<>(result,  HttpStatus.OK);
     }
 
+    @GetMapping("events/staff-school-attendance-payload/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<List<EventDTO>> getAttendancePayloadForAllStaffInSchoolInfo(@PathVariable Long schoolInfoId,@RequestParam LocalDate date) {
+        List<Staff> staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
+        List<EventDTO> result = new ArrayList<>();
+        for(Staff staff : staffList) {
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setType(EventType.ATTENDANCE);
+            eventDTO.setAttendanceType(AttendanceType.PRESENT);
+            eventDTO.setDate(date);
+            eventDTO.setStaffId(staff.getId());
+            result.add(eventDTO);
+        }
+        return ResponseEntity.ok(result);
+    }
 }
