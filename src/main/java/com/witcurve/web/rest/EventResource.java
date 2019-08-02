@@ -473,6 +473,9 @@ public class EventResource {
         List<EventDTO> result = new ArrayList<>();
         for(Staff staff : staffList) {
             EventDTO eventDTO = new EventDTO();
+            eventDTO.setCreatedDate(null);
+            eventDTO.setLastModifiedDate(null);
+            eventDTO.setName("Attendance");
             eventDTO.setType(EventType.ATTENDANCE);
             eventDTO.setAttendanceType(AttendanceType.PRESENT);
             eventDTO.setDate(date);
