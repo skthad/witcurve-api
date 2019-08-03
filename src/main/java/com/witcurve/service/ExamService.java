@@ -20,7 +20,7 @@ public interface ExamService {
 
     Page<ExamDTO> getExamsBetweenDates(Long schoolInfoId, LocalDate fromDate, LocalDate endDate, Grade grade, List<ExamStatus> statusList, Pageable pageable) throws WitcurveException;
 
-    List<Long> getExamIdsForStaff(Long staffId, LocalDate fromDate, LocalDate endDate, List<ExamStatus> statuses) throws WitcurveException;
+    Page<ExamDTO> getExamsForStaff(Long staffId, LocalDate fromDate, LocalDate endDate, List<ExamStatus> statuses, Pageable pageable) throws WitcurveException;
 
     void deleteExam(Long examId) throws WitcurveException;
 }

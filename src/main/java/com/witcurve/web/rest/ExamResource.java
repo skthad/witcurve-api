@@ -131,21 +131,22 @@ public class ExamResource {
     }
 
     /**
-     * get exam between fromDate and endDate for school board with schoolInfoId
-     * @param schoolInfoId
+     * get exams between fromDate and endDate for staff with id staffId
+     * @param staffId
      * @param fromDate
      * @param endDate
+     * @param
      * @return
      * @throws WitcurveException
      */
 
     @GetMapping("/exams/staff/{staffId}")
     @Timed
-    public ResponseEntity<List<Long>> getExamIdsForStaff(@PathVariable Long staffId,
+    public ResponseEntity<Page<ExamDTO>> getExamIdsForStaff(@ApiParam Pageable pageable, @PathVariable Long staffId,
                                                   @RequestParam LocalDate fromDate, @RequestParam LocalDate endDate,
                                                   @RequestParam(required = false) List<ExamStatus> statusList) throws WitcurveException {
-        log.debug("Request to get Exam Ids between dates {} and {} for staff with id : {} of status : {}", fromDate, endDate, staffId, statusList);
-        List<Long> result = examService.getExamIdsForStaff(staffId, fromDate, endDate, statusList);
+        log.debug("Request to get list of exams between dates {} and {} for staff with id : {} of status : {}", fromDate, endDate, staffId, statusList);
+        Page<ExamDTO> result = examService.getExamsForStaff(staffId, fromDate, endDate, statusList, pageable);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
