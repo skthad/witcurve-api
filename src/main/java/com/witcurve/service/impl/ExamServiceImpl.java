@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,12 +145,12 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<Long> getExamIdsForStaff(Long staffId, LocalDate fromDate, LocalDate endDate, List<ExamStatus> statuses) throws WitcurveException {
+    public Page<ExamDTO> getExamsForStaff(Long staffId, LocalDate fromDate, LocalDate endDate, List<ExamStatus> statuses, Pageable pageable) throws WitcurveException {
         log.debug("Get list of exams ids for exams with staffId : {} between dates {} and {} of status : {}", staffId, fromDate, endDate, statuses);
-        List<Long> result = new ArrayList<>();
+        Page<Exam> exams = null;
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
         if(courseTeachers.isEmpty()) {
-            return result;
+            return new PageImpl<>(new ArrayList<>(), pageable, 0);
         } else {
             Set<Long> courseIds = courseTeachers
                 .stream()
@@ -157,11 +158,11 @@ public class ExamServiceImpl implements ExamService {
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
             if(statuses != null && !statuses.isEmpty()) {
-                result = examRepository.findExamIdsForCourseIdsWithStatus(courseIds, fromDate, endDate, statuses);
+                exams = examRepository.findExamsForCourseIdsWithStatus(courseIds, fromDate, endDate, statuses, pageable);
             } else {
-                result = examRepository.findExamIdsForCourseIds(courseIds, fromDate, endDate);
+                exams = examRepository.findExamsForCourseIds(courseIds, fromDate, endDate, pageable);
             }
-            return result;
+            return exams.map(examMapper::toDto);
         }
     }
 
