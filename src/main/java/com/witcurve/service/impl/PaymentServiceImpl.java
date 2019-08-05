@@ -15,9 +15,11 @@ import com.witcurve.repository.StudentRepository;
 import com.witcurve.service.MailService;
 import com.witcurve.service.PaymentService;
 import com.witcurve.service.SmsService;
+import com.witcurve.service.dto.PaymentOrderDTO;
 import com.witcurve.service.dto.PaytmRequestDTO;
 import com.witcurve.service.dto.PaytmResponseDTO;
 import com.witcurve.service.dto.PaytmVerificationRequestDTO;
+import com.witcurve.service.mapper.PaymentOrderMapper;
 import com.witcurve.service.util.RestClientUtil;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -59,6 +61,10 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private SmsService smsService;
 
+    @Autowired
+    private PaymentOrderMapper paymentOrderMapper;
+
+
     /**
      * Creates paytm payment order
      *
@@ -72,33 +78,18 @@ public class PaymentServiceImpl implements PaymentService {
     public PaytmRequestDTO createPaytmOrder(Long studentId, String mobileNumber, SubscriptionPackage subscriptionPackage)
         throws WitcurveException {
 
-        Student student = studentRepository.findById(studentId)
-            .orElseThrow(() -> new WitcurveException("Invalid Request, student does not exist by the given id"));
-
-        Double subscriptionCost = student.getSchoolInfo().getSchool().getInstitute().getPricing().get(subscriptionPackage);
-
-        if (subscriptionCost == null) {
-            throw new WitcurveException("Invalid Request, given pricing does not exist for the institute");
-        }
-
-        PaymentOrder paymentOrder = new PaymentOrder();
-        paymentOrder.setStudent(student);
-        paymentOrder.setSubscriptionPackage(subscriptionPackage);
-        paymentOrder.setTransactionAmount(subscriptionCost);
-        paymentOrder.setTransactionStatus(TransactionStatus.PENDING);
-        paymentOrder.setPaymentGateway(PaymentGateway.PAYTM);
-        paymentOrderRepository.save(paymentOrder);
+        PaymentOrderDTO paymentOrderDTO = createPaymentOrder(studentId, subscriptionPackage, PaymentGateway.PAYTM, null);
 
         try {
             PaytmRequestDTO paytmRequestDTO = new PaytmRequestDTO();
             paytmRequestDTO.setMerchantMid(applicationProperties.getPaytm().getMerchantId());
-            paytmRequestDTO.setOrderId(paymentOrder.getOrderId());
+            paytmRequestDTO.setOrderId(paymentOrderDTO.getOrderId());
             paytmRequestDTO.setChannelId("WEB");
-            paytmRequestDTO.setCustomerId(String.valueOf(paymentOrder.getStudent().getId()));
+            paytmRequestDTO.setCustomerId(String.valueOf(paymentOrderDTO.getStudentId()));
             if (StringUtils.isNotBlank(mobileNumber)) {
                 paytmRequestDTO.setMobileNo(mobileNumber);
             }
-            paytmRequestDTO.setTransactionAmount(String.valueOf(paymentOrder.getTransactionAmount()));
+            paytmRequestDTO.setTransactionAmount(String.valueOf(paymentOrderDTO.getTransactionAmount()));
             paytmRequestDTO.setWebsite(applicationProperties.getPaytm().getWebsite());
             paytmRequestDTO.setIndustryTypeId(applicationProperties.getPaytm().getIndustryTypeId());
             paytmRequestDTO.setCallbackUrl(applicationProperties.getPaytm().getCallbackUrl() + paytmRequestDTO.getOrderId());
@@ -121,6 +112,36 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("Payment request for paytm failed", e);
             throw new WitcurveException("Payment request for paytm failed");
         }
+    }
+
+    @Override
+    public PaymentOrderDTO createPaymentOrder(Long studentId, SubscriptionPackage subscriptionPackage, PaymentGateway paymentGateway,
+                                              TransactionMode transactionMode) throws WitcurveException {
+
+        Student student = studentRepository.findById(studentId)
+            .orElseThrow(() -> new WitcurveException("Invalid Request, student does not exist by the given id"));
+
+        Double subscriptionCost = student.getSchoolInfo().getSchool().getInstitute().getPricing().get(subscriptionPackage);
+
+        if (subscriptionCost == null) {
+            throw new WitcurveException("Invalid Request, given pricing does not exist for the institute");
+        }
+
+        PaymentOrder paymentOrder = new PaymentOrder();
+        paymentOrder.setStudent(student);
+        paymentOrder.setSubscriptionPackage(subscriptionPackage);
+        paymentOrder.setTransactionAmount(subscriptionCost);
+        paymentOrder.setPaymentGateway(paymentGateway);
+
+        if (paymentGateway == PaymentGateway.PAYTM) {
+            paymentOrder.setTransactionStatus(TransactionStatus.PENDING);
+        } else if (paymentGateway == PaymentGateway.SELF) {
+            paymentOrder.setTransactionStatus(TransactionStatus.TXN_SUCCESS);
+            paymentOrder.setTransactionMode(transactionMode);
+            subscribeStudent(studentId, subscriptionPackage);
+        }
+
+        return paymentOrderMapper.toDto(paymentOrderRepository.save(paymentOrder));
     }
 
     /**

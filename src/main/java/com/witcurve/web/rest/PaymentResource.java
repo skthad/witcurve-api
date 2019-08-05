@@ -1,8 +1,12 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.PaymentOrder;
+import com.witcurve.domain.enumeration.PaymentGateway;
 import com.witcurve.domain.enumeration.SubscriptionPackage;
+import com.witcurve.domain.enumeration.TransactionMode;
 import com.witcurve.service.PaymentService;
+import com.witcurve.service.dto.PaymentOrderDTO;
 import com.witcurve.service.dto.PaytmRequestDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -20,6 +24,14 @@ public class PaymentResource {
 
     @Autowired
     private PaymentService paymentService;
+
+    @PostMapping("/payment/self/create-order")
+    @Timed
+    public ResponseEntity<PaymentOrderDTO> createSelfOrder(@RequestParam Long studentId,
+                                                           @RequestParam TransactionMode transactionMode,
+                                                           @RequestParam SubscriptionPackage subscriptionPackage) throws WitcurveException {
+        return ResponseEntity.ok().body(paymentService.createPaymentOrder(studentId, subscriptionPackage, PaymentGateway.SELF, transactionMode));
+    }
 
     @PostMapping("/payment/paytm/create-order")
     @Timed
