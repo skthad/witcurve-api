@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ApplicationProperties {
 
     public final Sms sms = new Sms();
+    public final Aws aws = new Aws();
 
     public static class Sms {
 
@@ -37,8 +38,55 @@ public class ApplicationProperties {
 
     }
 
+    public static class Aws {
+
+        private String accessKey;
+
+        private String secretKey;
+
+        private String defaultRegion;
+
+        private String bucketName;
+
+        public String getAccessKey() {
+            return accessKey;
+        }
+
+        public void setAccessKey(String accessKey) {
+            this.accessKey = accessKey;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public String getDefaultRegion() {
+            return defaultRegion;
+        }
+
+        public void setDefaultRegion(String defaultRegion) {
+            this.defaultRegion = defaultRegion;
+        }
+
+        public String getBucketName() {
+            return bucketName;
+        }
+
+        public void setBucketName(String bucketName) {
+            this.bucketName = bucketName;
+        }
+    }
+
     public Sms getSms() {
         return sms;
+    }
+
+    public Aws getAws() {
+        return aws;
     }
 
     public final Paytm paytm = new Paytm();

@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
-import java.time.Instant;
 
 public class WitcurveUtil {
 
@@ -69,8 +69,13 @@ public class WitcurveUtil {
         }
     }
 
-    public static File createTempFile() throws WitcurveException{
-        String directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now().getEpochSecond()+".tmp";
+    public static File createTempFile(String name) throws WitcurveException{
+        String directoryPath;
+        if(name == null || name.isEmpty()) {
+            directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now().getEpochSecond()+".tmp";
+        } else {
+            directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ name;
+        }
         File file = new File(directoryPath) ;
         try {
             file.createNewFile();

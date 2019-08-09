@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.List;
 
 public class StudentCsvWriter {
@@ -62,7 +61,7 @@ public class StudentCsvWriter {
             .column("Error Message", new RenameProperty("errorMessage"));
 
     public byte[] generateStudentCSV(List<StudentCsv> errorList) throws WitcurveException {
-        File file = WitcurveUtil.createTempFile();
+        File file = WitcurveUtil.createTempFile(null);
         try (FileWriter fileWriter = new FileWriter(file)) {
             CsvWriter<StudentCsv> writer =
                 studentCsvWriterDSL.to(fileWriter);
