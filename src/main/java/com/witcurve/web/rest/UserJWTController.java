@@ -78,10 +78,12 @@ public class UserJWTController {
             user.setFirstTimeLogin(true);
             userRepository.save(user);
             Student student = studentRepository.getStudentByUserId(user.getId());
-            if(student.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel().equals(SubscriptionModel.STUDENT)) {
-                student.setSubscriptionStartDate(LocalDate.now());
-                student.setSubscriptionEndDate(LocalDate.now().plusDays(5));
-                studentRepository.save(student);
+            if(student != null) {
+                if(student.getSchoolInfo().getSchool().getInstitute().getSubscriptionModel().equals(SubscriptionModel.STUDENT)) {
+                    student.setSubscriptionStartDate(LocalDate.now());
+                    student.setSubscriptionEndDate(LocalDate.now().plusDays(5));
+                    studentRepository.save(student);
+                }
             }
         }
 

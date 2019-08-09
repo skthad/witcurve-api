@@ -40,37 +40,44 @@ public class ApplicationProperties {
 
     public static class Aws {
 
-        private Credentials credentials = new Credentials();
+        private String accessKey;
 
-        public static class Credentials {
+        private String secretKey;
 
-            private String accessKey;
+        private String defaultRegion;
 
-            private String secretKey;
+        private String bucketName;
 
-            public String getAccessKey() {
-                return accessKey;
-            }
-
-            public void setAccessKey(String accessKey) {
-                this.accessKey = accessKey;
-            }
-
-            public String getSecretKey() {
-                return secretKey;
-            }
-
-            public void setSecretKey(String secretKey) {
-                this.secretKey = secretKey;
-            }
+        public String getAccessKey() {
+            return accessKey;
         }
 
-        public Credentials getCredentials() {
-            return credentials;
+        public void setAccessKey(String accessKey) {
+            this.accessKey = accessKey;
         }
 
-        public void setCredentials(Credentials credentials) {
-            this.credentials = credentials;
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public String getDefaultRegion() {
+            return defaultRegion;
+        }
+
+        public void setDefaultRegion(String defaultRegion) {
+            this.defaultRegion = defaultRegion;
+        }
+
+        public String getBucketName() {
+            return bucketName;
+        }
+
+        public void setBucketName(String bucketName) {
+            this.bucketName = bucketName;
         }
     }
 

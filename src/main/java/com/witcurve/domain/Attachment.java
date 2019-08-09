@@ -22,7 +22,7 @@ public class Attachment extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(length = 50, nullable = false)
-    private String fileName;
+    private String originalFileName;
 
     @NotNull
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class Attachment extends AbstractAuditingEntity implements Serializable {
     private AttachmentType type;
 
     @NotNull
-    @Column
+    @Column(nullable = false)
     private String filePath;
 
     public Long getId() {
@@ -41,12 +41,12 @@ public class Attachment extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getOriginalFileName() {
+        return originalFileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     public AttachmentType getType() {
@@ -82,9 +82,6 @@ public class Attachment extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Attachment{" +
             "id=" + id +
-            ", fileName='" + fileName + '\'' +
-            ", type=" + type +
-            ", filePath='" + filePath + '\'' +
             '}';
     }
 }

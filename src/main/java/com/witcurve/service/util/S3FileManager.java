@@ -1,4 +1,4 @@
-package com.witcurve.config.s3;
+package com.witcurve.service.util;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -146,6 +146,14 @@ public class S3FileManager {
             amazonS3.deleteObject(new DeleteObjectRequest(bucketName, fileName));
         } catch (AmazonServiceException e) {
             throw new WitcurveException("Error while deleting file", e);
+        }
+    }
+
+    public S3Object getObject(String bucketName, String fileName) throws WitcurveException {
+        try {
+            return amazonS3.getObject(bucketName, fileName);
+        } catch (AmazonServiceException e) {
+            throw new WitcurveException("Error while download file", e);
         }
     }
 

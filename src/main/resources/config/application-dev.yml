@@ -159,7 +159,9 @@ application:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
         domainUrl: witcurve-app.com
     aws:
-        credentials:
-            access-key: AKIAI6EBBUPKHJS4KS2A
-            secret-key: 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
+        secretKey: cKEJfWGHhC3NLOoGf5qFETaoArp7oG9nL76Ml9oq
+        accessKey: AKIAVN6B32FDXRVR7A2Z
+        defaultRegion: us-east-2
+        bucketName: test.assets.witcurve-app.com
+
 

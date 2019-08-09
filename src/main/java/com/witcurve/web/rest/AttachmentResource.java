@@ -9,11 +9,16 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -38,24 +43,7 @@ public class AttachmentResource {
     @Timed
     public ResponseEntity<Attachment> createAttachment(@RequestParam MultipartFile file, @RequestParam AttachmentType type) throws WitcurveException, URISyntaxException {
         log.debug("Request to save for file : {} and of type : {}", file.getName(), type);
-        Attachment result = attachmentService.saveAttachment(file, type);
-        return ResponseEntity.created(new URI("/api/attachments/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("attachment", result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * updates an attachment
-     * @param file
-     * @param attachmentId
-     * @return
-     * @throws URISyntaxException
-     */
-    @PostMapping("/attachments")
-    @Timed
-    public ResponseEntity<Attachment> updateAttachment(@RequestParam MultipartFile file, @RequestParam Long attachmentId) throws WitcurveException, URISyntaxException {
-        log.debug("Request to update file : {} for an attachment with id : {}", file.getName(), attachmentId);
-        Attachment result = attachmentService.updateAttachment(file, attachmentId);
+        Attachment result = attachmentService.saveAttachment(file, type, null);
         return ResponseEntity.created(new URI("/api/attachments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("attachment", result.getId().toString()))
             .body(result);
@@ -73,6 +61,27 @@ public class AttachmentResource {
         log.debug("Request to get Attachment with id {}", attachmentId);
         Attachment result = attachmentService.findById(attachmentId);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * download attachemnt by id
+     * @param attachmentId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/attachments/{attachmentId}/download")
+    @Timed
+    public ResponseEntity<Resource> downloadAttachmentById(@PathVariable("attachmentId") Long attachmentId) throws WitcurveException {
+        log.debug("Request to get Attachment with id {}", attachmentId);
+        File result = attachmentService.download(attachmentId);
+        InputStreamResource resource = null;
+        try{
+           resource = new InputStreamResource(new FileInputStream(result));
+        } catch (Exception e) {
+            log.debug("Error while converting file to stream : {}", e.getMessage());
+            throw new WitcurveException("There is a problem downloading the file!");
+        }
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream")).body(resource);
     }
 
     /**
