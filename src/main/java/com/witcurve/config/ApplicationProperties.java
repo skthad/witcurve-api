@@ -13,6 +13,9 @@ public class ApplicationProperties {
 
     public final Sms sms = new Sms();
     public final Aws aws = new Aws();
+    public final Paytm paytm = new Paytm();
+    public final Witcurve witcurve = new Witcurve();
+
 
     public static class Sms {
 
@@ -38,58 +41,9 @@ public class ApplicationProperties {
 
     }
 
-    public static class Aws {
-
-        private String accessKey;
-
-        private String secretKey;
-
-        private String defaultRegion;
-
-        private String bucketName;
-
-        public String getAccessKey() {
-            return accessKey;
-        }
-
-        public void setAccessKey(String accessKey) {
-            this.accessKey = accessKey;
-        }
-
-        public String getSecretKey() {
-            return secretKey;
-        }
-
-        public void setSecretKey(String secretKey) {
-            this.secretKey = secretKey;
-        }
-
-        public String getDefaultRegion() {
-            return defaultRegion;
-        }
-
-        public void setDefaultRegion(String defaultRegion) {
-            this.defaultRegion = defaultRegion;
-        }
-
-        public String getBucketName() {
-            return bucketName;
-        }
-
-        public void setBucketName(String bucketName) {
-            this.bucketName = bucketName;
-        }
-    }
-
     public Sms getSms() {
         return sms;
     }
-
-    public Aws getAws() {
-        return aws;
-    }
-
-    public final Paytm paytm = new Paytm();
 
     public static class Paytm {
 
@@ -158,8 +112,6 @@ public class ApplicationProperties {
         return paytm;
     }
 
-    public final Witcurve witcurve = new Witcurve();
-
     public static class Witcurve {
         private String cryptoKey;
 
@@ -184,5 +136,72 @@ public class ApplicationProperties {
 
     public Witcurve getWitcurve() {
         return witcurve;
+    }
+
+    public static class Aws {
+
+        private String accesskey;
+
+        private String secretKey;
+
+        private String defaultRegion;
+
+        private String snsRegion;
+
+        private String snsApplicationArn;
+
+        private String bucketName;
+
+        public String getAccesskey() {
+            return accesskey;
+        }
+
+        public void setAccesskey(String accesskey) {
+            this.accesskey = accesskey;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public String getDefaultRegion() {
+            return defaultRegion;
+        }
+
+        public void setDefaultRegion(String defaultRegion) {
+            this.defaultRegion = defaultRegion;
+        }
+
+        public String getSnsRegion() {
+            return snsRegion;
+        }
+
+        public void setSnsRegion(String snsRegion) {
+            this.snsRegion = snsRegion;
+        }
+
+        public String getSnsApplicationArn() {
+            return snsApplicationArn;
+        }
+
+        public void setSnsApplicationArn(String snsApplicationArn) {
+            this.snsApplicationArn = snsApplicationArn;
+        }
+
+        public String getBucketName() {
+            return bucketName;
+        }
+
+        public void setBucketName(String bucketName) {
+            this.bucketName = bucketName;
+        }
+    }
+
+    public Aws getAws() {
+        return aws;
     }
 }
