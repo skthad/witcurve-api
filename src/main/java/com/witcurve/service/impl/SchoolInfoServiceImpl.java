@@ -1,7 +1,11 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.Staff;
+import com.witcurve.domain.Student;
 import com.witcurve.repository.SchoolInfoRepository;
+import com.witcurve.repository.StaffRepository;
+import com.witcurve.repository.StudentRepository;
 import com.witcurve.service.SchoolInfoService;
 import com.witcurve.service.dto.SchoolInfoDTO;
 import com.witcurve.service.mapper.SchoolInfoMapper;
@@ -30,6 +34,12 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
 
     @Autowired
     SchoolInfoMapperLite schoolInfoMapperLite;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    StaffRepository staffRepository;
 
     @Override
     public SchoolInfoDTO saveOrUpdate(SchoolInfoDTO schoolInfoDTO) {
@@ -64,6 +74,21 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
             throw new WitcurveException("No SchoolInfo with given id: " + schoolInfoId);
         }
         schoolInfoRepository.delete(schoolInfo.get());
+    }
+
+    @Override
+    public Long getSchoolInfoIdByUserId(Long userId) {
+        Long schoolInfoId = null;
+        Student student = studentRepository.getStudentByUserId(userId);
+        if(student == null) {
+            Staff staff = staffRepository.getStaffByUserId(userId);
+            if(staff != null) {
+                schoolInfoId = staff.getSchoolInfo().getId();
+            }
+        } else {
+            schoolInfoId = student.getSchoolInfo().getId();
+        }
+        return schoolInfoId;
     }
 
 }

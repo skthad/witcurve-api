@@ -14,4 +14,6 @@ public interface SchoolInfoService {
     List<SchoolInfoDTO> getSchoolInfosBySchoolId(Long schoolId);
 
     void deleteSchoolInfo(Long schoolInfoId) throws WitcurveException;
+
+    Long getSchoolInfoIdByUserId(Long userId);
 }
