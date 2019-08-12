@@ -97,7 +97,7 @@ public class SnsService {
             amazonSNS.unsubscribe(subscriptionArn);
         }  catch (SdkClientException e) {
             log.debug("AWS Exception : {}",e.getMessage());
-            throw new WitcurveException("There was a problem while deleting end point");
+            throw new WitcurveException("There was a problem while un-subscribing");
         }
     }
 

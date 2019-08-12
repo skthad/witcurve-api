@@ -45,7 +45,7 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
         log.debug("Add user mobile end point : {}", userMobileEndPointDTO);
         UserMobileEndPoint existingUserMobileEndPoint = userMobileEndPointRepository.findByUserIdAndToken(userMobileEndPointDTO.getUserId(), userMobileEndPointDTO.getDeviceToken());
         if(existingUserMobileEndPoint != null) {
-            throw new WitcurveException("There already exists a record with given token and user id");
+            return userMobileEndPointMapper.toDto(existingUserMobileEndPoint);
         }
         Long schoolInfoId = schoolInfoService.getSchoolInfoIdByUserId(userMobileEndPointDTO.getUserId());
         String schoolInfoTopicSubscriptionArn = null;
