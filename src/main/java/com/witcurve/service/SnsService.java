@@ -35,7 +35,7 @@ public class SnsService {
 //        getPlatformApplicationAttributesRequest.setPlatformApplicationArn(applicationProperties.getAws().getSnsApplicationArn());
 //        GetPlatformApplicationAttributesResult platformApplicationAttributesResult = amazonSNS.getPlatformApplicationAttributes(getPlatformApplicationAttributesRequest);
 //
-//        log.debug("Platform application : {}", platformApplicationAttributesResult);
+//        log.info("Platform application : {}", platformApplicationAttributesResult);
 //        PublishRequest publishRequest = new PublishRequest();
 //        publishRequest.setTargetArn("arn:aws:sns:us-east-1:373531857223:endpoint/GCM/WitcurveTestNotification/65ca0975-4e4f-3243-b4d9-1793d6e94d53");
 //        publishRequest.setMessage("{\n" +
@@ -54,7 +54,7 @@ public class SnsService {
     }
 
     public String createEndPointWithToken(String token) throws WitcurveException {
-        log.debug("Create Platform end point with token : {}", token);
+        log.info("Create Platform end point with token : {}", token);
         try {
             CreatePlatformEndpointRequest createPlatformEndpointRequest = new CreatePlatformEndpointRequest();
             createPlatformEndpointRequest.setPlatformApplicationArn(applicationProperties.getAws().getSnsApplicationArn());
@@ -63,8 +63,8 @@ public class SnsService {
             log.info("Platform end point result : {}", createPlatformEndpointResult);
             return createPlatformEndpointResult.getEndpointArn();
         } catch (SdkClientException e) {
-            log.debug("AWS Exception : {}",e.getMessage());
-            throw new WitcurveException("There was a problem while deleting end point");
+            log.info("AWS Exception : {}",e.getMessage());
+            throw new WitcurveException("There was a problem while creating end point");
         }
     }
 
@@ -75,7 +75,7 @@ public class SnsService {
             DeleteEndpointResult deleteEndpointResult = amazonSNS.deleteEndpoint(deleteEndpointRequest);
             log.info("delete result : {}", deleteEndpointResult);
         } catch (SdkClientException e) {
-            log.debug("AWS Exception : {}",e.getMessage());
+            log.info("AWS Exception : {}",e.getMessage());
             throw new WitcurveException("There was a problem while deleting end point");
         }
 
@@ -87,8 +87,8 @@ public class SnsService {
             SubscribeResult subscribeResult = amazonSNS.subscribe(subscribeRequest);
             return subscribeResult.getSubscriptionArn();
         }  catch (SdkClientException e) {
-            log.debug("AWS Exception : {}",e.getMessage());
-            throw new WitcurveException("There was a problem while deleting end point");
+            log.info("AWS Exception : {}",e.getMessage());
+            throw new WitcurveException("There was a problem while adding subscription");
         }
     }
 
@@ -96,7 +96,7 @@ public class SnsService {
         try {
             amazonSNS.unsubscribe(subscriptionArn);
         }  catch (SdkClientException e) {
-            log.debug("AWS Exception : {}",e.getMessage());
+            log.info("AWS Exception : {}",e.getMessage());
             throw new WitcurveException("There was a problem while un-subscribing");
         }
     }
@@ -107,7 +107,7 @@ public class SnsService {
             CreateTopicResult createTopicResult = amazonSNS.createTopic(createTopicRequest);
             return createTopicResult.getTopicArn();
         } catch (SdkClientException e) {
-            log.debug("AWS Exception : {}",e.getMessage());
+            log.info("AWS Exception : {}",e.getMessage());
             throw new WitcurveException("There was a problem creating topic");
         }
     }
@@ -120,7 +120,7 @@ public class SnsService {
             publishRequest.setMessageStructure("json");
             amazonSNS.publish(publishRequest);
         } catch (SdkClientException e) {
-            log.debug("AWS Exception : {}",e.getMessage());
+            log.info("AWS Exception : {}",e.getMessage());
             throw new WitcurveException("There was a problem sending this message");
         }
 
@@ -148,7 +148,7 @@ public class SnsService {
                 publishRequest.setMessageStructure("json");
                 amazonSNS.publish(publishRequest);
             } catch (SdkClientException e) {
-                log.debug("AWS Exception : {}",e.getMessage());
+                log.info("AWS Exception : {}",e.getMessage());
                 throw new WitcurveException("There was a problem sending this message");
             }
         } else {
