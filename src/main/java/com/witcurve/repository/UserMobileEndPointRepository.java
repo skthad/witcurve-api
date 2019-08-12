@@ -15,7 +15,6 @@ public interface UserMobileEndPointRepository extends JpaRepository<UserMobileEn
     @Query("delete from UserMobileEndPoint umep where umep.user.id=?1 and umep.deviceToken=?2")
     void deleteByUserIdAndToken(Long userId, String token);
 
-    @Modifying
     @Query("select umep from UserMobileEndPoint umep where umep.user.id=?1 and umep.deviceToken=?2")
     UserMobileEndPoint findByUserIdAndToken(Long userId, String token);
 

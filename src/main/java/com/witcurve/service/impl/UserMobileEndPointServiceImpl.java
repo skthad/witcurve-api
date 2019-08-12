@@ -49,16 +49,20 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
         }
         Long schoolInfoId = schoolInfoService.getSchoolInfoIdByUserId(userMobileEndPointDTO.getUserId());
         String schoolInfoTopicSubscriptionArn = null;
-        String globalSubscriptionArn;
+        String globalSubscriptionArn = null;
         String endPoint = snsService.createEndPointWithToken(userMobileEndPointDTO.getDeviceToken());
         if(schoolInfoId != null) {
             //add it to school info based topic
             TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
-            schoolInfoTopicSubscriptionArn = snsService.addSubscription(topicRecord.getTopicEndPoint(), endPoint);
+            if(topicRecord != null) {
+                schoolInfoTopicSubscriptionArn = snsService.addSubscription(topicRecord.getTopicEndPoint(), endPoint);
+            }
         }
         //add it to global topic
         List<TopicRecord> topicRecords = topicRecordRepository.findByType(TopicType.GLOBAL);
-        globalSubscriptionArn = snsService.addSubscription(topicRecords.get(0).getTopicEndPoint(), endPoint);
+        if(!topicRecords.isEmpty()) {
+            globalSubscriptionArn = snsService.addSubscription(topicRecords.get(0).getTopicEndPoint(), endPoint);
+        }
         UserMobileEndPoint userMobileEndPoint = userMobileEndPointMapper.toEntity(userMobileEndPointDTO);
         userMobileEndPoint.setEndPoint(endPoint);
         userMobileEndPoint.setSchoolInfoSubscriptionEndPoint(schoolInfoTopicSubscriptionArn);
