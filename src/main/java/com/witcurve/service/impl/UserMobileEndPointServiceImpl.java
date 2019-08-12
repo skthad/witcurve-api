@@ -97,9 +97,9 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
         }
         userMobileEndPointRepository.deleteByUserIdAndToken(userId, deviceToken);
         if(userMobileEndPointRepository.getTokenCount(deviceToken).equals(0)) {
-            snsService.deleteEndpoint(deviceToken);
             snsService.unSubscribe(userMobileEndPoint.getSchoolInfoSubscriptionEndPoint());
             snsService.unSubscribe(userMobileEndPoint.getGlobalSubscriptionEndPoint());
+            snsService.deleteEndpoint(userMobileEndPoint.getEndPoint());
         }
     }
 }
