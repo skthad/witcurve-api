@@ -95,6 +95,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     NotificationService notificationService;
 
+    @Autowired
+    SnsService snsService;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
@@ -194,6 +197,7 @@ public class EventServiceImpl implements EventService {
         if (schoolEvents != null) {
             notificationService.sendSchoolEventNotification(result.get(), schoolEvents);
         }
+        snsService.sendPushNotification(events);
         return eventMapper.toDto(events);
     }
 
