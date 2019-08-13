@@ -25,4 +25,9 @@ public interface UserMobileEndPointRepository extends JpaRepository<UserMobileEn
     @Query("Select umep from UserMobileEndPoint umep where umep.user.id=?1 order by umep.createdDate desc")
     List<UserMobileEndPoint> findByUserId(Long userId);
 
+    @Query("Select deviceToken from UserMobileEndPoint umep where  umep.user.id=?1")
+    List<String> findDeviceTokenByUserId(Long userId);
+
+    @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select ss.student.user.id from StudentStandard ss where ss.active=true and ss.standard.id=?1)")
+    List<UserMobileEndPoint> findByStandardId(Long standardId);
 }

@@ -1,19 +1,32 @@
 package com.witcurve.service;
 
 import com.amazonaws.SdkClientException;
+import com.amazonaws.services.simpleworkflow.flow.annotations.Asynchronous;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.*;
 import com.witcurve.config.ApplicationProperties;
-import com.witcurve.domain.TopicRecord;
+import com.witcurve.config.Constants;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.TopicType;
+import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.repository.TopicRecordRepository;
+import com.witcurve.repository.UserMobileEndPointRepository;
+import com.witcurve.service.util.WitCurveConstants;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class SnsService {
@@ -24,10 +37,21 @@ public class SnsService {
     AmazonSNS amazonSNS;
 
     @Autowired
+    UserMobileEndPointRepository userMobileEndPointRepository;
+
+    @Autowired
     ApplicationProperties applicationProperties;
 
     @Autowired
     TopicRecordRepository topicRecordRepository;
+
+    @Autowired
+    private StudentStandardRepository studentStandardRepository;
+
+   @Autowired
+   private MessageSource messageSource;
+
+
 
     public void sendMobilePushNotification() {
 
@@ -155,31 +179,58 @@ public class SnsService {
             throw new WitcurveException("There was a problem getting topic arn links");
         }
 
-
-
-
-
     }
 
 
     private String getPublishMessage(String message, String url) {
-        if(url == null) {
-            return  "{ \n" +
-                "\"default\": \""+message+"\",\n" +
-                "\"APNS\": \"{\\\"aps\\\":{\\\"alert\\\": \\\""+message+"\\\"} }\",\n" +
-                "\"GCM\":\"{\\\"data\\\":{\\\"message\\\":\\\""+message+"\\\"} }\"\n" +
+        if (url == null) {
+            return "{ \n" +
+                "\"default\": \"" + message + "\",\n" +
+                "\"APNS\": \"{\\\"aps\\\":{\\\"alert\\\": \\\"" + message + "\\\"} }\",\n" +
+                "\"GCM\":\"{\\\"data\\\":{\\\"message\\\":\\\"" + message + "\\\"} }\"\n" +
                 "}  ";
         } else {
-            return  "{ \n" +
-                "\"default\": \""+message+"\",\n" +
-                "\"APNS\": \"{\\\"aps\\\":{\\\"alert\\\": \\\""+message+"\\\",\\\"url\\\":\\\""+url+"\\\"} }\",\n" +
-                "\"GCM\":\"{\\\"data\\\":{\\\"message\\\":\\\""+message+"\\\",\\\"url\\\":\\\""+url+"\\\"}}\"\n" +
+            return "{ \n" +
+                "\"default\": \"" + message + "\",\n" +
+                "\"APNS\": \"{\\\"aps\\\":{\\\"alert\\\": \\\"" + message + "\\\",\\\"url\\\":\\\"" + url + "\\\"} }\",\n" +
+                "\"GCM\":\"{\\\"data\\\":{\\\"message\\\":\\\"" + message + "\\\",\\\"url\\\":\\\"" + url + "\\\"}}\"\n" +
                 "}  ";
         }
     }
 
 
+    public void sendPushNotification(List<Event> listOfEvent) {
+        for (Event event : listOfEvent) {
 
+            switch (event.getType()){
+
+                case TEST: List<UserMobileEndPoint> listOfUserMobileEndPoints=userMobileEndPointRepository.findByStandardId(event.getStandard().getId());
+
+                            if(listOfUserMobileEndPoints==null){
+                                throw new WitcurveException("No User found related to thid standard Id");
+                            }
+
+                            String message= getMessage(event.getName());
+                            System.out.println(message);
+                            for(UserMobileEndPoint userMobileEndPoint:listOfUserMobileEndPoints ){
+                                String url="?userId="+userMobileEndPoint.getUser().getId()+"&event=true&date="+event.getDate();
+                                System.out.println(url);
+                                publishMessage(message,url,userMobileEndPoint.getEndPoint());
+                           }
+
+            }
+
+
+        }
+    }
+
+    private String getMessage(String subject){
+        String message=WitCurveConstants.TEST_PUSH_NOTIFICATION;
+        if(message.contains("{{subject}}")){
+            return message.replace("{{subject}}",subject);
+        }
+        return message;
+    }
 
 
 }
