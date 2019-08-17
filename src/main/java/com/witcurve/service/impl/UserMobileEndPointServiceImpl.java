@@ -71,7 +71,7 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
         List<UserMobileEndPoint> userMobileEndPoints = userMobileEndPointRepository.findByUserId(userMobileEndPoint.getUser().getId());
         if(userMobileEndPoints.size() > 3) {
             for(int i=3; i<userMobileEndPoints.size(); i++) {
-                deleteEndPoint(userMobileEndPoint.getUser().getId(), userMobileEndPoint.getDeviceToken());
+                deleteEndPoint(userMobileEndPoints.get(i).getUser().getId(), userMobileEndPoints.get(i).getDeviceToken());
             }
         }
         return userMobileEndPointMapper.toDto(userMobileEndPoint);
