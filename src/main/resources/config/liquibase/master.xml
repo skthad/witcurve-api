@@ -33,5 +33,6 @@
     <include file="config/liquibase/changelog/20190730181434_added_payment_res_code_message.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190809120624_added_Attachments_entity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190818053821_added_payout_to_payment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190819132458_added_ReportCardDesign_entity.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
