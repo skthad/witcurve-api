@@ -65,6 +65,9 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
     @Column(name = "response_message", length = 500)
     private String responseMessage;
 
+    @Column(name = "payout")
+    private Boolean payout = false;
+
     public Long getId() {
         return id;
     }
@@ -159,5 +162,13 @@ public class PaymentOrder extends AbstractAuditingEntity implements Serializable
 
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
+    }
+
+    public Boolean getPayout() {
+        return payout;
+    }
+
+    public void setPayout(Boolean payout) {
+        this.payout = payout;
     }
 }

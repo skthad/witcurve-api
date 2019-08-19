@@ -35,6 +35,8 @@ public class PaymentOrderDTO {
 
     private String responseMessage;
 
+    private Boolean payout;
+
     public Long getId() {
         return id;
     }
@@ -129,5 +131,13 @@ public class PaymentOrderDTO {
 
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
+    }
+
+    public Boolean getPayout() {
+        return payout;
+    }
+
+    public void setPayout(Boolean payout) {
+        this.payout = payout;
     }
 }

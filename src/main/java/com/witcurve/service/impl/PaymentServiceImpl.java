@@ -115,6 +115,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public PaymentOrderDTO createPaymentOrder(PaymentOrderDTO paymentOrderDTO) throws WitcurveException {
+       return createPaymentOrder(paymentOrderDTO.getStudentId(), paymentOrderDTO.getSubscriptionPackage(), PaymentGateway.OFFLINE, paymentOrderDTO.getTransactionMode());
+    }
+
     public PaymentOrderDTO createPaymentOrder(Long studentId, SubscriptionPackage subscriptionPackage, PaymentGateway paymentGateway,
                                               TransactionMode transactionMode) throws WitcurveException {
 
@@ -135,7 +139,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (paymentGateway == PaymentGateway.PAYTM) {
             paymentOrder.setTransactionStatus(TransactionStatus.PENDING);
-        } else if (paymentGateway == PaymentGateway.SELF) {
+        } else if (paymentGateway == PaymentGateway.OFFLINE) {
             paymentOrder.setTransactionStatus(TransactionStatus.TXN_SUCCESS);
             paymentOrder.setTransactionMode(transactionMode);
             subscribeStudent(studentId, subscriptionPackage);
@@ -156,11 +160,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Boolean isTransactionComplete(String orderId, Boolean updateSubscription) throws WitcurveException {
         try {
-            PaymentOrder paymentOrder = paymentOrderRepository.findByOrderId(orderId);
-
-            if (paymentOrder == null) {
-                throw new WitcurveException("No order with given id");
-            }
+            PaymentOrder paymentOrder = getPaymentOrder(orderId);
 
             PaytmVerificationRequestDTO request = new PaytmVerificationRequestDTO();
             request.setMerchantId(applicationProperties.getPaytm().getMerchantId());
@@ -195,6 +195,65 @@ public class PaymentServiceImpl implements PaymentService {
             log.error("Unable to verify paytm request", e);
             throw new WitcurveException("Unable to process the request at the moment");
         }
+    }
+
+    /**
+     * scheduled process runs at midnight IST
+     * updates the transactions and subscription dates for all pending payment transactions
+     */
+    @Override
+    @Scheduled(cron = "0 0 0 * * *", zone = "IST")
+    public void processPendingTransactions() {
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByTransactionStatus(TransactionStatus.PENDING);
+
+        if (!CollectionUtils.isEmpty(paymentOrders)) {
+            for (PaymentOrder paymentOrder: paymentOrders) {
+                try {
+                    boolean isSuccess = isTransactionComplete(paymentOrder.getOrderId(), true);
+                    log.info("Transaction with order id {} " + (isSuccess ? "Succeeded" : "Failed"), paymentOrder.getOrderId());
+                } catch (WitcurveException e) {
+                    log.error("Unable to update payment status for order id : {}", paymentOrder.getId(), e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public PaymentOrderDTO updateTransactionId(String orderId, String transactionId) throws WitcurveException {
+        PaymentOrder paymentOrder = getPaymentOrder(orderId);
+        paymentOrder.setTransactionId(transactionId);
+
+        return paymentOrderMapper.toDto(paymentOrder);
+    }
+
+    @Override
+    public PaymentOrderDTO updatePayout(String orderId) throws WitcurveException {
+        PaymentOrder paymentOrder = getPaymentOrder(orderId);
+
+        if (StringUtils.isBlank(paymentOrder.getTransactionId())) {
+            throw new WitcurveException("Transaction ID has to be updated before changing the payout status");
+        }
+
+        paymentOrder.setPayout(true);
+
+        return paymentOrderMapper.toDto(paymentOrder);
+    }
+
+
+    @Override
+    public List<PaymentOrderDTO> getOfflineOrdersWithoutPayouts() throws WitcurveException {
+        List<PaymentOrder> paymentOrders = paymentOrderRepository.findOfflineOrdersWithoutPayout();
+        return paymentOrderMapper.toDto(paymentOrders);
+    }
+
+    private PaymentOrder getPaymentOrder(String orderId) throws WitcurveException {
+        PaymentOrder paymentOrder = paymentOrderRepository.findByOrderId(orderId);
+
+        if (paymentOrder == null) {
+            throw new WitcurveException("No payment order with given id exists");
+        }
+
+        return paymentOrder;
     }
 
     private void subscribeStudent(Long studentId, SubscriptionPackage subscriptionPackage) {
@@ -246,26 +305,5 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         return paytmCharge + (paytmCharge * .18);
-    }
-
-    /**
-     * scheduled process runs at midnight IST
-     * updates the transactions and subscription dates for all pending payment transactions
-     */
-    @Override
-    @Scheduled(cron = "0 0 0 * * *", zone = "IST")
-    public void processPendingTransactions() {
-        List<PaymentOrder> paymentOrders = paymentOrderRepository.findByTransactionStatus(TransactionStatus.PENDING);
-
-        if (!CollectionUtils.isEmpty(paymentOrders)) {
-            for (PaymentOrder paymentOrder: paymentOrders) {
-                try {
-                    boolean isSuccess = isTransactionComplete(paymentOrder.getOrderId(), true);
-                    log.info("Transaction with order id {} " + (isSuccess ? "Succeeded" : "Failed"), paymentOrder.getOrderId());
-                } catch (WitcurveException e) {
-                    log.error("Unable to update payment status for order id : {}", paymentOrder.getId(), e);
-                }
-            }
-        }
     }
 }
