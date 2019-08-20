@@ -43,4 +43,11 @@
     <changeSet author="WitCurve (generated)" id="1566221118980-4">
         <dropColumn columnName="order" tableName="report_card_design"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566221118980-5">
+        <addColumn tableName="report_card_design">
+            <column defaultValueBoolean="true" name="activated" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

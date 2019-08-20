@@ -52,6 +52,10 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
     @JoinColumn(nullable = false)
     private SchoolInfo schoolInfo;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private Boolean activated = true;
+
     public Long getId() {
         return id;
     }
@@ -130,6 +134,14 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
 
     public void setSchoolInfo(SchoolInfo schoolInfo) {
         this.schoolInfo = schoolInfo;
+    }
+
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
     }
 
     @Override

@@ -1,9 +1,16 @@
 package com.witcurve.service.impl;
 
+import com.witcurve.domain.Event;
+import com.witcurve.domain.ExamCourseDetails;
 import com.witcurve.domain.ReportCardDesign;
+import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.domain.enumeration.ReportModelType;
+import com.witcurve.repository.EventRepository;
+import com.witcurve.repository.ExamCourseDetailsRepository;
 import com.witcurve.repository.ReportCardDesignRepository;
+import com.witcurve.repository.SchoolInfoRepository;
 import com.witcurve.service.ReportCardDesignService;
 import com.witcurve.service.dto.ReportCardDesignDTO;
 import com.witcurve.service.mapper.ReportCardDesignMapper;
@@ -29,10 +36,19 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
     @Autowired
     ReportCardDesignRepository reportCardDesignRepository;
 
+    @Autowired
+    ExamCourseDetailsRepository examCourseDetailsRepository;
+
+    @Autowired
+    EventRepository eventRepository;
+
+    @Autowired
+    SchoolInfoRepository schoolInfoRepository;
+
     @Override
-    public List<ReportCardDesignDTO> saveOrUpdate(List<ReportCardDesignDTO> reportCardDesignDTOS) {
+    public List<ReportCardDesignDTO> saveOrUpdate(List<ReportCardDesignDTO> reportCardDesignDTOS, Long schoolInfoId) {
         log.debug("Request to save ReportCardDesigns : {}", reportCardDesignDTOS);
-        validAndFormatReportCardDesigns(reportCardDesignDTOS);
+        validAndFormatReportCardDesigns(reportCardDesignDTOS, schoolInfoId);
         List<ReportCardDesign> reportCardDesigns = reportCardDesignMapper.toEntity(reportCardDesignDTOS);
         reportCardDesigns = reportCardDesignRepository.saveAll(reportCardDesigns);
         return reportCardDesignMapper.toDto(reportCardDesigns);
@@ -50,10 +66,54 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         return reportCardDesignMapper.toDto(result);
     }
 
-    private void validAndFormatReportCardDesigns(List<ReportCardDesignDTO> reportCardDesignDTOS) {
-        Boolean mainRecordExists = false, remarksRecordExists =false, attendaceRecordExists = false;
+    @Override
+    public List<ReportCardDesignDTO> findManualEntryFieldsByEcdIdOrEventId(ReportModelType modelType, Long id) {
+        log.debug("Request to get ReportCardDesigns of model type : {} with id : {}", modelType, id);
+        List<ReportCardDesign> result;
+        Long schoolInfoId;
+        //todo add a logic, if report card are generated, get the manual entry fields by student marks
+        if(modelType.equals(ReportModelType.EXAM)) {
+            Optional<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findById(id);
+            if(!examCourseDetails.isPresent()) {
+                throw new WitcurveException("No exam course details exists for given id");
+            }
+            schoolInfoId = examCourseDetails.get().getGsd().getExam().getSchoolInfo().getId();
+        } else {
+            Optional<Event> event = eventRepository.findById(id);
+            if(!event.isPresent()) {
+                throw new WitcurveException("No event found with given id");
+            }
+            if(!event.get().getType().equals(EventType.PERIODIC_TEST)) {
+                throw new WitcurveException("Manual Entry fields are available only for Periodic Tests");
+            }
+            schoolInfoId = event.get().getSchoolInfo().getId();
+        }
+        result = reportCardDesignRepository.findByModelTypeAndFieldTypeAndSchoolInfo(modelType, ReportFieldType.MANUAL_ENTRY, schoolInfoId);
+        return reportCardDesignMapper.toDto(result);
+    }
+
+    @Override
+    public void deleteReportCardDesign(List<Long> ids) {
+        log.debug("Request to delete report card design with ids : {}");
+        List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findAllById(ids);
+        for(ReportCardDesign reportCardDesign : reportCardDesigns) {
+            if(!reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
+                throw new WitcurveException("You can only delete manual entry report card designs");
+            }
+        }
+        //todo delete student marks which are entered and not been generated yet
+        reportCardDesignRepository.deactivateReportCardDesigns(ids);
+    }
+
+    private void validAndFormatReportCardDesigns(List<ReportCardDesignDTO> reportCardDesignDTOS, Long schoolInfoId) {
+        Boolean mainRecordExists = false, remarksRecordExists =false, attendaceRecordExists = false, finalGradeRecordExists = false;
         List<ReportCardDesign> existingReportCardDesigns = null;
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if(!schoolInfo.isPresent()) {
+            throw new WitcurveException("School Info doesn't exist with id : "+schoolInfoId);
+        }
         for(ReportCardDesignDTO reportCardDesignDTO : reportCardDesignDTOS) {
+            reportCardDesignDTO.setSchoolInfoId(schoolInfoId);
             switch (reportCardDesignDTO.getFieldType()) {
                 case MAIN:
                     if(mainRecordExists) {
@@ -89,62 +149,53 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                     mainRecordExists = true;
                     break;
                 case REMARKS:
-                    if(remarksRecordExists) {
-                        throw new WitcurveException("There should be only one remarks field type record for a model");
+                case ATTENDANCE:
+                case FINAL_GRADE_ONLY:
+                    ReportFieldType fieldType = reportCardDesignDTO.getFieldType();
+                    if(fieldType.equals(ReportFieldType.REMARKS)) {
+                        if(remarksRecordExists) {
+                            throw new WitcurveException("There should be only one remarks field type record for a model");
+                        }
+                    } else if(fieldType.equals(ReportFieldType.ATTENDANCE)) {
+                        if(attendaceRecordExists) {
+                            throw new WitcurveException("There should be only one attendance field type record for a model");
+                        }
+                    } else {
+                        if(finalGradeRecordExists) {
+                            throw new WitcurveException("There should be only one final grade only field type record for a model");
+                        }
                     }
-                    existingReportCardDesigns = reportCardDesignRepository.findByModelTypeAndFieldTypeAndSchoolInfo(reportCardDesignDTO.getModelType(), ReportFieldType.REMARKS, reportCardDesignDTO.getSchoolInfoId());
+
+                    existingReportCardDesigns = reportCardDesignRepository.findByModelTypeAndFieldTypeAndSchoolInfo(reportCardDesignDTO.getModelType(), fieldType, reportCardDesignDTO.getSchoolInfoId());
                     if(existingReportCardDesigns.size()==0) {
                         if(reportCardDesignDTO.getId() != null) {
-                            throw new WitcurveException("There doesn't exists a report card design of remarks field type to update with id : "+reportCardDesignDTO.getId());
+                            throw new WitcurveException("There doesn't exists a report card design of "+fieldType.toString().toLowerCase()+" field type to update with id : "+reportCardDesignDTO.getId());
                         }
                     } else if(existingReportCardDesigns.size() == 1) {
                         if(reportCardDesignDTO.getId() == null) {
-                            throw new WitcurveException("There already exists a report card design remarks field type for this model, so another record cannot be created");
+                            throw new WitcurveException("There already exists a report card design "+fieldType.toString().toLowerCase()+" field type for this model, so another record cannot be created");
                         } else {
                             if(reportCardDesignDTO.getId() != existingReportCardDesigns.get(0).getId()) {
                                 throw new WitcurveException("Id of the remarks field type : "+reportCardDesignDTO.getId()+" doesn't match with existing record");
                             }
                         }
                     } else {
-                        throw new WitcurveException("There are multiple remarks type records stored for this model");
+                        throw new WitcurveException("There are multiple "+fieldType.toString().toLowerCase()+" type records stored for this model");
                     }
                     reportCardDesignDTO.setName("Remarks");
                     if(reportCardDesignDTO.getSelected() == null) {
-                        throw new WitcurveException("Remarks field type record needs to have selected field value");
+                        throw new WitcurveException(fieldType.toString().toLowerCase()+" field type record needs to have selected field value");
                     }
                     reportCardDesignDTO.setShortForm(null);
                     reportCardDesignDTO.setMarks(null);
                     reportCardDesignDTO.setShowGradesOnly(null);
-                    remarksRecordExists = true;
-                    break;
-                case ATTENDANCE:
-                    if(attendaceRecordExists) {
-                        throw new WitcurveException("There should be only one attendance field type record for a model");
-                    }
-                    existingReportCardDesigns = reportCardDesignRepository.findByModelTypeAndFieldTypeAndSchoolInfo(reportCardDesignDTO.getModelType(), ReportFieldType.ATTENDANCE, reportCardDesignDTO.getSchoolInfoId());
-                    if(existingReportCardDesigns.size()==0) {
-                        if(reportCardDesignDTO.getId() != null) {
-                            throw new WitcurveException("There doesn't exists a report card design of attendance field type to update with id : {}"+reportCardDesignDTO.getId());
-                        }
-                    } else if(existingReportCardDesigns.size() == 1) {
-                        if(reportCardDesignDTO.getId() == null) {
-                            throw new WitcurveException("There already exists a report card design attendance field type for this model, so another record cannot be created");
-                        } else {
-                            if(reportCardDesignDTO.getId() != existingReportCardDesigns.get(0).getId()) {
-                                throw new WitcurveException("Id of the attendance field type : "+reportCardDesignDTO.getId()+" doesn't match with existing record");
-                            }
-                        }
+                    if(fieldType.equals(ReportFieldType.REMARKS)) {
+                        remarksRecordExists = true;
+                    } else if(fieldType.equals(ReportFieldType.ATTENDANCE)) {
+                        attendaceRecordExists = true;
                     } else {
-                        throw new WitcurveException("There are multiple attendance type records stored for this model");
+                        finalGradeRecordExists = true;
                     }
-                    reportCardDesignDTO.setName("Attendance");
-                    if(reportCardDesignDTO.getSelected() == null) {
-                        throw new WitcurveException("Attendance field type record needs to selected field value");
-                    }
-                    reportCardDesignDTO.setShortForm(null);
-                    reportCardDesignDTO.setMarks(null);
-                    reportCardDesignDTO.setShowGradesOnly(null);
-                    attendaceRecordExists = true;
                     break;
                 case MANUAL_ENTRY:
                     if(reportCardDesignDTO.getId() != null) {

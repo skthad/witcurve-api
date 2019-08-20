@@ -31,6 +31,9 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     private ExamCourseDetails examCourseDetails;
 
+    @ManyToOne
+    private ReportCardDesign reportCardDesign;
+
     public Long getId() {
         return id;
     }
@@ -69,6 +72,14 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
 
     public void setExamCourseDetails(ExamCourseDetails examCourseDetails) {
         this.examCourseDetails = examCourseDetails;
+    }
+
+    public ReportCardDesign getReportCardDesign() {
+        return reportCardDesign;
+    }
+
+    public void setReportCardDesign(ReportCardDesign reportCardDesign) {
+        this.reportCardDesign = reportCardDesign;
     }
 
     @Override

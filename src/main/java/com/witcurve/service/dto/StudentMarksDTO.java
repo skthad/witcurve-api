@@ -31,6 +31,8 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     private ExamCourseDetailsDTO examCourseDetailsDTO;
 
+    private Long reportCardDesignDTO;
+
     public Long getId() {
         return id;
     }

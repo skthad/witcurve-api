@@ -37,11 +37,10 @@ public class ReportCardDesignResource {
      */
     @PostMapping("/report-card-designs")
     @Timed
-    public ResponseEntity<List<ReportCardDesignDTO>> createReportCardDesigns(@RequestBody @Valid List<ReportCardDesignDTO> reportCardDesignDTOS) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<ReportCardDesignDTO>> createReportCardDesigns(@RequestBody @Valid List<ReportCardDesignDTO> reportCardDesignDTOS, @RequestParam Long schoolInfoId) throws WitcurveException, URISyntaxException {
         log.debug("Request to save or update reportCardDesigns : {}",reportCardDesignDTOS);
         try {
-
-            List<ReportCardDesignDTO> result = reportCardDesignService.saveOrUpdate(reportCardDesignDTOS);
+            List<ReportCardDesignDTO> result = reportCardDesignService.saveOrUpdate(reportCardDesignDTOS, schoolInfoId);
             return ResponseEntity.created(new URI("/api/report-card-designs/"))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
@@ -63,6 +62,35 @@ public class ReportCardDesignResource {
         log.debug("Request to get ReportCardDesign of model type :{} and field type : {} for school info with id : {}", schoolInfoId);
         List<ReportCardDesignDTO> result = reportCardDesignService.findByModelTypeAndSchoolInfoId(modelType, schoolInfoId, fieldType);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get manual entry reportCardDesigns by event or ecd id
+     * @param modelType
+     * @param id
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/report-card-designs/model-type/{modelType}")
+    @Timed
+    public ResponseEntity<List<ReportCardDesignDTO>> getManualEntryReportCardDesignsForEventOrEcdId(@PathVariable ReportModelType modelType, @RequestParam Long id) throws WitcurveException {
+        log.debug("Request to get ReportCardDesign of model type : {} with id : {}", modelType, id);
+        List<ReportCardDesignDTO> result = reportCardDesignService.findManualEntryFieldsByEcdIdOrEventId(modelType, id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * deactivate reportCardDesigns by ids
+     * @param ids
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/report-card-designs")
+    @Timed
+    public ResponseEntity<Void> deactivateReportCard(@RequestParam List<Long> ids) throws WitcurveException {
+        log.debug("Request to get ReportCardDesign with ids : {}", ids);
+        reportCardDesignService.deleteReportCardDesign(ids);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

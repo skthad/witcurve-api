@@ -8,8 +8,12 @@ import java.util.List;
 
 public interface ReportCardDesignService {
 
-    List<ReportCardDesignDTO> saveOrUpdate(List<ReportCardDesignDTO> reportCardDesignDTOS);
+    List<ReportCardDesignDTO> saveOrUpdate(List<ReportCardDesignDTO> reportCardDesignDTOS, Long schoolInfoId);
 
     List<ReportCardDesignDTO> findByModelTypeAndSchoolInfoId(ReportModelType modelType, Long schoolInfoId, ReportFieldType fieldType);
+
+    List<ReportCardDesignDTO> findManualEntryFieldsByEcdIdOrEventId(ReportModelType modelType, Long id);
+
+    void deleteReportCardDesign(List<Long> ids);
 
 }

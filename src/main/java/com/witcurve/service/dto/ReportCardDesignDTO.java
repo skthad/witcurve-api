@@ -33,6 +33,9 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
     @NotNull
     private Long schoolInfoId;
 
+    @NotNull
+    private Boolean activated = true;
+
     public Long getId() {
         return id;
     }
@@ -111,6 +114,14 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
 
     public void setSchoolInfoId(Long schoolInfoId) {
         this.schoolInfoId = schoolInfoId;
+    }
+
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
     }
 
     @Override

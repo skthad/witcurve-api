@@ -89,6 +89,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         } else {
             throw new WitcurveException("You cannot send both ecdId and eventId");
         }
+        //add an option to add report card design and see if it is active at the time of creation
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
         studentMarks = studentMarksRepository.saveAll(studentMarks);
         return studentMarksMapper.toDto(studentMarks);
