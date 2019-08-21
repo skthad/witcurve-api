@@ -31,7 +31,7 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     private ExamCourseDetailsDTO examCourseDetailsDTO;
 
-    private Long reportCardDesignDTO;
+    private ReportCardDesignDTO reportCardDesignDTO;
 
     public Long getId() {
         return id;
@@ -111,6 +111,14 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     public void setExamCourseDetailsDTO(ExamCourseDetailsDTO examCourseDetailsDTO) {
         this.examCourseDetailsDTO = examCourseDetailsDTO;
+    }
+
+    public ReportCardDesignDTO getReportCardDesignDTO() {
+        return reportCardDesignDTO;
+    }
+
+    public void setReportCardDesignDTO(ReportCardDesignDTO reportCardDesignDTO) {
+        this.reportCardDesignDTO = reportCardDesignDTO;
     }
 
     @Override
