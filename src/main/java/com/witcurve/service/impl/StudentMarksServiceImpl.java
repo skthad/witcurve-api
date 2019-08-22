@@ -96,7 +96,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getStudentMarksByEventId(Long eventId) throws WitcurveException {
+    public List<StudentMarksDTO> getStudentMarksByEventId(Long eventId, Long rcdId) throws WitcurveException {
         log.debug("Request to get student Marks by event id : {}", eventId);
         List<StudentMarks> studentMarks;
         Optional<Event> event = eventRepository.findById(eventId);
@@ -104,7 +104,11 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             throw new WitcurveException("Event does not exist with id: " + eventId);
         }
         if(ALLOWED_EVENT_TYPES.contains(event.get().getType())){
-            studentMarks=studentMarksRepository.getStudentMarksByEventId(eventId);
+            if(rcdId == null) {
+                studentMarks=studentMarksRepository.getStudentMarksByEventId(eventId);
+            } else {
+                studentMarks = studentMarksRepository.getStudentMarksByEventIdAndRcdId(eventId, rcdId);
+            }
         } else  {
             throw new WitcurveException("The eventId must be TEST or ASSIGNMENT");
         }
@@ -112,7 +116,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId, Long standardId, Boolean publishedOnly) throws WitcurveException {
+    public List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long ecdId, Long rcdId, Long standardId, Boolean publishedOnly) throws WitcurveException {
         log.debug("Request to get student Marks by examId id : {}", examId);
         Optional<Exam> exam = examRepository.findById(examId);
         if (!exam.isPresent()) {
@@ -135,12 +139,14 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             if (standardId == null) {
                 return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdId(ecdId, flags));
             } else {
-                return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, flags));
+                if(rcdId != null) {
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndRcdIdAndStandardId(ecdId, rcdId, standardId, flags));
+                } else {
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByEcdIdAndStandardId(ecdId, standardId, flags));
+                }
             }
-
         } else {
             return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByExamIdAndStandardId(examId, standardId, flags));
-
         }
     }
 

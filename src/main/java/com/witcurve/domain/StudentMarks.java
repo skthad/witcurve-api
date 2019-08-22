@@ -31,7 +31,6 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     @ManyToOne
     private ExamCourseDetails examCourseDetails;
 
-    @Transient
     @ManyToOne
     private ReportCardDesign reportCardDesign;
 
