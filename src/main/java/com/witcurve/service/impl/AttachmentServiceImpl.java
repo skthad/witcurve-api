@@ -50,14 +50,14 @@ public class AttachmentServiceImpl implements AttachmentService {
         if(destinationDirectory == null) {
             destinationDirectory = newFileName;
         } else {
-            destinationDirectory += File.separator+newFileName;
+            destinationDirectory += "/"+newFileName;
         }
         File normalFile = WitcurveUtil.getFile(file);
         Attachment attachment = new Attachment();
         attachment.setType(type);
         attachment.setFilePath(destinationDirectory);
         attachment.setOriginalFileName(file.getOriginalFilename());
-        fileManager.uploadFile(applicationProperties.getAws().getBucketName(), newFileName, normalFile, null, false);
+        fileManager.uploadFile(applicationProperties.getAws().getBucketName(), destinationDirectory, normalFile, null, false);
         attachment = attachmentRepository.save(attachment);
         return attachment;
     }
