@@ -80,6 +80,20 @@ public class ReportCardDesignResource {
     }
 
     /**
+     * get reportCardDesign by id
+     * @param id
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/report-card-designs/{id}")
+    @Timed
+    public ResponseEntity<ReportCardDesignDTO> getManualEntryReportCardDesignsById(@PathVariable Long id) throws WitcurveException {
+        log.debug("Request to get ReportCardDesign with id : {}", id);
+        ReportCardDesignDTO result = reportCardDesignService.findById(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
      * deactivate reportCardDesigns by ids
      * @param ids
      * @return

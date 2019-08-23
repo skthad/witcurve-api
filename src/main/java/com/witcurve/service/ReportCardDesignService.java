@@ -14,6 +14,8 @@ public interface ReportCardDesignService {
 
     List<ReportCardDesignDTO> findManualEntryFieldsByEcdIdOrEventId(ReportModelType modelType, Long id);
 
+    ReportCardDesignDTO findById(Long id);
+
     void deleteReportCardDesign(List<Long> ids);
 
 }

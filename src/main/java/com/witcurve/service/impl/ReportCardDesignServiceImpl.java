@@ -93,6 +93,16 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
     }
 
     @Override
+    public ReportCardDesignDTO findById(Long id) {
+        log.debug("Request to get reportCardDesign by id : {}", id);
+        Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(id);
+        if(!reportCardDesign.isPresent()) {
+            throw new WitcurveException("No Report Card Design is found wit id : "+id);
+        }
+        return reportCardDesignMapper.toDto(reportCardDesign.get());
+    }
+
+    @Override
     public void deleteReportCardDesign(List<Long> ids) {
         log.debug("Request to delete report card design with ids : {}");
         List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findAllById(ids);
