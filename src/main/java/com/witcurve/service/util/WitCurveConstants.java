@@ -38,9 +38,9 @@ public class WitCurveConstants {
 
     public static final String ADMIN_MESSAGE = "You have received a new message in Admin Messages ";
 
-    public static final String MEETING_REQUEST = "You have received a meeting request on {{date}} at {{time}} ";
+    public static final String MEETING_REQUEST = "You have received a new message in meeting request on {{date}} at {{time}} ";
 
-    public static final String MEETING_REQUEST_STATUS_CHANGE = "Your meeting request on {{date}} at {{time}} is {{status}} ";
+    public static final String MEETING_REQUEST_STATUS_CHANGE = "Your meeting request on {{date}} at {{time}} has been {{status}} ";
 
     public static final String LEAVE_APPLICATION_CREATED = "A new Leave Application is created from {{fromDate}} to {{toDate}} by {{studentName}}";
 
