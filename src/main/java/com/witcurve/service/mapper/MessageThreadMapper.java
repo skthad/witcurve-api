@@ -91,7 +91,7 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
         String standard = null;
         if (messageThread.getFromUser().getStudent() != null) {
             standard = getStandard(messageThread.getFromUser().getStudent().getStudentStandards());
-        } else if (messageThread.getToUser().getStudent() != null) {
+        } else if (messageThread.getToUser() != null && messageThread.getToUser().getStudent() != null) {
             standard = getStandard(messageThread.getToUser().getStudent().getStudentStandards());
         }
 
