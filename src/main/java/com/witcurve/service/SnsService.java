@@ -209,7 +209,7 @@ public class SnsService {
     @Transactional
     public void sendPushNotification(List<EventDTO> listOfEventDTO, Map<Long, LocalDate> map) {
         Set<Long> keys = map.keySet();
-        System.out.println("hi");
+
         for (EventDTO eventDTO : listOfEventDTO) {
             Map<String, String> variableMap;
             switch (eventDTO.getType()) {
@@ -310,7 +310,7 @@ public class SnsService {
                     break;
                 case ATTENDANCE:
                     variableMap = new HashMap<>();
-                    variableMap.put("date",WitcurveUtil.format(eventDTO.getDate()));
+                    variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
 
                     String finalMessageContent = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.ATTENDANCE);
                     //To send notification when student is absent
@@ -400,7 +400,6 @@ public class SnsService {
 
         }
     }
-
     @Async
     public void sendPushNotificationOnRepliedMessage(MessageThreadDTO messageThreadDTO) {
         if (messageThreadDTO.getSuperAdminMessage() == true || messageThreadDTO.getSchoolBoardAdminMessage() == true) {
@@ -420,7 +419,6 @@ public class SnsService {
 
     @Async
     public void sendPushNotification(MessageThreadDTO messageThreadDTO) {
-
         if (messageThreadDTO.getMessageType().equals(MessageType.SUBJECT_NOTE)) {
             List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
             for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedGroupMessage) {
