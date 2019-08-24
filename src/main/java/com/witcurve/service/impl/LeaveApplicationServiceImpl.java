@@ -74,6 +74,9 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
     @Autowired
     NotificationService notificationService;
 
+    @Autowired
+    SnsService snsService;
+
     @Override
     public LeaveApplicationDTO saveOrUpdate(LeaveApplicationDTO leaveApplicationDTO, Boolean update) throws WitcurveException, UnsupportedEncodingException {
         log.info("Request to save or update leave applications : {}", leaveApplicationDTO.toString());
@@ -106,6 +109,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
         result.setNumLeaveDays(workingDays(leaveApplicationDTO.getFromLeaveDate(), leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(), false));
 
         notificationService.sendLeaveApplicationSaveOrUpdateNotification(leaveApplication, update);
+        snsService.sendPushNotificationWhenLeaveApplicationCreated(result,update);
 
         return result;
     }
@@ -159,6 +163,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
             leaveApplicationDTO.getToLeaveDate(), leaveApplicationDTO.getSchoolInfoId(),
             false));
         notificationService.sendLeaveApplicationStatusNotification(leaveApplicationDTO);
+        snsService.sendPushNotificationOfLeaveApplicationStatusChange(leaveApplicationDTO);
         return leaveApplicationDTO;
     }
 

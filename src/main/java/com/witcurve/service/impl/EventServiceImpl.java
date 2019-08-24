@@ -113,9 +113,14 @@ public class EventServiceImpl implements EventService {
     private static final ArrayList<String> LIST_FOR_DATE_RANGE = new ArrayList<>(
         Arrays.asList(EventType.TEST.toString()));
 
+        private static final ArrayList<EventType> SNS_DATE_UPDATE = new ArrayList<>(
+        Arrays.asList(EventType.TEST, EventType.ASSIGNMENT));
+
 
     @Override
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
+        Map<Long, LocalDate> dateMap = new HashMap<>();
+        List<Long> updateTestOrAssignmentIds = new ArrayList<>();
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
         Optional<SchoolInfo> result = schoolInfoRepository.findById(schoolInfoId);
@@ -128,6 +133,20 @@ public class EventServiceImpl implements EventService {
                     keywordRepository.save(new Keyword(keyword));
                 }
             }
+
+            if(SNS_DATE_UPDATE.contains(eventDTO.getType())) {
+                if(eventDTO.getId() != null) {
+                    updateTestOrAssignmentIds.add(eventDTO.getId());
+                }
+            }
+            if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                eventDTO.setBindingId(bindingId);
+            }
+        }
+
+        List<Event> updateTestOrAssignmentEvents = eventRepository.findAllById(updateTestOrAssignmentIds);
+        for(Event event : updateTestOrAssignmentEvents) {
+            dateMap.put(event.getId(), event.getDate());
         }
 
         List<Event> events = eventMapper.toEntity(eventDTOs);
@@ -197,7 +216,7 @@ public class EventServiceImpl implements EventService {
         if (schoolEvents != null) {
             notificationService.sendSchoolEventNotification(result.get(), schoolEvents);
         }
-        snsService.sendPushNotification(events);
+        snsService.sendPushNotification(eventMapper.toDto(events),dateMap);
         return eventMapper.toDto(events);
     }
 
