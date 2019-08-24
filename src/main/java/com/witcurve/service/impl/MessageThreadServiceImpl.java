@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
 import com.witcurve.service.MessageThreadService;
+import com.witcurve.service.SnsService;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
 import com.witcurve.service.mapper.MessageMapper;
@@ -48,6 +49,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    SnsService snsService;
+
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
         isValidMessageThread(messageThreadDTO);
@@ -63,6 +67,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         Set<Message> messageSet = new HashSet<>();
         messageSet.add(message);
         messageThread.setMessages(messageSet);
+        snsService.sendPushNotification(messageThreadMapper.toDto(messageThread));
         return messageThreadMapper.toDto(messageThread);
 
     }
@@ -83,6 +88,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             messageThread.get().setToUserLastMessageDate(message.getCreatedDate());
             messageThread.get().setFromUserUnreadCount(messageThread.get().getFromUserUnreadCount()+1);
         }
+        snsService.sendPushNotificationOnRepliedMessage(messageThreadMapper.toDto(messageThread.get()));
         return messageThreadMapper.toDto(messageThread.get());
     }
 
@@ -106,6 +112,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         if(messageThread.get().getMessageType().equals(MessageType.MEETING_REQUEST) || messageThread.get().getMessageType().equals(MessageType.LEAVE) )
         {
             toBeApproved.setStatus(status);
+            snsService.sendPushNotificationOnStatusOfMeetingRequestChange(messageThreadMapper.toDto(toBeApproved));
             if(messageThread.get().getMessageType().equals(MessageType.LEAVE)) {
                 if(ApprovalStatus.APPROVED.equals(status)) {
                     LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
@@ -305,7 +312,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 Optional<User> toUser = userRepository.findById(messageThreadDTO.getToUserId());
                 Optional<User> fromUser = userRepository.findById(messageThreadDTO.getFromUserId());
                 if(!(toUser.get().getType().equals(UserType.SCHOOL_BOARD_MANAGER) || fromUser.get().getType().equals(UserType.SCHOOL_BOARD_MANAGER))) {
-                    throw new WitcurveException("PLease make sure school baord message should be either form school board user or to school board user ");
+                    throw new WitcurveException("PLease make sure school board message should be either form school board user or to school board user ");
                 }
             }
         }

@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.ExamService;
+import com.witcurve.service.SnsService;
 import com.witcurve.service.dto.ExamDTO;
 import com.witcurve.service.mapper.ExamMapper;
 import com.witcurve.service.util.WitcurveUtil;
@@ -53,6 +54,9 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     EventContentRepository eventContentRepository;
+
+    @Autowired
+    SnsService snsService;
 
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException {
@@ -110,6 +114,7 @@ public class ExamServiceImpl implements ExamService {
             }
         }
         exam.get().setStatus(status);
+        snsService.sendPushNotification(examMapper.toDto(exam.get()));
         return examMapper.toDto(exam.get());
     }
 
