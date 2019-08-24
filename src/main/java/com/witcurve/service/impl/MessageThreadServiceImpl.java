@@ -74,6 +74,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
 
     public MessageThreadDTO replyMessage(MessageDTO messageDTO) throws WitcurveException {
         log.debug("Request to save a reply message : {}", messageDTO);
+
         Message message = messageMapper.toEntity(messageDTO);
         message = messageRepository.save(message);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
@@ -88,7 +89,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             messageThread.get().setToUserLastMessageDate(message.getCreatedDate());
             messageThread.get().setFromUserUnreadCount(messageThread.get().getFromUserUnreadCount()+1);
         }
-        snsService.sendPushNotificationOnRepliedMessage(messageThreadMapper.toDto(messageThread.get()));
+        snsService.sendPushNotification(messageThreadMapper.toDto(messageThread.get()));
         return messageThreadMapper.toDto(messageThread.get());
     }
 
@@ -100,7 +101,6 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         }
         return messageThreadMapper.toDto(messageThread.get());
     }
-
 
     public  void approveOrRejectMessageThread(Long threadId, Long staffId, ApprovalStatus status) throws WitcurveException {
         log.debug("Change status of meeting request with id : {} of status : {}", threadId, status);

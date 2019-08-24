@@ -79,8 +79,6 @@ public class SnsService {
         String token = "ePor1oIw2Ew:APA91bEqRxUQuyEeKaH_AyA6CMQV_BiIBfykB5_9buwCVtEY1RUJ4MLBqPEoqi78fPAua01OtrNJREvmgGPkATQx6mf-iQY-CX3IB2mzLM8ShdSZwpBp9ad67Wi7rdq6Zc5i8gJhv98K";
         String endPointArn = "arn:aws:sns:us-east-1:373531857223:endpoint/GCM/WitcurveTestNotification/5064d17c-44ba-3e4e-ad95-5fab7ada5719";
         deleteEndpoint(endPointArn);
-
-
     }
 
     public String createEndPointWithToken(String token) throws WitcurveException {
@@ -184,9 +182,7 @@ public class SnsService {
         } else {
             throw new WitcurveException("There was a problem getting topic arn links");
         }
-
     }
-
 
     private String getPublishMessage(String message, String url) {
         if (url == null) {
@@ -203,7 +199,6 @@ public class SnsService {
                 "}  ";
         }
     }
-
 
     @Async
     @Transactional
@@ -348,7 +343,6 @@ public class SnsService {
         UserMobileEndPoint userMobileEndPointsRelatedToLeaveStatus;
         String url;
         if (leaveApplicationDTO.getAppliedStaffId() != null) { //To send notification to staff
-
             userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findByStaffId(leaveApplicationDTO.getAppliedStaffId());
             url = "?userId=" + userMobileEndPointsRelatedToLeaveStatus.getUser().getId() + "&leave=true";
 
@@ -397,27 +391,10 @@ public class SnsService {
                 String urlOfExam = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + examDTO.getStartDate();
                 publishMessage(message, urlOfExam, userMobileEndPoint.getEndPoint());
             }
-
-        }
-    }
-    @Async
-    public void sendPushNotificationOnRepliedMessage(MessageThreadDTO messageThreadDTO) {
-        if (messageThreadDTO.getSuperAdminMessage() == true || messageThreadDTO.getSchoolBoardAdminMessage() == true) {
-            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAdminMessage = userMobileEndPointRepository.findByUserId(messageThreadDTO.getToUserId());
-            for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAdminMessage) {
-                String urlOfAdminMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&admin=true";
-                publishMessage(WitCurveConstants.ADMIN_MESSAGE, urlOfAdminMsg, userMobileEndPoint.getEndPoint());
-            }
-        } else {
-            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPersonalMessage = userMobileEndPointRepository.findByUserId(messageThreadDTO.getToUserId());
-            for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToPersonalMessage) {
-                String urlOfPersonalMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&direct=true";
-                publishMessage(WitCurveConstants.PERSONAL_MESSAGE, urlOfPersonalMsg, userMobileEndPoint.getEndPoint());
-            }
         }
     }
 
-    @Async
+    //@Async
     public void sendPushNotification(MessageThreadDTO messageThreadDTO) {
         if (messageThreadDTO.getMessageType().equals(MessageType.SUBJECT_NOTE)) {
             List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
@@ -440,11 +417,12 @@ public class SnsService {
                 }
             }
         } else if (messageThreadDTO.getMessageType().equals(MessageType.MEETING_REQUEST)) {
-            HashMap<String, String> varMap = new HashMap<>();
+            Map<String, String> varMap = new HashMap<>();
             varMap.put("date", WitcurveUtil.format(messageThreadDTO.getMeetingDate()));
             varMap.put("time", WitcurveUtil.timeFormat(messageThreadDTO.getMeetingTime()));
 
             String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.MEETING_REQUEST);
+
             List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedMeetingReq = userMobileEndPointRepository.findByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
             for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedMeetingReq) {
                 String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
@@ -476,7 +454,6 @@ public class SnsService {
                     message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.UPDATED_LEAVE_APPLICATION);
                 }
             }
-
             UserMobileEndPoint userMobileEndPointOfClassTeacher = userMobileEndPointRepository.findClassTeacherEndPointByStudentId(leaveApplicationDTO.getAppliedStudentId());
             String urlOfLeaveApp = "?userId=" + userMobileEndPointOfClassTeacher.getUser().getId() + "&leave=true";
             publishMessage(message, urlOfLeaveApp, userMobileEndPointOfClassTeacher.getEndPoint());
