@@ -29,6 +29,19 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     @Column(nullable = false, length = 1000)
     private String deviceToken;
 
+    @NotNull
+    @Column(nullable = false)
+    private String endPoint;
+
+    @NotNull
+    @Column(nullable = false)
+    private String schoolInfoSubscriptionEndPoint;
+
+    @NotNull
+    @Column(nullable = false)
+    private String globalSubscriptionEndPoint;
+
+
     public Long getId() {
         return id;
     }
@@ -59,6 +72,30 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
 
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
+    }
+
+    public String getSchoolInfoSubscriptionEndPoint() {
+        return schoolInfoSubscriptionEndPoint;
+    }
+
+    public void setSchoolInfoSubscriptionEndPoint(String schoolInfoSubscriptionEndPoint) {
+        this.schoolInfoSubscriptionEndPoint = schoolInfoSubscriptionEndPoint;
+    }
+
+    public String getGlobalSubscriptionEndPoint() {
+        return globalSubscriptionEndPoint;
+    }
+
+    public void setGlobalSubscriptionEndPoint(String globalSubscriptionEndPoint) {
+        this.globalSubscriptionEndPoint = globalSubscriptionEndPoint;
     }
 
     @Override

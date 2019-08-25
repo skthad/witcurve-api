@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.Attachment;
 import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.SubscriptionPackage;
 
@@ -60,6 +61,8 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
     private Map<SubscriptionPackage, Double> pricing;
 
     Map<Long, SchoolDTO> schoolMap;
+
+    private Attachment instituteLogo;
 
     public InstituteDTO() {
     }
@@ -200,6 +203,14 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
         this.iosUrl = iosUrl;
     }
 
+    public Attachment getInstituteLogo() {
+        return instituteLogo;
+    }
+
+    public void setInstituteLogo(Attachment instituteLogo) {
+        this.instituteLogo = instituteLogo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -210,7 +221,6 @@ public class InstituteDTO extends AbstractAuditingDTO implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(getId());
     }
 

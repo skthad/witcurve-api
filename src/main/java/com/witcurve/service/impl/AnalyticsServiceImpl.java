@@ -37,7 +37,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
         List<SectionPerformanceDTO> sectionPerformanceList = new ArrayList<>();
 
-        List<StudentMarksDTO> studentMarksDTOList = studentMarksService.getStudentMarksByExamId(examId, null, null, true);
+        List<StudentMarksDTO> studentMarksDTOList = studentMarksService.getStudentMarksByExamId(examId, null, null, null,true);
 
         for (StudentMarksDTO studentMarksDTO : studentMarksDTOList) {
             String masterSubject = studentMarksDTO.getExamCourseDetailsDTO().getCourse().getMasterSubject();

@@ -1,11 +1,17 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.AttachmentType;
 import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.repository.*;
+import com.witcurve.service.AttachmentService;
 import com.witcurve.service.InstituteService;
-import com.witcurve.service.dto.*;
-import com.witcurve.service.mapper.*;
+import com.witcurve.service.dto.AuthorityDTO;
+import com.witcurve.service.dto.InstituteDTO;
+import com.witcurve.service.dto.SchoolDTO;
+import com.witcurve.service.mapper.InstituteMapper;
+import com.witcurve.service.mapper.SchoolInfoMapperLite;
+import com.witcurve.service.mapper.SchoolMapperLite;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -21,6 +28,8 @@ import java.util.*;
 public class InstituteServiceImpl implements InstituteService {
 
     private final Logger log = LoggerFactory.getLogger(InstituteServiceImpl.class);
+
+    private static final List<String> ALLOWED_LOGO_MEDIA_TYPES = Arrays.asList("image/jpeg", "image/png", "image/jpg");
 
     @Autowired
     InstituteRepository instituteRepository;
@@ -45,6 +54,9 @@ public class InstituteServiceImpl implements InstituteService {
 
     @Autowired
     SchoolMapperLite schoolMapperLite;
+
+    @Autowired
+    AttachmentService attachmentService;
 
     @Override
     public InstituteDTO saveOrUpdate(InstituteDTO instituteDTO) {
@@ -84,6 +96,25 @@ public class InstituteServiceImpl implements InstituteService {
         if (!institute.isPresent()) {
             throw new WitcurveException("No Institute with given id " + instituteId);
         }
+        return instituteMapper.toDto(institute.get());
+    }
+
+    @Override
+    public InstituteDTO addAttachment(Long instituteId, MultipartFile file) {
+        log.debug("Request to add attchment to institute with id: {} with attachment file : {}", instituteId, file);
+        Optional<Institute> institute = instituteRepository.findById(instituteId);
+        if (!institute.isPresent()) {
+            throw new WitcurveException("No Institute with given id " + instituteId);
+        }
+        if(institute.get().getInstituteLogo() != null) {
+            attachmentService.delete(institute.get().getInstituteLogo().getId());
+        }
+        if(!ALLOWED_LOGO_MEDIA_TYPES.contains(file.getContentType())) {
+            throw new WitcurveException("File extensions allowed for logo are png, jpeg, jpg only");
+        }
+        String directoryName = AttachmentType.INSTITUTE_LOGO.toString()+"/"+instituteId;
+        Attachment attachment = attachmentService.saveAttachment(file, AttachmentType.INSTITUTE_LOGO, directoryName);
+        institute.get().setInstituteLogo(attachment);
         return instituteMapper.toDto(institute.get());
     }
 

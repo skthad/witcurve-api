@@ -1,7 +1,10 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
-import com.witcurve.domain.*;
+import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.MasterSubject;
+import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.StaffEligibility;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.CourseTeacherRepository;
 import com.witcurve.repository.MasterSubjectRepository;
@@ -17,8 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -76,6 +78,7 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
     @Override
     public List<StaffEligibilityDTO> getStaffEligibilitysBySchoolInfo(Long schoolInfoId, String subject, Grade grade) throws WitcurveException {
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        List<StaffEligibilityDTO> result = new ArrayList<>();
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo with given id " + schoolInfo);
         }
@@ -87,19 +90,22 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
             }
         }
         if (masterSubject == null && grade == null) {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfo(schoolInfoId));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfo(schoolInfoId));
         } else if (masterSubject != null && grade != null) {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfoAndSubjectAndGrade(schoolInfoId, masterSubject, grade));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfoAndSubjectAndGrade(schoolInfoId, masterSubject, grade));
         } else if (masterSubject != null) {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfoAndSubject(schoolInfoId, masterSubject));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfoAndSubject(schoolInfoId, masterSubject));
         } else {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfoAndGrade(schoolInfoId, grade));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findBySchoolInfoAndGrade(schoolInfoId, grade));
         }
+        Collections.sort(result, new StaffEligibilityGradeAscComparator());
+        return result;
     }
 
     @Override
     public List<StaffEligibilityDTO> getStaffEligibilitysByStaff(Long staffId, String subject, Grade grade) throws WitcurveException {
         MasterSubject masterSubject = null;
+        List<StaffEligibilityDTO> result = new ArrayList<>();
         if (!Strings.isNullOrEmpty(subject)) {
             masterSubject = masterSubjectRepository.findByName(subject);
             if (masterSubject == null) {
@@ -107,14 +113,16 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
             }
         }
         if (masterSubject == null && grade == null) {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaff(staffId));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaff(staffId));
         } else if (masterSubject != null && grade != null) {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaffAndSubjectAndGrade(staffId, masterSubject, grade));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaffAndSubjectAndGrade(staffId, masterSubject, grade));
         } else if (masterSubject != null) {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaffAndSubject(staffId, masterSubject));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaffAndSubject(staffId, masterSubject));
         } else {
-            return staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaffAndGrade(staffId, grade));
+            result =  staffEligibilityMapper.toDto(staffEligibilityRepository.findByStaffAndGrade(staffId, grade));
         }
+        Collections.sort(result, new StaffEligibilityGradeAscComparator());
+        return result;
     }
 
     @Override
@@ -138,4 +146,13 @@ public class StaffEligibilityServiceImpl implements StaffEligibilityService {
         }
         staffEligibilityRepository.delete(staffEligibility.get());
     }
+
+    public class StaffEligibilityGradeAscComparator implements Comparator<StaffEligibilityDTO> {
+        @Override
+        public int compare(StaffEligibilityDTO o1, StaffEligibilityDTO o2) {
+            return o1.getGrade().compareTo(o2.getGrade());
+        }
+    }
+
+
 }

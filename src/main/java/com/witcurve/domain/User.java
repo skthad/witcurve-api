@@ -94,6 +94,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Student student;
+
     public Long getId() {
         return id;
     }
@@ -204,6 +207,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setOtpPurpose(OtpPurpose otpPurpose) {
         this.otpPurpose = otpPurpose;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public void addAuthority(Authority authority) {

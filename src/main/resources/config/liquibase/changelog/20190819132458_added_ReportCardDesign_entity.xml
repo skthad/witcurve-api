@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1566221118980-1">
+        <createTable tableName="report_card_design">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="report_card_designPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="field_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="marks" type="INT"/>
+            <column name="model_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order" type="INT"/>
+            <column name="selected" type="BIT"/>
+            <column name="short_form" type="VARCHAR(5)"/>
+            <column name="show_grades_only" type="BIT"/>
+            <column name="school_info_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566221118980-2">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="report_card_design" constraintName="FKj5qfvi5ciowaeamolkpjgxkcj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566221118980-3">
+        <addColumn tableName="report_card_design">
+            <column name="report_order" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566221118980-4">
+        <dropColumn columnName="order" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566221118980-5">
+        <addColumn tableName="report_card_design">
+            <column defaultValueBoolean="true" name="activated" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -13,6 +13,7 @@ public interface UserMobileEndPointMapper extends EntityMapper<UserMobileEndPoin
     UserMobileEndPointDTO toDto(UserMobileEndPoint userMobileEndPoint);
 
     @Mapping(source = "userId", target = "user")
+    @Mapping(target = "endPoint", ignore = true)
     UserMobileEndPoint toEntity(UserMobileEndPointDTO userMobileEndPointDTO);
 
     default User userFromUserId(Long userId) {

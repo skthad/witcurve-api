@@ -25,4 +25,54 @@
     <changeSet author="srujankuamar (generated)" id="1563610448383-2">
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_mobile_end_point" constraintName="FKj03qo6c16by7vltm3pd3jvu4j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="wc_user"/>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1563610448383-3">
+        <createTable tableName="topic_record">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="topic_recordPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="topic_end_point" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_info_id" type="BIGINT">
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1563610448383-4">
+        <addColumn tableName="user_mobile_end_point">
+            <column name="end_point" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1563610448383-5">
+        <addColumn tableName="user_mobile_end_point">
+            <column name="global_subscription_end_point" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1563610448383-6">
+        <addColumn tableName="user_mobile_end_point">
+            <column name="school_info_subscription_end_point" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1563610448383-8">
+        <addUniqueConstraint columnNames="school_info_id" constraintName="UC_TOPIC_RECORDSCHOOL_INFO_ID_COL" tableName="topic_record"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1563610448383-9">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="topic_record" constraintName="FK2b59fwjuq83uukq1d54tssc0w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
 </databaseChangeLog>

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -91,6 +92,21 @@ public class InstituteResource {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
         }
+    }
+
+    /**
+     * get institute by id
+     * @param file
+     * @return
+     * @throws WitcurveException
+     */
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
+    @PostMapping("/institutes/{instituteId}/attachment")
+    @Timed
+    public ResponseEntity<InstituteDTO> addAttachment(@PathVariable("instituteId") Long instituteId, @RequestParam MultipartFile file) throws WitcurveException {
+        log.debug("Request to add logo Institute with id : {} with file {}", instituteId, file);
+        InstituteDTO result = instituteService.addAttachment(instituteId, file);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**

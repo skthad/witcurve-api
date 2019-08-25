@@ -83,6 +83,9 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
     @CollectionTable(name = "subscription_pricing", joinColumns=@JoinColumn(name="institute_id"))
     private Map<SubscriptionPackage, Double> pricing = new HashMap<>();
 
+    @OneToOne
+    private Attachment instituteLogo;
+
     public Long getId() {
         return id;
     }
@@ -209,6 +212,14 @@ public class Institute extends AbstractAuditingEntity implements Serializable {
 
     public void setSubDomainName(String subDomainName) {
         this.subDomainName = subDomainName;
+    }
+
+    public Attachment getInstituteLogo() {
+        return instituteLogo;
+    }
+
+    public void setInstituteLogo(Attachment instituteLogo) {
+        this.instituteLogo = instituteLogo;
     }
 
     @Override
