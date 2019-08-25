@@ -1,11 +1,16 @@
 package com.witcurve.service.mapper;
 
 import com.witcurve.domain.MessageThread;
+import com.witcurve.domain.Standard;
+import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.service.dto.MessageThreadDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {MessageMapper.class, LeaveApplicationMapper.class,
 CourseTeacherMapper.class, GuardianMapper.class})
@@ -19,6 +24,7 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
     @Mapping(target = "fromUserName", expression = "java(getUserName(messageThread.getFromUser()))")
     @Mapping(target = "toUserName", expression = "java(getUserName(messageThread.getToUser()))")
     @Mapping(target = "userType", expression = "java(getUserType(messageThread))")
+    @Mapping(target = "standard", expression = "java(getStandard(messageThread))")
     MessageThreadDTO toDto(MessageThread messageThread);
 
     @Mapping(source = "messageDTOs", target = "messages")
@@ -79,6 +85,26 @@ public interface MessageThreadMapper extends EntityMapper<MessageThreadDTO, Mess
         } else {
             return null;
         }
+    }
 
+    default String getStandard(MessageThread messageThread) {
+        String standard = null;
+        if (messageThread.getFromUser().getStudent() != null) {
+            standard = getStandard(messageThread.getFromUser().getStudent().getStudentStandards());
+        } else if (messageThread.getToUser() != null && messageThread.getToUser().getStudent() != null) {
+            standard = getStandard(messageThread.getToUser().getStudent().getStudentStandards());
+        }
+
+        return standard;
+    }
+
+    default String getStandard(Set<StudentStandard> studentStandards) {
+        if (CollectionUtils.isEmpty(studentStandards)) {
+            return null;
+        }
+
+        //taking first standard
+        StudentStandard studentStandard = studentStandards.iterator().next();
+        return studentStandard.getStandard().getGrade() + "-" + studentStandard.getStandard().getSection();
     }
 }

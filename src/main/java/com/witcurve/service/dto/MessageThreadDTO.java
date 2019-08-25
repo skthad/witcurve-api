@@ -65,6 +65,8 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     private List<MessageDTO> messageDTOs;
 
+    private String standard;
+
     public Long getId() {
         return id;
     }
@@ -215,6 +217,14 @@ public class MessageThreadDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setMessageDTOs(List<MessageDTO> messageDTOs) {
         this.messageDTOs = messageDTOs;
+    }
+
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard;
     }
 
     @Override
