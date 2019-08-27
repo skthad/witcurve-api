@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -115,15 +116,11 @@ public class EventServiceImpl implements EventService {
         if (!result.isPresent()) {
             throw new WitcurveException("No school info found with ID: " + schoolInfoId);
         }
-        String bindingId = UUID.randomUUID().toString();
         for(EventDTO eventDTO : eventDTOs) {
             if(eventDTO.getKeywords()!= null) {
                 for (String keyword : eventDTO.getKeywords()) {
                     keywordRepository.save(new Keyword(keyword));
                 }
-            }
-            if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
-                eventDTO.setBindingId(bindingId);
             }
         }
 
@@ -778,6 +775,10 @@ public class EventServiceImpl implements EventService {
                     }
 
                 } else if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                    if(eventDTO.getBindingId() == null) {
+                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty binding id");
+                        throw new WitcurveException("A periodic test creation needs binding id");
+                    }
                     if(eventDTO.getGrade() == null || eventDTO.getSchoolInfoId() == null) {
                         log.error("Event of type : "+eventDTO.getType()+"cannot have empty grade or school info id");
                         throw new WitcurveException("A periodic test creation need both grade id and school info id");
@@ -839,6 +840,9 @@ public class EventServiceImpl implements EventService {
                 if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
                     log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
                     throw new WitcurveException("An attendance record must have only one of the fields [studentId, staffId]");
+                }
+                if(eventDTO.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                    throw new WitcurveException("No attendance record can be taken on Sunday");
                 }
                 Long schoolInfoId;
                 List<Event> events;

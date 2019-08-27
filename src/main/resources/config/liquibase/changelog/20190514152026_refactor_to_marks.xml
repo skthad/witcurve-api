@@ -8,4 +8,10 @@
     <changeSet author="srujan (generated)" id="1557847237604-2">
         <dropColumn columnName="published" tableName="student_marks"/>
     </changeSet>
+    <changeSet author="srujan (generated)" id="1557847237604-3">
+            <sql>ALTER TABLE student_marks MODIFY COLUMN marks DOUBLE NOT NULL ;</sql>
+    </changeSet>
+    <changeSet author="srujan (generated)" id="1557847237604-4">
+        <sql>ALTER TABLE student_marks MODIFY COLUMN marks DECIMAL(10,2) NOT NULL ;</sql>
+    </changeSet>
 </databaseChangeLog>

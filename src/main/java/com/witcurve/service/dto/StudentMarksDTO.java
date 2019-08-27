@@ -3,6 +3,7 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     private Long id;
 
+    @NotNull
     private Long studentId;
 
     private String studentName;
@@ -27,7 +29,8 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
     private EventDTO eventDTO;
 
     @NotNull
-    private Integer marks;
+    @Pattern(regexp = "\\d+(\\.\\d{1,2})?")
+    private Double marks;
 
     private ExamCourseDetailsDTO examCourseDetailsDTO;
 
@@ -97,11 +100,11 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
         this.eventDTO = eventDTO;
     }
 
-    public Integer getMarks() {
+    public Double getMarks() {
         return marks;
     }
 
-    public void setMarks(Integer marks) {
+    public void setMarks(Double marks) {
         this.marks = marks;
     }
 

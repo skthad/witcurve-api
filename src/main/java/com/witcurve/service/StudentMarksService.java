@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface StudentMarksService {
-    List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO, Long ecdId, Long eventId) throws WitcurveException;
+    List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO, Long ecdId, Long eventId, Long rcdId) throws WitcurveException;
 
     void deleteStudentMarks(Long studentMarksId) throws WitcurveException;
 

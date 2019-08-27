@@ -113,7 +113,7 @@ public class ExamResource {
 
     /**
      * get exam between fromDate and endDate for school board with schoolInfoId
-     * @param schoolInfoId
+     * @param staffId
      * @param fromDate
      * @param endDate
      * @return

@@ -25,8 +25,8 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     private Event event;
 
     @NotNull
-    @Column(name = "marks", nullable = false)
-    private Integer marks;
+    @Column(name = "marks", nullable = false, precision=10, scale=2)
+    private Double marks;
 
     @ManyToOne
     private ExamCourseDetails examCourseDetails;
@@ -58,11 +58,11 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
         this.event = event;
     }
 
-    public Integer getMarks() {
+    public Double getMarks() {
         return marks;
     }
 
-    public void setMarks(Integer marks) {
+    public void setMarks(Double marks) {
         this.marks = marks;
     }
 
