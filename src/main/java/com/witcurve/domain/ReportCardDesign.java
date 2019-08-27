@@ -1,7 +1,6 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.ReportFieldType;
-import com.witcurve.domain.enumeration.ReportModelType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,17 +17,11 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(length = 5)
     private String shortForm;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ReportModelType modelType;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -38,23 +31,23 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
     @Column(name = "report_order")
     private Integer order;
 
-    @Column
-    private Integer marks;
+    @Column(name = "marks", precision=10, scale=2)
+    private Double marks;
 
     @Column
     private Boolean showGradesOnly;
 
     @Column
+    private Boolean showMarksOnly;
+
+    @Column
     private Boolean selected;
 
-    @NotNull
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private SchoolInfo schoolInfo;
+    private Exam exam;
 
-    @NotNull
-    @Column(nullable = false, columnDefinition = "boolean default true")
-    private Boolean activated = true;
+    @Column
+    private String bindingId;
 
     public Long getId() {
         return id;
@@ -80,14 +73,6 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
         this.shortForm = shortForm;
     }
 
-    public ReportModelType getModelType() {
-        return modelType;
-    }
-
-    public void setModelType(ReportModelType modelType) {
-        this.modelType = modelType;
-    }
-
     public ReportFieldType getFieldType() {
         return fieldType;
     }
@@ -104,11 +89,11 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
         this.order = order;
     }
 
-    public Integer getMarks() {
+    public Double getMarks() {
         return marks;
     }
 
-    public void setMarks(Integer marks) {
+    public void setMarks(Double marks) {
         this.marks = marks;
     }
 
@@ -128,20 +113,28 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
         this.selected = selected;
     }
 
-    public SchoolInfo getSchoolInfo() {
-        return schoolInfo;
+    public Boolean getShowMarksOnly() {
+        return showMarksOnly;
     }
 
-    public void setSchoolInfo(SchoolInfo schoolInfo) {
-        this.schoolInfo = schoolInfo;
+    public void setShowMarksOnly(Boolean showMarksOnly) {
+        this.showMarksOnly = showMarksOnly;
     }
 
-    public Boolean getActivated() {
-        return activated;
+    public Exam getExam() {
+        return exam;
     }
 
-    public void setActivated(Boolean activated) {
-        this.activated = activated;
+    public void setExam(Exam exam) {
+        this.exam = exam;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     @Override

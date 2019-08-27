@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1566917000887-1">
+        <addColumn tableName="report_card_design">
+            <column name="binding_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-2">
+        <addColumn tableName="report_card_design">
+            <column name="exam_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-3">
+        <addColumn tableName="report_card_design">
+            <column name="show_marks_only" type="bit"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-4">
+        <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="report_card_design" constraintName="FKq4oxbfjye4i1thv400to0ow3x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-5">
+        <dropForeignKeyConstraint baseTableName="report_card_design" constraintName="FKj5qfvi5ciowaeamolkpjgxkcj"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-6">
+        <dropColumn columnName="model_type" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-7">
+        <dropColumn columnName="school_info_id" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1566917000887-8">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="name" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1566917000887-9">
+        <dropColumn columnName="activated" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="srujan (generated)" id="1566917000887-10">
+        <sql>ALTER TABLE report_card_design MODIFY COLUMN marks DECIMAL(10,2) NOT NULL ;</sql>
+    </changeSet>
+    <changeSet author="srujan (generated)" id="1566917000887-11">
+        <sql>ALTER TABLE report_card_design MODIFY COLUMN marks DECIMAL(10,2) NULL ;</sql>
+    </changeSet>
+</databaseChangeLog>

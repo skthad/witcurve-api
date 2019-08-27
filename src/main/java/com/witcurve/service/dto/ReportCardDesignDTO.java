@@ -1,7 +1,6 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.ReportFieldType;
-import com.witcurve.domain.enumeration.ReportModelType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -11,30 +10,26 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
 
     private Long id;
 
-    @NotNull
     private String name;
 
     private String shortForm;
-
-    @NotNull
-    private ReportModelType modelType;
 
     @NotNull
     private ReportFieldType fieldType;
 
     private Integer order;
 
-    private Integer marks;
+    private Double marks;
 
     private Boolean showGradesOnly;
 
+    private Boolean showMarksOnly;
+
     private Boolean selected;
 
-    @NotNull
-    private Long schoolInfoId;
+    private Long examId;
 
-    @NotNull
-    private Boolean activated = true;
+    private String bindingId;
 
     public Long getId() {
         return id;
@@ -60,14 +55,6 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
         this.shortForm = shortForm;
     }
 
-    public ReportModelType getModelType() {
-        return modelType;
-    }
-
-    public void setModelType(ReportModelType modelType) {
-        this.modelType = modelType;
-    }
-
     public ReportFieldType getFieldType() {
         return fieldType;
     }
@@ -84,11 +71,11 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
         this.order = order;
     }
 
-    public Integer getMarks() {
+    public Double getMarks() {
         return marks;
     }
 
-    public void setMarks(Integer marks) {
+    public void setMarks(Double marks) {
         this.marks = marks;
     }
 
@@ -108,20 +95,28 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
         this.selected = selected;
     }
 
-    public Long getSchoolInfoId() {
-        return schoolInfoId;
+    public Boolean getShowMarksOnly() {
+        return showMarksOnly;
     }
 
-    public void setSchoolInfoId(Long schoolInfoId) {
-        this.schoolInfoId = schoolInfoId;
+    public void setShowMarksOnly(Boolean showMarksOnly) {
+        this.showMarksOnly = showMarksOnly;
     }
 
-    public Boolean getActivated() {
-        return activated;
+    public Long getExamId() {
+        return examId;
     }
 
-    public void setActivated(Boolean activated) {
-        this.activated = activated;
+    public void setExamId(Long examId) {
+        this.examId = examId;
+    }
+
+    public String getBindingId() {
+        return bindingId;
+    }
+
+    public void setBindingId(String bindingId) {
+        this.bindingId = bindingId;
     }
 
     @Override
