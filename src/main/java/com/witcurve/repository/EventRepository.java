@@ -25,14 +25,15 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.student_id = ?3 and e.type = 'ATTENDANCE') or \n" +
-        "(gsd.standard_id = ?4 and e.type in ?7) or \n" +
+        "(gsd.standard_id = ?4 and e.type in ?8) or \n" +
         "(ct.standard_id = ?4 and e.type = 'ASSIGNMENT') OR \n" +
+        "(e.course_id in ?7 and e.type = 'PERIODIC_TEST') OR \n" +
         "(e.standard_id = ?4 and e.type = 'SCHOOL_EVENT') OR\n" +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) \n" +
-        " and e.school_info_id = ?6 and (e.type in ('HOLIDAY', 'PERIODIC_TEST','SCHOOL_EVENT'))))", nativeQuery = true)
+        " and e.school_info_id = ?6 and (e.type in ('HOLIDAY','SCHOOL_EVENT'))))", nativeQuery = true)
     List<BigInteger> findEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
                                                      Long studentId, Long standardId, String grade,
-                                                     Long schoolInfoId, List<String> types);
+                                                     Long schoolInfoId, List<Long> courses, List<String> types);
 
     @Query(value = "select distinct e.id from event e\n" +
         "left join slot_course_details scd on scd.id = e.scd_id\n" +
@@ -45,12 +46,11 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query(value = "select distinct e.id from event e\n" +
         "left join slot_course_details scd on scd.id = e.scd_id\n" +
         "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
-        "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.staff_id = ?3 and e.type = 'ATTENDANCE') or \n" +
         "(scd.course_teacher_id in ?4 and e.type in ?9) or \n" +
         "(e.course_teacher_id in ?4 and e.type = 'ASSIGNMENT') OR \n" +
-        "(ct.course_id in ?5 and e.type = 'PERIODIC_TEST') OR \n" +
+        "(e.course_id in ?5 and e.type = 'PERIODIC_TEST') OR \n" +
         "(e.standard_id in ?6 and e.type = 'SCHOOL_EVENT') OR\n" +
         "((e.grade is null or (e.grade is not null and e.grade in ?7)) \n" +
         " and e.school_info_id = ?8 and (e.type in ('HOLIDAY', 'SCHOOL_EVENT'))))", nativeQuery = true)
@@ -76,7 +76,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date = ?1 and e.type = 'ASSIGNMENT' and e.courseTeacher.id = ?2")
     Event findAssignmentOnDateAndCourseTeacher(LocalDate date, Long courseTeacherId);
 
-    @Query("Select e from Event e where e.date = ?1 and e.type = 'PERIODIC_TEST' and e.courseTeacher.course.id = ?2")
+    @Query("Select e from Event e where e.date = ?1 and e.type = 'PERIODIC_TEST' and e.course.id = ?2")
     Event findPeriodicTestOnDateAndCourseId(LocalDate date, Long courseId);
 
     @Query("Select e from Event e where e.date = ?1 and (e.schoolInfo.id=?3 or e.standard.schoolInfo.id =?3) and e.type in ?2")

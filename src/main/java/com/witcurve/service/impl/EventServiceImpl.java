@@ -54,6 +54,9 @@ public class EventServiceImpl implements EventService {
     CourseTeacherRepository courseTeacherRepository;
 
     @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
     StaffRepository staffRepository;
 
     @Autowired
@@ -229,8 +232,10 @@ public class EventServiceImpl implements EventService {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
+            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
 
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
@@ -321,7 +326,9 @@ public class EventServiceImpl implements EventService {
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
             LocalDate monthStart = LocalDate.of(year,month,1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DATE_RANGE);
+            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
@@ -401,7 +408,9 @@ public class EventServiceImpl implements EventService {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DATE_RANGE);
+            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
@@ -783,12 +792,12 @@ public class EventServiceImpl implements EventService {
                         log.error("Event of type : "+eventDTO.getType()+"cannot have empty grade or school info id");
                         throw new WitcurveException("A periodic test creation need both grade id and school info id");
                     }
-                    if(eventDTO.getCourseTeacher() != null) {
-                        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(eventDTO.getCourseTeacher().getId());
-                        if (!courseTeacher.isPresent()) {
-                            throw new WitcurveException("No course teacher with given id " + eventDTO.getCourseTeacher().getId());
+                    if(eventDTO.getCourse() != null) {
+                        Optional<Course> course = courseRepository.findById(eventDTO.getCourse().getId());
+                        if (!course.isPresent()) {
+                            throw new WitcurveException("No course with given id " + eventDTO.getCourse().getId());
                         }
-                        Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), courseTeacher.get().getCourse().getId());
+                        Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), course.get().getId());
                         if(event != null && !event.getId().equals(eventDTO.getId())) {
                             if(event != null && !event.getId().equals(eventDTO.getId())) {
                                 throw new WitcurveException("There already exists a periodic test for this course on given date");

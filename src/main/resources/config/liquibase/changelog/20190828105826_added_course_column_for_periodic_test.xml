@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1566989919494-1">
+        <addColumn tableName="event">
+            <column name="course_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1566989919494-2">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="event" constraintName="FKftnwq8qoxcybj9xrn8313vwli" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1566989919494-3">
+        <sql>UPDATE  witcurve.event as e
+            JOIN witcurve.course_teacher as ct ON ct.id=e.course_teacher_id
+            SET e.course_id = ct.course_id where e.type='PERIODIC_TEST';</sql>
+        <sql>UPDATE  witcurve.event as e
+            SET e.course_teacher_id = null where e.type='PERIODIC_TEST';</sql>
+    </changeSet>
+</databaseChangeLog>
