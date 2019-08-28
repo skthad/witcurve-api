@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StandardRepository extends JpaRepository<Standard,Long> {
+public interface StandardRepository extends JpaRepository<Standard, Long> {
 
     @Query("select std from Standard std where std.classTeacher.id = ?1 and std.active = true")
     Standard findByClassTeacherId(Long classTeacherId);
@@ -28,6 +28,4 @@ public interface StandardRepository extends JpaRepository<Standard,Long> {
 
     @Query("select std from Standard std where std.schoolInfo.id = ?1 and std.active=true and std.id not in (select gsd.standard.id from GeneralSlotDetails gsd where gsd.status='ACTIVE' and gsd.standard.id=std.id)  order by std.grade, std.section")
     List<Standard> findSlotUnassignedBySchoolInfoId(Long schoolInfoId);
-
-
 }

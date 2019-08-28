@@ -14,6 +14,10 @@ public class WitCurveConstants {
 
     public static final String UPDATED_ASSIGNMENT_PUSH_NOTIFICATION = "Assignment has been updated for {{subject}} {{fromDate}} to {{date}}";
 
+    public static final String PERIODIC_TEST_PUSH_NOTIFICATION = "Periodic Test has been created  for {{subject}} on {{date}}";
+
+    public static final String UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION = "Periodic Test has been updated for {{subject}} {{fromDate}} to {{date}}";
+
     public static final String STAFF_NOTICE = "A new staff notice has been posted";
 
     public static final String NOTICE_FOR_CLASS = "A new notice for class : {{className}} has been posted";
