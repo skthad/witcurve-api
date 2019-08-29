@@ -271,7 +271,7 @@ public class SnsService {
                         variableMap.put("className", eventDTO.getGrade().toString());
                         String messageOfSchoolEvent = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.SCHOOL_EVENT_FOR_CLASS);
 
-                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
+                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findStudentEndPointByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
                         for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToNoticeOfStd) {
                             String urlOfSchoolEvent = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + eventDTO.getDate();
                             publishMessage(messageOfSchoolEvent, urlOfSchoolEvent, userMobileEndPoint.getEndPoint());
@@ -294,18 +294,18 @@ public class SnsService {
                     //To send notification when student is absent
                     if (eventDTO.getAttendanceType().equals(AttendanceType.ABSENT)) {
                         if (eventDTO.getStudentId() != null) {
-                            UserMobileEndPoint userMobileEndPointsRelatedToAbsentStudent = userMobileEndPointRepository.findByStudentId(eventDTO.getStudentId());
-                            if (userMobileEndPointsRelatedToAbsentStudent != null) {
-                                String urlOfStudentAttendance = "?userId=" + userMobileEndPointsRelatedToAbsentStudent.getUser().getId() + "&absent=true";
-                                publishMessage(finalMessageContent, urlOfStudentAttendance, userMobileEndPointsRelatedToAbsentStudent.getEndPoint());
+                            List<UserMobileEndPoint> userMobileEndPointsRelatedToAbsentStudent = userMobileEndPointRepository.findStudentEndPointByStudentId(eventDTO.getStudentId());
+                            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToAbsentStudent) {
+                                String urlOfStudentAttendance = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
+                                publishMessage(finalMessageContent, urlOfStudentAttendance, userMobileEndPoint.getEndPoint());
                             }
                         }
                         //To send notification when staff is absent
                         else if (eventDTO.getStaffId() != null) {
-                            UserMobileEndPoint userMobileEndPointsRelatedToStaffAttendance = userMobileEndPointRepository.findByStaffId(eventDTO.getStaffId());
-                            if (userMobileEndPointsRelatedToStaffAttendance != null) {
-                                String urlOfStaffAttendance = "?userId=" + userMobileEndPointsRelatedToStaffAttendance.getUser().getId() + "&absent=true";
-                                publishMessage(finalMessageContent, urlOfStaffAttendance, userMobileEndPointsRelatedToStaffAttendance.getEndPoint());
+                            List<UserMobileEndPoint> userMobileEndPointsRelatedToStaffAttendance = userMobileEndPointRepository.findStaffEndPointByStaffId(eventDTO.getStaffId());
+                            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToStaffAttendance){
+                                String urlOfStaffAttendance = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
+                                publishMessage(finalMessageContent, urlOfStaffAttendance, userMobileEndPoint.getEndPoint());
                             }
                         }
                     }
@@ -324,7 +324,7 @@ public class SnsService {
                         } else {
                             periodicTestMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.PERIODIC_TEST_PUSH_NOTIFICATION);
                         }
-                        List<UserMobileEndPoint> userMobileEndPointListRelatedToPeriodicTest = userMobileEndPointRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
+                        List<UserMobileEndPoint> userMobileEndPointListRelatedToPeriodicTest = userMobileEndPointRepository.findStudentEndPointByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
                         for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointListRelatedToPeriodicTest) {
                             String urlOfTest = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + eventDTO.getDate();
                             publishMessage(periodicTestMessage, urlOfTest, userMobileEndPoint.getEndPoint());
@@ -348,19 +348,19 @@ public class SnsService {
         } else {
             message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.LEAVE_APPLICATION_STATUS);
         }
-        UserMobileEndPoint userMobileEndPointsRelatedToLeaveStatus;
+        List<UserMobileEndPoint> userMobileEndPointsRelatedToLeaveStatus;
         String url;
         if (leaveApplicationDTO.getAppliedStaffId() != null) { //To send notification to staff
-            userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findByStaffId(leaveApplicationDTO.getAppliedStaffId());
-            if (userMobileEndPointsRelatedToLeaveStatus != null) {
-                url = "?userId=" + userMobileEndPointsRelatedToLeaveStatus.getUser().getId() + "&leave=true";
-                publishMessage(message, url, userMobileEndPointsRelatedToLeaveStatus.getEndPoint());
+            userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findStaffEndPointByStaffId(leaveApplicationDTO.getAppliedStaffId());
+            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToLeaveStatus) {
+                url = "?userId=" + userMobileEndPoint.getUser().getId() + "&leave=true";
+                publishMessage(message, url, userMobileEndPoint.getEndPoint());
             }
         } else {//To send notification for student
-            userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findByStudentId(leaveApplicationDTO.getAppliedStudentId());
-            if (userMobileEndPointsRelatedToLeaveStatus != null) {
-                url = "?userId=" + userMobileEndPointsRelatedToLeaveStatus.getUser().getId() + "&leave=true";
-                publishMessage(message, url, userMobileEndPointsRelatedToLeaveStatus.getEndPoint());
+            userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findStudentEndPointByStudentId(leaveApplicationDTO.getAppliedStudentId());
+            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToLeaveStatus){
+                url = "?userId=" + userMobileEndPoint.getUser().getId() + "&leave=true";
+                publishMessage(message, url, userMobileEndPoint.getEndPoint());
             }
         }
     }
@@ -398,7 +398,7 @@ public class SnsService {
 
         Set<Grade> grades = examDTO.getGrades();
         for (Grade grade : grades) {
-            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToExamNotification = userMobileEndPointRepository.findByGradeAndSchoolInfoId(grade, examDTO.getSchoolInfoId());
+            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToExamNotification = userMobileEndPointRepository.findStudentEndPointByGradeAndSchoolInfoId(grade, examDTO.getSchoolInfoId());
             for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToExamNotification) {
                 String urlOfExam = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + examDTO.getStartDate();
                 publishMessage(message, urlOfExam, userMobileEndPoint.getEndPoint());
@@ -411,7 +411,7 @@ public class SnsService {
         switch (messageThreadDTO.getMessageType()) {
 
             case SUBJECT_NOTE:
-                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
+                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
                 for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedGroupMessage) {
                     String urlOfSubjectNote = "?userId=" + userMobileEndPoint.getUser().getId() + "&group=true";
                     publishMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, userMobileEndPoint.getEndPoint());

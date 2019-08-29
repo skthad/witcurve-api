@@ -28,5 +28,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Course findBySlotCourseDetailId(Long scdId);
 
     @Query("Select ct.course from CourseTeacher ct where ct.id = ?1")
-    Course findByCourseTeacherId(Long teacherId);
+    Course findByCourseTeacherId(Long courseTeacherId);
 }
