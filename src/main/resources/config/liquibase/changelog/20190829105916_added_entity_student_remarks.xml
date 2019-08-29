@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1567076373339-1">
+        <createTable tableName="student_remarks">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_remarksPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="binding_id" type="VARCHAR(255)"/>
+            <column name="remarks" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_id" type="BIGINT"/>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1567076373339-2">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_remarks" constraintName="FK3g9lh2pxnnw0e1wajfsx0kle" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1567076373339-3">
+        <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="student_remarks" constraintName="FKqe2fwnmi4o13jjy3cs7ki19st" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
+    </changeSet>
+</databaseChangeLog>

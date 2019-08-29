@@ -19,18 +19,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 
 @Service
 @Transactional
 public class StudentMarksServiceImpl implements StudentMarksService {
+
     private final Logger log  = LoggerFactory.getLogger(StandardServiceImpl.class);
 
     private final List<Boolean> ALL = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
@@ -220,10 +217,9 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         }
         studentMarksRepository.delete(studentMarks.get());
     }
-
     private List<StudentMarksDTO> validateAndFormatStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long ecdId, Long eventId, Long rcdId) {
-        List<Long> existingStudentIds;
-        List<Long> studentIds = studentMarksDTOs.stream().map(StudentMarksDTO::getStudentId).collect(Collectors.toList());
+        List<StudentMarks> existingStudentMarksList;
+        List<Long> requestStudentIds = new ArrayList<>();
         EventDTO eventDTO = null;
         ExamCourseDetailsDTO ecd = null;
         if(eventId == null && ecdId == null) {
@@ -250,9 +246,9 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                     throw new WitcurveException("Event doesn't exist with id "+ eventId);
                 }
                 if(rcdId == null) {
-                    existingStudentIds = studentMarksRepository.getStudentIdsByEventId(eventId);
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEventId(eventId);
                 } else {
-                    existingStudentIds = studentMarksRepository.getStudentIdsByEventIdAndRcdId(eventId, rcdId);
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEventIdAndRcdId(eventId, rcdId);
                 }
                 eventDTO = new EventDTO();
                 eventDTO.setId(eventId);
@@ -266,20 +262,39 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                     throw new WitcurveException("Marks cannot be posted for draft exams");
                 }
                 if(rcdId == null) {
-                    existingStudentIds = studentMarksRepository.getStudentIdsByEcdId(ecdId, ALL);
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEcdId(ecdId, ALL);
                 } else {
-                    existingStudentIds = studentMarksRepository.getStudentIdsByEcdIdAndRcdId(ecdId, rcdId, ALL);
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEcdIdAndRcdId(ecdId, rcdId, ALL);
                 }
                 ecd = new ExamCourseDetailsDTO();
                 ecd.setId(ecdId);
             }
-            if(CollectionUtils.containsAny(studentIds,existingStudentIds)) {
-                throw new WitcurveException("There are records existing with one or more student for this given event or exam course");
+            Map<Long, StudentMarks> existingRecordMap = new HashMap<>();
+            for(StudentMarks studentMarks : existingStudentMarksList) {
+                existingRecordMap.put(studentMarks.getStudent().getId(), studentMarks);
             }
             for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                if(requestStudentIds.contains(studentMarksDTO.getStudentId())) {
+                    throw new WitcurveException("There should be only one record for a student in the request");
+                }
+                StudentMarks existingStudentMarks = existingRecordMap.get(studentMarksDTO.getStudentId());
+                if(studentMarksDTO.getId() == null) {
+                    if(existingStudentMarks != null) {
+                        throw new WitcurveException("There already exists a student marks for this student with id "+studentMarksDTO.getStudentId()+", so new record cannot be created");
+                    }
+                } else {
+                    if(existingStudentMarks == null) {
+                        throw new WitcurveException("There is no existing student marks record with this student id "+studentMarksDTO.getStudentId()+"to update");
+                    } else {
+                        if(!existingStudentMarks.getId().equals(studentMarksDTO.getId())) {
+                            throw new WitcurveException("Student marks id cannot be changed while updating for student id "+studentMarksDTO.getStudentId());
+                        }
+                    }
+                }
                 studentMarksDTO.setEventDTO(eventDTO);
                 studentMarksDTO.setExamCourseDetailsDTO(ecd);
                 studentMarksDTO.setReportCardDesignDTO(reportCardDesignDTO);
+                requestStudentIds.add(studentMarksDTO.getStudentId());
             }
         }
         return studentMarksDTOs;

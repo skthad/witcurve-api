@@ -17,14 +17,8 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     @Query("select sm from StudentMarks sm where sm.event.id = ?1 and sm.reportCardDesign is null ")
     List<StudentMarks> getStudentMarksByEventId(Long eventId);
 
-    @Query("select sm.student.id from StudentMarks sm where sm.event.id = ?1 and sm.reportCardDesign is null ")
-    List<Long> getStudentIdsByEventId(Long eventId);
-
     @Query("select sm from StudentMarks sm where sm.event.id = ?1 and sm.reportCardDesign.id = ?2")
     List<StudentMarks> getStudentMarksByEventIdAndRcdId(Long eventId, Long rcdId);
-
-    @Query("select sm.student.id from StudentMarks sm where sm.event.id = ?1 and sm.reportCardDesign.id = ?2")
-    List<Long> getStudentIdsByEventIdAndRcdId(Long eventId, Long rcdId);
 
     @Query("select sm from StudentMarks sm where sm.event.id = ?1 " +
         "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?2) and sm.reportCardDesign is null")
@@ -39,11 +33,8 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 and sm.reportCardDesign is null and sm.examCourseDetails.gsd.marksPublished in ?2")
     List<StudentMarks> getStudentMarksByEcdId(Long ecdId, List<Boolean> publishList);
 
-    @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 and sm.reportCardDesign is null and sm.examCourseDetails.gsd.marksPublished in ?2")
-    List<Long> getStudentIdsByEcdId(Long ecdId, List<Boolean> publishList);
-
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 and sm.reportCardDesign.id = ?2 and sm.examCourseDetails.gsd.marksPublished in ?3")
-    List<Long> getStudentIdsByEcdIdAndRcdId(Long ecdId, Long rcdId, List<Boolean> publishList);
+    List<StudentMarks> getStudentMarksByEcdIdAndRcdId(Long ecdId, Long rcdId, List<Boolean> publishList);
 
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.reportCardDesign is null " +
         "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?2) and sm.examCourseDetails.gsd.marksPublished in ?3")
