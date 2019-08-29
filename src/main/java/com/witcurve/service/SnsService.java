@@ -471,10 +471,10 @@ public class SnsService {
                     message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.UPDATED_LEAVE_APPLICATION);
                 }
             }
-            UserMobileEndPoint userMobileEndPointOfClassTeacher = userMobileEndPointRepository.findClassTeacherEndPointByStudentId(leaveApplicationDTO.getAppliedStudentId());
-            if (userMobileEndPointOfClassTeacher != null) {
-                String urlOfLeaveApp = "?userId=" + userMobileEndPointOfClassTeacher.getUser().getId() + "&leave=true";
-                publishMessage(message, urlOfLeaveApp, userMobileEndPointOfClassTeacher.getEndPoint());
+            List<UserMobileEndPoint> userMobileEndPointOfClassTeacher = userMobileEndPointRepository.findClassTeacherEndPointByStudentId(leaveApplicationDTO.getAppliedStudentId());
+            for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointOfClassTeacher) {
+                String urlOfLeaveApp = "?userId=" + userMobileEndPoint.getUser().getId() + "&leave=true";
+                publishMessage(message, urlOfLeaveApp, userMobileEndPoint.getEndPoint());
             }
         }
     }

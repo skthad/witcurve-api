@@ -37,13 +37,13 @@ public interface UserMobileEndPointRepository extends JpaRepository<UserMobileEn
     @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select staff.user.id from Staff staff where staff.id=?1)")
     UserMobileEndPoint findByStaffId(Long staffId);
 
-    @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select ss.student.user.id from StudentStandard ss where ss.active=true and ss.standard.id in (Select std.id from Standard std where std.grade=?1 and std.schoolInfo.id=?2))")
+    @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select ss.student.user.id from StudentStandard ss where ss.active=true and ss.standard.grade=?1 and ss.standard.schoolInfo.id=?2)")
     List<UserMobileEndPoint> findByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId);
 
     @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select ss.student.user.id from StudentStandard ss where ss.active=true and ss.standard.id in (Select ct.standard.id from CourseTeacher ct where ct.active=true and ct.id=?1))")
     List<UserMobileEndPoint> findByCourseTeacherId(Long courseTeacherId);
 
-    @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select staff.user.id from Staff staff where staff.id in (Select std.classTeacher.id from Standard std where std.active=true and std.id in (Select ss.standard.id from StudentStandard ss where ss.student.id=?1 )))")
-    UserMobileEndPoint findClassTeacherEndPointByStudentId(Long studentId);
+    @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select staff.user.id from Staff staff where staff.id in (Select ss.standard.classTeacher.id from StudentStandard ss where ss.active = true and ss.student.id=?1 ))")
+    List<UserMobileEndPoint> findClassTeacherEndPointByStudentId(Long studentId);
 
 }
