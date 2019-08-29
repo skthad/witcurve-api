@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StandardRepository extends JpaRepository<Standard,Long> {
+public interface StandardRepository extends JpaRepository<Standard, Long> {
 
     @Query("select std from Standard std where std.classTeacher.id = ?1 and std.active = true")
     Standard findByClassTeacherId(Long classTeacherId);
