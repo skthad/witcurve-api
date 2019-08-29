@@ -14,8 +14,6 @@ import java.util.List;
 
 public interface EventService {
 
-    String testMessage = "test";
-
     List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException;
 
     EventDTO getEventById(Long eventId) throws WitcurveException;
