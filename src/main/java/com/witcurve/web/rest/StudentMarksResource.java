@@ -22,12 +22,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class StudentMarksResource {
+
     private final Logger log = LoggerFactory.getLogger(StandardResource.class);
 
     @Autowired
     StudentMarksService studentMarksService;
     /**
-      * creates a new student marks relation
+      * creates a new student marks
       * @param studentMarksDTOs
       * @param eventId
       * @param ecdId

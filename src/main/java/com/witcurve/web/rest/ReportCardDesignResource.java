@@ -78,7 +78,7 @@ public class ReportCardDesignResource {
     }
 
     /**
-     * deactivate reportCardDesigns by ids
+     * delete reportCardDesigns by ids
      * @param ids
      * @return
      * @throws WitcurveException

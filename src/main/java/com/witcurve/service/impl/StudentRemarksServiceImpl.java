@@ -48,17 +48,16 @@ public class StudentRemarksServiceImpl implements StudentRemarksService {
     }
 
     @Override
-    public List<StudentRemarksDTO> getByBindingId(String bindingId) {
-        log.debug("Request to get all student remarks with bindingId : {}", bindingId);
-        List<StudentRemarks> studentRemarksList = studentRemarksRepository.findByBindingId(bindingId);
-        return studentRemarksMapper.toDto(studentRemarksList);
-    }
-
-    @Override
-    public List<StudentRemarksDTO> getByExamId(Long examId) {
-        log.debug("Request to get all student remarks with examId : {}", examId);
-        List<StudentRemarks> studentRemarksList = studentRemarksRepository.findByExamId(examId);
-        return studentRemarksMapper.toDto(studentRemarksList);
+    public List<StudentRemarksDTO> findByExamIdOrBindingId(Long examId, String bindingId) {
+        log.debug("Request to get student remarks for exam with id : {} or periodic test with binding id : {}", examId, bindingId);
+        anyOne(examId, bindingId);
+        List<StudentRemarks> result;
+        if(examId != null) {
+            result = studentRemarksRepository.findByExamId(examId);
+        } else {
+            result = studentRemarksRepository.findByBindingId(bindingId);
+        }
+        return studentRemarksMapper.toDto(result);
     }
 
     @Override
@@ -70,12 +69,7 @@ public class StudentRemarksServiceImpl implements StudentRemarksService {
     private List<StudentRemarksDTO> validAndFormat(List<StudentRemarksDTO> studentRemarksDTOs, Long examId, String bindingId) {
         List<StudentRemarks> existingStudentRemarksList = new ArrayList<>();
         List<Long> requestStudentIds = new ArrayList<>();
-        if(examId == null && bindingId == null) {
-            throw new WitcurveException("Both examId and bindingId cannot be null");
-        }
-        if(examId != null && bindingId != null) {
-            throw new WitcurveException("Only one of examId and bindingId can be not null");
-        }
+        anyOne(examId, bindingId);
         Boolean forExam = false;
         if(examId != null) {
             Optional<Exam> exam = examRepository.findById(examId);
@@ -125,5 +119,14 @@ public class StudentRemarksServiceImpl implements StudentRemarksService {
             }
         }
         return studentRemarksDTOs;
+    }
+
+    private void anyOne(Long examId, String bindingId) {
+        if(examId == null && bindingId == null) {
+            throw new WitcurveException("Both examId and bindingId cannot be null");
+        }
+        if(examId != null && bindingId != null) {
+            throw new WitcurveException("Both examId and bindingId cannot be not null");
+        }
     }
 }

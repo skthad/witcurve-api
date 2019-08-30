@@ -8,9 +8,7 @@ public interface StudentRemarksService {
 
     List<StudentRemarksDTO> saveOrUpdate(List<StudentRemarksDTO> studentRemarksDTOs, Long examId, String bindingId);
 
-    List<StudentRemarksDTO> getByBindingId(String bindingId);
-
-    List<StudentRemarksDTO> getByExamId(Long examId);
+    List<StudentRemarksDTO> findByExamIdOrBindingId(Long examId, String bindingId);
 
     void deleteStudentMarks(List<Long> ids);
 
