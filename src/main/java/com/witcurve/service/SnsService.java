@@ -124,8 +124,7 @@ public class SnsService {
             publishRequest.setMessageStructure("json");
             amazonSNS.publish(publishRequest);
         } catch (SdkClientException e) {
-            log.debug("AWS Exception : {}", e.getMessage());
-            throw new WitcurveException("There was a problem sending this message");
+            log.info("AWS Exception : {}", e.getMessage());
         }
 
     }
@@ -139,7 +138,7 @@ public class SnsService {
             }
         } else {
             if (schoolInfoId == null) {
-                throw new WitcurveException("School Info Id is required for publishing bulk message");
+                log.info("School Info Id is required for publishing bulk message");
             }
             TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
             topicArn = topicRecord.getTopicEndPoint();
@@ -152,11 +151,11 @@ public class SnsService {
                 publishRequest.setMessageStructure("json");
                 amazonSNS.publish(publishRequest);
             } catch (SdkClientException e) {
-                log.debug("AWS Exception : {}", e.getMessage());
-                throw new WitcurveException("There was a problem sending this message");
+                log.info("AWS Exception : {}", e.getMessage());
+                log.info("There was a problem sending this message");
             }
         } else {
-            throw new WitcurveException("There was a problem getting topic arn links");
+            log.info("There was a problem getting topic arn links");
         }
     }
 
