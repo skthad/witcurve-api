@@ -15,20 +15,21 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Set;
 
 public class WitcurveUtil {
-
     private static final Logger log = LoggerFactory.getLogger(WitcurveUtil.class);
 
-    public static LocalDate getLocalDate(String localDate, String format){
+    public static LocalDate getLocalDate(String localDate, String format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return LocalDate.parse(localDate, formatter);
     }
 
     public static void correctDateFormat(LocalDate startDate, LocalDate endDate) throws WitcurveException {
-        if((startDate == null) ^ (endDate == null)) {
+        if ((startDate == null) ^ (endDate == null)) {
             throw new WitcurveException("Dude send the both dates brah! >:(");
         }
         if (startDate.isAfter(endDate)) {
@@ -36,51 +37,51 @@ public class WitcurveUtil {
         }
     }
 
-    public static <T> Boolean  isObjectEmpty(T t) throws IllegalAccessException, InvocationTargetException {
+    public static <T> Boolean isObjectEmpty(T t) throws IllegalAccessException, InvocationTargetException {
         Set<Method> getters = ReflectionUtils.getAllMethods(t.getClass(),
             ReflectionUtils.withModifier(Modifier.PUBLIC), ReflectionUtils.withPrefix("get"));
-        for(Method getterMethod : getters) {
-            if(getterMethod.invoke(t) != null) {
-                if(!getterMethod.invoke(t).toString().replaceAll("\\s", "").isEmpty()) {
+        for (Method getterMethod : getters) {
+            if (getterMethod.invoke(t) != null) {
+                if (!getterMethod.invoke(t).toString().replaceAll("\\s", "").isEmpty()) {
                     return false;
                 }
             }
         }
-        return  true;
+        return true;
     }
 
     public static File getFile(MultipartFile file) throws WitcurveException {
         File convFile;
         try {
-            String tmpLocation = System.getProperty("java.io.tmpdir")+File.separator+Instant.now().getEpochSecond();
+            String tmpLocation = System.getProperty("java.io.tmpdir") + File.separator + Instant.now().getEpochSecond();
             File tmpDirectory = new File(tmpLocation);
-            if(!tmpDirectory.exists()) {
+            if (!tmpDirectory.exists()) {
                 tmpDirectory.mkdir();
             }
-            convFile = new File( tmpLocation+ File.separator+file.getOriginalFilename());
+            convFile = new File(tmpLocation + File.separator + file.getOriginalFilename());
             convFile.createNewFile();
             FileOutputStream fos = new FileOutputStream(convFile);
             fos.write(file.getBytes());
             fos.close();
             return convFile;
-        } catch(IOException e) {
-            log.debug("Error while reading file : {}",e.getMessage());
+        } catch (IOException e) {
+            log.debug("Error while reading file : {}", e.getMessage());
             throw new WitcurveException("Error while reading the file, please check if the file is in correct format.");
         }
     }
 
-    public static File createTempFile(String name) throws WitcurveException{
+    public static File createTempFile(String name) throws WitcurveException {
         String directoryPath;
-        if(name == null || name.isEmpty()) {
-            directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ Instant.now().getEpochSecond()+".tmp";
+        if (name == null || name.isEmpty()) {
+            directoryPath = System.getProperty("java.io.tmpdir") + File.separator + Instant.now().getEpochSecond() + ".tmp";
         } else {
-            directoryPath = System.getProperty("java.io.tmpdir")+ File.separator+ name;
+            directoryPath = System.getProperty("java.io.tmpdir") + File.separator + name;
         }
-        File file = new File(directoryPath) ;
+        File file = new File(directoryPath);
         try {
             file.createNewFile();
         } catch (IOException e) {
-            log.debug("Error while writing temp file : {}",e.getMessage());
+            log.debug("Error while writing temp file : {}", e.getMessage());
             throw new WitcurveException("Error while creating temp file");
         }
 
@@ -98,4 +99,22 @@ public class WitcurveUtil {
         return date.format(DateTimeFormatter.ofPattern(WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT));
     }
 
+    public static String timeFormat(String str) {
+        if (str == null) {
+            return null;
+        }
+        String s1 = str.substring(0, 2);
+        String s2 = str.substring(2, 4);
+
+        String time = s1 + ":" + s2;//"22:18:00";
+        return LocalTime.parse(time).format(DateTimeFormatter.ofPattern("h:mma"));
+    }
+
+    public static String replacePlaceHolder(Map<String, String> variableMap, String message) {
+        return variableMap.entrySet().stream().reduce(message, (s, e) -> s.replace("{{" + e.getKey() + "}}", e.getValue()),
+            (s, s2) -> s);
+    }
+
 }
+
+

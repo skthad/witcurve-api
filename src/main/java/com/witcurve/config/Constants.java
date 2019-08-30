@@ -28,7 +28,6 @@ public final class Constants {
     public static final String PARAM_TITLE_PLACEHOLDER = "titlePlaceholder";
     public static final String PARAM_GREETING_PLACEHOLDER = "greetingPlaceholder";
 
-
     private Constants() {
     }
 }
