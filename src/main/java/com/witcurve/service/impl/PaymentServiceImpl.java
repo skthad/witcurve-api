@@ -259,7 +259,7 @@ public class PaymentServiceImpl implements PaymentService {
     private void subscribeStudent(Long studentId, SubscriptionPackage subscriptionPackage) {
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new WitcurveException("No student with given id"));
 
-        if (student.getSubscriptionEndDate() == null) {
+        if (student.getSubscriptionEndDate() == null || student.getSubscriptionEndDate().isBefore(LocalDate.now())) {
             student.setSubscriptionStartDate(LocalDate.now());
             student.setSubscriptionEndDate(LocalDate.now().plusMonths(subscriptionPackage.getMonths()));
         } else {
