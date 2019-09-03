@@ -140,8 +140,8 @@ public class SnsService {
             if (schoolInfoId == null) {
                 log.info("School Info Id is required for publishing bulk message");
             }
-            TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
-            topicArn = topicRecord.getTopicEndPoint();
+            List<TopicRecord> topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
+            topicArn = topicRecord.get(0).getTopicEndPoint();
         }
         if (topicArn != null) {
             try {
@@ -186,6 +186,7 @@ public class SnsService {
                 case TEST:
                     String finalMessage;
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToTest = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
+                    //List<TopicRecord> topicRecord=topicRecordRepository.findByStandardId(eventDTO.getStandardId());
                     Course course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
                     variableMap = new HashMap<>();
                     variableMap.put("subject", course.getMasterSubject().getName());
@@ -197,8 +198,8 @@ public class SnsService {
                     } else {
                         finalMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.TEST_PUSH_NOTIFICATION);
                     }
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToTest) {
-                        String urlOfTest = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + eventDTO.getDate();
+                   for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToTest) {
+                        String urlOfTest ="?userId=" + userMobileEndPoint.getUser().getId() + "?&event=true&date=" + eventDTO.getDate();
                         publishMessage(finalMessage, urlOfTest, userMobileEndPoint.getEndPoint());
                     }
                     break;
@@ -243,10 +244,10 @@ public class SnsService {
                             publishMessage(notice, url, userMobileEndPoint.getEndPoint());
                         }
                     } else {//Notice For All
-                        TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
-                        if (topicRecord != null) {
+                        List<TopicRecord> topicRecord = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
+                        if (!topicRecord.isEmpty()) {
                             String url = "?notice=true";
-                            publishBulkMessage(WitCurveConstants.NOTICE_FOR_All, url, topicRecord.getType(), eventDTO.getSchoolInfoId());
+                            publishBulkMessage(WitCurveConstants.NOTICE_FOR_All, url, topicRecord.get(0).getType(), eventDTO.getSchoolInfoId());
                         }
                     }
                     break;
@@ -255,10 +256,10 @@ public class SnsService {
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
                     String holidayMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY);
 
-                    TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
-                    if (topicRecord != null) {
+                    List<TopicRecord> topicRecord = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
+                    if (!topicRecord.isEmpty()) {
                         String url = "?event=true&date=" + eventDTO.getDate();
-                        publishBulkMessage(holidayMessage, url, topicRecord.getType(), eventDTO.getSchoolInfoId());
+                        publishBulkMessage(holidayMessage, url, topicRecord.get(0).getType(), eventDTO.getSchoolInfoId());
                     }
                     break;
 
@@ -277,10 +278,10 @@ public class SnsService {
                         }
                     } else { // For All
                         String messageOfSchoolEvent = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.SCHOOL_EVENT_FOR_ALL);
-                        TopicRecord topicRecordObj = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
+                        List<TopicRecord> topicRecordObj = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
                         if (topicRecordObj != null) {
                             String urlOfSchoolEvent = "?event=true&date=" + eventDTO.getDate();
-                            publishBulkMessage(messageOfSchoolEvent, urlOfSchoolEvent, topicRecordObj.getType(), eventDTO.getSchoolInfoId());
+                            publishBulkMessage(messageOfSchoolEvent, urlOfSchoolEvent, topicRecordObj.get(0).getType(), eventDTO.getSchoolInfoId());
                         }
                     }
                     break;

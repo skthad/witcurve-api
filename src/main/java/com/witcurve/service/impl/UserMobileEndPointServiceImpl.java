@@ -53,9 +53,11 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
         String endPoint = snsService.createEndPointWithToken(userMobileEndPointDTO.getDeviceToken());
         if(schoolInfoId != null) {
             //add it to school info based topic
-            TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
-            if(topicRecord != null) {
-                schoolInfoTopicSubscriptionArn = snsService.addSubscription(topicRecord.getTopicEndPoint(), endPoint);
+            List<TopicRecord> topicRecord = topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.SCHOOL_INFO,schoolInfoId);
+            if(!topicRecord.isEmpty()) {
+                schoolInfoTopicSubscriptionArn = snsService.addSubscription(topicRecord.get(0).getTopicEndPoint(), endPoint);
+            }if(topicRecord.size()>1){
+                throw new WitcurveException("more than one record can not exists for type :"+TopicType.SCHOOL_INFO);
             }
         }
         //add it to global topic

@@ -18,6 +18,10 @@ public class TopicRecordDTO  extends AbstractAuditingDTO implements Serializable
 
     private Long schoolInfoId;
 
+    private Long standardId;
+
+    private String standardName;
+
     public Long getId() {
         return id;
     }
@@ -49,6 +53,18 @@ public class TopicRecordDTO  extends AbstractAuditingDTO implements Serializable
     public void setSchoolInfoId(Long schoolInfoId) {
         this.schoolInfoId = schoolInfoId;
     }
+
+    public Long getStandardId() {
+        return standardId;
+    }
+
+    public void setStandardId(Long standardId) { this.standardId = standardId;}
+
+    public String getStandardName() {
+        return standardName;
+    }
+
+    public void setStandardName(String standardName) { this.standardName = standardName;}
 
     @Override
     public boolean equals(Object o) {
