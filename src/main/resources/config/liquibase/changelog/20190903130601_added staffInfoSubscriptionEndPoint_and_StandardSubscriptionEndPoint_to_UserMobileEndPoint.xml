@@ -1,0 +1,13 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1567515988184-1">
+        <addColumn tableName="user_mobile_end_point">
+            <column name="staff_info_subscription_end_point" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1567515988184-2">
+        <addColumn tableName="user_mobile_end_point">
+            <column name="standard_subscription_end_point" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

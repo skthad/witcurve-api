@@ -41,6 +41,11 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     @Column(nullable = false)
     private String globalSubscriptionEndPoint;
 
+    @Column
+    private String staffInfoSubscriptionEndPoint;
+
+    @Column
+    private String standardSubscriptionEndPoint;
 
     public Long getId() {
         return id;
@@ -97,6 +102,17 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     public void setGlobalSubscriptionEndPoint(String globalSubscriptionEndPoint) {
         this.globalSubscriptionEndPoint = globalSubscriptionEndPoint;
     }
+    public String getStaffInfoSubscriptionEndPoint() { return staffInfoSubscriptionEndPoint; }
+
+    public void setStaffInfoSubscriptionEndPoint(String staffInfoSubscriptionEndPoint) {
+        this.staffInfoSubscriptionEndPoint = staffInfoSubscriptionEndPoint;
+    }
+    public String getStandardSubscriptionEndPoint() { return standardSubscriptionEndPoint; }
+
+    public void setStandardSubscriptionEndPoint(String standardSubscriptionEndPoint) {
+        this.standardSubscriptionEndPoint = standardSubscriptionEndPoint;
+    }
+
 
     @Override
     public boolean equals(Object o) {

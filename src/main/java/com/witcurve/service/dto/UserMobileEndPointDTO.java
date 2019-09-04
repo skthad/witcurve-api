@@ -25,6 +25,10 @@ public class UserMobileEndPointDTO extends AbstractAuditingDTO implements Serial
 
     private String globalSubscriptionEndPoint;
 
+    private String staffInfoSubscriptionEndPoint;
+
+    private String standardSubscriptionEndPoint;
+
     public Long getId() {
         return id;
     }
@@ -80,6 +84,18 @@ public class UserMobileEndPointDTO extends AbstractAuditingDTO implements Serial
     public void setGlobalSubscriptionEndPoint(String globalSubscriptionEndPoint) {
         this.globalSubscriptionEndPoint = globalSubscriptionEndPoint;
     }
+
+    public String getStaffInfoSubscriptionEndPoint() { return staffInfoSubscriptionEndPoint; }
+
+    public void setStaffInfoSubscriptionEndPoint(String staffInfoSubscriptionEndPoint) {
+        this.staffInfoSubscriptionEndPoint = staffInfoSubscriptionEndPoint;
+    }
+    public String getStandardSubscriptionEndPoint() { return standardSubscriptionEndPoint; }
+
+    public void setStandardSubscriptionEndPoint(String standardSubscriptionEndPoint) {
+        this.standardSubscriptionEndPoint = standardSubscriptionEndPoint;
+    }
+
 
     @Override
     public boolean equals(Object o) {
