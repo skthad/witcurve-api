@@ -15,6 +15,7 @@ public interface TopicRecordMapper extends EntityMapper<TopicRecordDTO, TopicRec
     TopicRecordDTO toDto(TopicRecord topicRecord);
 
     @Mapping(source = "schoolInfoId", target = "schoolInfo")
+    @Mapping(source = "standardId", target = "standard")
     TopicRecord toEntity(TopicRecordDTO topicRecordDTO);
 
     default TopicRecord fromId(Long id) {

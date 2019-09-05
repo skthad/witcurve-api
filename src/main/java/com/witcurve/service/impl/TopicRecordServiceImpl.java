@@ -61,7 +61,7 @@ public class TopicRecordServiceImpl implements TopicRecordService {
             if(!topicRecords.isEmpty()){
                 throw new WitcurveException("There is already a TopicRecord exists with given standardId");
             }else if(topicRecords.size()>1){
-                throw new WitcurveException("more than one TopicRecord exists with given standardId");
+                throw new WitcurveException("More than one TopicRecord exists with given standardId");
             }
             topicRecord.setType(type);
             standard.setId(standardId);
@@ -75,7 +75,7 @@ public class TopicRecordServiceImpl implements TopicRecordService {
             if(!topicRecords.isEmpty()){
                 throw new WitcurveException("There is already a TopicRecord exists for type :"+type);
             }else if(topicRecords.size()>1){
-                throw new WitcurveException("more than one TopicRecord exists for type : "+type);
+                throw new WitcurveException("More than one TopicRecord exists for type : "+type);
             }
             topicRecord.setType(type);
             schoolInfo.setId(schoolInfoId);

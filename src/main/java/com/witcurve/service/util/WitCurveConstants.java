@@ -6,21 +6,21 @@ public class WitCurveConstants {
 
     public static final String DEFAULT_IMPORT_DATE_FORMAT = "dd/MM/yyyy";
 
-    public static final String TEST_PUSH_NOTIFICATION = " Test has been created for {{subject}} on {{date}}";
+    public static final String TEST_PUSH_NOTIFICATION = " {{subject}} Test for {{class}} has been created on {{date}}";
 
-    public static final String UPDATED_TEST_PUSH_NOTIFICATION = " Test has been updated for {{subject}} {{fromDate}} to {{date}}";
+    public static final String UPDATED_TEST_PUSH_NOTIFICATION = " {{subject}} Test for {{class}} has been updated from {{fromDate}} to {{date}}";
 
-    public static final String ASSIGNMENT_PUSH_NOTIFICATION = "Assignment has been created for {{subject}} on {{date}}";
+    public static final String ASSIGNMENT_PUSH_NOTIFICATION = "{{subject}} Assignment for {{class}} has been created on {{date}}";
 
-    public static final String UPDATED_ASSIGNMENT_PUSH_NOTIFICATION = "Assignment has been updated for {{subject}} {{fromDate}} to {{date}}";
+    public static final String UPDATED_ASSIGNMENT_PUSH_NOTIFICATION = "{{subject}} Assignment for {{class}} has been updated from {{fromDate}} to {{date}}";
 
-    public static final String PERIODIC_TEST_PUSH_NOTIFICATION = "Periodic Test has been created  for {{subject}} on {{date}}";
+    public static final String PERIODIC_TEST_PUSH_NOTIFICATION = "{{subject}} Periodic Test for {{class}} has been created  on {{date}}";
 
-    public static final String UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION = "Periodic Test has been updated for {{subject}} {{fromDate}} to {{date}}";
+    public static final String UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION = "{{subject}} Periodic Test for {{class}} has been updated from {{fromDate}} to {{date}}";
 
     public static final String STAFF_NOTICE = "A new staff notice has been posted";
 
-    public static final String NOTICE_FOR_CLASS = "A new notice for class : {{className}} has been posted";
+    public static final String NOTICE_FOR_CLASS = "A new notice for class : {{class}} has been posted";
 
     public static final String NOTICE_FOR_All = "A new notice has been posted";
 
@@ -28,7 +28,7 @@ public class WitCurveConstants {
 
     public static final String SCHOOL_EVENT_FOR_ALL = "A new school event has been created on {{date}}";
 
-    public static final String SCHOOL_EVENT_FOR_CLASS = "A new school event has been created  for  class {{className}} on {{date}}";
+    public static final String SCHOOL_EVENT_FOR_CLASS = "A new school event has been created  for  class {{class}} on {{date}}";
 
     public static final String ATTENDANCE = "Your attendance has been marked absent for {{date}} ";
 
@@ -57,6 +57,8 @@ public class WitCurveConstants {
     public static final String LEAVE_APPLICATION_STATUS = "Your leave Application from {{fromDate}} to {{toDate}} has been {{status}}";
 
     public static final String LEAVE_APPLICATION_STATUS_FOR_ONE_DAY = "Your leave Application of {{fromDate}} has been {{status}}";
+
+    public static final String DAILY_UPDATE= "Daily Update has been  posted for subject {{subject}}";
 
 
 

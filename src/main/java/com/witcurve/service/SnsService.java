@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SnsService {
@@ -55,6 +56,9 @@ public class SnsService {
 
     @Autowired
     StandardRepository standardRepository;
+
+    @Autowired
+    CourseTeacherRepository courseTeacherRepository;
 
 
     public String createEndPointWithToken(String token) throws WitcurveException {
@@ -129,18 +133,30 @@ public class SnsService {
 
     }
 
-    public void publishBulkMessage(String message, String url, TopicType type, Long schoolInfoId) {
+    public void publishBulkMessage(String message, String url, TopicType type, Long schoolInfoId, Long standardId) {
         String topicArn = null;
         if (type.equals(TopicType.GLOBAL)) {
             List<TopicRecord> topicRecords = topicRecordRepository.findByType(TopicType.GLOBAL);
             if (topicRecords.size() == 1) {
                 topicArn = topicRecords.get(0).getTopicEndPoint();
             }
-        } else {
+        } else if (type.equals(TopicType.SCHOOL_INFO)) {
             if (schoolInfoId == null) {
                 log.info("School Info Id is required for publishing bulk message");
             }
-            List<TopicRecord> topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
+            List<TopicRecord> topicRecord = topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.SCHOOL_INFO, schoolInfoId);
+            topicArn = topicRecord.get(0).getTopicEndPoint();
+        } else if (type.equals(TopicType.STAFF_SCHOOL_INFO)) {
+            if (schoolInfoId == null) {
+                log.info("School Info Id is required for publishing bulk message");
+            }
+            List<TopicRecord> topicRecord = topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.STAFF_SCHOOL_INFO, schoolInfoId);
+            topicArn = topicRecord.get(0).getTopicEndPoint();
+        } else if (type.equals(TopicType.STANDARD)) {
+            if (standardId == null) {
+                log.info("School Info Id is required for publishing bulk message");
+            }
+            List<TopicRecord> topicRecord = topicRecordRepository.findByStandardId(standardId);
             topicArn = topicRecord.get(0).getTopicEndPoint();
         }
         if (topicArn != null) {
@@ -179,37 +195,44 @@ public class SnsService {
     @Transactional
     public void sendPushNotification(List<EventDTO> listOfEventDTO, Map<Long, LocalDate> map) {
         Set<Long> keys = map.keySet();
+        String url;
+        String message;
+        String StringOfUserIds;
+        Standard standard;
+        Course course;
         for (EventDTO eventDTO : listOfEventDTO) {
             Map<String, String> variableMap;
             switch (eventDTO.getType()) {
 
                 case TEST:
-                    String finalMessage;
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToTest = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
-                    //List<TopicRecord> topicRecord=topicRecordRepository.findByStandardId(eventDTO.getStandardId());
-                    Course course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
+                    course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
+                    standard = standardRepository.getOne(eventDTO.getStandardId());
+
                     variableMap = new HashMap<>();
                     variableMap.put("subject", course.getMasterSubject().getName());
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
+                    variableMap.put("class","'"+standard.getGrade().toString() + "-" + standard.getSection()+"'");
 
                     if (keys.contains(eventDTO.getId())) {
                         variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
-                        finalMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_TEST_PUSH_NOTIFICATION);
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_TEST_PUSH_NOTIFICATION);
                     } else {
-                        finalMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.TEST_PUSH_NOTIFICATION);
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.TEST_PUSH_NOTIFICATION);
                     }
-                   for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToTest) {
-                        String urlOfTest ="?userId=" + userMobileEndPoint.getUser().getId() + "?&event=true&date=" + eventDTO.getDate();
-                        publishMessage(finalMessage, urlOfTest, userMobileEndPoint.getEndPoint());
-                    }
+                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToTest);
+                    url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                    publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     break;
                 case ASSIGNMENT:
-                    String message;
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAssignment = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
                     Course cName = courseRepository.findByCourseTeacherId(eventDTO.getCourseTeacher().getId());
+                    standard = standardRepository.getOne(eventDTO.getStandardId());
+
                     variableMap = new HashMap<>();
                     variableMap.put("subject", cName.getMasterSubject().getName());
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
+                    variableMap.put("class","'"+standard.getGrade().toString() + "-" + standard.getSection()+"'");
 
                     if (keys.contains(eventDTO.getId())) {
                         variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
@@ -217,117 +240,118 @@ public class SnsService {
                     } else {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.ASSIGNMENT_PUSH_NOTIFICATION);
                     }
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAssignment) {
-                        String urlOfAssignment = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + eventDTO.getDate();
-                        publishMessage(message, urlOfAssignment, userMobileEndPoint.getEndPoint());
-                    }
+                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToAssignment);
+                    url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                    publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     break;
+                case DAILY_UPDATE:
+                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToDailyUpdate = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
+                    course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
 
+                    variableMap = new HashMap<>();
+                    variableMap.put("subject", course.getMasterSubject().getName());
+
+                    message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.DAILY_UPDATE);
+                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToDailyUpdate);
+                    //we need to change it later
+                    url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                    publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
+                    break;
                 case STAFF_NOTICE:
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToStaffNotice = userMobileEndPointRepository.findStaffBySchoolInfoId(eventDTO.getSchoolInfoId());
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToStaffNotice) {
-                        String url = "?userId=" + userMobileEndPoint.getUser().getId() + "&notice=true";
-                        publishMessage(WitCurveConstants.STAFF_NOTICE, url, userMobileEndPoint.getEndPoint());
-                    }
+                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToStaffNotice);
+                    url = "?" + StringOfUserIds + "&notice=true";
+                    publishBulkMessage(WitCurveConstants.STAFF_NOTICE, url, TopicType.STAFF_SCHOOL_INFO, eventDTO.getSchoolInfoId(), 0l);
                     break;
-
                 case NOTICE://Notice For Particular standard
                     if (eventDTO.getStandardId() != null) {
                         variableMap = new HashMap<>();
-                        Standard standard = standardRepository.getOne(eventDTO.getStandardId());
-                        variableMap.put("className", standard.getGrade().toString() + " " + standard.getSection());
-                        String notice = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.NOTICE_FOR_CLASS);
+                        standard = standardRepository.getOne(eventDTO.getStandardId());
+                        variableMap.put("class","'"+standard.getGrade().toString() + "-" + standard.getSection()+"'");
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.NOTICE_FOR_CLASS);
 
                         List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
-                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToNoticeOfStd) {
-                            String url = "?userId=" + userMobileEndPoint.getUser().getId() + "&notice=true";
-                            publishMessage(notice, url, userMobileEndPoint.getEndPoint());
-                        }
+                        StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
+                        url = "?" + StringOfUserIds + "&notice=true";
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     } else {//Notice For All
-                        List<TopicRecord> topicRecord = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
-                        if (!topicRecord.isEmpty()) {
-                            String url = "?notice=true";
-                            publishBulkMessage(WitCurveConstants.NOTICE_FOR_All, url, topicRecord.get(0).getType(), eventDTO.getSchoolInfoId());
-                        }
+                        url = "?notice=true";
+                        publishBulkMessage(WitCurveConstants.NOTICE_FOR_All, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), 0l);
                     }
                     break;
                 case HOLIDAY:
                     variableMap = new HashMap<>();
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
-                    String holidayMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY);
-
-                    List<TopicRecord> topicRecord = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
-                    if (!topicRecord.isEmpty()) {
-                        String url = "?event=true&date=" + eventDTO.getDate();
-                        publishBulkMessage(holidayMessage, url, topicRecord.get(0).getType(), eventDTO.getSchoolInfoId());
-                    }
+                    message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY);
+                    url = "?event=true&date=" + eventDTO.getDate();
+                    publishBulkMessage(message, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), null);
                     break;
-
                 case SCHOOL_EVENT:
                     variableMap = new HashMap<>();
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
 
                     if (eventDTO.getGrade() != null) {
-                        variableMap.put("className", eventDTO.getGrade().toString());
-                        String messageOfSchoolEvent = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.SCHOOL_EVENT_FOR_CLASS);
+                        variableMap.put("class","'"+eventDTO.getGrade().toString()+"'");
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.SCHOOL_EVENT_FOR_CLASS);
+                        List<Standard> listOfStandard = standardRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
 
-                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findStudentEndPointByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
-                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToNoticeOfStd) {
-                            String urlOfSchoolEvent = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + eventDTO.getDate();
-                            publishMessage(messageOfSchoolEvent, urlOfSchoolEvent, userMobileEndPoint.getEndPoint());
+                        for (Standard std : listOfStandard) {
+                            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByStandardId(std.getId());
+                            StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
+                            url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                            publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
                         }
                     } else { // For All
-                        String messageOfSchoolEvent = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.SCHOOL_EVENT_FOR_ALL);
-                        List<TopicRecord> topicRecordObj = topicRecordRepository.findBySchoolInfoId(eventDTO.getSchoolInfoId());
-                        if (topicRecordObj != null) {
-                            String urlOfSchoolEvent = "?event=true&date=" + eventDTO.getDate();
-                            publishBulkMessage(messageOfSchoolEvent, urlOfSchoolEvent, topicRecordObj.get(0).getType(), eventDTO.getSchoolInfoId());
-                        }
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.SCHOOL_EVENT_FOR_ALL);
+                        url = "?event=true&date=" + eventDTO.getDate();
+                        publishBulkMessage(message, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), null);
                     }
-                    break;
 
+                    break;
                 case ATTENDANCE:
                     variableMap = new HashMap<>();
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
 
-                    String finalMessageContent = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.ATTENDANCE);
+                    message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.ATTENDANCE);
                     //To send notification when student is absent
                     if (eventDTO.getAttendanceType().equals(AttendanceType.ABSENT)) {
                         if (eventDTO.getStudentId() != null) {
                             List<UserMobileEndPoint> userMobileEndPointsRelatedToAbsentStudent = userMobileEndPointRepository.findStudentEndPointByStudentId(eventDTO.getStudentId());
-                            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToAbsentStudent) {
-                                String urlOfStudentAttendance = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
-                                publishMessage(finalMessageContent, urlOfStudentAttendance, userMobileEndPoint.getEndPoint());
+                            for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointsRelatedToAbsentStudent) {
+                                url = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
+                                publishMessage(message, url, userMobileEndPoint.getEndPoint());
                             }
                         }
                         //To send notification when staff is absent
                         else if (eventDTO.getStaffId() != null) {
                             List<UserMobileEndPoint> userMobileEndPointsRelatedToStaffAttendance = userMobileEndPointRepository.findStaffEndPointByStaffId(eventDTO.getStaffId());
-                            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToStaffAttendance){
-                                String urlOfStaffAttendance = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
-                                publishMessage(finalMessageContent, urlOfStaffAttendance, userMobileEndPoint.getEndPoint());
+                            for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointsRelatedToStaffAttendance) {
+                                url = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
+                                publishMessage(message, url, userMobileEndPoint.getEndPoint());
                             }
                         }
                     }
                     break;
                 case PERIODIC_TEST:
                     if (eventDTO.getCourse() != null) {
-                        Course courseName = courseRepository.getOne(eventDTO.getCourse().getId());
+                        course = courseRepository.getOne(eventDTO.getCourse().getId());
                         variableMap = new HashMap<>();
-                        variableMap.put("subject", courseName.getMasterSubject().getName());
+                        variableMap.put("subject", course.getMasterSubject().getName());
                         variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
 
-                        String periodicTestMessage;
-                        if (keys.contains(eventDTO.getId())) {
-                            variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
-                            periodicTestMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION);
-                        } else {
-                            periodicTestMessage = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.PERIODIC_TEST_PUSH_NOTIFICATION);
-                        }
-                        List<UserMobileEndPoint> userMobileEndPointListRelatedToPeriodicTest = userMobileEndPointRepository.findStudentEndPointByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
-                        for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointListRelatedToPeriodicTest) {
-                            String urlOfTest = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + eventDTO.getDate();
-                            publishMessage(periodicTestMessage, urlOfTest, userMobileEndPoint.getEndPoint());
+                        List<Standard> listOfStandard = standardRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
+                        for (Standard std : listOfStandard) {
+                            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPeriodicTest = userMobileEndPointRepository.findByStandardId(std.getId());
+                            variableMap.put("class","'"+std.getGrade().toString() + "-" + std.getSection()+"'");
+                            if (keys.contains(eventDTO.getId())) {
+                                variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
+                                message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION);
+                            } else {
+                                message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.PERIODIC_TEST_PUSH_NOTIFICATION);
+                            }
+                            StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToPeriodicTest);
+                            url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                            publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
                         }
                     }
                     break;
@@ -352,13 +376,13 @@ public class SnsService {
         String url;
         if (leaveApplicationDTO.getAppliedStaffId() != null) { //To send notification to staff
             userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findStaffEndPointByStaffId(leaveApplicationDTO.getAppliedStaffId());
-            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToLeaveStatus) {
+            for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointsRelatedToLeaveStatus) {
                 url = "?userId=" + userMobileEndPoint.getUser().getId() + "&leave=true";
                 publishMessage(message, url, userMobileEndPoint.getEndPoint());
             }
         } else {//To send notification for student
             userMobileEndPointsRelatedToLeaveStatus = userMobileEndPointRepository.findStudentEndPointByStudentId(leaveApplicationDTO.getAppliedStudentId());
-            for(UserMobileEndPoint userMobileEndPoint:userMobileEndPointsRelatedToLeaveStatus){
+            for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointsRelatedToLeaveStatus) {
                 url = "?userId=" + userMobileEndPoint.getUser().getId() + "&leave=true";
                 publishMessage(message, url, userMobileEndPoint.getEndPoint());
             }
@@ -398,13 +422,16 @@ public class SnsService {
 
         Set<Grade> grades = examDTO.getGrades();
         for (Grade grade : grades) {
-            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToExamNotification = userMobileEndPointRepository.findStudentEndPointByGradeAndSchoolInfoId(grade, examDTO.getSchoolInfoId());
-            for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToExamNotification) {
-                String urlOfExam = "?userId=" + userMobileEndPoint.getUser().getId() + "&event=true&date=" + examDTO.getStartDate();
-                publishMessage(message, urlOfExam, userMobileEndPoint.getEndPoint());
+            List<Standard> listOfStandard = standardRepository.findByGradeAndSchoolInfoId(grade, examDTO.getSchoolInfoId());
+            for (Standard standard : listOfStandard) {
+                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByStandardId(standard.getId());
+                String listOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
+                String url = "?" + listOfUserIds + "&event=true&date=" + examDTO.getStartDate();
+                publishBulkMessage(message, url, TopicType.STANDARD, null, standard.getId());
             }
         }
     }
+
 
     @Async
     public void sendPushNotification(MessageThreadDTO messageThreadDTO) {
@@ -412,10 +439,10 @@ public class SnsService {
 
             case SUBJECT_NOTE:
                 List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
-                for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedGroupMessage) {
-                    String urlOfSubjectNote = "?userId=" + userMobileEndPoint.getUser().getId() + "&group=true";
-                    publishMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, userMobileEndPoint.getEndPoint());
-                }
+                Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThreadDTO.getCourseTeacherDTO().getId());
+                String StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
+                String urlOfSubjectNote = "?userId=" + StringOfUserIds + "&group=true";
+                publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
                 break;
             case PERSONAL:
                 if (messageThreadDTO.getSchoolBoardAdminMessage() == true || messageThreadDTO.getSuperAdminMessage() == true) {
@@ -478,7 +505,17 @@ public class SnsService {
             }
         }
     }
+
+
+    private String convertToCommaSeparatedStringOfUserIds(List<UserMobileEndPoint> listOfUserMobileEndPoint) {
+        List<String> listOfEndPoint = new ArrayList<>();
+        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPoint) {
+            listOfEndPoint.add(userMobileEndPoint.getId().toString());
+        }
+        return listOfEndPoint.stream().collect(Collectors.joining(","));
+    }
 }
+
 
 
 

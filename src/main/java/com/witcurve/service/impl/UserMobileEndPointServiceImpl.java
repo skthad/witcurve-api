@@ -74,9 +74,6 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
             if (!topicRecord.isEmpty()) {
                 schoolInfoTopicSubscriptionArn = snsService.addSubscription(topicRecord.get(0).getTopicEndPoint(), endPoint);
             }
-            if (topicRecord.size() > 1) {
-                throw new WitcurveException("more than one record can not exists for type :" + TopicType.SCHOOL_INFO);
-            }
         }
         //add it to global topic
         List<TopicRecord> topicRecords = topicRecordRepository.findByType(TopicType.GLOBAL);
@@ -90,7 +87,7 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
             if (!topicRecord.isEmpty()) {
                 standardSubscriptionArn = snsService.addSubscription(topicRecord.get(0).getTopicEndPoint(), endPoint);
             }
-        } else {
+        } else if(user.get().getType().equals(UserType.TEACHING_STAFF)){
             List<TopicRecord> topicRecord = topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.STAFF_SCHOOL_INFO, schoolInfoId);
             if (!topicRecords.isEmpty()) {
                 staffSchoolInfoSubscriptionArn = snsService.addSubscription(topicRecord.get(0).getTopicEndPoint(), endPoint);
