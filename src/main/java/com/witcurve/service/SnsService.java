@@ -197,7 +197,7 @@ public class SnsService {
         Set<Long> keys = map.keySet();
         String url;
         String message;
-        String StringOfUserIds;
+        String stringOfUserIds;
         Standard standard;
         Course course;
         for (EventDTO eventDTO : listOfEventDTO) {
@@ -220,8 +220,8 @@ public class SnsService {
                     } else {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.TEST_PUSH_NOTIFICATION);
                     }
-                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToTest);
-                    url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToTest);
+                    url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
                     publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     break;
                 case ASSIGNMENT:
@@ -240,8 +240,8 @@ public class SnsService {
                     } else {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.ASSIGNMENT_PUSH_NOTIFICATION);
                     }
-                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToAssignment);
-                    url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToAssignment);
+                    url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
                     publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     break;
                 case DAILY_UPDATE:
@@ -252,15 +252,15 @@ public class SnsService {
                     variableMap.put("subject", course.getMasterSubject().getName());
 
                     message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.DAILY_UPDATE);
-                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToDailyUpdate);
+                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToDailyUpdate);
                     //we need to change it later
-                    url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                    url = "?diary=true&userId="+stringOfUserIds;
                     publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     break;
                 case STAFF_NOTICE:
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToStaffNotice = userMobileEndPointRepository.findStaffBySchoolInfoId(eventDTO.getSchoolInfoId());
-                    StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToStaffNotice);
-                    url = "?" + StringOfUserIds + "&notice=true";
+                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToStaffNotice);
+                    url = "?userId=" + stringOfUserIds + "&notice=true";
                     publishBulkMessage(WitCurveConstants.STAFF_NOTICE, url, TopicType.STAFF_SCHOOL_INFO, eventDTO.getSchoolInfoId(), 0l);
                     break;
                 case NOTICE://Notice For Particular standard
@@ -271,8 +271,8 @@ public class SnsService {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.NOTICE_FOR_CLASS);
 
                         List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
-                        StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
-                        url = "?" + StringOfUserIds + "&notice=true";
+                        stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
+                        url = "?userId=" + stringOfUserIds + "&notice=true";
                         publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     } else {//Notice For All
                         url = "?notice=true";
@@ -297,8 +297,8 @@ public class SnsService {
 
                         for (Standard std : listOfStandard) {
                             List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByStandardId(std.getId());
-                            StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
-                            url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                            stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
+                            url = "?" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
                             publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
                         }
                     } else { // For All
@@ -349,8 +349,8 @@ public class SnsService {
                             } else {
                                 message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.PERIODIC_TEST_PUSH_NOTIFICATION);
                             }
-                            StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToPeriodicTest);
-                            url = "?" + StringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                            stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToPeriodicTest);
+                            url = "??userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
                             publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
                         }
                     }
@@ -426,7 +426,7 @@ public class SnsService {
             for (Standard standard : listOfStandard) {
                 List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToNoticeOfStd = userMobileEndPointRepository.findByStandardId(standard.getId());
                 String listOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToNoticeOfStd);
-                String url = "?" + listOfUserIds + "&event=true&date=" + examDTO.getStartDate();
+                String url = "?userId=" + listOfUserIds + "&event=true&date=" + examDTO.getStartDate();
                 publishBulkMessage(message, url, TopicType.STANDARD, null, standard.getId());
             }
         }
@@ -440,8 +440,8 @@ public class SnsService {
             case SUBJECT_NOTE:
                 List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
                 Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThreadDTO.getCourseTeacherDTO().getId());
-                String StringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
-                String urlOfSubjectNote = "?userId=" + StringOfUserIds + "&group=true";
+                String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
+                String urlOfSubjectNote = "?userId=" + stringOfUserIds + "&group=true";
                 publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
                 break;
             case PERSONAL:
@@ -505,8 +505,6 @@ public class SnsService {
             }
         }
     }
-
-
     private String convertToCommaSeparatedStringOfUserIds(List<UserMobileEndPoint> listOfUserMobileEndPoint) {
         List<String> listOfEndPoint = new ArrayList<>();
         for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPoint) {

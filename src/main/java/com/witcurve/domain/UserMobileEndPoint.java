@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "user_mobile_end_point", uniqueConstraints = {
-    @UniqueConstraint(name = "user_endPoint_UK",
+    @UniqueConstraint(name = "user_end_point_UK",
         columnNames = {"user_id", "endPoint"})
 })
 public class UserMobileEndPoint extends AbstractAuditingEntity implements Serializable {
