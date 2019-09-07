@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "user_mobile_end_point", uniqueConstraints = {
     @UniqueConstraint(name = "user_end_point_UK",
-        columnNames = {"user_id", "endPoint"})
+        columnNames = {"user_id", "end_point"})
 })
 public class UserMobileEndPoint extends AbstractAuditingEntity implements Serializable {
 
@@ -34,7 +34,7 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     private String deviceToken;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false,name = "end_point")
     private String endPoint;
 
     @NotNull
