@@ -9,6 +9,7 @@ public enum ConfigFieldName {
     LEAVE_CREDITS_PER_MONTH,
     GRADING_METHOD,
     GRADE,
+    GRADE_COLOR,
     STAFF_OR_STUDENT_ABSENT,
     TEST_POSTED,
     TEST_MODIFIED,

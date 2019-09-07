@@ -1,0 +1,32 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1567076373341-1">
+        <!-- loading default grading colors -->
+        <loadData file="config/liquibase/grade_color_config_settings.csv"
+                  separator=";"
+                  tableName="config_settings">
+        </loadData>
+
+        <!-- creating color for present colors -->
+        <sql>
+            insert into config_settings (school_id, config_type, field_type, field_name, display_field_name, field_value,
+            field_description, display_order, created_by, created_date, last_modified_by,
+            last_modified_date)
+            select school_id,
+            'GRADING_SCALE_COLOR',
+            'STRING',
+            'GRADE_COLOR',
+            display_field_name,
+            '#ffffff',
+            field_description,
+            display_order,
+            created_by,
+            created_date,
+            last_modified_by,
+            last_modified_date
+            from config_settings
+            where school_id != -1
+            and config_type = 'GRADING_SCALE';
+        </sql>
+    </changeSet>
+</databaseChangeLog>
