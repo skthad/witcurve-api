@@ -17,6 +17,8 @@ public class PublishMessageVM {
 
     private Long schoolInfoId;
 
+    private Long standardId;
+
     public String getMessage() {
         return message;
     }
@@ -56,4 +58,9 @@ public class PublishMessageVM {
     public void setSchoolInfoId(Long schoolInfoId) {
         this.schoolInfoId = schoolInfoId;
     }
+
+    public Long getStandardId() { return standardId; }
+
+    public void setStandardId(Long standardId) { this.standardId = standardId; }
+
 }

@@ -45,7 +45,7 @@ public class SnsResource {
         if (publishMessageVM.getType() == null) {
             throw new WitcurveException("Field type is required");
         }
-        snsService.publishBulkMessage(publishMessageVM.getMessage(), publishMessageVM.getUrl(), publishMessageVM.getType(), publishMessageVM.getSchoolInfoId());
+        snsService.publishBulkMessage(publishMessageVM.getMessage(), publishMessageVM.getUrl(), publishMessageVM.getType(), publishMessageVM.getSchoolInfoId(),publishMessageVM.getStandardId());
         return ResponseEntity.ok(null);
     }
 }

@@ -136,7 +136,14 @@ public class EventServiceImpl implements EventService {
 
             if (SNS_DATE_UPDATE.contains(eventDTO.getType())) {
                 if (eventDTO.getId() != null) {
-                    updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                    if (eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                        Optional<Event> event=eventRepository.findById(eventDTO.getId());
+                        if (event.get().getCourse()!=null) {
+                            updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                        }
+                    } else {
+                        updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                    }
                 }
             }
             if (eventDTO.getType().equals(EventType.PERIODIC_TEST)) {

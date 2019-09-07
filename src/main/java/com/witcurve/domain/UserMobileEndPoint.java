@@ -8,7 +8,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user_mobile_end_point")
+@Table(name = "user_mobile_end_point", uniqueConstraints = {
+    @UniqueConstraint(name = "user_end_point_UK",
+        columnNames = {"user_id", "endPoint"})
+})
 public class UserMobileEndPoint extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,6 +21,7 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     private Long id;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private User user;
 
     @NotNull
@@ -41,6 +45,11 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     @Column(nullable = false)
     private String globalSubscriptionEndPoint;
 
+    @Column
+    private String staffInfoSubscriptionEndPoint;
+
+    @Column
+    private String standardSubscriptionEndPoint;
 
     public Long getId() {
         return id;
@@ -97,6 +106,23 @@ public class UserMobileEndPoint extends AbstractAuditingEntity implements Serial
     public void setGlobalSubscriptionEndPoint(String globalSubscriptionEndPoint) {
         this.globalSubscriptionEndPoint = globalSubscriptionEndPoint;
     }
+
+    public String getStaffInfoSubscriptionEndPoint() {
+        return staffInfoSubscriptionEndPoint;
+    }
+
+    public void setStaffInfoSubscriptionEndPoint(String staffInfoSubscriptionEndPoint) {
+        this.staffInfoSubscriptionEndPoint = staffInfoSubscriptionEndPoint;
+    }
+
+    public String getStandardSubscriptionEndPoint() {
+        return standardSubscriptionEndPoint;
+    }
+
+    public void setStandardSubscriptionEndPoint(String standardSubscriptionEndPoint) {
+        this.standardSubscriptionEndPoint = standardSubscriptionEndPoint;
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -40,10 +40,10 @@ public class TopicRecordResource {
     @PostMapping("/topic-records")
     @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @Timed
-    public ResponseEntity<TopicRecordDTO> create(@RequestParam TopicType type, @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<TopicRecordDTO> create(@RequestParam TopicType type, @RequestParam(required = false) Long schoolInfoId,@RequestParam(required = false) Long standardId) throws WitcurveException, URISyntaxException {
         log.debug("Request to create Topic Record of type : {} for schoolInfoId: {}", type, schoolInfoId);
         try {
-            TopicRecordDTO result = topicRecordService.addTopic(type, schoolInfoId);
+            TopicRecordDTO result = topicRecordService.addTopic(type, schoolInfoId,standardId);
             return ResponseEntity.created(new URI("/api/topic-records"))
                 .headers(HeaderUtil.createEntityCreationAlert("topicRecords", null))
                 .body(result);
@@ -68,9 +68,9 @@ public class TopicRecordResource {
     @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS + "')")
     @GetMapping("/topic-records/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<TopicRecordDTO> getTopicRecordBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
+    public ResponseEntity<List<TopicRecordDTO>> getTopicRecordBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId) throws WitcurveException {
         log.debug("Request to get Topic Record with school info with id {}", schoolInfoId);
-        TopicRecordDTO result = topicRecordService.findTopicRecordBySchoolInfoId(schoolInfoId);
+        List<TopicRecordDTO> result = topicRecordService.findTopicRecordBySchoolInfoId(schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

@@ -39,4 +39,6 @@
     <include file="config/liquibase/changelog/20190827144301_report_card_design_refactor.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190828105826_added_course_column_for_periodic_test.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190829105916_added_entity_student_remarks.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190903070835_added_standard_to_topicRecord.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190903130601_added staffInfoSubscriptionEndPoint_and_StandardSubscriptionEndPoint_to_UserMobileEndPoint.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

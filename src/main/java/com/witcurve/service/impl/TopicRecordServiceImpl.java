@@ -1,8 +1,10 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.Standard;
 import com.witcurve.domain.TopicRecord;
 import com.witcurve.domain.enumeration.TopicType;
+import com.witcurve.repository.StandardRepository;
 import com.witcurve.repository.TopicRecordRepository;
 import com.witcurve.service.SnsService;
 import com.witcurve.service.TopicRecordService;
@@ -30,12 +32,17 @@ public class TopicRecordServiceImpl implements TopicRecordService {
     TopicRecordRepository topicRecordRepository;
 
     @Autowired
+    StandardRepository standardRepository;
+
+    @Autowired
     SnsService snsService;
 
-    public TopicRecordDTO addTopic(TopicType type, Long schoolInfoId) {
+    public TopicRecordDTO addTopic(TopicType type, Long schoolInfoId,Long standardId) {
         log.debug("Request to add topic of type : {} and for schoolInfoId : {}", type, schoolInfoId);
         TopicRecord topicRecord = new TopicRecord();
         SchoolInfo schoolInfo = new SchoolInfo();
+        Standard standard=new Standard();
+
         if(type.equals(TopicType.GLOBAL)) {
             List<TopicRecord> topicRecords = topicRecordRepository.findByType(type);
             if(topicRecords.size() != 0) {
@@ -46,14 +53,50 @@ public class TopicRecordServiceImpl implements TopicRecordService {
             topicRecord.setTopicEndPoint(topicArn);
             topicRecord = topicRecordRepository.save(topicRecord);
 
-        } else {
-            TopicRecord existingTopicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
+        } else if(type.equals(TopicType.STANDARD)){
+            if(standardId==null){
+                throw new WitcurveException("Standard Id is required for type : "+ type);
+            }
+            List<TopicRecord> topicRecords = topicRecordRepository.findByStandardId(standardId);
+            if(!topicRecords.isEmpty()){
+                throw new WitcurveException("There is already a TopicRecord exists with given standardId");
+            }else if(topicRecords.size()>1){
+                throw new WitcurveException("More than one TopicRecord exists with given standardId");
+            }
+            topicRecord.setType(type);
+            standard.setId(standardId);
+            topicRecord.setStandard(standard);
+            String topicArn = snsService.createTopic(type.toString()+"-"+standardId.toString());
+            topicRecord.setTopicEndPoint(topicArn);
+            topicRecord = topicRecordRepository.save(topicRecord);
+
+        }else if(type.equals(TopicType.STAFF_SCHOOL_INFO)){
+            List<TopicRecord> topicRecords=topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.STAFF_SCHOOL_INFO,schoolInfoId);
+            if(!topicRecords.isEmpty()){
+                throw new WitcurveException("There is already a TopicRecord exists for type :"+type);
+            }else if(topicRecords.size()>1){
+                throw new WitcurveException("More than one TopicRecord exists for type : "+type);
+            }
+            topicRecord.setType(type);
+            schoolInfo.setId(schoolInfoId);
+            topicRecord.setSchoolInfo(schoolInfo);
+            String topicArn = snsService.createTopic(type.toString()+"-"+schoolInfoId.toString());
+            topicRecord.setTopicEndPoint(topicArn);
+            topicRecord = topicRecordRepository.save(topicRecord);
+
+        } else if(type.equals(TopicType.SCHOOL_INFO)){
             if(schoolInfoId == null) {
                 throw new WitcurveException("SchoolInfo Id is required for type : "+ type);
             }
-            if(existingTopicRecord != null) {
+            List<TopicRecord> existingTopicRecord = topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.SCHOOL_INFO,schoolInfoId);
+            if(!existingTopicRecord.isEmpty()) {
                 throw new WitcurveException("There already exists a topic record for this school info");
             }
+            List<Standard> standards=standardRepository.findBySchoolInfoId(schoolInfoId);
+            for(Standard stndard:standards) {
+                addTopic(TopicType.STANDARD, schoolInfoId, stndard.getId());
+            }
+            addTopic(TopicType.STAFF_SCHOOL_INFO, schoolInfoId,null);
             topicRecord.setType(type);
             schoolInfo.setId(schoolInfoId);
             topicRecord.setSchoolInfo(schoolInfo);
@@ -69,13 +112,14 @@ public class TopicRecordServiceImpl implements TopicRecordService {
         return topicRecordMapper.toDto(topicRecordRepository.findAll());
     }
 
-    public TopicRecordDTO findTopicRecordBySchoolInfoId(Long schoolInfoId) throws WitcurveException {
+    public List<TopicRecordDTO> findTopicRecordBySchoolInfoId(Long schoolInfoId) throws WitcurveException {
         log.debug("Request to find TopicRecord for school info with id : {}",schoolInfoId);
-        TopicRecord topicRecord = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
-        if(topicRecord == null) {
+        List<TopicRecord> topicRecords = topicRecordRepository.findBySchoolInfoId(schoolInfoId);
+        if(topicRecords == null) {
             throw new WitcurveException("Topic Record doesn't exists for this school info with id : " + schoolInfoId);
         }
-        return topicRecordMapper.toDto(topicRecord);
+
+        return topicRecordMapper.toDto(topicRecords);
 
     }
 
