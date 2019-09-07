@@ -36,11 +36,11 @@ public class WitCurveConstants {
 
     public static final String EXAM_RESULT_DECLARED = " {{examName}} result has been published";
 
-    public static final String GROUP_MESSAGE = "You have received a new message Group Messages";
+    public static final String GROUP_MESSAGE = "You have received a new message in Group Messages";
 
-    public static final String PERSONAL_MESSAGE = "You have received a new message from Teacher";
+    public static final String PERSONAL_MESSAGE = "You have received a new message in Direct Messages";
 
-    public static final String ADMIN_MESSAGE = "You have received a new message from Admin";
+    public static final String ADMIN_MESSAGE = "You have received a new message in Admin Messages";
 
     public static final String MEETING_REQUEST = "A new meeting request has been received for {{date}} at {{time}} ";
 
