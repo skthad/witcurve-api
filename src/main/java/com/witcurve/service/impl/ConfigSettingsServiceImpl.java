@@ -81,6 +81,16 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
             if (exisingSettings.size() > 0) {
                 throw new WitcurveException("Invalid configuration values provided");
             }
+        } else if (configSetting.getConfigType().equals(ConfigType.GRADING_SCALE_COLOR)) {
+            configSetting.setFieldType(ConfigFieldType.STRING);
+            configSetting.setFieldName(ConfigFieldName.GRADE_COLOR);
+
+            List<ConfigSettings> exisingSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypeAndDisplayNameAndValueAndOrder(schoolId,
+                ConfigType.GRADING_SCALE_COLOR, configSetting.getDisplayFieldName().trim(), configSetting.getFieldValue().trim(), configSetting.getDisplayOrder());
+
+            if (exisingSettings.size() > 0) {
+                throw new WitcurveException("Invalid configuration values provided");
+            }
         } else if (configSetting.getConfigType().equals(ConfigType.STUDENT_HOUSE)) {
             configSetting.setFieldType(ConfigFieldType.STRING);
             configSetting.setFieldName(ConfigFieldName.HOUSE);
