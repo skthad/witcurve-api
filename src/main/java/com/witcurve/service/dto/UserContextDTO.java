@@ -31,6 +31,8 @@ public class UserContextDTO implements Serializable {
 
     private Map<Long, List<CourseDTO>> standardCourseMap;
 
+    private Map<String, Integer> unreadCount;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentSessionStartDate;
 
@@ -122,6 +124,14 @@ public class UserContextDTO implements Serializable {
 
     public void setStandardCourseMap(Map<Long, List<CourseDTO>> standardCourseMap) {
         this.standardCourseMap = standardCourseMap;
+    }
+
+    public Map<String, Integer> getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(Map<String, Integer> unreadCount) {
+        this.unreadCount = unreadCount;
     }
 
     public LocalDate getCurrentSessionStartDate() {

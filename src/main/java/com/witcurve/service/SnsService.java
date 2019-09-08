@@ -180,13 +180,13 @@ public class SnsService {
             return "{ \n" +
                 "\"default\": \"" + message + "\",\n" +
                 "\"APNS\": \"{\\\"aps\\\":{\\\"alert\\\": \\\"" + message + "\\\"} }\",\n" +
-                "\"GCM\": \"{ \\\"notification\\\" : { \\\"body\\\" : \\\"" + message + "\\\" } }\"\n" +
+                "\"GCM\": \"{ \\\"notification\\\" : { \\\"body\\\" : \\\"" + message + "\\\", \\\"click_action\\\" : \\\"FCM_PLUGIN_ACTIVITY\\\" } }\"\n" +
                 "}  ";
         } else {
             return "{ \n" +
                 "\"default\": \"" + message + "\",\n" +
                 "\"APNS\": \"{\\\"aps\\\":{\\\"alert\\\": \\\"" + message + "\\\",\\\"url\\\":\\\"" + url + "\\\"} }\",\n" +
-                "\"GCM\": \"{ \\\"notification\\\" : { \\\"body\\\" : \\\"" + message + "\\\" }, \\\"data\\\" : { \\\"url\\\" : \\\"" + url + "\\\" } }\"\n" +
+                "\"GCM\": \"{ \\\"notification\\\" : { \\\"body\\\" : \\\"" + message + "\\\", \\\"click_action\\\" : \\\"FCM_PLUGIN_ACTIVITY\\\"}, \\\"data\\\" : { \\\"url\\\" : \\\"" + url + "\\\" } }\"\n" +
                 "}  ";
         }
     }
