@@ -67,7 +67,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         Set<Message> messageSet = new HashSet<>();
         messageSet.add(message);
         messageThread.setMessages(messageSet);
-        snsService.sendPushNotification(messageThreadMapper.toDto(messageThread));
+        snsService.sendPushNotification(messageMapper.toDto(message));
         return messageThreadMapper.toDto(messageThread);
 
     }
@@ -89,7 +89,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             messageThread.get().setToUserLastMessageDate(message.getCreatedDate());
             messageThread.get().setFromUserUnreadCount(messageThread.get().getFromUserUnreadCount()+1);
         }
-        snsService.sendPushNotification(messageThreadMapper.toDto(messageThread.get()));
+        snsService.sendPushNotification(messageMapper.toDto(message));
         return messageThreadMapper.toDto(messageThread.get());
     }
 

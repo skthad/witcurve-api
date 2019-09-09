@@ -10,10 +10,7 @@ import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.TopicType;
 import com.witcurve.repository.*;
-import com.witcurve.service.dto.EventDTO;
-import com.witcurve.service.dto.ExamDTO;
-import com.witcurve.service.dto.LeaveApplicationDTO;
-import com.witcurve.service.dto.MessageThreadDTO;
+import com.witcurve.service.dto.*;
 import com.witcurve.service.util.WitCurveConstants;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -60,6 +57,8 @@ public class SnsService {
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
 
+    @Autowired
+    MessageThreadRepository messageThreadRepository;
 
     public String createEndPointWithToken(String token) throws WitcurveException {
         log.debug("Create Platform end point with token : {}", token);
@@ -434,44 +433,47 @@ public class SnsService {
 
 
     @Async
-    public void sendPushNotification(MessageThreadDTO messageThreadDTO) {
-        switch (messageThreadDTO.getMessageType()) {
-
-            case SUBJECT_NOTE:
-                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
-                Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThreadDTO.getCourseTeacherDTO().getId());
-                String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
-                String urlOfSubjectNote = "?userId=" + stringOfUserIds + "&group=true";
-                publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
-                break;
-            case PERSONAL:
-                if (messageThreadDTO.getSchoolBoardAdminMessage() == true || messageThreadDTO.getSuperAdminMessage() == true) {
-                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAdminMessage = userMobileEndPointRepository.findByUserId(messageThreadDTO.getToUserId());
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAdminMessage) {
-                        String urlOfAdminMessage = "?userId=" + userMobileEndPoint.getUser().getId() + "&admin=true";
-                        publishMessage(WitCurveConstants.ADMIN_MESSAGE, urlOfAdminMessage, userMobileEndPoint.getEndPoint());
+    public void sendPushNotification(MessageDTO messageDTO) {
+        Optional<MessageThread> optionalMessageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
+        if (optionalMessageThread.isPresent()) {
+            MessageThread messageThread = optionalMessageThread.get();
+            switch (messageThread.getMessageType()) {
+                case SUBJECT_NOTE:
+                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThread.getCourseTeacher().getId());
+                    Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThread.getCourseTeacher().getId());
+                    String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
+                    String urlOfSubjectNote = "?userId=" + stringOfUserIds + "&group=true";
+                    publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
+                    break;
+                case PERSONAL:
+                    if (messageThread.getSchoolBoardAdminMessage() == true || messageThread.getSuperAdminMessage() == true) {
+                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAdminMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
+                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAdminMessage) {
+                            String urlOfAdminMessage = "?userId=" + userMobileEndPoint.getUser().getId() + "&admin=true";
+                            publishMessage(WitCurveConstants.ADMIN_MESSAGE, urlOfAdminMessage, userMobileEndPoint.getEndPoint());
+                        }
+                    } else {
+                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPersonalMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
+                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToPersonalMessage) {
+                            String urlOfPersonalMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&direct=true";
+                            publishMessage(WitCurveConstants.PERSONAL_MESSAGE, urlOfPersonalMsg, userMobileEndPoint.getEndPoint());
+                        }
                     }
-                } else {
-                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPersonalMessage = userMobileEndPointRepository.findByUserId(messageThreadDTO.getToUserId());
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToPersonalMessage) {
-                        String urlOfPersonalMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&direct=true";
-                        publishMessage(WitCurveConstants.PERSONAL_MESSAGE, urlOfPersonalMsg, userMobileEndPoint.getEndPoint());
+                    break;
+                case MEETING_REQUEST:
+                    Map<String, String> varMap = new HashMap<>();
+                    varMap.put("date", WitcurveUtil.format(messageThread.getMeetingDate()));
+                    varMap.put("time", WitcurveUtil.timeFormat(messageThread.getMeetingTime()));
+
+                    String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.MEETING_REQUEST);
+
+                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedMeetingReq = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
+                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedMeetingReq) {
+                        String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
+                        publishMessage(message, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
                     }
-                }
-                break;
-            case MEETING_REQUEST:
-                Map<String, String> varMap = new HashMap<>();
-                varMap.put("date", WitcurveUtil.format(messageThreadDTO.getMeetingDate()));
-                varMap.put("time", WitcurveUtil.timeFormat(messageThreadDTO.getMeetingTime()));
-
-                String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.MEETING_REQUEST);
-
-                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedMeetingReq = userMobileEndPointRepository.findByUserId(messageThreadDTO.getToUserId());
-                for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedMeetingReq) {
-                    String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
-                    publishMessage(message, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
-                }
-                break;
+                    break;
+            }
         }
     }
 
