@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+<div id="forSchoolNameAndLogo" class="header">
+    <img id="logo" src="img/logo.png" alt="logo" />
+    <h1 id="SchoolName">Lead India Bharat Ratnas School</h1>
+</div>
+<div style="display: block; clear:left; margin-top: 10px;padding-bottom: 10px;">
+    <div style="display: inline; justify-content: space-between">
+        <div><span style="float: right;" id="admissionNumber">admission id</span><span style="font-weight: bold; float: right;">Admission Id: </span>
+            <div><span style="font-weight: bold;">Name: </span><span id="nameOfStudent">Student Name</span></div></div>
+    </div>
+    <div style="display: inline; justify-content: space-between">
+        <div><span style="float: right;" id="rollNo">20</span><span style="font-weight: bold; float: right;">Roll No.:</span></div>
+        <div><span style="font-weight: bold;">Standard:</span> <span id="standard">V-A</span></div>
+    </div>
+    <div style="display: flex; justify-content: space-between">
+        <div><span style="font-weight: bold;">Attendance:</span> <span id="attendance"></span></div>
+    </div>
+</div>
+<div class="forReportTable">
+    <table cellpadding="5" id="report-table" class="forReportTable">
+        <tr>
+            <th id="examName" class="forReportTable" colspan="9" style="background-color: #005E54; color: white;">REPORT CARD (Unit Test-1)</th>
+        </tr>
+        <tr id="title">
+            <th rowspan="2" id="Subject" class="forReportTable">Subject</th>
+        </tr>
+    </table>
+</div>
+<div
+    style="display: block; border: 1px solid #005E54;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px">
+    <h5 style="background-color: #005E54; color: white; padding: 5px; margin-top: 0px; margin-bottom: 5px;">CLASS
+        TEACHERS REMARKS
+    </h5>
+    <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
+</div>
+
+<div style="display: block; clear:left; margin-bottom: 55px; margin-top: 50px; padding-bottom: 10px;">
+    <h4
+        style="float: left;  padding-top: 3px;padding-left: 20px; border-top: 1px solid black;padding-right: 20px;">
+        Principal
+    </h4>
+    <h4
+        style="float: left; margin-left: 180px;padding-top: 3px;border-top: 1px solid black;padding-left: 20px;padding-right: 20px;">
+        Class Teacher
+    </h4>
+    <h4
+        style="float: right;padding-top: 3px; padding-right: 30px;border-top: 1px solid black;padding-left: 30px;">
+        Parent
+    </h4>
+</div>
+
+<div class="GradingScaleTable">
+    <table id="GradingScaleTable" cellpadding="1">
+        <tr>
+            <th colspan="10" id="gradingScale"; style="background-color: #005E54; color: white;">Grading Scale</th>
+        </tr>
+        <tr>
+            <th>Grade</th>
+            <th>Range of Marks(/100)</th>
+        </tr>
+    </table>
+</div>
+<style>
+
+    .header {
+        margin : 10px 50px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        /*margin: 50px;*/
+
+    }
+    .header img {
+        float: left;
+        width: 100px;
+    }
+    .header h1 {
+        text-align: center;
+        position: relative;
+    }
+    table.forReportTable {
+        margin-top: 5px; margin-bottom: 20px;
+    }
+    #GradingScaleTable {
+        margin-top: 20px; margin-bottom: 20px;
+    }
+
+    th,
+    td {
+        width: 43em;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+    }
+</style>
+<script type="text/javascript">
+    var report = {{report}};
+    var reportColSpan = 1;
+    var titleNames = Object.keys(report.marksAndGrades);
+    var titleRows = document.getElementById("title").getElementsByTagName("th");
+
+    document.getElementById("SchoolName").innerHTML = report.schoolName;
+    document.getElementById("nameOfStudent").textContent = report.studentName;
+    document.getElementById("admissionNumber").textContent = report.admissionId;
+    document.getElementById("standard").textContent = report.standard;
+    document.getElementById("rollNo").textContent = report.rollNo;
+    document.getElementById("examName").textContent = "REPORT CARD - " + report.examName;
+    document.getElementById("remarks").textContent = report.remarks;
+    document.getElementById("logo").setAttribute("src", report.logoLink);
+    document.getElementById("attendance").textContent = report.attendance;
+    if (!report.showHeader) {
+        document.getElementById("forSchoolNameAndLogo").setAttribute("style", "visibility: hidden;");
+    }
+
+    (function creatingTableHeader() {
+        //to add main header titles
+        var allGradesOnly = true;
+        for (var i = 0; i < titleNames.length; i++) {
+            var newTh = document.createElement("th");
+            newTh.className = "forReportTable";
+            var addingheader = document.getElementById("report-table").getElementsByTagName("tr")[1];
+            addingheader.appendChild(newTh);
+            addingheader.insertBefore(newTh, addingheader.getElementsByTagName("th")[i + 1]);
+            if (((report.marksAndGrades[titleNames[i]]["showGrade"]) && (report.marksAndGrades[titleNames[i]]["showMarks"])) === true) {
+                reportColSpan+=2;
+                allGradesOnly = false;
+                newTh.setAttribute("colspan", "2");
+            } else {
+                reportColSpan+=1;
+                newTh.setAttribute("rowspan", "2");
+            }
+            newTh.innerHTML = titleNames[i];
+            newTh.setAttribute("id", titleNames[i]);
+
+            //to add sub header marks or grades
+            if (((report.marksAndGrades[titleNames[i]]["showGrade"]) && (report.marksAndGrades[titleNames[i]]["showMarks"])) === true) {
+                var newTd = document.createElement("td");
+                newTd.className = "forReportTable";
+                var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
+                addingRow.appendChild(newTd);
+                newTd.textContent = "Marks";
+                var newTd = document.createElement("td");
+                newTd.className = "forReportTable";
+                var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
+                addingRow.appendChild(newTd);
+                newTd.textContent = "Grade";
+            }
+
+        }
+        document.getElementById("examName").setAttribute("colspan", reportColSpan);
+        if (allGradesOnly) {
+            for (var i = 0; i < titleRows.length; i++) {
+                titleRows[i].setAttribute("rowspan", "1");
+            }
+        }
+    })();
+
+    (function createAndFillRows() {
+        for (var i = 0; i < report.subjectsArray.length; i++) {
+            var newTr = document.createElement("tr");
+            newTr.className = "forReportTable";
+            var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
+            addingRow.appendChild(newTr);
+            var newTh = document.createElement("th");
+            newTh.className = "forReportTable";
+            newTr.appendChild(newTh);
+            newTh.innerHTML = report.subjectsArray[i];
+            for (var j = 0; j < titleRows.length; j++) {
+                var titleName = titleRows[j].innerHTML;
+                if (typeof titleName !== "undefined") {
+                    if (includes(titleName, titleNames)) {
+                        // add grades
+                        var gradeObject = report.marksAndGrades[titleName]["grade"];
+                        var marksObject = report.marksAndGrades[titleName]["marks"];
+                        if ((report.marksAndGrades[titleName]["showGrade"] === true) && (report.marksAndGrades[titleName]["showMarks"] === false)) {
+                            if (typeof gradeObject !== "undefined" &&
+                                typeof gradeObject[report.subjectsArray[i]] !== "undefined") {
+                                var newTd = document.createElement("td");
+                                newTd.className = "forReportTable";
+                                newTr.appendChild(newTd);
+
+                                newTd.innerHTML = gradeObject[report.subjectsArray[i]];
+                                forColoringGrade();
+                            } else {
+                                forElse();
+                            }
+                        }
+                        if ((report.marksAndGrades[titleName]["showGrade"] === false) && (report.marksAndGrades[titleName]["showMarks"] === true)) {
+                            if (typeof marksObject !== "undefined" &&
+                                typeof marksObject[report.subjectsArray[i]] !== "undefined") {
+                                var newTd = document.createElement("td");
+                                newTd.className = "forReportTable";
+                                newTr.appendChild(newTd);
+
+                                newTd.innerHTML = marksObject[report.subjectsArray[i]];
+                            } else {
+                                forElse();
+                            }
+                        }
+                        if (((report.marksAndGrades[titleName]["showGrade"]) && (report.marksAndGrades[titleName]["showMarks"])) === true) {
+                            //add marks
+                            if (typeof marksObject !== "undefined" &&
+                                typeof marksObject[report.subjectsArray[i]] !== "undefined") {
+                                var newTd = document.createElement("td");
+                                newTd.className = "forReportTable";
+                                newTr.appendChild(newTd);
+
+                                newTd.innerHTML = marksObject[report.subjectsArray[i]];
+                            } else {
+                                forElse();
+                            }
+                            //add grades
+                            if (typeof gradeObject !== "undefined" &&
+                                typeof gradeObject[report.subjectsArray[i]] !== "undefined") {
+                                var newTd = document.createElement("td");
+                                newTd.className = "forReportTable";
+                                newTr.appendChild(newTd);
+
+                                newTd.innerHTML = gradeObject[report.subjectsArray[i]];
+                                forColoringGrade();
+
+                            } else {
+                                forElse();
+                            }
+                        }
+
+                        function forElse() {
+                            var newTd = document.createElement("td");
+                            newTd.className = "forReportTable";
+                            newTr.appendChild(newTd);
+                            newTd.innerHTML = "N/A"
+                            newTd.style.color = "red";
+                        }
+
+                        function forColoringGrade() {
+                            if (report.colorForGrades != undefined || report.colorForGrades != null) {
+                                var gradeType = Object.keys(report.colorForGrades);
+                                var gradeColor = getValues(report.colorForGrades, gradeType);
+                                for (var k = 0; k < gradeType.length; k++) {
+                                    if (gradeObject[report.subjectsArray[i]] === gradeType[k]) {
+                                        newTd.style.backgroundColor = gradeColor[k];
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+    })();
+
+    function includes(object, listOfObjects) {
+        for (var i = 0; i < listOfObjects.length; i++) {
+            if (object === listOfObjects[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getValues(object, keys) {
+        var result = new Array();
+        for (var i = 0; i < keys.length; i++) {
+            result[i] = object[keys[i]];
+        }
+        return result;
+    }
+
+    // for displaying grade range
+    var gradeColSpan = 2;
+    var storingGrades = Object.keys(report.definingGrades);
+    var t = Math.ceil(storingGrades.length / 4);  //roundfigure value
+    for (let x = 0; x < 4; x++) {
+        var newTr = document.createElement("tr");
+        var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tbody")[0];
+        gradeColSpan+=2;
+        addingRow.appendChild(newTr);
+        for (var y = 0; y < (storingGrades.length / 4); y++) {
+            if (storingGrades[t * (x) + y] !== undefined) {
+                var newTd = document.createElement("td");
+                newTr.appendChild(newTd);
+                newTd.innerHTML = storingGrades[t * (x) + y];
+                var newTd = document.createElement("td");
+                newTr.appendChild(newTd);
+                newTd.innerHTML = report.definingGrades[storingGrades[t * (x) + y]];
+            }
+        }
+    }
+    document.getElementById("gradingScale").setAttribute("colspan", reportColSpan);
+
+    //for displaying grades and range (headings)
+    for (var x = 0; x < ((storingGrades.length / 4) - 1); x++) {
+        var newTh = document.createElement("th");
+        var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tr")[1];
+        addingRow.appendChild(newTh);
+        newTh.textContent = "Grade";
+        var newTh = document.createElement("th");
+        addingRow.appendChild(newTh);
+        newTh.textContent = "Range of Marks(/100)";
+
+    }
+
+</script>
+</body>
+</html>
