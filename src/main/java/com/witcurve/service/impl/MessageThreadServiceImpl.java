@@ -67,6 +67,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         Set<Message> messageSet = new HashSet<>();
         messageSet.add(message);
         messageThread.setMessages(messageSet);
+        log.info("message is generated");
         snsService.sendPushNotification(messageMapper.toDto(message));
         return messageThreadMapper.toDto(messageThread);
 

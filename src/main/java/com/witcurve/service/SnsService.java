@@ -125,9 +125,11 @@ public class SnsService {
             publishRequest.setTargetArn(endPoint);
             publishRequest.setMessage(getPublishMessage(message, url));
             publishRequest.setMessageStructure("json");
+            log.info("\n\n publish request created \n\n");
             amazonSNS.publish(publishRequest);
+            log.info("\n\n  request pulished  \n\n");
         } catch (SdkClientException e) {
-            log.info("AWS Exception : {}", e.getMessage());
+            log.info("\n---AWS Exception : {} ---\n", e.getMessage());
         }
 
     }
@@ -434,6 +436,7 @@ public class SnsService {
 
     @Async
     public void sendPushNotification(MessageDTO messageDTO) {
+        log.info("\n\npush notification started\n\n");
         Optional<MessageThread> optionalMessageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
         if (optionalMessageThread.isPresent()) {
             MessageThread messageThread = optionalMessageThread.get();
@@ -446,6 +449,7 @@ public class SnsService {
                     publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
                     break;
                 case PERSONAL:
+                    log.info("\n\ncategory personal started\n\n");
                     if (messageThread.getSchoolBoardAdminMessage() == true || messageThread.getSuperAdminMessage() == true) {
                         List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAdminMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
                         for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAdminMessage) {
@@ -456,6 +460,7 @@ public class SnsService {
                         List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPersonalMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
                         for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToPersonalMessage) {
                             String urlOfPersonalMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&direct=true";
+                            log.info("\n\nEnd point --- {}\n\n", userMobileEndPoint.getEndPoint());
                             publishMessage(WitCurveConstants.PERSONAL_MESSAGE, urlOfPersonalMsg, userMobileEndPoint.getEndPoint());
                         }
                     }
