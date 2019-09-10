@@ -42,7 +42,7 @@ public class WitCurveConstants {
 
     public static final String ADMIN_MESSAGE = "You have received a new message in Admin Messages";
 
-    public static final String MEETING_REQUEST = "A new meeting request has been received for {{date}} at {{time}} ";
+    public static final String MEETING_REQUEST = "You have received a new message in Meeting Request";
 
     public static final String MEETING_REQUEST_STATUS_CHANGE = "Your meeting request on {{date}} at {{time}} has been {{status}} ";
 
