@@ -87,7 +87,7 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
             if (!topicRecord.isEmpty()) {
                 standardSubscriptionArn = snsService.addSubscription(topicRecord.get(0).getTopicEndPoint(), endPoint);
             }
-        } else if(user.get().getType().equals(UserType.TEACHING_STAFF)){
+        } else if (user.get().getType().equals(UserType.TEACHING_STAFF)) {
             List<TopicRecord> topicRecord = topicRecordRepository.findByTypeAndSchoolInfoId(TopicType.STAFF_SCHOOL_INFO, schoolInfoId);
             if (!topicRecords.isEmpty()) {
                 staffSchoolInfoSubscriptionArn = snsService.addSubscription(topicRecord.get(0).getTopicEndPoint(), endPoint);
@@ -129,9 +129,27 @@ public class UserMobileEndPointServiceImpl implements UserMobileEndPointService 
         }
         userMobileEndPointRepository.deleteByUserIdAndToken(userId, deviceToken);
         if (userMobileEndPointRepository.getTokenCount(deviceToken).equals(0)) {
-            snsService.unSubscribe(userMobileEndPoint.getSchoolInfoSubscriptionEndPoint());
-            snsService.unSubscribe(userMobileEndPoint.getGlobalSubscriptionEndPoint());
             snsService.deleteEndpoint(userMobileEndPoint.getEndPoint());
+        }
+        if (userMobileEndPoint.getStaffInfoSubscriptionEndPoint() != null) {
+            if (userMobileEndPointRepository.getCountByStaffInfoSubscriptionEndPoint(userMobileEndPoint.getStaffInfoSubscriptionEndPoint()).equals(0)) {
+                snsService.unSubscribe(userMobileEndPoint.getStaffInfoSubscriptionEndPoint());
+            }
+        }
+        if (userMobileEndPoint.getStandardSubscriptionEndPoint() != null) {
+            if (userMobileEndPointRepository.getCountByStandardSubscriptionEndPoint(userMobileEndPoint.getStandardSubscriptionEndPoint()).equals(0)) {
+                snsService.unSubscribe(userMobileEndPoint.getStandardSubscriptionEndPoint());
+            }
+        }
+        if (userMobileEndPoint.getSchoolInfoSubscriptionEndPoint() != null) {
+            if (userMobileEndPointRepository.getCountBySchoolInfoSubscriptionEndPoint(userMobileEndPoint.getSchoolInfoSubscriptionEndPoint()).equals(0)) {
+                snsService.unSubscribe(userMobileEndPoint.getSchoolInfoSubscriptionEndPoint());
+            }
+        }
+        if (userMobileEndPoint.getGlobalSubscriptionEndPoint() != null) {
+            if (userMobileEndPointRepository.getCountByGlobalSubscriptionEndPoint(userMobileEndPoint.getGlobalSubscriptionEndPoint()).equals(0)) {
+                snsService.unSubscribe(userMobileEndPoint.getGlobalSubscriptionEndPoint());
+            }
         }
     }
 }
