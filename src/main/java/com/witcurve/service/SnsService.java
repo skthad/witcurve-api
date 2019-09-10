@@ -60,6 +60,9 @@ public class SnsService {
     @Autowired
     MessageThreadRepository messageThreadRepository;
 
+    @Autowired
+    EventRepository eventRepository;
+
     public String createEndPointWithToken(String token) throws WitcurveException {
         log.debug("Create Platform end point with token : {}", token);
         try {
@@ -214,17 +217,24 @@ public class SnsService {
                     variableMap.put("class", "'" + standard.getGrade().toString() + "-" + standard.getSection() + "'");
 
                     if (keys.contains(eventDTO.getId())) {
-                        variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
-                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_TEST_PUSH_NOTIFICATION);
+                        if (!eventDTO.getDate().equals(map.get(eventDTO.getId()))) {
+                            variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
+                            message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_TEST_PUSH_NOTIFICATION);
+                            stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToTest);
+                            url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                            publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
+                        }
                     } else {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.TEST_PUSH_NOTIFICATION);
+                        stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToTest);
+                        url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     }
-                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToTest);
-                    url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
-                    publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
+
                     break;
                 case ASSIGNMENT:
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAssignment = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
+                    //
                     Course cName = courseRepository.findByCourseTeacherId(eventDTO.getCourseTeacher().getId());
                     standard = standardRepository.getOne(eventDTO.getStandardId());
 
@@ -234,14 +244,20 @@ public class SnsService {
                     variableMap.put("class", "'" + standard.getGrade().toString() + "-" + standard.getSection() + "'");
 
                     if (keys.contains(eventDTO.getId())) {
-                        variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
-                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_ASSIGNMENT_PUSH_NOTIFICATION);
+                        if (!eventDTO.getDate().equals(map.get(eventDTO.getId()))) {
+                            variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
+                            message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_ASSIGNMENT_PUSH_NOTIFICATION);
+                            stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToAssignment);
+                            url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                            publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
+                        }
                     } else {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.ASSIGNMENT_PUSH_NOTIFICATION);
+                        stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToAssignment);
+                        url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
                     }
-                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToAssignment);
-                    url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
-                    publishBulkMessage(message, url, TopicType.STANDARD, null, eventDTO.getStandardId());
+
                     break;
                 case DAILY_UPDATE:
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToDailyUpdate = userMobileEndPointRepository.findByStandardId(eventDTO.getStandardId());
@@ -343,14 +359,20 @@ public class SnsService {
                             List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPeriodicTest = userMobileEndPointRepository.findByStandardId(std.getId());
                             variableMap.put("class", "'" + std.getGrade().toString() + "-" + std.getSection() + "'");
                             if (keys.contains(eventDTO.getId())) {
-                                variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
-                                message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION);
+                                if (!eventDTO.getDate().equals(map.get(eventDTO.getId()))) {
+                                    variableMap.put("fromDate", WitcurveUtil.format(map.get(eventDTO.getId())));
+                                    message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.UPDATED_PERIODIC_TEST_PUSH_NOTIFICATION);
+                                    stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToPeriodicTest);
+                                    url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                                    publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
+                                }
                             } else {
                                 message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.PERIODIC_TEST_PUSH_NOTIFICATION);
+                                stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToPeriodicTest);
+                                url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
+                                publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
                             }
-                            stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedToPeriodicTest);
-                            url = "?userId=" + stringOfUserIds + "&event=true&date=" + eventDTO.getDate();
-                            publishBulkMessage(message, url, TopicType.STANDARD, null, std.getId());
+
                         }
                     }
                     break;
@@ -397,7 +419,7 @@ public class SnsService {
             varMap.put("time", WitcurveUtil.timeFormat(messageThreadDTO.getMeetingTime()));
 
             String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.MEETING_REQUEST_STATUS_CHANGE);
-            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToStatusChangeOfMeetingReq = userMobileEndPointRepository.findByUserId(messageThreadDTO.getToUserId());
+            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToStatusChangeOfMeetingReq = userMobileEndPointRepository.findByUserId(messageThreadDTO.getFromUserId());
             for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToStatusChangeOfMeetingReq) {
                 String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
                 publishMessage(message, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
@@ -461,16 +483,10 @@ public class SnsService {
                     }
                     break;
                 case MEETING_REQUEST:
-                    Map<String, String> varMap = new HashMap<>();
-                    varMap.put("date", WitcurveUtil.format(messageThread.getMeetingDate()));
-                    varMap.put("time", WitcurveUtil.timeFormat(messageThread.getMeetingTime()));
-
-                    String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.MEETING_REQUEST);
-
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedMeetingReq = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
                     for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedMeetingReq) {
                         String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
-                        publishMessage(message, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
+                        publishMessage(WitCurveConstants.MEETING_REQUEST, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
                     }
                     break;
             }
