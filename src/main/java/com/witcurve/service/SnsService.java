@@ -193,7 +193,7 @@ public class SnsService {
         }
     }
 
-    //@Async
+    @Async
     @Transactional
     public void sendPushNotification(List<EventDTO> listOfEventDTO, Map<Long, LocalDate> map) {
         Set<Long> keys = map.keySet();
