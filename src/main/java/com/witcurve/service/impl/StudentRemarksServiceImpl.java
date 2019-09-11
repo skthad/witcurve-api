@@ -90,7 +90,7 @@ public class StudentRemarksServiceImpl implements StudentRemarksService {
         }
         Map<Long, StudentRemarks> existingMap = new HashMap<>();
         for(StudentRemarks studentRemarks : existingStudentRemarksList) {
-            existingMap.put(studentRemarks.getId(), studentRemarks);
+            existingMap.put(studentRemarks.getStudent().getId(), studentRemarks);
         }
         for(StudentRemarksDTO studentRemarksDTO : studentRemarksDTOs) {
             if(requestStudentIds.contains(studentRemarksDTO.getStudentId())) {
@@ -103,10 +103,10 @@ public class StudentRemarksServiceImpl implements StudentRemarksService {
                 }
             } else {
                 if(existingStudentRemarks == null) {
-                    throw new WitcurveException("There is no existing student marks record with this student id "+studentRemarksDTO.getStudentId()+"to update");
+                    throw new WitcurveException("There is no existing student remarks record with this student id "+studentRemarksDTO.getStudentId()+"to update");
                 } else {
                     if(!existingStudentRemarks.getId().equals(studentRemarksDTO.getId())) {
-                        throw new WitcurveException("Student marks id cannot be changed while updating for student id "+studentRemarksDTO.getStudentId());
+                        throw new WitcurveException("Student remarks id cannot be changed while updating for student id "+studentRemarksDTO.getStudentId());
                     }
                 }
             }
