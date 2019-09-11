@@ -457,44 +457,40 @@ public class SnsService {
 
 
     @Async
-    public void sendPushNotification(MessageDTO messageDTO) {
+    public void sendPushNotification(MessageDTO messageDTO, MessageThreadDTO messageThreadDTO) {
         log.info("\n\npush notification started\n\n");
-        Optional<MessageThread> optionalMessageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
-        if (optionalMessageThread.isPresent()) {
-            MessageThread messageThread = optionalMessageThread.get();
-            switch (messageThread.getMessageType()) {
-                case SUBJECT_NOTE:
-                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThread.getCourseTeacher().getId());
-                    Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThread.getCourseTeacher().getId());
-                    String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
-                    String urlOfSubjectNote = "?userId=" + stringOfUserIds + "&group=true";
-                    publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
-                    break;
-                case PERSONAL:
-                    log.info("\n\ncategory personal started\n\n");
-                    if (messageThread.getSchoolBoardAdminMessage() == true || messageThread.getSuperAdminMessage() == true) {
-                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAdminMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
-                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAdminMessage) {
-                            String urlOfAdminMessage = "?userId=" + userMobileEndPoint.getUser().getId() + "&admin=true";
-                            publishMessage(WitCurveConstants.ADMIN_MESSAGE, urlOfAdminMessage, userMobileEndPoint.getEndPoint());
-                        }
-                    } else {
-                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPersonalMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
-                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToPersonalMessage) {
-                            String urlOfPersonalMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&direct=true";
-                            log.info("\n\nEnd point --- {}\n\n", userMobileEndPoint.getEndPoint());
-                            publishMessage(WitCurveConstants.PERSONAL_MESSAGE, urlOfPersonalMsg, userMobileEndPoint.getEndPoint());
-                        }
+        switch (messageThreadDTO.getMessageType()) {
+            case SUBJECT_NOTE:
+                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
+                Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThreadDTO.getCourseTeacherDTO().getId());
+                String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
+                String urlOfSubjectNote = "?userId=" + stringOfUserIds + "&group=true";
+                publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
+                break;
+            case PERSONAL:
+                log.info("\n\ncategory personal started\n\n");
+                if (messageThreadDTO.getSchoolBoardAdminMessage() == true || messageThreadDTO.getSuperAdminMessage() == true) {
+                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAdminMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
+                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToAdminMessage) {
+                        String urlOfAdminMessage = "?userId=" + userMobileEndPoint.getUser().getId() + "&admin=true";
+                        publishMessage(WitCurveConstants.ADMIN_MESSAGE, urlOfAdminMessage, userMobileEndPoint.getEndPoint());
                     }
-                    break;
-                case MEETING_REQUEST:
-                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedMeetingReq = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedMeetingReq) {
-                        String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
-                        publishMessage(WitCurveConstants.MEETING_REQUEST, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
+                } else {
+                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPersonalMessage = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
+                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToPersonalMessage) {
+                        String urlOfPersonalMsg = "?userId=" + userMobileEndPoint.getUser().getId() + "&direct=true";
+                        log.info("\n\nEnd point --- {}\n\n", userMobileEndPoint.getEndPoint());
+                        publishMessage(WitCurveConstants.PERSONAL_MESSAGE, urlOfPersonalMsg, userMobileEndPoint.getEndPoint());
                     }
-                    break;
-            }
+                }
+                break;
+            case MEETING_REQUEST:
+                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedMeetingReq = userMobileEndPointRepository.findByUserId(messageDTO.getToUserId());
+                for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedMeetingReq) {
+                    String urlOfMeetingReq = "?userId=" + userMobileEndPoint.getUser().getId() + "&meeting=true";
+                    publishMessage(WitCurveConstants.MEETING_REQUEST, urlOfMeetingReq, userMobileEndPoint.getEndPoint());
+                }
+                break;
         }
     }
 

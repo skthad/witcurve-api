@@ -68,7 +68,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         messageSet.add(message);
         messageThread.setMessages(messageSet);
         log.info("message is generated");
-        snsService.sendPushNotification(messageMapper.toDto(message));
+        snsService.sendPushNotification(messageMapper.toDto(message), messageThreadDTO);
         return messageThreadMapper.toDto(messageThread);
 
     }
@@ -90,8 +90,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             messageThread.get().setToUserLastMessageDate(message.getCreatedDate());
             messageThread.get().setFromUserUnreadCount(messageThread.get().getFromUserUnreadCount()+1);
         }
-        snsService.sendPushNotification(messageMapper.toDto(message));
-        return messageThreadMapper.toDto(messageThread.get());
+        MessageThreadDTO messageThreadDTO = messageThreadMapper.toDto(messageThread.get());
+        snsService.sendPushNotification(messageMapper.toDto(message), messageThreadDTO);
+        return messageThreadDTO;
     }
 
     public MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException {
