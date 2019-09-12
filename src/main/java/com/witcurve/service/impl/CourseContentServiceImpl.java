@@ -125,7 +125,7 @@ public class CourseContentServiceImpl implements CourseContentService {
                     if (event.get().getCourseTeacher() == null) {
                         throw new WitcurveException("No course has been attached to this weekly test yet!");
                     }
-                    courseId = event.get().getCourseTeacher().getCourse().getId();
+                    courseId = event.get().getCourse().getId();
                     break;
                 case TEST:
                 case DAILY_UPDATE:
