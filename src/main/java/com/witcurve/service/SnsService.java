@@ -526,11 +526,13 @@ public class SnsService {
     }
 
     private String convertToCommaSeparatedStringOfUserIds(List<UserMobileEndPoint> listOfUserMobileEndPoint) {
-        List<String> listOfEndPoint = new ArrayList<>();
+        List<String> listOfUserIds = new ArrayList<>();
         for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPoint) {
-            listOfEndPoint.add(userMobileEndPoint.getId().toString());
+            if(!listOfUserIds.contains(userMobileEndPoint.getUser().getId())) {
+                listOfUserIds.add(userMobileEndPoint.getUser().getId().toString());
+            }
         }
-        return listOfEndPoint.stream().collect(Collectors.joining(","));
+        return listOfUserIds.stream().collect(Collectors.joining(","));
     }
 }
 
