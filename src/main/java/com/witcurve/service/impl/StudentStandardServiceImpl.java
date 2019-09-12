@@ -46,6 +46,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     @Override
     public List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId) throws WitcurveException {
+        //todo refactor this code later. neglect this service for now
         List<String> rollNos = new ArrayList<>();
         //TODO to check if all student ids belong to standard school info id
         //TODO verify if this is still needed, if call single service in loop
