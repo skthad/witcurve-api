@@ -1,10 +1,20 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.*;
+import com.witcurve.domain.Course;
+import com.witcurve.domain.CourseTeacher;
+import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.Standard;
+import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ViewType;
-import com.witcurve.repository.*;
-import com.witcurve.service.*;
+import com.witcurve.repository.CourseRepository;
+import com.witcurve.repository.CourseTeacherRepository;
+import com.witcurve.repository.SchoolInfoRepository;
+import com.witcurve.repository.StandardRepository;
+import com.witcurve.service.AcademicSessionService;
+import com.witcurve.service.CourseContentService;
+import com.witcurve.service.CourseService;
+import com.witcurve.service.EventService;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.CourseMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -17,7 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -67,6 +80,14 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
         }
+        if(courseDTO.getCourseType().equals(CourseType.SCHOLASTIC)){
+            if(courseDTO.getElective()&&courseDTO.getMandatory()||!courseDTO.getMandatory()&&!courseDTO.getElective()){
+                throw new WitcurveException("Both elective and mandatory can't be true or false at same time");
+            }
+        }else if(courseDTO.getCourseType().equals(CourseType.NON_SCHOLASTIC)){
+            courseDTO.setElective(false);
+            courseDTO.setMandatory(false);
+        }
         Course course = courseMapper.toEntity(courseDTO);
         course = courseRepository.save(course);
         return courseMapper.toDto(course);
@@ -85,13 +106,21 @@ public class CourseServiceImpl implements CourseService {
 
 
     @Override
-    public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade) throws WitcurveException {
+    public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade,CourseType courseType,Boolean elective,Boolean mandatory) throws WitcurveException {
         log.debug("Request to get courses in schoolInfo {} with grade : {}", schoolInfoId, grade);
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        List<Course>courses=null;
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
         }
-        List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+        if(courseType==null){
+        courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+        }else if(courseType!=null&&!elective&&!mandatory||courseType!=null&&elective==true&&mandatory==true){
+            courses=courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId,grade,courseType);
+        }else if(courseType!=null&&elective==true&&mandatory==false){
+            courses=courseRepository.findElectiveCourse(schoolInfoId,grade,courseType);
+        }else if(courseType!=null&&elective==false&&mandatory==true){
+            courses=courseRepository.findMandatoryCourse(schoolInfoId,grade,courseType);}
         return courseMapper.toDto(courses);
     }
 

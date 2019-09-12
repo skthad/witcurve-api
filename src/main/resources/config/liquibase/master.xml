@@ -42,4 +42,6 @@
     <include file="config/liquibase/changelog/20190903070835_added_standard_to_topicRecord.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190903130601_added staffInfoSubscriptionEndPoint_and_StandardSubscriptionEndPoint_to_UserMobileEndPoint.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190907105916_added_grade_color.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190911122016_added_scholastic_and_nonScholastic_to_course.xml" relativeToChangelogFile="false"/>
+
 </databaseChangeLog>
