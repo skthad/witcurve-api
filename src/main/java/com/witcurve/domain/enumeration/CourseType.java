@@ -1,8 +1,8 @@
 package com.witcurve.domain.enumeration;
 
 public enum CourseType {
-    SCHOLASTIC("scholastic"),
-    NON_SCHOLASTIC("nonScholastic");
+    SCHOLASTIC("Scholastic"),
+    NON_SCHOLASTIC("Non-Scholastic");
 
         private final String value;
 

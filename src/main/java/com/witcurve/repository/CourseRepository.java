@@ -13,10 +13,10 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.active=true and course.elective = false order by course.grade")
+    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.active=true and course.elective = false order by course.grade,course.courseType desc, course.displayName asc")
     List<Course> findNonElectivesBySchoolInfo(Long schoolInfoId);
 
-    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.active=true and course.elective = false order by course.grade")
+    @Query("select course from Course course where course.schoolInfo.id = ?1 and course.active=true and course.elective = false order by course.grade,course.courseType desc, course.displayName asc")
     List<Course> findNonElectivesByStandardId(Long standardId);
 
     @Query("select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.active=true order by  course.courseType desc, course.displayName asc")
