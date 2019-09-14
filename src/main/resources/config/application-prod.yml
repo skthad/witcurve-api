@@ -154,9 +154,9 @@ application:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
         domainUrl: witcurve-app.com
     aws:
-        secretKey: cKEJfWGHhC3NLOoGf5qFETaoArp7oG9nL76Ml9oq
-        accessKey: AKIAVN6B32FDXRVR7A2Z
+        secretKey: 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
+        accessKey: AKIAVN6B32FDRU6LMQWG
         defaultRegion: us-east-2
-        snsRegion: us-east-1
-        snsApplicationArn: arn:aws:sns:us-east-1:373531857223:app/GCM/WitcurveTestNotification
-        bucketName: test.assets.witcurve-app.com
+        snsRegion: ap-south-1
+        snsApplicationArn: arn:aws:sns:ap-south-1:373531857223:app/GCM/WitcurveProdApplication
+        bucketName: prod.assets.witcurve-app.com
