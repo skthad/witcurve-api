@@ -121,11 +121,16 @@ public class CourseContentServiceImpl implements CourseContentService {
 
             switch (event.get().getType()) {
                 case ASSIGNMENT:
-                case PERIODIC_TEST:
                     if (event.get().getCourseTeacher() == null) {
-                        throw new WitcurveException("No course has been attached to this weekly test yet!");
+                        throw new WitcurveException("No course has been attached to this assignment test yet!");
                     }
                     courseId = event.get().getCourseTeacher().getCourse().getId();
+                    break;
+                case PERIODIC_TEST:
+                    if (event.get().getCourse() == null) {
+                        throw new WitcurveException("No course has been attached to this weekly test yet!");
+                    }
+                    courseId = event.get().getCourse().getId();
                     break;
                 case TEST:
                 case DAILY_UPDATE:

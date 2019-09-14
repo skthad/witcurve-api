@@ -75,6 +75,9 @@ public class UserContextServiceImpl implements UserContextService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    MessageThreadService messageThreadService;
+
     @Override
     public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -82,6 +85,7 @@ public class UserContextServiceImpl implements UserContextService {
 
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
+        contextDTO.setUnreadCount(messageThreadService.unReadCount(currentUser.getId()));
 
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());

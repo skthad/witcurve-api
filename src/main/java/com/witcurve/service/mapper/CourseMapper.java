@@ -9,7 +9,7 @@ import com.witcurve.service.dto.SchoolInfoDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = SchoolInfoMapper.class)
 public interface CourseMapper extends EntityMapper<CourseDTO, Course> {
 
     @Mapping(source = "masterSubject.name", target = "masterSubject")
@@ -36,13 +36,6 @@ public interface CourseMapper extends EntityMapper<CourseDTO, Course> {
         MasterSubject masterSubject = new MasterSubject();
         masterSubject.setName(name);
         return masterSubject;
-    }
-
-    default SchoolInfo schoolInfoFromId(Long schoolInfoId) {
-        SchoolInfo schoolInfo = new SchoolInfo();
-        schoolInfo.setId(schoolInfoId);
-
-        return schoolInfo;
     }
 
     default SchoolInfoDTO toSchoolInfoDTO(SchoolInfo schoolInfo) {

@@ -57,7 +57,6 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
             if (standardId == null) {
                 throw new WitcurveException("Standard ID must be provided to create GSDs");
             }
-            //gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
             if (standardIdBindingValueMap.get(standardId) == null) {
                 String bindingId = UUID.randomUUID().toString();
                 standardIdBindingValueMap.put(standardId, bindingId);
@@ -106,9 +105,6 @@ public class GeneralSlotDetailsServiceImpl implements GeneralSlotDetailsService 
     @Override
     public List<GeneralSlotDetailsDTO> update(List<GeneralSlotDetailsDTO> generalSlotDetailsDTOs) {
         log.debug("Request to update generalSlotDetails");
-        for (GeneralSlotDetailsDTO gsd : generalSlotDetailsDTOs) {
-            //gsd.setStartTime(gsd.getHours()*100 + gsd.getMinutes());
-        }
         List<GeneralSlotDetails> generalSlotDetails = generalSlotDetailsMapper.toEntity(generalSlotDetailsDTOs);
         List<GeneralSlotDetailsDTO> slots = generalSlotDetailsMapper.toDto(generalSlotDetailsRepository.saveAll(generalSlotDetails));
         return slots;

@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.TopicType;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,8 +27,11 @@ public class TopicRecord extends AbstractAuditingEntity implements Serializable 
     @Column(nullable = false)
     private String topicEndPoint;
 
+    @ManyToOne
+    private Standard standard;
+
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn
     private SchoolInfo schoolInfo;
 
     public Long getId() {
@@ -45,6 +49,10 @@ public class TopicRecord extends AbstractAuditingEntity implements Serializable 
     public void setType(TopicType type) {
         this.type = type;
     }
+
+    public Standard getStandard() { return standard; }
+
+    public void setStandard(Standard standard) { this.standard = standard; }
 
     public String getTopicEndPoint() {
         return topicEndPoint;

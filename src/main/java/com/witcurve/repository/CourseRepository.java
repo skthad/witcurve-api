@@ -1,6 +1,7 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.UserMobileEndPoint;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseCode = ?3")
     List<Course> findBySchoolInfoAndGradeAndCourseCode(Long schoolInfoId, Grade grade, String courseCode);
 
+    @Query("Select scd.courseTeacher.course from SlotCourseDetails scd where  scd.id=?1")
+    Course findBySlotCourseDetailId(Long scdId);
+
+    @Query("Select ct.course from CourseTeacher ct where ct.id = ?1")
+    Course findByCourseTeacherId(Long courseTeacherId);
 }

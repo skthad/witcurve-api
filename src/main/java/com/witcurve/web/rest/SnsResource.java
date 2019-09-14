@@ -24,15 +24,14 @@ public class SnsResource {
     @GetMapping("/test-sns")
     @Timed
     public ResponseEntity<Void> sendTestSns() throws UnsupportedEncodingException {
-        snsService.sendMobilePushNotification();
         return ResponseEntity.ok(null);
     }
 
     @PostMapping("/sns/publish-message")
     @Timed
     public ResponseEntity<Void> publishMessage(@RequestBody PublishMessageVM publishMessageVM) throws WitcurveException {
-        log.debug("Publish message : {}",publishMessageVM);
-        if(publishMessageVM.getEndPoint() == null) {
+        log.debug("Publish message : {}", publishMessageVM);
+        if (publishMessageVM.getEndPoint() == null) {
             throw new WitcurveException("End point is required");
         }
         snsService.publishMessage(publishMessageVM.getMessage(), publishMessageVM.getUrl(), publishMessageVM.getEndPoint());
@@ -43,10 +42,10 @@ public class SnsResource {
     @Timed
     public ResponseEntity<Void> publishBulkMessages(@RequestBody PublishMessageVM publishMessageVM) throws WitcurveException {
         log.debug("Bulk publish message : {}", publishMessageVM);
-        if(publishMessageVM.getType() == null) {
+        if (publishMessageVM.getType() == null) {
             throw new WitcurveException("Field type is required");
         }
-        snsService.publishBulkMessage(publishMessageVM.getMessage(), publishMessageVM.getUrl(), publishMessageVM.getType(), publishMessageVM.getSchoolInfoId());
+        snsService.publishBulkMessage(publishMessageVM.getMessage(), publishMessageVM.getUrl(), publishMessageVM.getType(), publishMessageVM.getSchoolInfoId(),publishMessageVM.getStandardId());
         return ResponseEntity.ok(null);
     }
 }

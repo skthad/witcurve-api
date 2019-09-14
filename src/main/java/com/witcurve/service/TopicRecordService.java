@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface TopicRecordService {
 
-    TopicRecordDTO addTopic(TopicType type, Long schoolInfoId);
+    TopicRecordDTO addTopic(TopicType type, Long schoolInfoId,Long standardId);
 
     List<TopicRecordDTO> findAllTopicRecords();
 
-    TopicRecordDTO findTopicRecordBySchoolInfoId(Long schoolInfoId);
+    List<TopicRecordDTO> findTopicRecordBySchoolInfoId(Long schoolInfoId);
 }

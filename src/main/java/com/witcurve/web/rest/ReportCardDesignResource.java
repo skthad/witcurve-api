@@ -2,7 +2,6 @@ package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.ReportFieldType;
-import com.witcurve.domain.enumeration.ReportModelType;
 import com.witcurve.service.ReportCardDesignService;
 import com.witcurve.service.dto.ReportCardDesignDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -37,10 +36,10 @@ public class ReportCardDesignResource {
      */
     @PostMapping("/report-card-designs")
     @Timed
-    public ResponseEntity<List<ReportCardDesignDTO>> createReportCardDesigns(@RequestBody @Valid List<ReportCardDesignDTO> reportCardDesignDTOS, @RequestParam Long schoolInfoId) throws WitcurveException, URISyntaxException {
-        log.debug("Request to save or update reportCardDesigns : {}",reportCardDesignDTOS);
+    public ResponseEntity<List<ReportCardDesignDTO>> createReportCardDesigns(@RequestBody @Valid List<ReportCardDesignDTO> reportCardDesignDTOS, @RequestParam(required = false) Long examId, @RequestParam(required = false) String bindingId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to save or update reportCardDesigns : {} for exam with id : {} or periodic test with binding id : {}",reportCardDesignDTOS, examId, bindingId);
         try {
-            List<ReportCardDesignDTO> result = reportCardDesignService.saveOrUpdate(reportCardDesignDTOS, schoolInfoId);
+            List<ReportCardDesignDTO> result = reportCardDesignService.saveOrUpdate(reportCardDesignDTOS, examId, bindingId);
             return ResponseEntity.created(new URI("/api/report-card-designs/"))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
@@ -49,33 +48,18 @@ public class ReportCardDesignResource {
     }
 
     /**
-     * get reportCardDesigns by schoolInfoId and modelType
-     * @param schoolInfoId
-     * @param modelType
+     * get reportCardDesigns by examId or by bindingId
+     * @param examId
+     * @param bindingId
      * @param fieldType
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/report-card-designs/school-info/{schoolInfoId}")
+    @GetMapping("/report-card-designs")
     @Timed
-    public ResponseEntity<List<ReportCardDesignDTO>> getReportCardDesigns(@PathVariable Long schoolInfoId, @RequestParam ReportModelType modelType, @RequestParam(required = false)ReportFieldType fieldType) throws WitcurveException {
-        log.debug("Request to get ReportCardDesign of model type :{} and field type : {} for school info with id : {}", schoolInfoId);
-        List<ReportCardDesignDTO> result = reportCardDesignService.findByModelTypeAndSchoolInfoId(modelType, schoolInfoId, fieldType);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * get manual entry reportCardDesigns by event or ecd id
-     * @param modelType
-     * @param id
-     * @return
-     * @throws WitcurveException
-     */
-    @GetMapping("/report-card-designs/model-type/{modelType}")
-    @Timed
-    public ResponseEntity<List<ReportCardDesignDTO>> getManualEntryReportCardDesignsForEventOrEcdId(@PathVariable ReportModelType modelType, @RequestParam Long id) throws WitcurveException {
-        log.debug("Request to get ReportCardDesign of model type : {} with id : {}", modelType, id);
-        List<ReportCardDesignDTO> result = reportCardDesignService.findManualEntryFieldsByEcdIdOrEventId(modelType, id);
+    public ResponseEntity<List<ReportCardDesignDTO>> getReportCardDesigns(@RequestParam(required = false) Long examId, @RequestParam(required = false) String bindingId, @RequestParam(required = false)ReportFieldType fieldType) throws WitcurveException {
+        log.debug("Request to get reportCardDesigns of field type : {} for exam with id : {} or periodic test with binding id : {}", fieldType, examId, bindingId);
+        List<ReportCardDesignDTO> result = reportCardDesignService.findByExamIdOrBindingIdWithFieldType(examId, bindingId, fieldType);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -94,15 +78,15 @@ public class ReportCardDesignResource {
     }
 
     /**
-     * deactivate reportCardDesigns by ids
+     * delete reportCardDesigns by ids
      * @param ids
      * @return
      * @throws WitcurveException
      */
     @DeleteMapping("/report-card-designs")
     @Timed
-    public ResponseEntity<Void> deactivateReportCard(@RequestParam List<Long> ids) throws WitcurveException {
-        log.debug("Request to get ReportCardDesign with ids : {}", ids);
+    public ResponseEntity<Void> deleteReportCardDesign(@RequestParam List<Long> ids) throws WitcurveException {
+        log.debug("Request to delete ReportCardDesign with ids : {} ", ids);
         reportCardDesignService.deleteReportCardDesign(ids);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

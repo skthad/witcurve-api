@@ -57,40 +57,13 @@ public class EventResource {
     @PostMapping("/events")
     @Timed
     public ResponseEntity<List<EventDTO>> createEvents(@RequestBody List<EventDTO> eventDTOs,
-                                                       @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
+                                                       @RequestParam Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         log.debug("Request Save Events : {}",eventDTOs);
-//TODO: make schoolInfoId mandatory
         for(EventDTO eventDTO: eventDTOs) {
             if (eventDTO.getId() != null) {
                 throw new WitcurveException("New Event can't already have an id");
             }
         }
-        try {
-            List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
-            return ResponseEntity.ok(result);
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [")) {
-                throw new WitcurveException("Foreign key for some field might be invalid");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
-    }
-
-
-    /**
-     * creates perodice test events
-     * @param eventDTOs
-     * @return
-     * @throws WitcurveException
-     * @throws URISyntaxException
-     */
-    @PostMapping("/events/periodic-tests")
-    @Timed
-    public ResponseEntity<List<EventDTO>> createPeriodicEvents(@RequestBody List<EventDTO> eventDTOs,
-                                                               @RequestParam(required = false) Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
-        log.debug("Request Save Periodic Test Events : {}",eventDTOs);
-
         try {
             List<EventDTO> result = eventService.saveOrUpdate(eventDTOs, schoolInfoId);
             return ResponseEntity.ok(result);

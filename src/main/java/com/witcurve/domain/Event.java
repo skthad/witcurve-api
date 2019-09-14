@@ -77,6 +77,10 @@ public class Event extends AbstractAuditingEntity implements Serializable {
     private CourseTeacher courseTeacher;
 
     @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne
     private SchoolInfo schoolInfo;
 
     @NotNull
@@ -219,6 +223,14 @@ public class Event extends AbstractAuditingEntity implements Serializable {
 
     public void setCourseTeacher(CourseTeacher courseTeacher) {
         this.courseTeacher = courseTeacher;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public SchoolInfo getSchoolInfo() {

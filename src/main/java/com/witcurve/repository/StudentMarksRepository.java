@@ -4,6 +4,7 @@ import com.witcurve.domain.StudentMarks;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,9 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
 
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 and sm.reportCardDesign is null and sm.examCourseDetails.gsd.marksPublished in ?2")
     List<StudentMarks> getStudentMarksByEcdId(Long ecdId, List<Boolean> publishList);
+
+    @Query("select sm from StudentMarks sm where sm.examCourseDetails.id = ?1 and sm.reportCardDesign.id = ?2 and sm.examCourseDetails.gsd.marksPublished in ?3")
+    List<StudentMarks> getStudentMarksByEcdIdAndRcdId(Long ecdId, Long rcdId, List<Boolean> publishList);
 
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.reportCardDesign is null " +
         "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?2) and sm.examCourseDetails.gsd.marksPublished in ?3")
@@ -70,6 +74,13 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     @Query("select sm from StudentMarks sm where sm.examCourseDetails.gsd.exam.id = ?1 and sm.reportCardDesign is null " +
         "and sm.student.id =?2 and sm.examCourseDetails.gsd.marksPublished in ?3 order by sm.examCourseDetails.date asc")
     List<StudentMarks> getByStudentIdForExam(Long examId, Long studentId, List<Boolean> publishList);
+
+    @Modifying
+    @Query("delete from StudentMarks sm where sm.reportCardDesign.id in ?1")
+    void deleteStudentMarksByRcdIds(List<Long> rcdId);
+
+    @Query("select sm from StudentMarks sm where sm.reportCardDesign.id in ?1")
+    List<StudentMarks> findStudentMarksByRcdIds(List<Long> rcdId);
 
 }
 

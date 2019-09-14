@@ -4,10 +4,12 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.ExamStatus;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.repository.*;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.EventDTO;
 import com.witcurve.service.dto.ExamCourseDetailsDTO;
+import com.witcurve.service.dto.ReportCardDesignDTO;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.service.mapper.StudentMarksMapper;
 import com.witcurve.service.util.WitcurveUtil;
@@ -19,14 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
 @Transactional
 public class StudentMarksServiceImpl implements StudentMarksService {
+
     private final Logger log  = LoggerFactory.getLogger(StandardServiceImpl.class);
 
     private final List<Boolean> ALL = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
@@ -54,42 +55,13 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     @Autowired
     ExamCourseDetailsRepository examCourseDetailsRepository;
 
+    @Autowired
+    ReportCardDesignRepository reportCardDesignRepository;
+
 
     @Override
-    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long ecdId, Long eventId) throws WitcurveException {
-        if(eventId == null && ecdId == null) {
-            throw new WitcurveException("EcdId or EventId need to be entered");
-        } else if(eventId != null && ecdId== null) {
-            log.debug("Request to save or update Student Marks: {} with event id : {} ", studentMarksDTOs, eventId);
-            Optional<Event> event = eventRepository.findById(eventId);
-            if(!event.isPresent()) {
-                throw new WitcurveException("Event doesn't exist with id "+ eventId);
-            }
-            EventDTO eventDTO = new EventDTO();
-            eventDTO.setId(eventId);
-            for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
-                studentMarksDTO.setEventDTO(eventDTO);
-                studentMarksDTO.setExamCourseDetailsDTO(null);
-            }
-        } else if(eventId ==null && ecdId!=null) {
-            log.debug("Request to save or update Student Marks: {} with ecd id : {} ", studentMarksDTOs, ecdId);
-            Optional<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findById(ecdId);
-            if(!examCourseDetails.isPresent()) {
-                throw new WitcurveException("ExamCourseDetails doesn't exist with id "+ ecdId);
-            }
-            if(examCourseDetails.get().getGsd().getExam().getStatus().equals(ExamStatus.DRAFT)) {
-                throw new WitcurveException("Marks cannot be posted for draft exams");
-            }
-            ExamCourseDetailsDTO ecd = new ExamCourseDetailsDTO();
-            ecd.setId(ecdId);
-            for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
-                studentMarksDTO.setEventDTO(null);
-                studentMarksDTO.setExamCourseDetailsDTO(ecd);
-            }
-        } else {
-            throw new WitcurveException("You cannot send both ecdId and eventId");
-        }
-        //add an option to add report card design and see if it is active at the time of creation
+    public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long ecdId, Long eventId, Long rcdId) throws WitcurveException {
+        studentMarksDTOs = validateAndFormatStudentMarks(studentMarksDTOs, ecdId, eventId, rcdId);
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
         studentMarks = studentMarksRepository.saveAll(studentMarks);
         return studentMarksMapper.toDto(studentMarks);
@@ -110,7 +82,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                 studentMarks = studentMarksRepository.getStudentMarksByEventIdAndRcdId(eventId, rcdId);
             }
         } else  {
-            throw new WitcurveException("The eventId must be TEST or ASSIGNMENT");
+            throw new WitcurveException("The event must be test or assignment or periodic test");
         }
         return studentMarksMapper.toDto(studentMarks);
     }
@@ -244,5 +216,87 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             throw new WitcurveException("No student Marks relation with given Id: " + studentMarksId);
         }
         studentMarksRepository.delete(studentMarks.get());
+    }
+    private List<StudentMarksDTO> validateAndFormatStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long ecdId, Long eventId, Long rcdId) {
+        List<StudentMarks> existingStudentMarksList;
+        List<Long> requestStudentIds = new ArrayList<>();
+        EventDTO eventDTO = null;
+        ExamCourseDetailsDTO ecd = null;
+        if(eventId == null && ecdId == null) {
+            throw new WitcurveException("EcdId or EventId need to be entered");
+        } else if(eventId != null && ecdId != null) {
+            throw new WitcurveException("You cannot send both ecdId and eventId");
+        } else {
+            ReportCardDesignDTO reportCardDesignDTO = null;
+            if(rcdId != null) {
+                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(rcdId);
+                if(!reportCardDesign.isPresent()) {
+                    throw new WitcurveException("There is no report card design with given id");
+                }
+                if(!reportCardDesign.get().getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
+                    throw new WitcurveException("Invalid report card design, make sure it is of manual entry field");
+                }
+                reportCardDesignDTO = new ReportCardDesignDTO();
+                reportCardDesignDTO.setId(rcdId);
+            }
+            if(eventId != null) {
+                log.debug("Request to save or update Student Marks: {} with event id : {} ", studentMarksDTOs, eventId);
+                Optional<Event> event = eventRepository.findById(eventId);
+                if(!event.isPresent()) {
+                    throw new WitcurveException("Event doesn't exist with id "+ eventId);
+                }
+                if(rcdId == null) {
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEventId(eventId);
+                } else {
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEventIdAndRcdId(eventId, rcdId);
+                }
+                eventDTO = new EventDTO();
+                eventDTO.setId(eventId);
+            } else {
+                log.debug("Request to save or update Student Marks: {} with ecd id : {} ", studentMarksDTOs, ecdId);
+                Optional<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findById(ecdId);
+                if(!examCourseDetails.isPresent()) {
+                    throw new WitcurveException("ExamCourseDetails doesn't exist with id "+ ecdId);
+                }
+                if(examCourseDetails.get().getGsd().getExam().getStatus().equals(ExamStatus.DRAFT)) {
+                    throw new WitcurveException("Marks cannot be posted for draft exams");
+                }
+                if(rcdId == null) {
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEcdId(ecdId, ALL);
+                } else {
+                    existingStudentMarksList = studentMarksRepository.getStudentMarksByEcdIdAndRcdId(ecdId, rcdId, ALL);
+                }
+                ecd = new ExamCourseDetailsDTO();
+                ecd.setId(ecdId);
+            }
+            Map<Long, StudentMarks> existingRecordMap = new HashMap<>();
+            for(StudentMarks studentMarks : existingStudentMarksList) {
+                existingRecordMap.put(studentMarks.getStudent().getId(), studentMarks);
+            }
+            for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                if(requestStudentIds.contains(studentMarksDTO.getStudentId())) {
+                    throw new WitcurveException("There should be only one record for a student in the request");
+                }
+                StudentMarks existingStudentMarks = existingRecordMap.get(studentMarksDTO.getStudentId());
+                if(studentMarksDTO.getId() == null) {
+                    if(existingStudentMarks != null) {
+                        throw new WitcurveException("There already exists a student marks for this student with id "+studentMarksDTO.getStudentId()+", so new record cannot be created");
+                    }
+                } else {
+                    if(existingStudentMarks == null) {
+                        throw new WitcurveException("There is no existing student marks record with this student id "+studentMarksDTO.getStudentId()+"to update");
+                    } else {
+                        if(!existingStudentMarks.getId().equals(studentMarksDTO.getId())) {
+                            throw new WitcurveException("Student marks id cannot be changed while updating for student id "+studentMarksDTO.getStudentId());
+                        }
+                    }
+                }
+                studentMarksDTO.setEventDTO(eventDTO);
+                studentMarksDTO.setExamCourseDetailsDTO(ecd);
+                studentMarksDTO.setReportCardDesignDTO(reportCardDesignDTO);
+                requestStudentIds.add(studentMarksDTO.getStudentId());
+            }
+        }
+        return studentMarksDTOs;
     }
 }

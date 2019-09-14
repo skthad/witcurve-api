@@ -22,24 +22,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class StudentMarksResource {
+
     private final Logger log = LoggerFactory.getLogger(StandardResource.class);
 
     @Autowired
     StudentMarksService studentMarksService;
     /**
-      * creates a new student marks relation
+      * creates a new student marks
       * @param studentMarksDTOs
       * @param eventId
       * @param ecdId
+      * @param rcdId
       * @return
       * @throws WitcurveException
       * @throws URISyntaxException
       */
     @PostMapping("/student-marks")
     @Timed
-    public ResponseEntity<List<StudentMarksDTO>> createStudentMarks(@RequestBody @Valid List<StudentMarksDTO> studentMarksDTOs, @RequestParam(required = false) Long ecdId, @RequestParam(required = false) Long eventId) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<List<StudentMarksDTO>> createStudentMarks(@RequestBody @Valid List<StudentMarksDTO> studentMarksDTOs,
+                                                                    @RequestParam(required = false) Long ecdId,
+                                                                    @RequestParam(required = false) Long eventId,
+                                                                    @RequestParam(required = false) Long rcdId) throws WitcurveException, URISyntaxException {
         log.debug("Request to create student Marks ");
-        List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTOs, ecdId, eventId);
+        List<StudentMarksDTO> result = studentMarksService.saveOrUpdateStudentMarks(studentMarksDTOs, ecdId, eventId, rcdId);
         return ResponseEntity.ok()
             .body(result);
     }

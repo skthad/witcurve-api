@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class EventServiceImpl implements EventService {
 
-    private final Logger log  = LoggerFactory.getLogger(EventServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
 
     @Autowired
     EventRepository eventRepository;
@@ -51,6 +52,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     CourseTeacherRepository courseTeacherRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
 
     @Autowired
     StaffRepository staffRepository;
@@ -91,6 +95,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     NotificationService notificationService;
 
+    @Autowired
+    SnsService snsService;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
@@ -106,25 +113,47 @@ public class EventServiceImpl implements EventService {
     private static final ArrayList<String> LIST_FOR_DATE_RANGE = new ArrayList<>(
         Arrays.asList(EventType.TEST.toString()));
 
+    private static final ArrayList<EventType> SNS_DATE_UPDATE = new ArrayList<>(
+        Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST));
+
 
     @Override
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
+        Map<Long, LocalDate> dateMap = new HashMap<>();
+        List<Long> updateTestOrAssignmentOrPeriodicTestIds = new ArrayList<>();
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
         Optional<SchoolInfo> result = schoolInfoRepository.findById(schoolInfoId);
         if (!result.isPresent()) {
             throw new WitcurveException("No school info found with ID: " + schoolInfoId);
         }
-        String bindingId = UUID.randomUUID().toString();
-        for(EventDTO eventDTO : eventDTOs) {
-            if(eventDTO.getKeywords()!= null) {
+        for (EventDTO eventDTO : eventDTOs) {
+            if (eventDTO.getKeywords() != null) {
                 for (String keyword : eventDTO.getKeywords()) {
                     keywordRepository.save(new Keyword(keyword));
                 }
             }
-            if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
-                eventDTO.setBindingId(bindingId);
+
+            if (SNS_DATE_UPDATE.contains(eventDTO.getType())) {
+                if (eventDTO.getId() != null) {
+                    if (eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                        Optional<Event> event=eventRepository.findById(eventDTO.getId());
+                        if (event.get().getCourse()!=null) {
+                            updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                        }
+                    } else {
+                        updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                    }
+                }
             }
+            if (eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                eventDTO.setBindingId(eventDTO.getBindingId());
+            }
+        }
+
+        List<Event> updateTestOrAssignmentEvents = eventRepository.findAllById(updateTestOrAssignmentOrPeriodicTestIds);
+        for (Event event : updateTestOrAssignmentEvents) {
+            dateMap.put(event.getId(), event.getDate());
         }
 
         List<Event> events = eventMapper.toEntity(eventDTOs);
@@ -133,18 +162,18 @@ public class EventServiceImpl implements EventService {
         Map<Long, Set<LocalDate>> staffIdAndDatesMap = null;
         List<Event> schoolEvents = null;
 
-        for(Event event : events){
-            if(event.getType().equals(EventType.ATTENDANCE)) {
+        for (Event event : events) {
+            if (event.getType().equals(EventType.ATTENDANCE)) {
                 if (event.getAttendanceType() == null) {
                     event.setAttendanceType(AttendanceType.PRESENT);
                 }
-                if(event.getStudent() != null) {
+                if (event.getStudent() != null) {
                     LocalDate date = event.getDate();
                     List<LeaveApplication> la = leaveApplicationRepository.findByStudentAndStatuses(event.getStudent().getId(), date, date,
                         Arrays.asList(ApprovalStatus.APPROVED, ApprovalStatus.PENDING));
                     if (la.size() > 0) {
                         la.get(0).addEvents(event);
-                        event.setName("LEAVE-"+la.get(0).getReason().toString());
+                        event.setName("LEAVE-" + la.get(0).getReason().toString());
                         event.setDescription(la.get(0).getDescription());
                     }
                     if (event.getId() == null && event.getAttendanceType().equals(AttendanceType.ABSENT)) {
@@ -157,13 +186,13 @@ public class EventServiceImpl implements EventService {
                         studentIdAndDatesMap.get(event.getStudent().getId()).add(event.getDate());
                     }
                 }
-                if(event.getStaff() != null) {
+                if (event.getStaff() != null) {
                     LocalDate date = event.getDate();
                     List<LeaveApplication> la = leaveApplicationRepository.findByStaffIdAndStatus(event.getStaff().getId(), date, date,
                         Arrays.asList(ApprovalStatus.APPROVED, ApprovalStatus.PENDING));
                     if (la.size() > 0) {
                         la.get(0).addEvents(event);
-                        event.setName("LEAVE-"+la.get(0).getReason().toString());
+                        event.setName("LEAVE-" + la.get(0).getReason().toString());
                         event.setDescription(la.get(0).getDescription());
                     }
                     if (event.getId() == null && event.getAttendanceType().equals(AttendanceType.ABSENT)) {
@@ -194,6 +223,7 @@ public class EventServiceImpl implements EventService {
         if (schoolEvents != null) {
             notificationService.sendSchoolEventNotification(result.get(), schoolEvents);
         }
+        snsService.sendPushNotification(eventMapper.toDto(events), dateMap);
         return eventMapper.toDto(events);
     }
 
@@ -212,7 +242,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to delete event with id : {}", eventId);
         Event event = eventRepository.findById(eventId).get();
 
-        if (event == null){
+        if (event == null) {
             throw new WitcurveException("No Event with given id");
         }
         if (event.getType() == EventType.TEST
@@ -228,12 +258,14 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to get events with eventDate : {} for student with id : {}", eventDate, studentId);
         List<Event> result = null;
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
-        if(studentStandard != null) {
+        if (studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
-            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
+            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
 
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DAY);
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
@@ -246,21 +278,21 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to get diary events with eventDate : {} for student with id : {}", eventDate, studentId);
         List<Event> result = null;
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
-        if(studentStandard != null) {
+        if (studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
-            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
+            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
 
             AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, LocalDate.now());
-            List<BigInteger> eventIds =  new ArrayList<>();
+            List<BigInteger> eventIds = new ArrayList<>();
             long substractDays = 6;
             boolean breakCycle = false;
-            while(eventIds.size() < 20) {
-                if(eventDate.minusDays(substractDays).isBefore(currentSession.getStartDate())) {
+            while (eventIds.size() < 20) {
+                if (eventDate.minusDays(substractDays).isBefore(currentSession.getStartDate())) {
                     substractDays = Period.between(eventDate.minusDays(substractDays), currentSession.getStartDate()).getDays();
                     breakCycle = true;
                 }
                 eventIds = eventRepository.findDirayEventsByDateRangeForStudent(eventDate.minusDays(substractDays), eventDate, standardId, Arrays.asList(EventType.DAILY_UPDATE.toString()));
-                if(breakCycle) {
+                if (breakCycle) {
                     break;
                 }
                 substractDays += 7;
@@ -277,12 +309,12 @@ public class EventServiceImpl implements EventService {
         log.debug("Request to get tests with eventDate : {} for staff with id : {} ", eventDate, staffId);
         List<Event> result = new ArrayList<>();
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findAllByTeacherId(staffId);
-        if(courseTeachers.size() !=0) {
+        if (courseTeachers.size() != 0) {
             Set<Long> standardIds = new HashSet<>();
             Set<String> grades = new HashSet<>();
             Set<Long> courseTeacherIds = new HashSet<>();
             Set<Long> courseIds = new HashSet<>();
-            for(CourseTeacher courseTeacher : courseTeachers) {
+            for (CourseTeacher courseTeacher : courseTeachers) {
                 standardIds.add(courseTeacher.getStandard().getId());
                 grades.add(courseTeacher.getStandard().getGrade().toString());
                 courseTeacherIds.add(courseTeacher.getId());
@@ -297,8 +329,8 @@ public class EventServiceImpl implements EventService {
             Collections.sort(result, new EventDateAscComparator());
         } else {
             //need to get school info events
-           // result =   eventRepository.findSchoolInfoEventsByDateRange(eventDate, eventDate, staffId, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DATE_RANGE);
-          //  Collections.sort(result, new EventDateAscComparator());
+            // result =   eventRepository.findSchoolInfoEventsByDateRange(eventDate, eventDate, staffId, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DATE_RANGE);
+            //  Collections.sort(result, new EventDateAscComparator());
         }
 
         return eventMapper.toDto(result);
@@ -322,9 +354,11 @@ public class EventServiceImpl implements EventService {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-            LocalDate monthStart = LocalDate.of(year,month,1);
+            LocalDate monthStart = LocalDate.of(year, month, 1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DATE_RANGE);
+            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
@@ -345,7 +379,7 @@ public class EventServiceImpl implements EventService {
 
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
 
-        if(courseTeachers.size() !=0) {
+        if (courseTeachers.size() != 0) {
             Set<Long> standardIds = courseTeachers
                 .stream()
                 .map(CourseTeacher::getStandard)
@@ -369,7 +403,7 @@ public class EventServiceImpl implements EventService {
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
 
-            LocalDate monthStart = LocalDate.of(year,month,1);
+            LocalDate monthStart = LocalDate.of(year, month, 1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, courseTeacherIds, courseIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
@@ -383,11 +417,11 @@ public class EventServiceImpl implements EventService {
     public List<LocalDate> findAllEventDatesOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
         List<LocalDate> eventDates = new ArrayList<>();
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
-        if(studentStandard != null) {
+        if (studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
-            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId() ;
-            LocalDate monthStart = LocalDate.of(year,month,1);
+            Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+            LocalDate monthStart = LocalDate.of(year, month, 1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
             eventDates = eventRepository.findEventDatesByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DATE_RANGE);
         }
@@ -400,11 +434,13 @@ public class EventServiceImpl implements EventService {
         LocalDate endDate = date.plusDays(6);
         List<Event> result = new ArrayList<>();
         StudentStandardDTO studentStandard = studentStandardService.getByStudentId(studentId);
-        if(studentStandard != null) {
+        if (studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade.toString(), schoolInfoId, LIST_FOR_DATE_RANGE);
+            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
@@ -436,7 +472,7 @@ public class EventServiceImpl implements EventService {
         SchoolInfo schoolInfo = staff.get().getSchoolInfo();
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
 
-        if(courseTeachers.size() !=0) {
+        if (courseTeachers.size() != 0) {
             Set<Long> standardIds = courseTeachers
                 .stream()
                 .map(CourseTeacher::getStandard)
@@ -482,9 +518,9 @@ public class EventServiceImpl implements EventService {
         List<Event> attendance;
         if (studentId != null) {
             attendance = eventRepository.findAttendanceForStudent(fromDate, toDate, studentId);
-        } else if(standardId != null) {
+        } else if (standardId != null) {
             attendance = eventRepository.findAttendanceForStandard(fromDate, toDate, standardId);
-        } else if(staffId != null) {
+        } else if (staffId != null) {
             attendance = eventRepository.findAttendanceForStaff(fromDate, toDate, staffId);
         } else {
             if (Boolean.TRUE.equals(forStudent)) {
@@ -509,14 +545,14 @@ public class EventServiceImpl implements EventService {
             StudentStandardDTO studentStandard = studentStandardService.getByStudentId(student.getId());
             if (studentStandard != null) {
                 if (!schoolInfoId.equals(student.getSchoolInfo().getId())) {
-                throw new WitcurveException("Given user does not belong to this board");
+                    throw new WitcurveException("Given user does not belong to this board");
+                }
+                Long standardId = studentStandard.getStandard().getId();
+                Grade grade = studentStandard.getStandard().getGrade();
+                result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
+            } else {
+                throw new WitcurveException("Given user does not belong to any standard");
             }
-            Long standardId = studentStandard.getStandard().getId();
-            Grade grade = studentStandard.getStandard().getGrade();
-            result = eventRepository.findStudentNotices(standardId, grade, schoolInfoId, startDate, endDate, pageable);
-        } else {
-            throw new WitcurveException("Given user does not belong to any standard");
-        }
             return result.map(eventMapper::toDto);
         }
 
@@ -527,7 +563,7 @@ public class EventServiceImpl implements EventService {
             }
             if (staff.getType().equals(StaffType.TEACHING)) {
                 Standard standard = standardRepository.findByClassTeacherId(staff.getId());
-                if(standard != null) {
+                if (standard != null) {
                     if (keywords != null && keywords.size() > 0) {
                         result = eventRepository.findClassTeacherNoticesByKeywords(standard.getId(), standard.getGrade(), schoolInfoId, startDate, endDate, keywords, pageable);
                     } else {
@@ -564,9 +600,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public Page<PeriodicTestDTO> getPeriodTestsBetweenDates(Pageable pageable, LocalDate startDate, LocalDate endDate, Long schoolInfoId, List<Grade> grades) throws WitcurveException {
         List<Event> events = null;
-        if(grades != null && !grades.isEmpty()) {
+        if (grades != null && !grades.isEmpty()) {
             List<String> bindingIds = eventRepository.findPeriodicTestBindingIdBySchoolInfoIdAndGrades(schoolInfoId, grades, startDate, endDate);
-            if(bindingIds!= null && !bindingIds.isEmpty()) {
+            if (bindingIds != null && !bindingIds.isEmpty()) {
                 events = eventRepository.findPeriodicTestByBindingIds(bindingIds);
             } else {
                 return new PageImpl<>(new ArrayList<>(), pageable, 0);
@@ -575,13 +611,13 @@ public class EventServiceImpl implements EventService {
             events = eventRepository.findPeriodicTestsBySchoolInfoId(schoolInfoId, startDate, endDate);
         }
         List<PeriodicTestDTO> periodicTestDTOList = new ArrayList<>();
-        Map<String, PeriodicTestDTO> periodicTestMap= new HashMap<>();
-        if(events.isEmpty()) {
+        Map<String, PeriodicTestDTO> periodicTestMap = new HashMap<>();
+        if (events.isEmpty()) {
             return new PageImpl<>(periodicTestDTOList, pageable, 0);
         } else {
             for (Event event : events) {
                 PeriodicTestDTO periodicTestDTO = periodicTestMap.get(event.getBindingId());
-                if(periodicTestDTO == null) {
+                if (periodicTestDTO == null) {
                     periodicTestDTO = new PeriodicTestDTO();
                     periodicTestDTO.setCreatedBy(event.getCreatedBy());
                     periodicTestDTO.setCreatedDate(event.getCreatedDate());
@@ -593,16 +629,16 @@ public class EventServiceImpl implements EventService {
                     periodicTestDTO.setDateList(Arrays.asList(event.getDate()));
                     periodicTestDTO.setGrades(Arrays.asList(event.getGrade()));
                 } else {
-                    if(event.getCreatedDate().isBefore(periodicTestDTO.getCreatedDate())) {
+                    if (event.getCreatedDate().isBefore(periodicTestDTO.getCreatedDate())) {
                         periodicTestDTO.setCreatedDate(event.getCreatedDate());
                     }
                     List<LocalDate> dates = new ArrayList<>(periodicTestDTO.getDateList());
-                    if(!dates.contains(event.getDate())) {
+                    if (!dates.contains(event.getDate())) {
                         dates.add(event.getDate());
                         periodicTestDTO.setDateList(dates);
                     }
                     List<Grade> gradeList = new ArrayList<>(periodicTestDTO.getGrades());
-                    if(!gradeList.contains(event.getGrade())) {
+                    if (!gradeList.contains(event.getGrade())) {
                         gradeList.add(event.getGrade());
                         periodicTestDTO.setGrades(gradeList);
                     }
@@ -610,7 +646,7 @@ public class EventServiceImpl implements EventService {
                 periodicTestMap.put(event.getBindingId(), periodicTestDTO);
             }
             periodicTestDTOList = new ArrayList<>(periodicTestMap.values());
-            for(PeriodicTestDTO periodicTestDTO : periodicTestDTOList) {
+            for (PeriodicTestDTO periodicTestDTO : periodicTestDTOList) {
                 List<LocalDate> dates = periodicTestDTO.getDateList();
                 Collections.sort(dates, new LocalDateComparator());
                 periodicTestDTO.setDateList(dates);
@@ -620,10 +656,10 @@ public class EventServiceImpl implements EventService {
             }
             Collections.sort(periodicTestDTOList, new PeriodicTestDescComparator());
             List<PeriodicTestDTO> result = new ArrayList<>();
-            int startIndex = pageable.getPageNumber()*pageable.getPageSize();
-            int endIndex = startIndex + pageable.getPageSize()-1;
-            for(int i=startIndex; i<=endIndex; i++ ) {
-                if(i>periodicTestDTOList.size()-1) {
+            int startIndex = pageable.getPageNumber() * pageable.getPageSize();
+            int endIndex = startIndex + pageable.getPageSize() - 1;
+            for (int i = startIndex; i <= endIndex; i++) {
+                if (i > periodicTestDTOList.size() - 1) {
                     break;
                 }
                 result.add(periodicTestDTOList.get(i));
@@ -636,16 +672,16 @@ public class EventServiceImpl implements EventService {
     public List<EventDTO> getPeriodicTestsByBindingId(String bindingId, List<Long> courseIds) {
         log.debug("Get list of periodic tests by binding Id : {} and courseIds : {}", bindingId, courseIds);
         List<EventDTO> result;
-        if(courseIds!= null && !courseIds.isEmpty()) {
+        if (courseIds != null && !courseIds.isEmpty()) {
             result = eventMapper.toDto(eventRepository.findPeriodicEventsByBindingIdAndCourseIds(bindingId, courseIds));
         } else {
             result = eventMapper.toDto(eventRepository.findPeriodicEventsByBindingId(bindingId));
         }
-        for(EventDTO eventDTO : result) {
+        for (EventDTO eventDTO : result) {
             List<Standard> standards = standardRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
-            for(Standard standard : standards) {
+            for (Standard standard : standards) {
                 List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventIdAndStandardId(eventDTO.getId(), standard.getId());
-                if(studentMarks.size() ==0) {
+                if (studentMarks.size() == 0) {
                     eventDTO.setDoesAllStudentMarksExistForPeriodicTest(false);
                 }
             }
@@ -658,7 +694,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Delete list of periodic tests by binding Id : {}", bindingId);
         List<Long> eventIds = eventRepository.findPeriodicEventIdsByBindingId(bindingId);
         List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventIds(eventIds);
-        if(!studentMarks.isEmpty()) {
+        if (!studentMarks.isEmpty()) {
             throw new WitcurveException("This periodic test cannot be deleted as marks has already been entered");
         }
         eventContentRepository.deleteByEventIds(eventIds);
@@ -670,12 +706,12 @@ public class EventServiceImpl implements EventService {
     public void deletePeriodicTestsByIds(List<Long> ids) throws WitcurveException {
         log.debug("Delete periodic events by ids : {}", ids);
         List<Event> events = eventRepository.findAllById(ids);
-        for(Event event : events) {
-            if(!event.getType().equals(EventType.PERIODIC_TEST)) {
+        for (Event event : events) {
+            if (!event.getType().equals(EventType.PERIODIC_TEST)) {
                 throw new WitcurveException("Only periodic tests can be deleted from this service");
             }
             List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEventId(event.getId());
-            if(!studentMarks.isEmpty()) {
+            if (!studentMarks.isEmpty()) {
                 throw new WitcurveException("This periodic test cannot be deleted as marks has already been entered");
             }
             eventContentRepository.deleteByEventId(event.getId());
@@ -686,21 +722,19 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventDTO> findAllTestAndAssignmentByTeacherInDateRange(Long staffId, LocalDate eventStart, LocalDate eventEnd, ViewType type) throws WitcurveException {
         List<Event> events;
-        if(ViewType.ASSIGNMENT.equals(type)){
-            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId,eventStart,eventEnd);
-        }
-        else if(ViewType.TEST.equals(type)){
-            events = eventRepository.findTestsByTeacherInDateRange(staffId,eventStart,eventEnd);
-        } else if(ViewType.PERIODIC_TEST.equals(type)) {
+        if (ViewType.ASSIGNMENT.equals(type)) {
+            events = eventRepository.findAssignmentsByTeacherInDateRange(staffId, eventStart, eventEnd);
+        } else if (ViewType.TEST.equals(type)) {
+            events = eventRepository.findTestsByTeacherInDateRange(staffId, eventStart, eventEnd);
+        } else if (ViewType.PERIODIC_TEST.equals(type)) {
             List<CourseTeacher> courseTeachers = courseTeacherRepository.findByTeacherId(staffId);
             Set<Long> courseIds = courseTeachers
                 .stream()
                 .map(CourseTeacher::getCourse)
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
-            events = eventRepository.findPeriodicTestsByTeacherInDateRange(courseIds,eventStart,eventEnd);
-        }
-        else {
+            events = eventRepository.findPeriodicTestsByTeacherInDateRange(courseIds, eventStart, eventEnd);
+        } else {
             throw new WitcurveException("Event type should be TEST, ASSIGNMENT OR PERIODIC TEST");
         }
         Collections.sort(events, new EventDateDescComparator());
@@ -711,9 +745,9 @@ public class EventServiceImpl implements EventService {
     public Page<EventDTO> findAllTestAndAssignmentAndDailyUpdateByStandardAndCourse(Pageable pageable, LocalDate eventStart, LocalDate eventEnd, ViewType type, Long standardId, Long courseId, Long staffId) throws WitcurveException {
         WitcurveUtil.correctDateFormat(eventStart, eventEnd);
         List<Event> events = null;
-        if(type.equals(ViewType.ASSIGNMENT)) {
+        if (type.equals(ViewType.ASSIGNMENT)) {
             events = eventRepository.findAssignmentsByStandardAndCourseInDateRange(standardId, courseId, eventStart, eventEnd);
-        } else if(type.equals(ViewType.TEST)) {
+        } else if (type.equals(ViewType.TEST)) {
             events = eventRepository.findTestsByStandardAndCourseInDateRange(standardId, courseId, eventStart, eventEnd);
         } else if (type.equals(ViewType.DAILY_UPDATE)) {
             events = eventRepository.findDailyUpdatesByStandardAndCourseInDateRange(standardId, courseId, eventStart, eventEnd);
@@ -725,14 +759,14 @@ public class EventServiceImpl implements EventService {
         events = new ArrayList<>(events);
         List<Event> staffList = new ArrayList<>();
         staffList.addAll(events);
-        if(staffId != null) {
-            for(Event event : events) {
-                if(event.getType().equals(EventType.TEST) || event.getType().equals(EventType.DAILY_UPDATE)) {
-                    if(!event.getScd().getCourseTeacher().getTeacher().getId().equals(staffId)) {
+        if (staffId != null) {
+            for (Event event : events) {
+                if (event.getType().equals(EventType.TEST) || event.getType().equals(EventType.DAILY_UPDATE)) {
+                    if (!event.getScd().getCourseTeacher().getTeacher().getId().equals(staffId)) {
                         staffList.remove(event);
                     }
-                } else if(event.getType().equals(EventType.ASSIGNMENT)) {
-                    if(!event.getCourseTeacher().getTeacher().getId().equals(staffId)) {
+                } else if (event.getType().equals(EventType.ASSIGNMENT)) {
+                    if (!event.getCourseTeacher().getTeacher().getId().equals(staffId)) {
                         staffList.remove(event);
                     }
                 }
@@ -742,9 +776,9 @@ public class EventServiceImpl implements EventService {
         Collections.sort(events, new EventDateDescComparator());
         List<Event> finalList = new ArrayList<>();
         if (pageable.isPaged()) {
-            int startIndex = pageable.getPageNumber()*pageable.getPageSize();
+            int startIndex = pageable.getPageNumber() * pageable.getPageSize();
             int endIndex = startIndex + pageable.getPageSize() - 1;
-            for(int i=startIndex; i<=endIndex; i++ ) {
+            for (int i = startIndex; i <= endIndex; i++) {
                 if (i > events.size() - 1) {
                     break;
                 }
@@ -753,7 +787,7 @@ public class EventServiceImpl implements EventService {
         } else {
             finalList.addAll(events);
         }
-        List<EventDTO> result =  eventMapper.toDto(finalList);
+        List<EventDTO> result = eventMapper.toDto(finalList);
         return new PageImpl<>(new ArrayList<>(result), pageable, events.size());
     }
 
@@ -766,37 +800,40 @@ public class EventServiceImpl implements EventService {
     }
 
     private void isEventValid(List<EventDTO> eventDTOs) throws WitcurveException {
-        for(EventDTO eventDTO : eventDTOs) {
+        for (EventDTO eventDTO : eventDTOs) {
             if (!EventType.ATTENDANCE.equals(eventDTO.getType()) && eventDTO.getScd() != null && eventDTO.getCourseTeacher() != null) {
                 throw new WitcurveException("All event requests except ATTENDANCE type require scd or  course teacher id");
             }
-            if(FIRST_LIST.contains(eventDTO.getType())) {
-                if(eventDTO.getType().equals(EventType.ASSIGNMENT)) {
-                    if(eventDTO.getStandardId() == null) {
-                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty standardId");
+            if (FIRST_LIST.contains(eventDTO.getType())) {
+                if (eventDTO.getType().equals(EventType.ASSIGNMENT)) {
+                    if (eventDTO.getStandardId() == null) {
+                        log.error("Event of type : " + eventDTO.getType() + "cannot have empty standardId");
                         throw new WitcurveException("An assignment cannot have empty standardId for event with date");
                     }
 
-                } else if(eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
-                    if(eventDTO.getGrade() == null || eventDTO.getSchoolInfoId() == null) {
-                        log.error("Event of type : "+eventDTO.getType()+"cannot have empty grade or school info id");
+                } else if (eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
+                    if (eventDTO.getBindingId() == null) {
+                        log.error("Event of type : " + eventDTO.getType() + "cannot have empty binding id");
+                        throw new WitcurveException("A periodic test creation needs binding id");
+                    }
+                    if (eventDTO.getGrade() == null || eventDTO.getSchoolInfoId() == null) {
+                        log.error("Event of type : " + eventDTO.getType() + "cannot have empty grade or school info id");
                         throw new WitcurveException("A periodic test creation need both grade id and school info id");
                     }
-                    if(eventDTO.getCourseTeacher() != null) {
-                        Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(eventDTO.getCourseTeacher().getId());
-                        if (!courseTeacher.isPresent()) {
-                            throw new WitcurveException("No course teacher with given id " + eventDTO.getCourseTeacher().getId());
+                    if (eventDTO.getCourse() != null) {
+                        Optional<Course> course = courseRepository.findById(eventDTO.getCourse().getId());
+                        if (!course.isPresent()) {
+                            throw new WitcurveException("No course with given id " + eventDTO.getCourse().getId());
                         }
-                        Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), courseTeacher.get().getCourse().getId());
-                        if(event != null && !event.getId().equals(eventDTO.getId())) {
-                            if(event != null && !event.getId().equals(eventDTO.getId())) {
+                        Event event = eventRepository.findPeriodicTestOnDateAndCourseId(eventDTO.getDate(), course.get().getId());
+                        if (event != null && !event.getId().equals(eventDTO.getId())) {
+                            if (event != null && !event.getId().equals(eventDTO.getId())) {
                                 throw new WitcurveException("There already exists a periodic test for this course on given date");
                             }
                         }
                     }
-                }
-                else{
-                    if(eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
+                } else {
+                    if (eventDTO.getStandardId() == null || eventDTO.getScd() == null || (eventDTO.getScd() != null && eventDTO.getScd().getId() == null)) {
                         throw new WitcurveException("Event cannot have SCD without standardId");
                     }
 //                    List<SlotCourseDetailsDTO> slotCourseDetails = slotCourseDetailsService.getSlotCourseDetailsByStandardId(eventDTO.getStandardId());
@@ -804,9 +841,9 @@ public class EventServiceImpl implements EventService {
 //                        throw new WitcurveException("This scd doesn't belong to given standard id");
 //                    }
                     Event event = eventRepository.findEventOnDateAndSlot(eventDTO.getDate(), eventDTO.getScd().getId(), eventDTO.getType());
-                    if(event != null && !event.getId().equals(eventDTO.getId())) {
-                        if(event != null && !event.getId().equals(eventDTO.getId())) {
-                            if(EventType.DAILY_UPDATE.equals(eventDTO.getType())) {
+                    if (event != null && !event.getId().equals(eventDTO.getId())) {
+                        if (event != null && !event.getId().equals(eventDTO.getId())) {
+                            if (EventType.DAILY_UPDATE.equals(eventDTO.getType())) {
                                 throw new WitcurveException("There already exists a daily update for this course on given date");
                             } else {
                                 throw new WitcurveException("There already exists a test for this course on given date");
@@ -814,45 +851,48 @@ public class EventServiceImpl implements EventService {
                         }
                     }
                 }
-            } else if(eventDTO.getType().equals(EventType.HOLIDAY)) {
-                if(eventDTO.getSchoolInfoId() == null) {
+            } else if (eventDTO.getType().equals(EventType.HOLIDAY)) {
+                if (eventDTO.getSchoolInfoId() == null) {
                     throw new WitcurveException("A holiday must have schoolInfoId");
                 }
-            } else if(eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
-                if(!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
+            } else if (eventDTO.getType().equals(EventType.SCHOOL_EVENT)) {
+                if (!(eventDTO.getSchoolInfoId() == null ^ eventDTO.getStandardId() == null)) {
                     throw new WitcurveException("A school event must have only one of the fields [schoolInfoId, standardId]");
                 }
                 Long schoolInfoId = eventDTO.getSchoolInfoId();
-                if(schoolInfoId == null) {
+                if (schoolInfoId == null) {
                     Standard standard = standardRepository.findById(eventDTO.getStandardId()).get();
-                    if(standard == null) {
-                        throw new WitcurveException("Invalid Standard Id :"+eventDTO.getStandardId());
+                    if (standard == null) {
+                        throw new WitcurveException("Invalid Standard Id :" + eventDTO.getStandardId());
                     }
                     schoolInfoId = standard.getSchoolInfo().getId();
                 }
                 List<Event> events = eventRepository.eventsBlockingHolidayAndSchoolEvents(eventDTO.getDate(), SECOND_LIST, schoolInfoId);
                 events = removeExistingEvent(events, eventDTO);
-                if(events.size() !=0) {
+                if (events.size() != 0) {
                     throw new WitcurveException("The event clashes with an existing holiday or school event");
                 }
-            }  else if(eventDTO.getType().equals(EventType.ATTENDANCE)) {
-                if(!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
-                    log.error("Event of type : "+eventDTO.getType()+"should have only one of the fields : studentId, staffId");
+            } else if (eventDTO.getType().equals(EventType.ATTENDANCE)) {
+                if (!(eventDTO.getStudentId() == null ^ eventDTO.getStaffId() == null)) {
+                    log.error("Event of type : " + eventDTO.getType() + "should have only one of the fields : studentId, staffId");
                     throw new WitcurveException("An attendance record must have only one of the fields [studentId, staffId]");
+                }
+                if (eventDTO.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                    throw new WitcurveException("No attendance record can be taken on Sunday");
                 }
                 Long schoolInfoId;
                 List<Event> events;
                 Boolean forStudent = true;
-                if(eventDTO.getStudentId() != null) {
-                    if(eventDTO.getStandardId() == null) {
+                if (eventDTO.getStudentId() != null) {
+                    if (eventDTO.getStandardId() == null) {
                         throw new WitcurveException("An attendance record for student must have standardId");
                     }
                     StudentStandardDTO studentStandard = studentStandardService.getByStudentId(eventDTO.getStudentId());
-                    if(studentStandard == null) {
-                        throw new WitcurveException("Student ID: "+eventDTO.getStudentId()+" is not currently mapped to any standard");
+                    if (studentStandard == null) {
+                        throw new WitcurveException("Student ID: " + eventDTO.getStudentId() + " is not currently mapped to any standard");
                     }
                     if (!studentStandard.getStandard().getId().equals(eventDTO.getStandardId())) {
-                        throw new WitcurveException("Student ID: "+eventDTO.getStudentId()+" is not currently mapped with standard ID: " + eventDTO.getStandardId());
+                        throw new WitcurveException("Student ID: " + eventDTO.getStudentId() + " is not currently mapped with standard ID: " + eventDTO.getStandardId());
                     }
                     schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
                     events = eventRepository.eventsBlockingAttendanceForStudent(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStudentId());
@@ -863,19 +903,19 @@ public class EventServiceImpl implements EventService {
                     events = eventRepository.eventsBlockingAttendanceForStaff(eventDTO.getDate(), THIRD_LIST, schoolInfoId, eventDTO.getStaffId());
                     events = removeExistingEvent(events, eventDTO);
                 }
-                if(events.size() !=0 ) {
-                    throw new WitcurveException(String.format("Either attendance already taken on this day for given %s or this is a holiday", forStudent? "student": "staff"));
+                if (events.size() != 0) {
+                    throw new WitcurveException(String.format("Either attendance already taken on this day for given %s or this is a holiday", forStudent ? "student" : "staff"));
                 }
-            } else if(eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
-                if(eventDTO.getSchoolInfoId() == null) {
+            } else if (eventDTO.getType().equals(EventType.NOTICE) || eventDTO.getType().equals(EventType.STAFF_NOTICE)) {
+                if (eventDTO.getSchoolInfoId() == null) {
                     throw new WitcurveException("School Info Id is a required field for creating notice");
                 }
                 if (eventDTO.getStandardId() != null) {
                     Optional<Standard> standard = standardRepository.findById(eventDTO.getStandardId());
-                    if(!standard.isPresent()) {
+                    if (!standard.isPresent()) {
                         throw new WitcurveException("No standard found with id :" + eventDTO.getStandardId());
                     }
-                    if(eventDTO.getSignature() == null) {
+                    if (eventDTO.getSignature() == null) {
                         throw new WitcurveException("Please enter the signature field");
                     }
                 }
@@ -887,12 +927,12 @@ public class EventServiceImpl implements EventService {
 
         @Override
         public int compare(Event o1, Event o2) {
-            if (o1.getDate().isAfter( o2.getDate())) {
+            if (o1.getDate().isAfter(o2.getDate())) {
                 return 1;
-            } else if(o1.getDate().isBefore( o2.getDate())) {
+            } else if (o1.getDate().isBefore(o2.getDate())) {
                 return -1;
             } else {
-                if(o1.getScd() != null && o2.getScd() != null) {
+                if (o1.getScd() != null && o2.getScd() != null) {
                     String start1 = o1.getScd().getGsd().getStart();
                     String start2 = o2.getScd().getGsd().getStart();
                     return start1.compareTo(start2);
@@ -908,12 +948,12 @@ public class EventServiceImpl implements EventService {
 
         @Override
         public int compare(Event o1, Event o2) {
-            if (o1.getDate().isAfter( o2.getDate())) {
+            if (o1.getDate().isAfter(o2.getDate())) {
                 return -1;
-            } else if(o1.getDate().isBefore( o2.getDate())) {
+            } else if (o1.getDate().isBefore(o2.getDate())) {
                 return 1;
             } else {
-                if(o1.getScd() != null && o2.getScd() != null) {
+                if (o1.getScd() != null && o2.getScd() != null) {
                     String start1 = o1.getScd().getGsd().getStart();
                     String start2 = o2.getScd().getGsd().getStart();
                     return start1.compareTo(start2);
@@ -928,9 +968,9 @@ public class EventServiceImpl implements EventService {
 
         @Override
         public int compare(PeriodicTestDTO o1, PeriodicTestDTO o2) {
-            if (o1.getDateList().get(0).isAfter( o2.getDateList().get(0))) {
+            if (o1.getDateList().get(0).isAfter(o2.getDateList().get(0))) {
                 return -1;
-            } else if(o1.getDateList().get(0).isBefore( o2.getDateList().get(0))) {
+            } else if (o1.getDateList().get(0).isBefore(o2.getDateList().get(0))) {
                 return 1;
             } else {
                 return 0;
@@ -939,7 +979,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private List<Event> removeExistingEvent(List<Event> events, EventDTO eventDTO) {
-        if(eventDTO.getId() != null) {
+        if (eventDTO.getId() != null) {
             Event event = new Event();
             event.setId(eventDTO.getId());
             events.remove(event);

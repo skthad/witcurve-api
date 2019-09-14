@@ -5,13 +5,13 @@ import com.witcurve.service.dto.ReportCardDesignDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class})
+@Mapper(componentModel = "spring", uses = {ExamMapper.class})
 public interface ReportCardDesignMapper extends EntityMapper<ReportCardDesignDTO, ReportCardDesign> {
 
-    @Mapping(source = "schoolInfo.id", target = "schoolInfoId")
+    @Mapping(source = "exam.id", target = "examId")
     ReportCardDesignDTO toDto(ReportCardDesign reportCardDesign);
 
-    @Mapping(source = "schoolInfoId", target = "schoolInfo")
+    @Mapping(source = "examId", target = "exam")
     ReportCardDesign toEntity(ReportCardDesignDTO reportCardDesignDTO);
 
     default ReportCardDesign fromId(Long id) {

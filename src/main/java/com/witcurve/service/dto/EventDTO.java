@@ -57,6 +57,8 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     private CourseTeacherDTO courseTeacher;
 
+    private CourseDTO course;
+
     private Long schoolInfoId;
 
     @NotNull
@@ -204,6 +206,14 @@ public class EventDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setCourseTeacher(CourseTeacherDTO courseTeacher) {
         this.courseTeacher = courseTeacher;
+    }
+
+    public CourseDTO getCourse() {
+        return course;
+    }
+
+    public void setCourse(CourseDTO course) {
+        this.course = course;
     }
 
     public Long getSchoolInfoId() {

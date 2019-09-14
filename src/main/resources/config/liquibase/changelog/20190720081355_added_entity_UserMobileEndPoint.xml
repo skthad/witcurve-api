@@ -75,4 +75,10 @@
     <changeSet author="srujankuamar (generated)" id="1563610448383-9">
         <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="topic_record" constraintName="FK2b59fwjuq83uukq1d54tssc0w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1567601040291-10">
+        <addUniqueConstraint columnNames="user_id, end_point" constraintName="user_end_point_UK" tableName="user_mobile_end_point"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1567601040291-11">
+        <addNotNullConstraint columnDataType="bigint" columnName="user_id" tableName="user_mobile_end_point"/>
+    </changeSet>
 </databaseChangeLog>

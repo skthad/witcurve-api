@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.MessageType;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
 import com.witcurve.service.MessageThreadService;
+import com.witcurve.service.SnsService;
 import com.witcurve.service.dto.MessageDTO;
 import com.witcurve.service.dto.MessageThreadDTO;
 import com.witcurve.service.mapper.MessageMapper;
@@ -48,6 +49,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    SnsService snsService;
+
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
         isValidMessageThread(messageThreadDTO);
@@ -63,12 +67,15 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         Set<Message> messageSet = new HashSet<>();
         messageSet.add(message);
         messageThread.setMessages(messageSet);
+        log.info("message is generated");
+        snsService.sendPushNotification(messageMapper.toDto(message), messageThreadDTO);
         return messageThreadMapper.toDto(messageThread);
 
     }
 
     public MessageThreadDTO replyMessage(MessageDTO messageDTO) throws WitcurveException {
         log.debug("Request to save a reply message : {}", messageDTO);
+
         Message message = messageMapper.toEntity(messageDTO);
         message = messageRepository.save(message);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(messageDTO.getMessageThreadId());
@@ -83,7 +90,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             messageThread.get().setToUserLastMessageDate(message.getCreatedDate());
             messageThread.get().setFromUserUnreadCount(messageThread.get().getFromUserUnreadCount()+1);
         }
-        return messageThreadMapper.toDto(messageThread.get());
+        MessageThreadDTO messageThreadDTO = messageThreadMapper.toDto(messageThread.get());
+        snsService.sendPushNotification(messageMapper.toDto(message), messageThreadDTO);
+        return messageThreadDTO;
     }
 
     public MessageThreadDTO getMessageThreadById(Long messageThreadId) throws WitcurveException {
@@ -95,7 +104,6 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         return messageThreadMapper.toDto(messageThread.get());
     }
 
-
     public  void approveOrRejectMessageThread(Long threadId, Long staffId, ApprovalStatus status) throws WitcurveException {
         log.debug("Change status of meeting request with id : {} of status : {}", threadId, status);
         Optional<MessageThread> messageThread = messageThreadRepository.findById(threadId);
@@ -106,6 +114,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
         if(messageThread.get().getMessageType().equals(MessageType.MEETING_REQUEST) || messageThread.get().getMessageType().equals(MessageType.LEAVE) )
         {
             toBeApproved.setStatus(status);
+            snsService.sendPushNotificationOnStatusOfMeetingRequestChange(messageThreadMapper.toDto(toBeApproved));
             if(messageThread.get().getMessageType().equals(MessageType.LEAVE)) {
                 if(ApprovalStatus.APPROVED.equals(status)) {
                     LeaveApplication leaveApplication = messageThread.get().getLeaveApplication();
@@ -305,7 +314,7 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 Optional<User> toUser = userRepository.findById(messageThreadDTO.getToUserId());
                 Optional<User> fromUser = userRepository.findById(messageThreadDTO.getFromUserId());
                 if(!(toUser.get().getType().equals(UserType.SCHOOL_BOARD_MANAGER) || fromUser.get().getType().equals(UserType.SCHOOL_BOARD_MANAGER))) {
-                    throw new WitcurveException("PLease make sure school baord message should be either form school board user or to school board user ");
+                    throw new WitcurveException("PLease make sure school board message should be either form school board user or to school board user ");
                 }
             }
         }

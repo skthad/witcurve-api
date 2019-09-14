@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring", uses = {StandardMapper.class, StaffMapper.class,
     AcademicSessionMapper.class, StudentMapperLite.class, SlotCourseDetailsMapper.class,
-    CourseTeacherMapper.class, SchoolInfoMapper.class})
+    CourseTeacherMapper.class, SchoolInfoMapper.class, CourseMapper.class})
 public interface EventMapper extends EntityMapper<EventDTO, Event>{
 
     @Mapping(source = "schoolInfoId", target = "schoolInfo")

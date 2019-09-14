@@ -95,7 +95,7 @@ public class InstituteResource {
     }
 
     /**
-     * get institute by id
+     * add institute logo attachment to institute with id
      * @param file
      * @return
      * @throws WitcurveException

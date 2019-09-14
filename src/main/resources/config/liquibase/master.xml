@@ -36,5 +36,10 @@
     <include file="config/liquibase/changelog/20190819132458_added_ReportCardDesign_entity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190822114944_added_report_card_design_relation_in_student_marks.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190823135451_added_logo_to_Institute.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/20190827144301_report_card_design_refactor.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190828105826_added_course_column_for_periodic_test.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190829105916_added_entity_student_remarks.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190903070835_added_standard_to_topicRecord.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190903130601_added staffInfoSubscriptionEndPoint_and_StandardSubscriptionEndPoint_to_UserMobileEndPoint.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190907105916_added_grade_color.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

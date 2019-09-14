@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1567494572209-1">
+        <addColumn tableName="topic_record">
+            <column name="standard_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1567494572209-2">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="topic_record" constraintName="FKqcprikjoamb4jgykv7yk52xs8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1567494572209-3">
+        <dropForeignKeyConstraint baseTableName="topic_record" constraintName="FK2b59fwjuq83uukq1d54tssc0w"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1567494572209-4">
+        <dropUniqueConstraint constraintName="UC_TOPIC_RECORDSCHOOL_INFO_ID_COL" tableName="topic_record"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1567494572209-5">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="topic_record" constraintName="FK2b59fwjuq83uukq1d54tssc0w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="school_info"/>
+    </changeSet>
+</databaseChangeLog>

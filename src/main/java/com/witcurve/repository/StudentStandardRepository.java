@@ -71,4 +71,7 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Modifying
     @Query("update StudentStandard set active = false where student.id in ?1")
     void deactivateByStudentIds(List<Long> studentIds);
+
+    @Query("select ss.standard.id from StudentStandard ss where ss.student.user.id=?1 and ss.active = true")
+    Long getStandardIdByUserId(Long userId);
 }

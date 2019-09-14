@@ -41,7 +41,7 @@ public interface EventService {
     List<EventDTO> getAttendance(LocalDate fromDate, LocalDate toDate, Long studentId,
                                  Long standardId, Long staffId, Long schoolInfoId, Boolean forStudent) throws WitcurveException;
 
-    Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId, List<Long> standardIds, List<String> keywords,Long schoolInfoId,Pageable pageable) throws WitcurveException;
+    Page<EventDTO> getNotices(LocalDate startDate, LocalDate endDate, Long userId, List<Long> standardIds, List<String> keywords, Long schoolInfoId, Pageable pageable) throws WitcurveException;
 
     Page<PeriodicTestDTO> getPeriodTestsBetweenDates(Pageable pageable, LocalDate startDate, LocalDate endDate, Long schoolInfoId, List<Grade> grades) throws WitcurveException;
 
