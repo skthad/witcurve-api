@@ -103,8 +103,12 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                     if (optionalStudentStandard != null) {
                         throw new WitcurveException("Roll No already exists");
                     } else {
-                        studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                        studentStandardDTO.setId(studentStandard.getId());
+                        studentStandard= studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
                     }
+                }
+                else{//when roll no is equal
+                    studentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
                 }
             } else if (!studentStandard.getActive()) {
                 optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
@@ -113,15 +117,16 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                 } else {
                     deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
                     studentStandardDTO.setId(studentStandard.getId());
-                    studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                    studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
                 }
-            } }else {
+            }
+        }else {
                 optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
                 if (optionalStudentStandard != null) {
                     throw new WitcurveException("Roll No already exists");
                 } else {
                     deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
-                    studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                    studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
 
                 }
             }
