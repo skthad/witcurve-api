@@ -24,7 +24,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @NotNull

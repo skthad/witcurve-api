@@ -167,7 +167,7 @@ public class StandardServiceImpl implements StandardService {
             .map(StudentStandard::getStudent)
             .map(s -> s.getId())
             .collect(Collectors.toList());
-        if(studentIds.size()!=0){
+        if(studentIds.size()!=0) {
             studentStandardRepository.deactivateByStudentIds(studentIds);
         }
         Set<Long> standardsList = new HashSet<>();

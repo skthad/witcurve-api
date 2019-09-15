@@ -44,6 +44,9 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
     @Override
     public List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId) throws WitcurveException {
         //todo refactor this code later. neglect this service for now
@@ -102,15 +105,11 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                     optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
                     if (optionalStudentStandard != null) {
                         throw new WitcurveException("Roll No already exists");
-                    } else {
-                        studentStandardDTO.setId(studentStandard.getId());
-                        studentStandard= studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
                     }
                 }
-                else{//when roll no is equal
-                    studentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
-                }
-            } else if (!studentStandard.getActive()) {
+                studentStandardDTO.setId(studentStandard.getId());
+                studentStandard= studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+            } else {
                 optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
                 if (optionalStudentStandard != null) {
                     throw new WitcurveException("Roll No already exists");
@@ -120,16 +119,16 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                     studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
                 }
             }
-        }else {
-                optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
-                if (optionalStudentStandard != null) {
-                    throw new WitcurveException("Roll No already exists");
-                } else {
-                    deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
-                    studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
-
-                }
+        } else {
+            optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
+            if (optionalStudentStandard != null) {
+                throw new WitcurveException("Roll No already exists");
+            } else {
+                deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
+                studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                //create studentcourse
             }
+        }
         return studentStandardMapper.toDto(studentStandard);
     }
 
@@ -193,8 +192,9 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     }
 
-    private void deactivateStudentStandard(List<Long> studentId) {
-        studentStandardRepository.deactivateByStudentIds(studentId);
+    private void deactivateStudentStandard(List<Long> studentIds) {
+        studentStandardRepository.deactivateByStudentIds(studentIds);
+        studentCourseRepository.deactivateStudentCourseByStudentIds(studentIds);
     }
 
 

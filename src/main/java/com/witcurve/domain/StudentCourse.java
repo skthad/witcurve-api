@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -25,6 +26,10 @@ public class StudentCourse extends AbstractAuditingEntity implements Serializabl
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private Boolean active = true;
+
     public Long getId() {
         return id;
     }
@@ -47,6 +52,14 @@ public class StudentCourse extends AbstractAuditingEntity implements Serializabl
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override
