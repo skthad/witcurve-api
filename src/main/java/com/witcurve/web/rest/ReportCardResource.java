@@ -27,7 +27,7 @@ public class ReportCardResource {
     @Autowired
     ReportCardService reportCardService;
 
-    @GetMapping("/report-card/preview")
+    @PostMapping("/report-card/preview")
     public ResponseEntity<Resource> getReportCardTemplate(@Valid @RequestBody ReportCardVM reportCardVM) {
         log.debug("Request to get report card pdf template with details : {}", reportCardVM);
         try {
@@ -41,7 +41,7 @@ public class ReportCardResource {
 
     }
 
-    @GetMapping("/report-card/template-html")
+    @PostMapping("/report-card/template-html")
     public ResponseEntity<Resource> getReportCardTemplateHtmlFile(@Valid @RequestBody ReportCardVM reportCardVM) {
         log.debug("Request to get report card html template with details : {}", reportCardVM);
         try {
