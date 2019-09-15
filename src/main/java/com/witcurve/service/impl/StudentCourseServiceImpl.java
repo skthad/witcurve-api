@@ -35,7 +35,7 @@ public class StudentCourseServiceImpl implements StudentCourseService {
                 getStudentCourseByStudentStandardIdAndCourseId(studentCourseDTO.getStudentStandardId(), studentCourseDTO.getCourseId());
             if(studentCourse == null) {
                 studentCourse = studentCourseMapper.toEntity(studentCourseDTO);
-                studentCourse.setActive(false);
+                studentCourse.setActive(true);
                 studentCourse = studentCourseRepository.save(studentCourse);
             } else {
                 studentCourse.setActive(true);
