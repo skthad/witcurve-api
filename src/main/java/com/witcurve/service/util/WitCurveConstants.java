@@ -6,6 +6,8 @@ public class WitCurveConstants {
 
     public static final String DEFAULT_IMPORT_DATE_FORMAT = "dd/MM/yyyy";
 
+    public static final String EXAM_PERIODIC_REPPORT_CARD_TEMPLATE = "templates/report-card/report-template.html";
+
     public static final String TEST_PUSH_NOTIFICATION = " {{subject}} Test for {{class}} has been scheduled for {{date}}";
 
     public static final String UPDATED_TEST_PUSH_NOTIFICATION = " {{subject}} Test for {{class}} has been updated from {{fromDate}} to {{date}}";
@@ -59,5 +61,7 @@ public class WitCurveConstants {
     public static final String LEAVE_APPLICATION_STATUS_FOR_ONE_DAY = "Your leave Application for {{fromDate}} has been {{status}}";
 
     public static final String DAILY_UPDATE= " {{subject}} Daily Update has been posted";
+
+
 
 }

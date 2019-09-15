@@ -19,7 +19,10 @@ public class ReportCardVM {
     private String rollNo;
 
     @NotNull
-        private String attendance;
+    private Boolean showAttendance = false;
+
+    @NotNull
+    private String attendance;
 
     @NotNull
     private String examName;
@@ -32,6 +35,9 @@ public class ReportCardVM {
 
     @NotNull
     private String logoLink;
+
+    @NotNull
+    private Boolean showRemarks = false;
 
     @NotNull
     private String remarks;
@@ -80,6 +86,14 @@ public class ReportCardVM {
         this.rollNo = rollNo;
     }
 
+    public Boolean getShowAttendance() {
+        return showAttendance;
+    }
+
+    public void setShowAttendance(Boolean showAttendance) {
+        this.showAttendance = showAttendance;
+    }
+
     public String getAttendance() {
         return attendance;
     }
@@ -118,6 +132,14 @@ public class ReportCardVM {
 
     public void setLogoLink(String logoLink) {
         this.logoLink = logoLink;
+    }
+
+    public Boolean getShowRemarks() {
+        return showRemarks;
+    }
+
+    public void setShowRemarks(Boolean showRemarks) {
+        this.showRemarks = showRemarks;
     }
 
     public String getRemarks() {

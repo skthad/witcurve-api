@@ -4,7 +4,10 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
-import com.witcurve.service.*;
+import com.witcurve.service.AcademicSessionService;
+import com.witcurve.service.CourseContentService;
+import com.witcurve.service.CourseService;
+import com.witcurve.service.EventService;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.CourseMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -17,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -48,6 +54,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     SchoolInfoRepository schoolInfoRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
 
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
@@ -93,6 +102,14 @@ public class CourseServiceImpl implements CourseService {
         }
         List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
         return courseMapper.toDto(courses);
+    }
+
+    @Override
+    public List<CourseDTO>  getCourseByStudentId(Long studentId) {
+        log.debug("Request to get Courses for student with id : {}", studentId);
+        //todo get course from student courses later onwards
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+        return getCourseBySchoolInfoAndGrade(studentStandards.get(0).getStandard().getSchoolInfo().getId(), studentStandards.get(0).getStandard().getGrade());
     }
 
     @Override
