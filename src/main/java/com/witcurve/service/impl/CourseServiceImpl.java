@@ -105,14 +105,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDTO>  getCourseByStudentId(Long studentId) {
-        log.debug("Request to get Courses for student with id : {}", studentId);
-        //todo get course from student courses later onwards
-        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
-        return getCourseBySchoolInfoAndGrade(studentStandards.get(0).getStandard().getSchoolInfo().getId(), studentStandards.get(0).getStandard().getGrade());
-    }
-
-    @Override
     public void deleteCourse(Long courseId) throws WitcurveException {
         log.debug("Request to delete course with id {}", courseId);
         Optional<Course> course = courseRepository.findById(courseId);

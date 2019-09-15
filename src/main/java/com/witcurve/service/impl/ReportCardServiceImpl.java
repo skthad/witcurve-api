@@ -180,7 +180,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     private List<Course> getCoursesForStudentId(List<Course> courses, Long studentId) {
         Map<Long, Course> examCoursesMap = courses.stream().collect(Collectors.toMap(Course::getId, course -> course));
-        List<CourseDTO> validCourses= courseService.getCourseByStudentId(studentId);
+        List<CourseDTO> validCourses= new ArrayList<>(); //courseService.getCourseByStudentId(studentId);
         List<Course> result = new ArrayList<>();
         for(CourseDTO courseDTO : validCourses) {
             if(examCoursesMap.keySet().contains(courseDTO.getId())) {
