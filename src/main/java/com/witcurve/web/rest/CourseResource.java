@@ -120,20 +120,6 @@ public class CourseResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    /**
-     * get course by studentId
-     * @param studentId
-     * @return
-     * @throws WitcurveException
-     */
-
-    @GetMapping("/courses/student/{studentId}/")
-    @Timed
-    public ResponseEntity<List<CourseDTO>> getCourseByStudentId(@PathVariable("studnetId") Long studentId) throws WitcurveException {
-        log.debug("Request to get Courses for student with id : {}", studentId);
-        List<CourseDTO> result = courseService.getCourseByStudentId(studentId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
 
     /**
      * delete the course
