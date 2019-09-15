@@ -9,6 +9,7 @@ import com.witcurve.service.CourseService;
 import com.witcurve.service.ReportCardService;
 import com.witcurve.service.dto.CourseDTO;
 import com.witcurve.service.util.HtmlToPdfUtil;
+import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ReportCardVM;
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,7 +63,18 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl)  {
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
-        return htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
+        File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
+        String xml = htmlToPdfUtil.getReportHtmlXml(inputFile);
+        try {
+            File result = WitcurveUtil.createTempFile("result-template.html");
+            FileWriter fw=new FileWriter(result);
+            fw.write(xml);
+            fw.close();
+            return result;
+        } catch (IOException e) {
+            log.debug("There was problem while creating template : {}", e.getMessage());
+            throw new WitcurveException("There was problem while creating template");
+        }
     }
 
     public List<ReportCardVM> getReportCardDetailsForStandard(Long standardId, Long examId, String bindingId) {
