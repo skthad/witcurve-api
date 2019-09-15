@@ -44,6 +44,7 @@
     <include file="config/liquibase/changelog/20190907105916_added_grade_color.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190911122016_added_scholastic_and_nonScholastic_to_course.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190914135833_changelog_course_grade_refactor.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190915175833_changelog_course_grade_refactor_fix.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>
