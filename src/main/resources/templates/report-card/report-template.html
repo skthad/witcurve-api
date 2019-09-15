@@ -2,9 +2,10 @@
 <html>
 <head></head>
 <body>
-<div id="forSchoolNameAndLogo" class="header">
-    <img id="logo" src="img/logo.png" alt="logo" />
-    <h1 id="SchoolName">Lead India Bharat Ratnas School</h1>
+<div id="forSchoolNameAndLogo" class="header"
+     style="margin : 10px 50px;display: flex;justify-content: space-around;align-items: center;">
+    <img id="logo" src="img/logo.png" alt="logo" style="float: left;width: 100px;" />
+    <h1 id="SchoolName" style="text-align: center;position: relative;">Lead India Bharat Ratnas School</h1>
 </div>
 <div style="display: block; clear:left; margin-top: 10px;padding-bottom: 10px;">
     <div style="display: inline; justify-content: space-between">
@@ -20,12 +21,18 @@
     </div>
 </div>
 <div class="forReportTable">
-    <table cellpadding="5" id="report-table" class="forReportTable">
+    <table cellpadding="5" id="report-table" class="forReportTable" style="margin-top: 5px; margin-bottom: 20px;">
         <tr>
-            <th id="examName" class="forReportTable" colspan="9" style="background-color: #005E54; color: white;">REPORT CARD (Unit Test-1)</th>
+            <th id="examName" class="forReportTable" colspan="9" style="background-color: #005E54; color: white;width: 43em;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;">REPORT CARD (Unit Test-1)</th>
         </tr>
         <tr id="title">
-            <th rowspan="2" id="Subject" class="forReportTable">Subject</th>
+            <th rowspan="2" id="Subject" class="forReportTable" style="width: 43em;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;">Subject</th>
         </tr>
     </table>
 </div>
@@ -53,49 +60,26 @@
 </div>
 
 <div class="GradingScaleTable">
-    <table id="GradingScaleTable" cellpadding="1">
+    <table id="GradingScaleTable" cellpadding="1" style="margin-top: 20px; margin-bottom: 20px;">
         <tr>
-            <th colspan="10" id="gradingScale"; style="background-color: #005E54; color: white;">Grading Scale</th>
+            <th colspan="10" id="gradingScale";
+                style="background-color: #005E54; color: white;width: 43em;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;">Grading Scale</th>
         </tr>
         <tr>
-            <th>Grade</th>
-            <th>Range of Marks(/100)</th>
+            <th style="width: 43em;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;">Grade</th>
+            <th style="width: 43em;
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;">Range of Marks(/100)</th>
         </tr>
     </table>
 </div>
-<style>
-
-    .header {
-        margin : 10px 50px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        /*margin: 50px;*/
-
-    }
-    .header img {
-        float: left;
-        width: 100px;
-    }
-    .header h1 {
-        text-align: center;
-        position: relative;
-    }
-    table.forReportTable {
-        margin-top: 5px; margin-bottom: 20px;
-    }
-    #GradingScaleTable {
-        margin-top: 20px; margin-bottom: 20px;
-    }
-
-    th,
-    td {
-        width: 43em;
-        border: 1px solid black;
-        border-collapse: collapse;
-        text-align: center;
-    }
-</style>
 <script type="text/javascript">
     var report = {{report}};
     var reportColSpan = 1;
@@ -131,6 +115,12 @@
         for (var i = 0; i < titleNames.length; i++) {
             var newTh = document.createElement("th");
             newTh.className = "forReportTable";
+
+            newTh.style.width = '43em';
+            newTh.style.border = '1px solid black';
+            newTh.style.borderCollapse= 'collapse';
+            newTh.style.textAlign= 'center';
+
             var addingheader = document.getElementById("report-table").getElementsByTagName("tr")[1];
             addingheader.appendChild(newTh);
             addingheader.insertBefore(newTh, addingheader.getElementsByTagName("th")[i + 1]);
@@ -149,11 +139,23 @@
             if (((report.marksAndGrades[titleNames[i]]["showGrade"]) && (report.marksAndGrades[titleNames[i]]["showMarks"])) === true) {
                 var newTd = document.createElement("td");
                 newTd.className = "forReportTable";
+
+                newTd.style.width = '43em';
+                newTd.style.border = '1px solid black';
+                newTd.style.borderCollapse= 'collapse';
+                newTd.style.textAlign= 'center';
+
                 var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
                 addingRow.appendChild(newTd);
                 newTd.textContent = "Marks";
                 var newTd = document.createElement("td");
                 newTd.className = "forReportTable";
+
+                newTd.style.width = '43em';
+                newTd.style.border = '1px solid black';
+                newTd.style.borderCollapse= 'collapse';
+                newTd.style.textAlign= 'center';
+
                 var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
                 addingRow.appendChild(newTd);
                 newTd.textContent = "Grade";
@@ -176,6 +178,12 @@
             addingRow.appendChild(newTr);
             var newTh = document.createElement("th");
             newTh.className = "forReportTable";
+
+            newTh.style.width = '43em';
+            newTh.style.border = '1px solid black';
+            newTh.style.borderCollapse= 'collapse';
+            newTh.style.textAlign= 'center';
+
             newTr.appendChild(newTh);
             newTh.innerHTML = report.subjectsArray[i];
             for (var j = 0; j < titleRows.length; j++) {
@@ -190,6 +198,12 @@
                                 typeof gradeObject[report.subjectsArray[i]] !== "undefined") {
                                 var newTd = document.createElement("td");
                                 newTd.className = "forReportTable";
+
+                                newTd.style.width = '43em';
+                                newTd.style.border = '1px solid black';
+                                newTd.style.borderCollapse= 'collapse';
+                                newTd.style.textAlign= 'center';
+
                                 newTr.appendChild(newTd);
 
                                 newTd.innerHTML = gradeObject[report.subjectsArray[i]];
@@ -203,6 +217,12 @@
                                 typeof marksObject[report.subjectsArray[i]] !== "undefined") {
                                 var newTd = document.createElement("td");
                                 newTd.className = "forReportTable";
+
+                                newTd.style.width = '43em';
+                                newTd.style.border = '1px solid black';
+                                newTd.style.borderCollapse= 'collapse';
+                                newTd.style.textAlign= 'center';
+
                                 newTr.appendChild(newTd);
 
                                 newTd.innerHTML = marksObject[report.subjectsArray[i]];
@@ -216,6 +236,12 @@
                                 typeof marksObject[report.subjectsArray[i]] !== "undefined") {
                                 var newTd = document.createElement("td");
                                 newTd.className = "forReportTable";
+
+                                newTd.style.width = '43em';
+                                newTd.style.border = '1px solid black';
+                                newTd.style.borderCollapse= 'collapse';
+                                newTd.style.textAlign= 'center';
+
                                 newTr.appendChild(newTd);
 
                                 newTd.innerHTML = marksObject[report.subjectsArray[i]];
@@ -227,6 +253,12 @@
                                 typeof gradeObject[report.subjectsArray[i]] !== "undefined") {
                                 var newTd = document.createElement("td");
                                 newTd.className = "forReportTable";
+
+                                newTd.style.width = '43em';
+                                newTd.style.border = '1px solid black';
+                                newTd.style.borderCollapse= 'collapse';
+                                newTd.style.textAlign= 'center';
+
                                 newTr.appendChild(newTd);
 
                                 newTd.innerHTML = gradeObject[report.subjectsArray[i]];
@@ -240,6 +272,12 @@
                         function forElse() {
                             var newTd = document.createElement("td");
                             newTd.className = "forReportTable";
+
+                            newTd.style.width = '43em';
+                            newTd.style.border = '1px solid black';
+                            newTd.style.borderCollapse= 'collapse';
+                            newTd.style.textAlign= 'center';
+
                             newTr.appendChild(newTd);
                             newTd.innerHTML = "N/A"
                             newTd.style.color = "red";
@@ -292,9 +330,21 @@
         for (var y = 0; y < (storingGrades.length / 4); y++) {
             if (storingGrades[t * (x) + y] !== undefined) {
                 var newTd = document.createElement("td");
+
+                newTd.style.width = '43em';
+                newTd.style.border = '1px solid black';
+                newTd.style.borderCollapse= 'collapse';
+                newTd.style.textAlign= 'center';
+
                 newTr.appendChild(newTd);
                 newTd.innerHTML = storingGrades[t * (x) + y];
                 var newTd = document.createElement("td");
+
+                newTd.style.width = '43em';
+                newTd.style.border = '1px solid black';
+                newTd.style.borderCollapse= 'collapse';
+                newTd.style.textAlign= 'center';
+
                 newTr.appendChild(newTd);
                 newTd.innerHTML = report.definingGrades[storingGrades[t * (x) + y]];
             }
@@ -305,8 +355,20 @@
     //for displaying grades and range (headings)
     for (var x = 0; x < ((storingGrades.length / 4) - 1); x++) {
         var newTh = document.createElement("th");
+
+        newTh.style.width = '43em';
+        newTh.style.border = '1px solid black';
+        newTh.style.borderCollapse= 'collapse';
+        newTh.style.textAlign= 'center';
+
         var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tr")[1];
         addingRow.appendChild(newTh);
+
+        newTh.style.width = '43em';
+        newTh.style.border = '1px solid black';
+        newTh.style.borderCollapse= 'collapse';
+        newTh.style.textAlign= 'center';
+
         newTh.textContent = "Grade";
         var newTh = document.createElement("th");
         addingRow.appendChild(newTh);
