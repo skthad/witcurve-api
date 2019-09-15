@@ -188,6 +188,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deactivate(Long studentId) throws WitcurveException {
+        //todo delete all student course with given student id
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
             studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
