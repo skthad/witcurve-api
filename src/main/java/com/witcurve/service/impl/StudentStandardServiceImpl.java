@@ -116,6 +116,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                 } else {
                     deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
                     studentStandardDTO.setId(studentStandard.getId());
+                    //todo call save or update student course
                     studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
                 }
             }
@@ -126,7 +127,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
             } else {
                 deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
                 studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
-                //create studentcourse
+                //todo call save or update student course records
             }
         }
         return studentStandardMapper.toDto(studentStandard);

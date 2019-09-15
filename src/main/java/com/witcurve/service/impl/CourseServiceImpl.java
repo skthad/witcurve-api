@@ -65,6 +65,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
         log.debug("Request to save or update Course: {}", courseDTO);
+        //todo Mandatory Course Created, create mandatory subject records with standardId and courseId.
+        // Course is updated from mandatory to non mandatory - get list of student course ids for this course
+        // and call deactivate service in student course service
+        // non-mandatory to mandatory - create mandatory student course records for all students in this grade
         List<Course> existingCourses = courseRepository.findBySchoolInfoAndGradeAndCourseCode(courseDTO.getSchoolInfoId(),
             courseDTO.getGrade(), courseDTO.getCourseCode());
         for(Course existingCourse : existingCourses) {
