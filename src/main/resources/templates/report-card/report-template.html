@@ -15,7 +15,7 @@
         <div><span style="float: right;" id="rollNo">20</span><span style="font-weight: bold; float: right;">Roll No.:</span></div>
         <div><span style="font-weight: bold;">Standard:</span> <span id="standard">V-A</span></div>
     </div>
-    <div style="display: flex; justify-content: space-between">
+    <div style="display: flex; justify-content: space-between" id="showAttendance">
         <div><span style="font-weight: bold;">Attendance:</span> <span id="attendance"></span></div>
     </div>
 </div>
@@ -30,7 +30,7 @@
     </table>
 </div>
 <div
-    style="display: block; border: 1px solid #005E54;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px">
+    style="display: block; border: 1px solid #005E54;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px", id="showRemarks">
     <h5 style="background-color: #005E54; color: white; padding: 5px; margin-top: 0px; margin-bottom: 5px;">CLASS
         TEACHERS REMARKS
     </h5>
@@ -108,9 +108,19 @@
     document.getElementById("standard").textContent = report.standard;
     document.getElementById("rollNo").textContent = report.rollNo;
     document.getElementById("examName").textContent = "REPORT CARD - " + report.examName;
-    document.getElementById("remarks").textContent = report.remarks;
     document.getElementById("logo").setAttribute("src", report.logoLink);
-    document.getElementById("attendance").textContent = report.attendance;
+    if(report.showAttendance) {
+        document.getElementById("attendance").textContent = report.attendance;
+    } else {
+        document.getElementById("showAttendance").setAttribute("style", "display:none");
+    }
+
+    if(report.showRemarks) {
+        document.getElementById("remarks").textContent = report.remarks;
+    } else {
+        document.getElementById("showRemarks").setAttribute("style", "display:none");
+    }
+
     if (!report.showHeader) {
         document.getElementById("forSchoolNameAndLogo").setAttribute("style", "visibility: hidden;");
     }

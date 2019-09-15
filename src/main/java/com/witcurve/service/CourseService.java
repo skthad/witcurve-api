@@ -6,7 +6,6 @@ import com.witcurve.service.dto.CourseTrackDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CourseService {
 
