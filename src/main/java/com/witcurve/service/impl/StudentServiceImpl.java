@@ -7,6 +7,7 @@ import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
 import com.witcurve.service.StudentService;
+import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.dto.UserDTO;
@@ -60,6 +61,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     StudentCourseRepository studentCourseRepository;
+
+    @Autowired
+    StudentStandardService studentStandardService;
 
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
@@ -188,10 +192,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deactivate(Long studentId) throws WitcurveException {
-        //todo delete all student course with given student id
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
-            studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
+            studentStandardService.deactivateStudentStandard(Arrays.asList(studentId));
             student.get().getUser().setActivated(false);
         } else {
             throw new WitcurveException("No student with given id");

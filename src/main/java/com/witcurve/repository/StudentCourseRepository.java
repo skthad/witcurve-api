@@ -1,5 +1,6 @@
 package com.witcurve.repository;
 
+import com.witcurve.domain.Course;
 import com.witcurve.domain.StudentCourse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,12 +35,13 @@ public interface StudentCourseRepository extends JpaRepository<StudentCourse, Lo
     void deactivateStudentCourseByIds(List<Long> ids);
 
     @Modifying
-    @Query("update StudentCourse sc set sc.active=false where sc.studentStandard.student.id in ?1")
+    @Query("update StudentCourse sc set sc.active=false where sc.studentStandard.id in (Select ss.id from StudentStandard ss where ss.student.id in ?1)")
     void deactivateStudentCourseByStudentIds(List<Long> studentIds);
 
+    @Query("Select sc.id from StudentCourse sc where sc.course.id=?1 and sc.active=true")
+    List<Long> getByCourseId(Long courseId);
 
-
-
-
+    @Query("Select sc.course from StudentCourse sc where sc.active=true and sc.studentStandard.student.id = ?1")
+    List<Course> getByStudentId(Long studentId);
 
 }

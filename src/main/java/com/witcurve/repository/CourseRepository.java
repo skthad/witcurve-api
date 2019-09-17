@@ -35,10 +35,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findBySchoolInfoAndGradeAndCourseType(Long schoolInfo, Grade grade, CourseType courseType);
 
     @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = ?3 and course.elective=true and course.active=true order by  course.courseType desc, course.displayName asc")
-    List<Course>findElectiveCourse(Long schoolInfo, Grade grade, CourseType courseType);
+    List<Course> findElectiveCourse(Long schoolInfo, Grade grade, CourseType courseType);
 
     @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = ?3 and course.mandatory=true and course.active=true order by  course.courseType desc, course.displayName asc" )
-    List<Course>findMandatoryCourse(Long schoolInfo, Grade grade, CourseType courseType);
-
+    List<Course> findMandatoryCourse(Long schoolInfo, Grade grade, CourseType courseType);
 
 }

@@ -32,6 +32,7 @@ public class CourseResource {
 
     /**
      * creates a course
+     *
      * @param courseDTO
      * @return
      * @throws WitcurveException
@@ -59,8 +60,10 @@ public class CourseResource {
             }
         }
     }
+
     /**
      * update the given course
+     *
      * @param courseDTO
      * @return
      * @throws WitcurveException
@@ -80,7 +83,7 @@ public class CourseResource {
             return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityUpdateAlert("course", courseDTO.getId().toString()))
                 .body(result);
-        } catch(DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("course_code_grade_school_info_id_UK")) {
                 throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
             } else if (e.getMessage().contains("constraint [FK")) {
@@ -90,8 +93,10 @@ public class CourseResource {
             }
         }
     }
+
     /**
      * get course by id
+     *
      * @param courseId
      * @return
      * @throws WitcurveException
@@ -106,7 +111,8 @@ public class CourseResource {
     }
 
     /**
-     * get course by grade
+     * get course by grade and schoolInfoId
+     *
      * @param grade
      * @return
      * @throws WitcurveException
@@ -116,16 +122,17 @@ public class CourseResource {
     @Timed
     public ResponseEntity<List<CourseDTO>> getCourseById(@PathVariable("schoolInfoId") Long schoolInfoId,
                                                          @PathVariable("grade") Grade grade,
-                                                         @RequestParam(value= "courseType" ,required = false) CourseType courseType,
-                                                         @RequestParam(value= "elective" , required = false, defaultValue = "false") Boolean elective,
-                                                         @RequestParam(value= "mandatory", required = false, defaultValue = "false") Boolean mandatory) throws WitcurveException {
+                                                         @RequestParam(value = "courseType", required = false) CourseType courseType,
+                                                         @RequestParam(value = "elective", required = false, defaultValue = "false") Boolean elective,
+                                                         @RequestParam(value = "mandatory", required = false, defaultValue = "false") Boolean mandatory) throws WitcurveException {
         log.debug("Request to get Courses with grade {}", grade);
-        List<CourseDTO> result = courseService.getCourseBySchoolInfoAndGrade(schoolInfoId, grade,courseType,elective,mandatory);
+        List<CourseDTO> result = courseService.getCourseBySchoolInfoAndGrade(schoolInfoId, grade, courseType, elective, mandatory);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
      * delete the course
+     *
      * @param courseId
      * @return
      * @throws WitcurveException
@@ -149,6 +156,7 @@ public class CourseResource {
 
     /**
      * get course tracking by id
+     *
      * @param courseId
      * @return
      * @throws WitcurveException
@@ -163,4 +171,21 @@ public class CourseResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * get course by studentId
+     *
+     * @param studentId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/courses/student/{studentId}")
+    @Timed
+    public ResponseEntity<List<CourseDTO>> getStudentCourseByStudentId(@PathVariable Long studentId) throws WitcurveException {
+        log.debug("Request to get Course with student with id {}", studentId);
+        List<CourseDTO> result = courseService.getCourseByStudentId(studentId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }
+

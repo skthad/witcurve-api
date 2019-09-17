@@ -1,10 +1,14 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
+import com.witcurve.service.CourseService;
+import com.witcurve.service.StudentCourseService;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.StudentStandardService;
+import com.witcurve.service.dto.StudentCourseDTO;
 import com.witcurve.service.dto.StudentStandardDTO;
 import com.witcurve.service.mapper.StudentStandardMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +51,12 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     @Autowired
     StudentCourseRepository studentCourseRepository;
+
+    @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
+    StudentCourseService studentCourseService;
 
     @Override
     public List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId) throws WitcurveException {
@@ -108,7 +119,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                     }
                 }
                 studentStandardDTO.setId(studentStandard.getId());
-                studentStandard= studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                studentStandard = studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
             } else {
                 optionalStudentStandard = studentStandardRepository.getBySessionIdAndStandardIdAndRollNo(studentStandardDTO.getSessionId(), studentStandardDTO.getStandard().getId(), studentStandardDTO.getRollNo());
                 if (optionalStudentStandard != null) {
@@ -116,8 +127,8 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                 } else {
                     deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
                     studentStandardDTO.setId(studentStandard.getId());
-                    //todo call save or update student course
-                    studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                    studentStandard = studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                    createMandatoryCourseRecord(studentStandard);
                 }
             }
         } else {
@@ -126,8 +137,8 @@ public class StudentStandardServiceImpl implements StudentStandardService {
                 throw new WitcurveException("Roll No already exists");
             } else {
                 deactivateStudentStandard(Arrays.asList(studentStandardDTO.getStudent().getId()));
-                studentStandard=studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
-                //todo call save or update student course records
+                studentStandard = studentStandardRepository.save(studentStandardMapper.toEntity(studentStandardDTO));
+                createMandatoryCourseRecord(studentStandard);
             }
         }
         return studentStandardMapper.toDto(studentStandard);
@@ -193,10 +204,27 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     }
 
-    private void deactivateStudentStandard(List<Long> studentIds) {
+    public void deactivateStudentStandard(List<Long> studentIds) {
         studentStandardRepository.deactivateByStudentIds(studentIds);
         studentCourseRepository.deactivateStudentCourseByStudentIds(studentIds);
     }
 
+    private void createMandatoryCourseRecord(StudentStandard studentStandard) {
+        Optional<Standard> standardOptional = standardRepository.findById(studentStandard.getStandard().getId());
+        if (!standardOptional.isPresent()) {
+            throw new WitcurveException("There is not standard with given id :" + studentStandard.getStandard().getId());
+        }
+        List<Course> listOfMandatoryCourses = courseRepository.findMandatoryCourse(standardOptional.get().getSchoolInfo().getId(), standardOptional.get().getGrade(), CourseType.SCHOLASTIC);
+        List<StudentCourseDTO> studentCourseDTOs = new ArrayList<>();
+        if (!listOfMandatoryCourses.isEmpty()) {
+            for (Course course : listOfMandatoryCourses) {
+                StudentCourseDTO studentCourseDTO = new StudentCourseDTO();
+                studentCourseDTO.setStudentStandardId(studentStandard.getId());
+                studentCourseDTO.setCourseId(course.getId());
+                studentCourseDTOs.add(studentCourseDTO);
+            }
+            studentCourseService.saveOrUpdate(studentCourseDTOs);
+        }
 
+    }
 }

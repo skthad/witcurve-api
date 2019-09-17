@@ -34,5 +34,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("select student from Student student where student.schoolInfo.school.institute.id = ?1")
     List<Student> getStudentsByInstituteId(Long instituteId);
-
 }

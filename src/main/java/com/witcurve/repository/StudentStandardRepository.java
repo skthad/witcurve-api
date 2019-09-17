@@ -77,4 +77,8 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss from StudentStandard ss where ss.session.id = ?1 and ss.standard.id = ?2 and ss.rollNo = ?3 and ss.active = true")
     StudentStandard getBySessionIdAndStandardIdAndRollNo(Long sessionId,Long standardId,String rollNo);
+
+    @Query("select ss.id from StudentStandard ss where ss.session.id= ?1 and ss.active=true and ss.standard.grade= ?2 and ss.active=true")
+    List<Long> getBySessionIdAndGrade(Long sessionId,Grade grade);
+
 }
