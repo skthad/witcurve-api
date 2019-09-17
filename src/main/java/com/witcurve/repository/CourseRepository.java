@@ -1,7 +1,6 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.Course;
-import com.witcurve.domain.UserMobileEndPoint;
 import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,10 +33,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = ?3 and course.active=true order by  course.courseType desc, course.displayName asc")
     List<Course> findBySchoolInfoAndGradeAndCourseType(Long schoolInfo, Grade grade, CourseType courseType);
 
-    @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = ?3 and course.elective=true and course.active=true order by  course.courseType desc, course.displayName asc")
-    List<Course> findElectiveCourse(Long schoolInfo, Grade grade, CourseType courseType);
+    @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = 'SCHOLASTIC' and course.elective=true and course.active=true order by  course.courseType desc, course.displayName asc")
+    List<Course> findElectiveCourse(Long schoolInfo, Grade grade);
 
-    @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = ?3 and course.mandatory=true and course.active=true order by  course.courseType desc, course.displayName asc" )
-    List<Course> findMandatoryCourse(Long schoolInfo, Grade grade, CourseType courseType);
+    @Query("Select course from Course course where course.schoolInfo.id = ?1 and course.grade = ?2 and course.courseType = 'SCHOLASTIC' and course.mandatory=true and course.active=true order by  course.courseType desc, course.displayName asc" )
+    List<Course> findMandatoryCourse(Long schoolInfo, Grade grade);
 
 }

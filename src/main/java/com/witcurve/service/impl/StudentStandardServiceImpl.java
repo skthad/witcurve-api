@@ -1,10 +1,8 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
-import com.witcurve.service.CourseService;
 import com.witcurve.service.StudentCourseService;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.StudentStandardService;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -214,7 +211,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
         if (!standardOptional.isPresent()) {
             throw new WitcurveException("There is not standard with given id :" + studentStandard.getStandard().getId());
         }
-        List<Course> listOfMandatoryCourses = courseRepository.findMandatoryCourse(standardOptional.get().getSchoolInfo().getId(), standardOptional.get().getGrade(), CourseType.SCHOLASTIC);
+        List<Course> listOfMandatoryCourses = courseRepository.findMandatoryCourse(standardOptional.get().getSchoolInfo().getId(), standardOptional.get().getGrade());
         List<StudentCourseDTO> studentCourseDTOs = new ArrayList<>();
         if (!listOfMandatoryCourses.isEmpty()) {
             for (Course course : listOfMandatoryCourses) {
@@ -225,6 +222,5 @@ public class StudentStandardServiceImpl implements StudentStandardService {
             }
             studentCourseService.saveOrUpdate(studentCourseDTOs);
         }
-
     }
 }

@@ -134,12 +134,18 @@ public class CourseServiceImpl implements CourseService {
         }
         if (courseType == null) {
             courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
-        } else if (courseType != null && !elective && !mandatory || courseType != null && elective == true && mandatory == true) {
-            courses = courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId, grade, courseType);
-        } else if (courseType != null && elective == true && mandatory == false) {
-            courses = courseRepository.findElectiveCourse(schoolInfoId, grade, courseType);
-        } else if (courseType != null && elective == false && mandatory == true) {
-            courses = courseRepository.findMandatoryCourse(schoolInfoId, grade, courseType);
+        } else {
+            if(courseType.equals(CourseType.SCHOLASTIC)) {
+                if(elective && !mandatory) {
+                    courses = courseRepository.findElectiveCourse(schoolInfoId, grade);
+                } else if(!elective && mandatory) {
+                    courses = courseRepository.findMandatoryCourse(schoolInfoId, grade);
+                } else {
+                    courses = courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId, grade, courseType);
+                }
+            } else {
+                courses = courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId, grade, courseType);
+            }
         }
         return courseMapper.toDto(courses);
     }
