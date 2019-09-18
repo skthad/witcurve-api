@@ -7,6 +7,7 @@ import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
 import com.witcurve.service.StudentService;
+import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.UserService;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.service.dto.UserDTO;
@@ -60,6 +61,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     StudentCourseRepository studentCourseRepository;
+
+    @Autowired
+    StudentStandardService studentStandardService;
 
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
@@ -131,11 +135,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> getStudentsByStandardId(Long standardId) throws WitcurveException {
-        log.debug("Request to get students with standard id : {}", standardId);
-        List<Student> students = studentStandardRepository.getStudentsByStandardId(standardId);
-        if (students ==  null || students.size() == 0) {
-            throw new WitcurveException("No students in the given standard id");
+    public List<StudentDTO> getStudentsByStandardIdAndCourseId(Long standardId, Long courseId) throws WitcurveException {
+        log.debug("Request to get students with standard id : {} and course with id : {}", standardId, courseId);
+        List<Student> students;
+        if(courseId == null) {
+            students = studentRepository.getStudentsByStandardId(standardId);;
+        } else {
+            students = studentRepository.getStudentsByStandardIdAndCourseId(standardId, courseId);
         }
         return studentMapperLite.toDto(students);
     }
@@ -190,7 +196,7 @@ public class StudentServiceImpl implements StudentService {
     public void deactivate(Long studentId) throws WitcurveException {
         Optional<Student> student = studentRepository.findById(studentId);
         if (student.isPresent()) {
-            studentStandardRepository.deactivateByStudentIds(Arrays.asList(studentId));
+            studentStandardService.deactivateStudentStandard(Arrays.asList(studentId));
             student.get().getUser().setActivated(false);
         } else {
             throw new WitcurveException("No student with given id");

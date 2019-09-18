@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.CourseDTO;
 import com.witcurve.service.dto.CourseTrackDTO;
@@ -15,8 +16,11 @@ public interface CourseService {
 
     CourseTrackDTO getCourseTrackById(Long courseId, Long staffId) throws WitcurveException;
 
-    List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade) throws WitcurveException;
+    List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, CourseType courseType,Boolean elective,Boolean mandatory) throws WitcurveException;
 
     void deleteCourse(Long courseId) throws WitcurveException;
+
+    List<CourseDTO> getCourseByStudentId(Long studentId) throws WitcurveException;
+
 }
 

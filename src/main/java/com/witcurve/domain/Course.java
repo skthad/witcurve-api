@@ -1,7 +1,7 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -24,7 +24,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @NotNull
@@ -40,12 +39,9 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     private String description;
 
     @NotNull
-    @Column(name = "eligible_for_substitute", nullable = false, columnDefinition = "boolean default false")
-    private Boolean eligibleForSubstitute = false;
-
-    @NotNull
-    @Column(name = "omit_slot_conflict", nullable = false, columnDefinition = "boolean default false")
-    private Boolean omitSlotConflict = false;
+    @Column(length=50, name = "course_type", nullable = false, columnDefinition = "varchar(50) default 'SCHOLASTIC'")
+    @Enumerated(EnumType.STRING)
+    private CourseType courseType = CourseType.SCHOLASTIC;
 
     @Column
     private Boolean contentPublished;
@@ -55,10 +51,16 @@ public class Course extends AbstractAuditingEntity implements Serializable {
     private Boolean active = true;
 
     @NotNull
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(name= "elective", nullable = false, columnDefinition = "boolean default false")
     private Boolean elective = false;
 
-    private String alternateName;
+    @NotNull
+    @Column(name="mandatory", nullable = false, columnDefinition = "boolean default true")
+    private Boolean mandatory = true;
+
+    @NotNull
+    @Column(nullable = false,name="display_name")
+    private String displayName;
 
     public Long getId() {
         return id;
@@ -108,22 +110,6 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.description = description;
     }
 
-    public Boolean getEligibleForSubstitute() {
-        return eligibleForSubstitute;
-    }
-
-    public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
-        this.eligibleForSubstitute = eligibleForSubstitute;
-    }
-
-    public Boolean getOmitSlotConflict() {
-        return omitSlotConflict;
-    }
-
-    public void setOmitSlotConflict(Boolean omitSlotConflict) {
-        this.omitSlotConflict = omitSlotConflict;
-    }
-
     public Boolean getContentPublished() {
         return contentPublished;
     }
@@ -148,13 +134,19 @@ public class Course extends AbstractAuditingEntity implements Serializable {
         this.elective = elective;
     }
 
-    public String getAlternateName() {
-        return alternateName;
-    }
+    public Boolean getMandatory() { return mandatory; }
 
-    public void setAlternateName(String alternateName) {
-        this.alternateName = alternateName;
-    }
+    public void setMandatory(Boolean mandatory) { this.mandatory = mandatory; }
+
+    public String getDisplayName() { return displayName; }
+
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
+
+    public CourseType getCourseType() { return courseType; }
+
+    public void setCourseType(CourseType courseType) { this.courseType = courseType; }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -173,8 +165,9 @@ public class Course extends AbstractAuditingEntity implements Serializable {
             ", masterSubject=" + masterSubject +
             ", courseCode='" + courseCode + '\'' +
             ", description='" + description + '\'' +
-            ", eligibleForSubstitute=" + eligibleForSubstitute +
-            ", omitSlotConflict=" + omitSlotConflict +
+            ", courseType=" + courseType +
+            ", elective=" + elective +
+            ", mandatory=" + mandatory +
             ", contentPublished=" + contentPublished +
             ", active=" + active +
             '}';

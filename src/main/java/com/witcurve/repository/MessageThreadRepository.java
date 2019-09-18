@@ -9,26 +9,28 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MessageThreadRepository extends JpaRepository<MessageThread, Long> {
 
     // list of inbox message for student user for type subject note
-    @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.messageType=?2 and m.createdDate= " +
+    @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.course.id in ?1 " +
+        "and m.messageThread.courseTeacher.standard.id in ?2 and m.messageThread.messageType=?3 and m.createdDate= " +
         "(select max(m1.createdDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findInboxMessageThreadsOfSubjectNote(Long standardId, MessageType messageType, Pageable pageable);
+    Page<MessageThread> findInboxMessageThreadsOfSubjectNote(List<Long> courseIds, Long standardId, MessageType messageType, Pageable pageable);
 
-    @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.messageThread.status=?3 and m.messageThread.messageType=?2 and m.createdDate= " +
+    @Query("select m.messageThread from Message m where m.messageThread.courseTeacher.course.id in ?1 " +
+        "and m.messageThread.courseTeacher.standard.id in ?2 and m.messageThread.status=?4 and m.messageThread.messageType=?3 and m.createdDate= " +
         "(select max(m1.createdDate) from Message m1 where m1.messageThread.id=m.messageThread.id) " +
         "order by m.createdDate desc")
-    Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithStatus(Long standardId, MessageType messageType, ApprovalStatus status, Pageable pageable);
+    Page<MessageThread> findInboxMessageThreadsOfSubjectNoteWithStatus(List<Long> courseIds, Long standardId, MessageType messageType, ApprovalStatus status, Pageable pageable);
 
-    @Query("select count(m) from Message m where m.messageThread.courseTeacher.standard.id=?1 " +
-        "and m.read=false and m.messageThread.messageType=?2 and m.createdDate= " +
+    @Query("select count(m) from Message m where m.messageThread.courseTeacher.course.id in ?1 " +
+        "and m.messageThread.courseTeacher.standard.id in ?2 and m.read=false and m.messageThread.messageType=?3 and m.createdDate= " +
         "(select max(m1.createdDate) from Message m1 where m1.messageThread.id=m.messageThread.id) ")
-    Integer findInboxMessageThreadsOfSubjectNoteCount(Long standardId, MessageType messageType);
+    Integer findInboxMessageThreadsOfSubjectNoteCount(List<Long> courseIds, Long standardId, MessageType messageType);
 
 
     // list of inbox message for user for type other than subject note

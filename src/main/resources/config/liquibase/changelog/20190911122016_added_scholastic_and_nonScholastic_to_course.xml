@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1568204470304-1">
+        <addColumn tableName="course">
+            <column defaultValue="SCHOLASTIC" name="course_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-2">
+        <addColumn tableName="course">
+            <column name="display_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-3">
+        <addColumn tableName="course">
+            <column defaultValueBoolean="true" name="mandatory" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-4">
+        <dropColumn columnName="alternate_name" tableName="course"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-5">
+        <dropColumn columnName="eligible_for_substitute" tableName="course"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-6">
+        <dropColumn columnName="omit_slot_conflict" tableName="course"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-7">
+        <sql>update course set display_name = master_subject_name</sql>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568268411500-8">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="display_name" tableName="course"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1568204470304-9">
+        <sql>update course set elective = false</sql>
+    </changeSet>
+</databaseChangeLog>

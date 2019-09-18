@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Vishal" id="1568204470307-1">
+        <sql>
+            delete from student_course
+        </sql>
+        <sql>
+            insert into student_course (student_standard_id,  course_id, created_by, created_date)
+            select ss.id, c.id, 'System', ss.created_date FROM student_standard as ss inner join standard as s on ss.standard_id=s.id
+            inner join course as c on (c.grade=s.grade and c.school_info_id=s.school_info_id) where ss.active=true
+            and c.course_type='SCHOLASTIC' and c.mandatory=true and c.active=true order by ss.id;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

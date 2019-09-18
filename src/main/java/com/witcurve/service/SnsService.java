@@ -461,11 +461,14 @@ public class SnsService {
         log.info("\n\npush notification started\n\n");
         switch (messageThreadDTO.getMessageType()) {
             case SUBJECT_NOTE:
-                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository.findStudentEndPointByCourseTeacherId(messageThreadDTO.getCourseTeacherDTO().getId());
                 Optional<CourseTeacher> courseTeacher = courseTeacherRepository.findById(messageThreadDTO.getCourseTeacherDTO().getId());
-                String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(listOfUserMobileEndPointsRelatedGroupMessage);
-                String urlOfSubjectNote = "?userId=" + stringOfUserIds + "&group=true";
-                publishBulkMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, TopicType.STANDARD, null, courseTeacher.get().getStandard().getId());
+                List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedGroupMessage = userMobileEndPointRepository
+                    .findStudentEndPointsByCourseIdAndStandardId(courseTeacher.get().getCourse().getId(), courseTeacher.get().getStandard().getId());
+                for(UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedGroupMessage) {
+                    String urlOfSubjectNote = "?userId=" + userMobileEndPoint.getUser().getId() + "&group=true";
+                    publishMessage(WitCurveConstants.GROUP_MESSAGE, urlOfSubjectNote, userMobileEndPoint.getEndPoint());
+                }
+
                 break;
             case PERSONAL:
                 log.info("\n\ncategory personal started\n\n");

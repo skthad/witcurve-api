@@ -51,6 +51,9 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
     @Autowired
     private StudentMarksRepository studentMarksRepository;
 
+    @Autowired
+    private StudentCourseRepository studentCourseRepository;
+
     @Override
     public List<ExamCourseDetailsDTO> saveOrUpdate(List<ExamCourseDetailsDTO> examCourseDetailsDTOs, Long examId) throws WitcurveException {
         log.debug("Request to save or update examCourseDetailsDTO for examId: " + examId);
@@ -108,7 +111,8 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
         Grade grade = studentStandardDTO.getStandard().getGrade();
         Long schoolInfoId = studentStandardDTO.getStandard().getSchoolInfo().getId();
-        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, date, schoolInfoId);
+        List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, date, courseIds, schoolInfoId);
         return examCourseDetailsMapper.toDto(examCourseDetails);
     }
 
@@ -120,7 +124,8 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         Long schoolInfoId = studentStandardDTO.getStandard().getSchoolInfo().getId();
         LocalDate monthStart = LocalDate.of(year,month,1);
         LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, monthStart, monthEnd, schoolInfoId);
+        List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, monthStart, monthEnd, courseIds, schoolInfoId);
         return examCourseDetailsMapper.toDto(examCourseDetails);
     }
 
@@ -131,7 +136,8 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         Grade grade = studentStandardDTO.getStandard().getGrade();
         Long schoolInfoId = studentStandardDTO.getStandard().getSchoolInfo().getId();
         LocalDate endDate = date.plusDays(6);
-        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, endDate, schoolInfoId);
+        List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, date, endDate, courseIds, schoolInfoId);
         return examCourseDetailsMapper.toDto(examCourseDetails);
     }
 
@@ -141,8 +147,9 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
         StudentStandardDTO studentStandardDTO = studentStandardService.getByStudentId(studentId);
         Grade grade = studentStandardDTO.getStandard().getGrade();
         Long schoolInfoId = studentStandardDTO.getStandard().getSchoolInfo().getId();
+        List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
         LocalDate startDate = date.minusDays(6);
-        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, startDate, date, schoolInfoId);
+        List<ExamCourseDetails> examCourseDetails = examCourseDetailsRepository.findByGradeBetweenDatesOrderByGsdStart(grade, startDate, date, courseIds, schoolInfoId);
         return examCourseDetailsMapper.toDto(examCourseDetails);
 
     }
