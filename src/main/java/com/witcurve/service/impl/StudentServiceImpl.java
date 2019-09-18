@@ -135,11 +135,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<StudentDTO> getStudentsByStandardId(Long standardId) throws WitcurveException {
-        log.debug("Request to get students with standard id : {}", standardId);
-        List<Student> students = studentStandardRepository.getStudentsByStandardId(standardId);
-        if (students ==  null || students.size() == 0) {
-            throw new WitcurveException("No students in the given standard id");
+    public List<StudentDTO> getStudentsByStandardIdAndCourseId(Long standardId, Long courseId) throws WitcurveException {
+        log.debug("Request to get students with standard id : {} and course with id : {}", standardId, courseId);
+        List<Student> students;
+        if(courseId == null) {
+            students = studentRepository.getStudentsByStandardId(standardId);;
+        } else {
+            students = studentRepository.getStudentsByStandardIdAndCourseId(standardId, courseId);
         }
         return studentMapperLite.toDto(students);
     }

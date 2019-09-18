@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class StudentCourseResource {
 
     @PostMapping("/student-course")
     @Timed
-    public ResponseEntity<List<StudentCourseDTO>> updateStudentStandard(@RequestBody List<StudentCourseDTO> studentCourseDTOs) throws WitcurveException {
+    public ResponseEntity<List<StudentCourseDTO>> updateStudentStandard(@Valid @RequestBody List<StudentCourseDTO> studentCourseDTOs) throws WitcurveException {
         log.debug("Request to create or update studentCourses : {}", studentCourseDTOs);
         try {
             List<StudentCourseDTO> result = studentCourseService.saveOrUpdate(studentCourseDTOs);

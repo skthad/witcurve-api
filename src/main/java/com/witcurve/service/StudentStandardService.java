@@ -14,7 +14,7 @@ public interface StudentStandardService {
 
     StudentStandardDTO getByStudentId(Long studentId) throws WitcurveException;
 
-    List<StudentStandardDTO> getByStandardId(Long standardId);
+    List<StudentStandardDTO> getByStandardIdAndCourseId(Long standardId, Long courseId);
 
     List<StudentStandardDTO> getBySchoolInfoId(Long schoolInfoId, Grade grade, Long standardId);
 

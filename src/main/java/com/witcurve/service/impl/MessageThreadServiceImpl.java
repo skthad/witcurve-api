@@ -52,6 +52,9 @@ public class MessageThreadServiceImpl implements MessageThreadService {
     @Autowired
     SnsService snsService;
 
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
     public MessageThreadDTO saveOrUpdate(MessageThreadDTO messageThreadDTO) throws WitcurveException {
         log.debug("Request to save or update message thread : {}", messageThreadDTO);
         isValidMessageThread(messageThreadDTO);
@@ -182,15 +185,13 @@ public class MessageThreadServiceImpl implements MessageThreadService {
                 if(studentStandards.isEmpty()) {
                     throw new WitcurveException("There is no student standard with given student id : "+student.getId());
                 }
-                if (studentStandards.size() > 1) {
-                    throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
-                }
                 Long standardId = studentStandards.get(0).getStandard().getId();
+                List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(student.getId());
                 if(status == null && read==null) {
-                    messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(standardId, messageType, pageable);
+                    messageThreads = messageThreadRepository.findInboxMessageThreadsOfSubjectNote(courseIds, standardId, messageType, pageable);
                 } else if(status != null && read == null) {
                     messageThreads = messageThreadRepository.
-                        findInboxMessageThreadsOfSubjectNoteWithStatus(standardId, messageType, status, pageable);
+                        findInboxMessageThreadsOfSubjectNoteWithStatus(courseIds, standardId, messageType, status, pageable);
                 } else {
                     throw new WitcurveException("Subject Note message doesn't support read filter");
                 }
@@ -226,15 +227,11 @@ public class MessageThreadServiceImpl implements MessageThreadService {
             if(studentStandards.isEmpty()) {
                 throw new WitcurveException("There is no student standard with given student id : "+student.getId());
             }
-            if (studentStandards.size() > 1) {
-                throw new WitcurveException("There are more than one active student standard with given student id : "+student.getId());
-            }
             Long standardId = studentStandards.get(0).getStandard().getId();
-            count = messageThreadRepository.findInboxMessageThreadsOfSubjectNoteCount(standardId, MessageType.SUBJECT_NOTE);
+            List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(student.getId());
+            count = messageThreadRepository.findInboxMessageThreadsOfSubjectNoteCount(courseIds, standardId, MessageType.SUBJECT_NOTE);
             result.put(MessageType.SUBJECT_NOTE.toString(), count);
         }
-//        count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.LEAVE);
-//        result.put(MessageType.LEAVE, count);
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.MEETING_REQUEST);
         result.put(MessageType.MEETING_REQUEST.toString(), count);
         count = messageThreadRepository.findUnReadOtherInboxMessageThreadsCount(userId, MessageType.PERSONAL);

@@ -23,10 +23,11 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "left join slot_course_details scd on scd.id = e.scd_id\n" +
         "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
         "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
+        "left join course_teacher ct1 on ct1.id = scd.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.student_id = ?3 and e.type = 'ATTENDANCE') or \n" +
-        "(gsd.standard_id = ?4 and e.type in ?8) or \n" +
-        "(ct.standard_id = ?4 and e.type = 'ASSIGNMENT') OR \n" +
+        "(ct.course_id in ?7 and gsd.standard_id = ?4 and e.type in ?8) or \n" +
+        "(ct.course_id in ?7 ct.standard_id = ?4 and e.type = 'ASSIGNMENT') OR \n" +
         "(e.course_id in ?7 and e.type = 'PERIODIC_TEST') OR \n" +
         "(e.standard_id = ?4 and e.type = 'SCHOOL_EVENT') OR\n" +
         "((e.grade is null or (e.grade is not null and e.grade = ?5)) \n" +
@@ -38,10 +39,11 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query(value = "select distinct e.id from event e\n" +
         "left join slot_course_details scd on scd.id = e.scd_id\n" +
         "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
+        "left join course_teacher ct on ct.id = scd.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
-        "(gsd.standard_id = ?3 and e.type in ?4)", nativeQuery = true)
-    List<BigInteger> findDirayEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
-                                                    Long standardId, List<String> types);
+        "(ct.course_id in ?4 gsd.standard_id = ?3 and e.type in ?5)", nativeQuery = true)
+    List<BigInteger> findDiaryEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate,
+                                                    Long standardId, List<Long> courseIds, List<String> types);
 
     @Query(value = "select distinct e.id from event e\n" +
         "left join slot_course_details scd on scd.id = e.scd_id\n" +

@@ -95,7 +95,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
             sectionPerformanceDTO.setSectionName(sectionName);
             sectionPerformanceDTO.setAverageScore(WitcurveUtil.roundToTwoDecimal(totalScore/ sectionPerformanceDTO.getSubjectPerformances().size()));
-            sectionPerformanceDTO.setStudentCount(studentService.getStudentsByStandardId(sectionStandardIdMap.get(sectionName)).size());
+            sectionPerformanceDTO.setStudentCount(studentService.getStudentsByStandardIdAndCourseId(sectionStandardIdMap.get(sectionName), null).size());
 
             sectionPerformanceList.add(sectionPerformanceDTO);
         }

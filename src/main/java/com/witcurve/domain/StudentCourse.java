@@ -19,11 +19,11 @@ public class StudentCourse extends AbstractAuditingEntity implements Serializabl
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "student_standard_id")
+    @JoinColumn(name = "student_standard_id", nullable = false)
     private StudentStandard studentStandard;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @NotNull

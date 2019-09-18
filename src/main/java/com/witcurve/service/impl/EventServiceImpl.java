@@ -98,6 +98,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     SnsService snsService;
 
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
     private static final ArrayList<EventType> FIRST_LIST = new ArrayList<>(
         Arrays.asList(EventType.ASSIGNMENT, EventType.DAILY_UPDATE, EventType.TEST, EventType.PERIODIC_TEST));
 
@@ -262,8 +265,7 @@ public class EventServiceImpl implements EventService {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
-            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
 
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DAY);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
@@ -281,6 +283,7 @@ public class EventServiceImpl implements EventService {
         if (studentStandard != null) {
             Long standardId = studentStandard.getStandard().getId();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
+            List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
 
             AcademicSessionDTO currentSession = academicSessionService.getCurrentSessionByDate(schoolInfoId, LocalDate.now());
             List<BigInteger> eventIds = new ArrayList<>();
@@ -291,7 +294,7 @@ public class EventServiceImpl implements EventService {
                     substractDays = Period.between(eventDate.minusDays(substractDays), currentSession.getStartDate()).getDays();
                     breakCycle = true;
                 }
-                eventIds = eventRepository.findDirayEventsByDateRangeForStudent(eventDate.minusDays(substractDays), eventDate, standardId, Arrays.asList(EventType.DAILY_UPDATE.toString()));
+                eventIds = eventRepository.findDiaryEventsByDateRangeForStudent(eventDate.minusDays(substractDays), eventDate, standardId, courseIds, Arrays.asList(EventType.DAILY_UPDATE.toString()));
                 if (breakCycle) {
                     break;
                 }
@@ -356,8 +359,7 @@ public class EventServiceImpl implements EventService {
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
             LocalDate monthStart = LocalDate.of(year, month, 1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
-            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
@@ -438,8 +440,7 @@ public class EventServiceImpl implements EventService {
             Long standardId = studentStandard.getStandard().getId();
             Grade grade = studentStandard.getStandard().getGrade();
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
-            List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
-            List<Long> courseIds = courses.stream().map(Course::getId).collect(Collectors.toList());
+            List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
             result = eventRepository.findAllById(convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());

@@ -158,8 +158,14 @@ public class StudentStandardServiceImpl implements StudentStandardService {
     }
 
     @Override
-    public List<StudentStandardDTO> getByStandardId(Long standardId) {
-        return studentStandardMapper.toDto(studentStandardRepository.getByStandardId(standardId));
+    public List<StudentStandardDTO> getByStandardIdAndCourseId(Long standardId, Long courseId) {
+        List<StudentStandard> result;
+        if(courseId == null) {
+            result = studentStandardRepository.getByStandardId(standardId);
+        } else {
+            result = studentStandardRepository.getByStandardIdAndCourseId(standardId, courseId);
+        }
+        return studentStandardMapper.toDto(result);
     }
 
     @Override
