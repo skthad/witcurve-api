@@ -27,7 +27,7 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
         "left join course_teacher ct1 on ct1.id = scd.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "((e.student_id = ?3 and e.type = 'ATTENDANCE') or \n" +
-        "(ct.course_id in ?7 and gsd.standard_id = ?4 and e.type in ?8) or \n" +
+        "(ct1.course_id in ?7 and gsd.standard_id = ?4 and e.type in ?8) or \n" +
         "(ct.course_id in ?7 ct.standard_id = ?4 and e.type = 'ASSIGNMENT') OR \n" +
         "(e.course_id in ?7 and e.type = 'PERIODIC_TEST') OR \n" +
         "(e.standard_id = ?4 and e.type = 'SCHOOL_EVENT') OR\n" +
