@@ -130,6 +130,7 @@ public class CourseResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+
     /**
      * delete the course
      *

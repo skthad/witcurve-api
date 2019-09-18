@@ -1,5 +1,6 @@
 package com.witcurve.repository;
 
+import com.witcurve.domain.Course;
 import com.witcurve.domain.ExamCourseDetails;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,9 @@ public interface ExamCourseDetailsRepository extends JpaRepository<ExamCourseDet
 
     @Query("Select ecd from ExamCourseDetails ecd where ecd.gsd.grade in ?1 and ecd.gsd.exam.id = ?2 order by ecd.gsd.grade asc, ecd.date asc, ecd.gsd.start asc")
     List<ExamCourseDetails> findByGradesAndExamId(List<Grade> grades, Long examId);
+
+    @Query("Select ecd.course from ExamCourseDetails ecd where ecd.gsd.grade in ?1 and ecd.gsd.exam.id = ?2 order by ecd.gsd.grade asc, ecd.date asc, ecd.gsd.start asc")
+    List<Course> findCoursesByGradesAndExamId(List<Grade> grades, Long examId);
 
     @Query("Select ecd from ExamCourseDetails ecd where ecd.gsd.exam.id = ?1 order by ecd.gsd.grade asc, ecd.date asc, ecd.gsd.start asc")
     List<ExamCourseDetails> findByExamId(Long examId);

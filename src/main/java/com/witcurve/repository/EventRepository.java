@@ -1,5 +1,6 @@
 package com.witcurve.repository;
 
+import com.witcurve.domain.Course;
 import com.witcurve.domain.Event;
 import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.domain.enumeration.Grade;
@@ -190,6 +191,9 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
 
     @Query("Select e from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1 order by e.date asc")
     List<Event> findPeriodicEventsByBindingId(String bindingId);
+
+    @Query("Select e.course from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1 order by e.date asc")
+    List<Course> findPeriodicEventCoursesByBindingId(String bindingId);
 
     @Query("Select e.id from Event e where e.type='PERIODIC_TEST' and e.bindingId=?1 order by e.date asc")
     List<Long> findPeriodicEventIdsByBindingId(String bindingId);

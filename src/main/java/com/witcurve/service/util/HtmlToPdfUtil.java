@@ -1,11 +1,13 @@
 package com.witcurve.service.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.vm.ReportCardVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,23 +16,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class HtmlToPdfUtil {
 
     private final Logger log = LoggerFactory.getLogger(HtmlToPdfUtil.class);
 
-    public File htmlToPdf(File htmlFile) {
+    public File htmlToPdf(File templateFile) {
         try {
-            WebClient webClient = new WebClient();
-            webClient.getOptions().setThrowExceptionOnScriptError(true);
-            webClient.waitForBackgroundJavaScript(1 * 1000);
-            String url = Paths.get(htmlFile.getAbsolutePath()).toUri().toURL().toString();
-            HtmlPage page = webClient.getPage(url);
-            String xml = page.asXml();
-            String script = StringUtils.substringBetween(xml, "<script type=\"text/javascript\">", "</script>");
-            script = script.replace("<script type=\"text/javascript\"></script>", "");
-            xml = xml.replace(script, "");
+            String xml = getReportHtmlXml(templateFile);
             File inputFile = WitcurveUtil.createTempFile("input.html");
             FileWriter fw=new FileWriter(inputFile);
             fw.write(xml);
@@ -45,6 +40,48 @@ public class HtmlToPdfUtil {
         } catch (ScriptException | IllegalStateException e) {
             log.debug("There was problem while parsing html file : {}", e.getMessage());
             throw new WitcurveException("There was problem while parsing html file : " + e.getMessage());
+        }
+    }
+
+    public String getReportHtmlXml(File templateFile) {
+        try {
+            WebClient webClient = new WebClient();
+            webClient.getOptions().setThrowExceptionOnScriptError(true);
+            webClient.waitForBackgroundJavaScript(1 * 1000);
+            String url = Paths.get(templateFile.getAbsolutePath()).toUri().toURL().toString();
+            HtmlPage page = webClient.getPage(url);
+            String xml = page.asXml();
+            String script = StringUtils.substringBetween(xml, "<script type=\"text/javascript\">", "</script>");
+            xml = xml.replace(script, "");
+            xml = xml.replace("<script type=\"text/javascript\"></script>", "");
+            return xml;
+        } catch (IOException e) {
+            log.debug("There was problem while reading while converting template, : {}", e.getMessage());
+            throw new WitcurveException("There was problem while reading while converting template : " + e.getMessage());
+        } catch (ScriptException | IllegalStateException e) {
+            log.debug("There was problem while parsing html file : {}", e.getMessage());
+            throw new WitcurveException("There was problem while parsing html file : " + e.getMessage());
+        }
+    }
+
+    public File getParsedReportCard(ReportCardVM reportCardVM, String templateUrl) {
+        try {
+            File resourceFile = getFileFromResources(templateUrl);
+            if(!resourceFile.exists()) {
+                throw new WitcurveException("Template file not found");
+            }
+            String contents = new String(Files.readAllBytes(Paths.get(resourceFile.getAbsolutePath())));
+            ObjectMapper mapper = new ObjectMapper();
+            String objectJson = mapper.writeValueAsString(reportCardVM);
+            contents = contents.replace("{{report}}", objectJson);
+            File inputFile = WitcurveUtil.createTempFile("parsed-template.html");
+            FileWriter fw=new FileWriter(inputFile);
+            fw.write(contents);
+            fw.close();
+            return inputFile;
+        } catch (IOException e) {
+            log.debug("Error while parsing template with reportCardVM : {}",e.getMessage());
+            throw new WitcurveException("There was a problem generating report card template");
         }
     }
 
