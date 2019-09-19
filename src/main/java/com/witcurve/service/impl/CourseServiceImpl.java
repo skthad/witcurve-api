@@ -163,9 +163,11 @@ public class CourseServiceImpl implements CourseService {
         if (!course.isPresent()) {
             throw new WitcurveException("No Course with given id " + courseId);
         }
-        List<CourseTeacher> courseTeachers = courseTeacherRepository.findByCourseId(courseId);
-        if (courseTeachers.size() != 0) {
-            throw new WitcurveException("There are some faculty assigned to this course, please deactivate them and try again");
+        List<CourseTeacher> listOfCourseTeachers = courseTeacherRepository.findByCourseId(courseId);
+        if (listOfCourseTeachers.size() != 0) {
+          for(CourseTeacher courseTeacher:listOfCourseTeachers){
+              courseTeacher.setActive(false);
+          }
         }
         course.get().setActive(false);
     }
