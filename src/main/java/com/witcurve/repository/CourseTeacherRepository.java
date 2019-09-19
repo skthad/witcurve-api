@@ -1,6 +1,5 @@
 package com.witcurve.repository;
 
-import com.witcurve.domain.Course;
 import com.witcurve.domain.CourseTeacher;
 import com.witcurve.domain.MasterSubject;
 import com.witcurve.domain.Standard;
@@ -33,6 +32,9 @@ public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Lo
 
     @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
     List<CourseTeacher> findActiveCourseTeachersByStandardId(Long standardId);
+
+    @Query("select ct from CourseTeacher ct where ct.standard.id = ?1 and ct.course.id in ?2 and ct.active = true order by ct.course.masterSubject.name asc, ct.course.courseCode asc")
+    List<CourseTeacher> findActiveCourseTeachersByStandardIdAndCoursIds(Long standardId, List<Long> courseIds);
 
     @Query("select distinct ct.teacher.email from CourseTeacher ct where ct.standard.id = ?1 and ct.active = true")
     Set<String> findActiveCourseTeacherEmailIdsByStandardId(Long standardId);

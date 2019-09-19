@@ -158,11 +158,9 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             throw new WitcurveException("Student is actively enrolled in multiple standards.");
         }
         Long standardId = studentStandards.get(0).getStandard().getId();
-        List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
-        //TODO - Add this back once student standard refactor is done properly. For now each student will see all the course in a standard.
+        List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
 
-//        List<Long> studentCourseIds = studentCourseRepository.findCourseIdsByStudentStandard(studentStandards.get(0).getId());
-//        result.removeIf(x -> studentCourseIds.indexOf(x.getCourse().getId()) < 0);
+        List<CourseTeacher> result = courseTeacherRepository.findActiveCourseTeachersByStandardIdAndCoursIds(standardId, courseIds);
         return courseTeacherMapper.toDto(result);
     }
 
