@@ -135,10 +135,10 @@ public class CourseServiceImpl implements CourseService {
         if (courseType == null) {
             courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
         } else {
-            if(courseType.equals(CourseType.SCHOLASTIC)) {
-                if(elective && !mandatory) {
+            if (courseType.equals(CourseType.SCHOLASTIC)) {
+                if (elective && !mandatory) {
                     courses = courseRepository.findElectiveCourse(schoolInfoId, grade);
-                } else if(!elective && mandatory) {
+                } else if (!elective && mandatory) {
                     courses = courseRepository.findMandatoryCourse(schoolInfoId, grade);
                 } else {
                     courses = courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId, grade, courseType);
@@ -168,6 +168,8 @@ public class CourseServiceImpl implements CourseService {
             throw new WitcurveException("There are some faculty assigned to this course, please deactivate them and try again");
         }
         course.get().setActive(false);
+        List<Long> studentCourseIds = studentCourseRepository.getByCourseId(courseId);
+        studentCourseService.deactivateStudentCourseByIds(studentCourseIds);
     }
 
     @Override

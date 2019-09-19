@@ -54,6 +54,9 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Autowired
     StudentCourseRepository studentCourseRepository;
 
+    @Autowired
+    StaffRepository staffRepository;
+
     @Override
     public CourseTeacherDTO saveOrUpdate(CourseTeacherDTO courseTeacherDTO) throws WitcurveException {
         log.debug("Request to save or update CourseTeacher", courseTeacherDTO);
@@ -61,11 +64,20 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
         if (!course.isPresent()) {
             throw new WitcurveException("A valid course id must be provided");
         }
-        Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
 
+        Optional<Standard> standard = standardRepository.findById(courseTeacherDTO.getStandard().getId());
         if (!standard.isPresent()) {
             throw new WitcurveException("A valid standard id must be provided");
         }
+
+        Optional<Staff> teacher = staffRepository.findById(courseTeacherDTO.getTeacher().getId());
+        if (!teacher.isPresent()) {
+            throw new WitcurveException("A valid teacher id must be provided");
+        }
+        if (!course.get().getActive() || !standard.get().getActive() || !teacher.get().getUser().getActivated()) {
+            throw new WitcurveException("CourseTeacher record can not be save or updated as either course id or standard id or teacher id is no longer active");
+        }
+
         if (!course.get().getGrade().equals(standard.get().getGrade())) {
             throw new WitcurveException("Standard does not belong the the course grade");
         }
@@ -75,8 +87,8 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
                     course.get().getMasterSubject(), standard.get().getGrade());
             if (se.size() == 0) {
                 throw new WitcurveException("There is no staff eligibility for this staff for grade "
-                    +standard.get().getGrade()+" and subject "
-                    +course.get().getMasterSubject()+".");
+                    + standard.get().getGrade() + " and subject "
+                    + course.get().getMasterSubject() + ".");
             }
         }
         CourseTeacher courseTeacher = courseTeacherMapper.toEntity(courseTeacherDTO);
@@ -104,15 +116,15 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
             throw new WitcurveException("No course teacher with given id " + id);
         }
         courseTeacher.get().setActive(status);
-        if(status) {
+        if (status) {
             List<StaffEligibility> se = staffEligibilityRepository
                 .findByStaffAndSubjectAndGrade(courseTeacher.get().getTeacher().getId(),
                     courseTeacher.get().getCourse().getMasterSubject(),
                     courseTeacher.get().getStandard().getGrade());
             if (se.size() == 0) {
                 throw new WitcurveException("There is no staff eligibility for this staff for grade "
-                    +courseTeacher.get().getCourse().getGrade()+" and subject "
-                    +courseTeacher.get().getCourse().getMasterSubject().getName()+".");
+                    + courseTeacher.get().getCourse().getGrade() + " and subject "
+                    + courseTeacher.get().getCourse().getMasterSubject().getName() + ".");
             }
         } else {
             List<SlotCourseDetails> scds = slotCourseDetailsRepository.findByCourseTeacherId(id);
@@ -136,25 +148,25 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     @Override
     public List<CourseTeacherDTO> getCoursesByStandardId(Long standardId, Boolean active) {
         List<CourseTeacher> results;
-        if(active == null) {
+        if (active == null) {
             results = courseTeacherRepository.findByStandardId(standardId);
         } else {
-            if(active) {
-                results= courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
+            if (active) {
+                results = courseTeacherRepository.findActiveCourseTeachersByStandardId(standardId);
             } else {
-                results= courseTeacherRepository.findInActiveCourseTeachersByStandardId(standardId);
+                results = courseTeacherRepository.findInActiveCourseTeachersByStandardId(standardId);
             }
         }
         return courseTeacherMapper.toDto(results);
     }
 
     @Override
-    public List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException{
+    public List<CourseTeacherDTO> getCourseTeachersByStudentId(Long studentId) throws WitcurveException {
         List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
         if (studentStandards.size() == 0) {
             return null;
         }
-        if(studentStandards.size() > 1) {
+        if (studentStandards.size() > 1) {
             throw new WitcurveException("Student is actively enrolled in multiple standards.");
         }
         Long standardId = studentStandards.get(0).getStandard().getId();
@@ -186,13 +198,13 @@ public class CourseTeacherServiceImpl implements CourseTeacherService {
     public List<CourseTeacherDTO> getCourseTeachersByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId, Boolean oneRecordForACourse) {
         log.debug("Request to get all course teachers by grade : {} for school info with id : {} oneRecordForACourse ", grade, schoolInfoId, oneRecordForACourse);
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findActiveCourseTeacherByGradeAndSchoolInfoId(grade, schoolInfoId);
-        if(oneRecordForACourse) {
+        if (oneRecordForACourse) {
             Map<Long, CourseTeacher> courseTeacherMap = new HashMap<>();
-            for(CourseTeacher courseTeacher : courseTeachers) {
+            for (CourseTeacher courseTeacher : courseTeachers) {
                 courseTeacherMap.put(courseTeacher.getCourse().getId(), courseTeacher);
             }
             courseTeachers = new ArrayList<CourseTeacher>(courseTeacherMap.values());
         }
-        return  courseTeacherMapper.toDto(courseTeachers);
+        return courseTeacherMapper.toDto(courseTeachers);
     }
 }
