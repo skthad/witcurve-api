@@ -46,8 +46,5 @@
     <include file="config/liquibase/changelog/20190914135833_changelog_course_grade_refactor.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190915175833_changelog_course_grade_refactor_fix.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190917144845_added_not_null_constraints_in_StudentCourse.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20190918085214_added_not_null_to_student_standard.xml" relativeToChangelogFile="false"/>
-
-
 
 </databaseChangeLog>
