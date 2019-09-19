@@ -31,6 +31,8 @@ public class StudentCourseServiceImpl implements StudentCourseService {
         log.debug("Request to save studentCourses : {}", studentCourseDTOs);
         List<StudentCourse> result = new ArrayList<>();
         for(StudentCourseDTO studentCourseDTO : studentCourseDTOs) {
+            // no need for student course id
+            studentCourseDTO.setId(null);
             StudentCourse studentCourse = studentCourseRepository.
                 getStudentCourseByStudentStandardIdAndCourseId(studentCourseDTO.getStudentStandardId(), studentCourseDTO.getCourseId());
             if(studentCourse == null) {

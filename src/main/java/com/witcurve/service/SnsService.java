@@ -234,13 +234,13 @@ public class SnsService {
 
                     break;
                 case ASSIGNMENT:
-                    Course cName = courseRepository.findByCourseTeacherId(eventDTO.getCourseTeacher().getId());
+                    course = courseRepository.findByCourseTeacherId(eventDTO.getCourseTeacher().getId());
                     standard = standardRepository.getOne(eventDTO.getStandardId());
 
-                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAssignment = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(cName.getId(), eventDTO.getStandardId());
+                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAssignment = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), eventDTO.getStandardId());
 
                     variableMap = new HashMap<>();
-                    variableMap.put("subject", cName.getMasterSubject().getName());
+                    variableMap.put("subject", course.getMasterSubject().getName());
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
                     variableMap.put("class", "'" + standard.getGrade().toString() + "-" + standard.getSection() + "'");
 
@@ -335,9 +335,7 @@ public class SnsService {
                                 url = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
                                 publishMessage(message, url, userMobileEndPoint.getEndPoint());
                             }
-                        }
-                        //To send notification when staff is absent
-                        else if (eventDTO.getStaffId() != null) {
+                        } else if (eventDTO.getStaffId() != null) { //To send notification when staff is absent
                             List<UserMobileEndPoint> userMobileEndPointsRelatedToStaffAttendance = userMobileEndPointRepository.findStaffEndPointByStaffId(eventDTO.getStaffId());
                             for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointsRelatedToStaffAttendance) {
                                 url = "?userId=" + userMobileEndPoint.getUser().getId() + "&absent=true";
