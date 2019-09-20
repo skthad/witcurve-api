@@ -258,18 +258,19 @@ public class SnsService {
                     }
                     break;
                 case DAILY_UPDATE:
-                    course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
+                    if(!keys.contains(eventDTO.getId())) {
+                        course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
+                        variableMap = new HashMap<>();
+                        variableMap.put("subject", course.getMasterSubject().getName());
 
-                    variableMap = new HashMap<>();
-                    variableMap.put("subject", course.getMasterSubject().getName());
+                        List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToDailyUpdate = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), eventDTO.getStandardId());
 
-                    List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToDailyUpdate = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), eventDTO.getStandardId());
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.DAILY_UPDATE);
 
-                    message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.DAILY_UPDATE);
-
-                    for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToDailyUpdate) {
-                        url = "?diary=true&userId=" + userMobileEndPoint.getUser().getId();
-                        publishMessage(message, url, userMobileEndPoint.getEndPoint());
+                        for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPointsRelatedToDailyUpdate) {
+                            url = "?diary=true&userId=" + userMobileEndPoint.getUser().getId();
+                            publishMessage(message, url, userMobileEndPoint.getEndPoint());
+                        }
                     }
                     break;
                 case STAFF_NOTICE:
