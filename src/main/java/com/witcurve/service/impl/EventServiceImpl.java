@@ -154,8 +154,8 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        List<Event> updateTestOrAssignmentOrPeriodicTestOrDailyUpdateEvents = eventRepository.findAllById(updateEventIds);
-        for (Event event : updateTestOrAssignmentOrPeriodicTestOrDailyUpdateEvents) {
+        List<Event> updateEvents = eventRepository.findAllById(updateEventIds);
+        for (Event event : updateEvents) {
             dateMap.put(event.getId(), event.getDate());
         }
 
