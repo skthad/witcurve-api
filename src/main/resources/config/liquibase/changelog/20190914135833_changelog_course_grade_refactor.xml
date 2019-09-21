@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Srujan (generated)" id="1568204470305-1">
+        <addColumn tableName="course">
+            <column name="grade_enum" type="INT(11)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Srujan (generated)" id="1568204470305-2">
+        <sql>update course set grade_enum = 0 where grade = 'NURSERY';</sql>
+        <sql>update course set grade_enum = 1 where grade = 'LKG';</sql>
+        <sql>update course set grade_enum = 2 where grade = 'UKG';</sql>
+        <sql>update course set grade_enum = 3 where grade = 'I';</sql>
+        <sql>update course set grade_enum = 4 where grade = 'II';</sql>
+        <sql>update course set grade_enum = 5 where grade = 'III';</sql>
+        <sql>update course set grade_enum = 6 where grade = 'IV';</sql>
+        <sql>update course set grade_enum = 7 where grade = 'V';</sql>
+        <sql>update course set grade_enum = 8 where grade = 'VI';</sql>
+        <sql>update course set grade_enum = 9 where grade = 'VII';</sql>
+        <sql>update course set grade_enum = 10 where grade = 'VIII';</sql>
+        <sql>update course set grade_enum = 11 where grade = 'IX';</sql>
+        <sql>update course set grade_enum = 12 where grade = 'X';</sql>
+        <sql>update course set grade_enum = 13 where grade = 'XI';</sql>
+        <sql>update course set grade_enum = 14 where grade = 'XII';</sql>
+    </changeSet>
+    <changeSet author="Srujan (generated)" id="1568204470305-3">
+        <dropColumn columnName="grade" tableName="course"/>
+    </changeSet>
+    <changeSet author="Srujan (generated)" id="1568204470305-4">
+        <renameColumn columnDataType="INT(11)"
+                      newColumnName="grade"
+                      oldColumnName="grade_enum"
+                      tableName="course"/>
+    </changeSet>
+    <changeSet author="Srujan (generated)" id="1568204470305-5">
+        <addNotNullConstraint columnDataType="INT(11)" tableName="course" columnName="grade"/>
+    </changeSet>
+    <changeSet author="Srujan (generated)" id="1568204470305-6">
+        <sql>
+            insert into student_course (student_standard_id,  course_id, created_by, created_date)
+            select ss.id, c.id, 'System', ss.created_date FROM student_standard as ss inner join standard as s on ss.standard_id=s.id
+            inner join course as c on (c.grade=s.grade and c.school_info_id=s.school_info_id) where ss.active=true
+            and c.course_type='SCHOLASTIC' and c.mandatory=true order by ss.id;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

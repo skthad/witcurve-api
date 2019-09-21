@@ -1,10 +1,14 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.CalculationType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ReportFieldType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Serializable {
 
@@ -21,15 +25,19 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
 
     private Double marks;
 
-    private Boolean showGradesOnly;
-
-    private Boolean showMarksOnly;
-
     private Boolean selected;
 
     private Long examId;
 
-    private String bindingId;
+    private List<String> selectedPeriodicTests;
+
+    private CalculationType calculationType;
+
+    private Integer bestOfValue;
+
+    private Grade grade;
+
+    private Set<CourseDTO> courseDTOs;
 
     public Long getId() {
         return id;
@@ -79,28 +87,12 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
         this.marks = marks;
     }
 
-    public Boolean getShowGradesOnly() {
-        return showGradesOnly;
-    }
-
-    public void setShowGradesOnly(Boolean showGradesOnly) {
-        this.showGradesOnly = showGradesOnly;
-    }
-
     public Boolean getSelected() {
         return selected;
     }
 
     public void setSelected(Boolean selected) {
         this.selected = selected;
-    }
-
-    public Boolean getShowMarksOnly() {
-        return showMarksOnly;
-    }
-
-    public void setShowMarksOnly(Boolean showMarksOnly) {
-        this.showMarksOnly = showMarksOnly;
     }
 
     public Long getExamId() {
@@ -111,12 +103,44 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
         this.examId = examId;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public Grade getGrade() {
+        return grade;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public Set<CourseDTO> getCourseDTOs() {
+        return courseDTOs;
+    }
+
+    public void setCourseDTOs(Set<CourseDTO> courseDTOs) {
+        this.courseDTOs = courseDTOs;
+    }
+
+    public List<String> getSelectedPeriodicTests() {
+        return selectedPeriodicTests;
+    }
+
+    public void setSelectedPeriodicTests(List<String> selectedPeriodicTests) {
+        this.selectedPeriodicTests = selectedPeriodicTests;
+    }
+
+    public CalculationType getCalculationType() {
+        return calculationType;
+    }
+
+    public void setCalculationType(CalculationType calculationType) {
+        this.calculationType = calculationType;
+    }
+
+    public Integer getBestOfValue() {
+        return bestOfValue;
+    }
+
+    public void setBestOfValue(Integer bestOfValue) {
+        this.bestOfValue = bestOfValue;
     }
 
     @Override

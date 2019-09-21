@@ -1,6 +1,5 @@
 package com.witcurve.repository;
 
-import com.witcurve.domain.Student;
 import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +21,9 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
     List<StudentStandard> getByStandardId(Long standardId);
+
+    @Query("select sc.studentStandard from StudentCourse sc where sc.studentStandard.standard.id = ?1 and sc.course.id=?2 and sc.active=true order by sc.studentStandard.rollNo")
+    List<StudentStandard> getByStandardIdAndCourseId(Long standardId, Long courseId);
 
     @Query("select ss from StudentStandard ss where ss.standard.id in ?1 and ss.active = true order by ss.standard.grade, ss.standard.section, ss.rollNo")
     List<StudentStandard> getByStandardsId(List<Long> standardIds);
@@ -53,9 +55,6 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
     @Query("select ss.student.id from StudentStandard ss where ss.standard.id = ?1 and ss.active = true")
     List<Long> findStudentIdByStandardId(Long standardId);
 
-    @Query("select ss.student from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
-    List<Student> getStudentsByStandardId(Long standardId);
-
     @Query("select ss.standard.id from StudentStandard ss where ss.student.id = ?1 and ss.active = true")
     Long getStandardIdByStudentId(Long studentId);
 
@@ -74,4 +73,11 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss.standard.id from StudentStandard ss where ss.student.user.id=?1 and ss.active = true")
     Long getStandardIdByUserId(Long userId);
+
+    @Query("select ss from StudentStandard ss where ss.session.id = ?1 and ss.standard.id = ?2 and ss.rollNo = ?3 and ss.active = true")
+    StudentStandard getBySessionIdAndStandardIdAndRollNo(Long sessionId,Long standardId,String rollNo);
+
+    @Query("select ss.id from StudentStandard ss where ss.session.id= ?1 and ss.active=true and ss.standard.grade= ?2 and ss.active=true")
+    List<Long> getBySessionIdAndGrade(Long sessionId,Grade grade);
+
 }

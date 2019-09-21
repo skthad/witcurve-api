@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.service.ReportCardDesignService;
 import com.witcurve.service.dto.ReportCardDesignDTO;
@@ -34,12 +35,12 @@ public class ReportCardDesignResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/report-card-designs")
+    @PostMapping("/report-card-designs/grade/{grade}")
     @Timed
-    public ResponseEntity<List<ReportCardDesignDTO>> createReportCardDesigns(@RequestBody @Valid List<ReportCardDesignDTO> reportCardDesignDTOS, @RequestParam(required = false) Long examId, @RequestParam(required = false) String bindingId) throws WitcurveException, URISyntaxException {
-        log.debug("Request to save or update reportCardDesigns : {} for exam with id : {} or periodic test with binding id : {}",reportCardDesignDTOS, examId, bindingId);
+    public ResponseEntity<List<ReportCardDesignDTO>> createReportCardDesigns(@RequestBody @Valid List<ReportCardDesignDTO> reportCardDesignDTOS, @PathVariable Grade grade,  @RequestParam Long examId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to save or update reportCardDesigns : {} for exam with id : {} for grade : {}",reportCardDesignDTOS, examId, grade);
         try {
-            List<ReportCardDesignDTO> result = reportCardDesignService.saveOrUpdate(reportCardDesignDTOS, examId, bindingId);
+            List<ReportCardDesignDTO> result = reportCardDesignService.saveOrUpdate(reportCardDesignDTOS, examId, grade);
             return ResponseEntity.created(new URI("/api/report-card-designs/"))
                 .body(result);
         } catch (DataIntegrityViolationException e) {
@@ -55,11 +56,11 @@ public class ReportCardDesignResource {
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/report-card-designs")
+    @GetMapping("/report-card-designs/grade/{grade}")
     @Timed
-    public ResponseEntity<List<ReportCardDesignDTO>> getReportCardDesigns(@RequestParam(required = false) Long examId, @RequestParam(required = false) String bindingId, @RequestParam(required = false)ReportFieldType fieldType) throws WitcurveException {
-        log.debug("Request to get reportCardDesigns of field type : {} for exam with id : {} or periodic test with binding id : {}", fieldType, examId, bindingId);
-        List<ReportCardDesignDTO> result = reportCardDesignService.findByExamIdOrBindingIdWithFieldType(examId, bindingId, fieldType);
+    public ResponseEntity<List<ReportCardDesignDTO>> getReportCardDesigns(@PathVariable Grade grade,  @RequestParam Long examId,  @RequestParam(required = false)ReportFieldType fieldType) throws WitcurveException {
+        log.debug("Request to get reportCardDesigns of field type : {} for exam with id : {}", fieldType, examId);
+        List<ReportCardDesignDTO> result = reportCardDesignService.findByExamIdOrBindingIdWithFieldType(grade, examId, fieldType);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

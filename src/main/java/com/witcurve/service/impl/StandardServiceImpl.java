@@ -4,6 +4,7 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.repository.*;
 import com.witcurve.service.StandardService;
+import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.dto.StandardDTO;
 import com.witcurve.service.mapper.StandardMapper;
 import com.witcurve.service.mapper.StandardMapperLite;
@@ -49,6 +50,9 @@ public class StandardServiceImpl implements StandardService {
 
     @Autowired
     GeneralSlotDetailsRepository generalSlotDetailsRepository;
+
+    @Autowired
+    StudentStandardService studentStandardService;
 
     @Override
     public StandardDTO saveOrUpdateStandard(StandardDTO standardDTO) throws WitcurveException {
@@ -167,8 +171,8 @@ public class StandardServiceImpl implements StandardService {
             .map(StudentStandard::getStudent)
             .map(s -> s.getId())
             .collect(Collectors.toList());
-        if(studentIds.size()!=0){
-            studentStandardRepository.deactivateByStudentIds(studentIds);
+        if(studentIds.size()!=0) {
+            studentStandardService.deactivateStudentStandard(studentIds);
         }
         Set<Long> standardsList = new HashSet<>();
         standardsList.add(standardId);

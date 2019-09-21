@@ -1,7 +1,7 @@
 package com.witcurve.service.dto;
 
+import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -22,15 +22,18 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
     private String masterSubject;
 
     @NotNull
+    private CourseType courseType;
+
+    @NotNull
     private String courseCode;
 
     private String description;
 
     @NotNull
-    private Boolean eligibleForSubstitute = false;
+    private Boolean elective = false;
 
     @NotNull
-    private Boolean omitSlotConflict = false;
+    private Boolean mandatory = true;
 
     private Boolean contentPublished;
 
@@ -38,9 +41,7 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
     private Boolean active = true;
 
     @NotNull
-    private Boolean elective = true;
-
-    private String alternateName;
+    private String displayName;
 
     public Long getId() {
         return id;
@@ -90,22 +91,6 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
         this.description = description;
     }
 
-    public Boolean getEligibleForSubstitute() {
-        return eligibleForSubstitute;
-    }
-
-    public void setEligibleForSubstitute(Boolean eligibleForSubstitute) {
-        this.eligibleForSubstitute = eligibleForSubstitute;
-    }
-
-    public Boolean getOmitSlotConflict() {
-        return omitSlotConflict;
-    }
-
-    public void setOmitSlotConflict(Boolean omitSlotConflict) {
-        this.omitSlotConflict = omitSlotConflict;
-    }
-
     public Boolean getContentPublished() {
         return contentPublished;
     }
@@ -130,13 +115,17 @@ public class CourseDTO extends AbstractAuditingDTO implements Serializable {
         this.elective = elective;
     }
 
-    public String getAlternateName() {
-        return alternateName;
-    }
+    public Boolean getMandatory() { return mandatory; }
 
-    public void setAlternateName(String alternateName) {
-        this.alternateName = alternateName;
-    }
+    public void setMandatory(Boolean mandatory) { this.mandatory = mandatory; }
+
+    public String getDisplayName() { return displayName; }
+
+    public void setDisplayName(String displayName) { this.displayName = displayName; }
+
+    public CourseType getCourseType() { return courseType; }
+
+    public void setCourseType(CourseType courseType) { this.courseType = courseType; }
 
     @Override
     public boolean equals(Object o) {

@@ -90,9 +90,9 @@ public class StudentStandardResource {
 
     @GetMapping("/student-standard/standards/{standardId}")
     @Timed
-    public ResponseEntity<List<StudentStandardDTO>> getByStandardId(@PathVariable("standardId") Long standardId) throws WitcurveException {
+    public ResponseEntity<List<StudentStandardDTO>> getByStandardId(@PathVariable("standardId") Long standardId, @RequestParam(required = false) Long courseId) throws WitcurveException {
         log.debug("Request to get student-standard by standard id");
-        List<StudentStandardDTO> result = studentStandardService.getByStandardId(standardId);
+        List<StudentStandardDTO> result = studentStandardService.getByStandardIdAndCourseId(standardId, courseId);
         return ResponseEntity.ok(result);
     }
 

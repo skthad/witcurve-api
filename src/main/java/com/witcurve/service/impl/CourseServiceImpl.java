@@ -1,6 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ViewType;
 import com.witcurve.repository.*;
@@ -23,7 +24,7 @@ import java.util.*;
 @Transactional
 public class CourseServiceImpl implements CourseService {
 
-    private final Logger log  = LoggerFactory.getLogger(CourseServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
 
     @Autowired
     CourseRepository courseRepository;
@@ -49,26 +50,66 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     SchoolInfoRepository schoolInfoRepository;
 
+    @Autowired
+    StudentCourseService studentCourseService;
+
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
+    @Autowired
+    AcademicSessionRepository academicSessionRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
         log.debug("Request to save or update Course: {}", courseDTO);
+        Boolean mandatory = null;
         List<Course> existingCourses = courseRepository.findBySchoolInfoAndGradeAndCourseCode(courseDTO.getSchoolInfoId(),
             courseDTO.getGrade(), courseDTO.getCourseCode());
-        for(Course existingCourse : existingCourses) {
-            if(existingCourse != null) {
-                if(courseDTO.getId() == null) {
-                    if(existingCourse.getActive()) {
-                        throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
-                    }
-                } else {
-                    if(existingCourse.getActive() && !existingCourse.getId().equals(courseDTO.getId())) {
-                        throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
-                    }
+        if (courseDTO.getId() == null) {
+            for (Course existingCourse : existingCourses) {
+                if (existingCourse.getActive()) {
+                    throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
                 }
             }
+        } else {
+            Optional<Course> courseWithId = courseRepository.findById(courseDTO.getId());
+            if (!courseWithId.isPresent()) {
+                throw new WitcurveException("No Course with given id " + courseDTO.getId());
+            }
+            mandatory = courseWithId.get().getMandatory();
+            for (Course existingCourse : existingCourses) {
+                if (existingCourse.getActive() && !existingCourse.getId().equals(courseDTO.getId())) {
+                    throw new WitcurveException("There already exists a subject code with given subject code details for this grade");
+                }
+
+            }
+        }
+        if (courseDTO.getCourseType().equals(CourseType.SCHOLASTIC)) {
+            if (courseDTO.getElective() && courseDTO.getMandatory() || !courseDTO.getMandatory() && !courseDTO.getElective()) {
+                throw new WitcurveException("Both elective and mandatory can't be true or false at same time");
+            }
+        } else if (courseDTO.getCourseType().equals(CourseType.NON_SCHOLASTIC)) {
+            courseDTO.setElective(false);
+            courseDTO.setMandatory(false);
         }
         Course course = courseMapper.toEntity(courseDTO);
         course = courseRepository.save(course);
+        if (mandatory != null) {
+            if (mandatory && !course.getMandatory()) {
+                List<Long> studentCourseIds = studentCourseRepository.getByCourseId(course.getId());
+                studentCourseService.deactivateStudentCourseByIds(studentCourseIds);
+            }
+            if (!mandatory && course.getMandatory()) {
+                createOrUpdateStudentCourse(course);
+            }
+        } else {
+            if (course.getMandatory()) {
+                createOrUpdateStudentCourse(course);
+            }
+        }
         return courseMapper.toDto(course);
     }
 
@@ -83,15 +124,35 @@ public class CourseServiceImpl implements CourseService {
     }
 
 
-
     @Override
-    public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade) throws WitcurveException {
+    public List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, CourseType courseType, Boolean elective, Boolean mandatory) throws WitcurveException {
         log.debug("Request to get courses in schoolInfo {} with grade : {}", schoolInfoId, grade);
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        List<Course> courses = null;
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
         }
-        List<Course> courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+        if (courseType == null) {
+            courses = courseRepository.findBySchoolInfoAndGrade(schoolInfoId, grade);
+        } else {
+            if (courseType.equals(CourseType.SCHOLASTIC)) {
+                if (elective && !mandatory) {
+                    courses = courseRepository.findElectiveCourse(schoolInfoId, grade);
+                } else if (!elective && mandatory) {
+                    courses = courseRepository.findMandatoryCourse(schoolInfoId, grade);
+                } else {
+                    courses = courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId, grade, courseType);
+                }
+            } else {
+                courses = courseRepository.findBySchoolInfoAndGradeAndCourseType(schoolInfoId, grade, courseType);
+            }
+        }
+        return courseMapper.toDto(courses);
+    }
+
+    @Override
+    public List<CourseDTO> getCourseByStudentId(Long studentId) {
+        List<Course> courses = studentCourseRepository.getByStudentId(studentId);
         return courseMapper.toDto(courses);
     }
 
@@ -103,10 +164,12 @@ public class CourseServiceImpl implements CourseService {
             throw new WitcurveException("No Course with given id " + courseId);
         }
         List<CourseTeacher> courseTeachers = courseTeacherRepository.findByCourseId(courseId);
-        if(courseTeachers.size() !=0) {
+        if (courseTeachers.size() != 0) {
             throw new WitcurveException("There are some faculty assigned to this course, please deactivate them and try again");
         }
         course.get().setActive(false);
+        List<Long> studentCourseIds = studentCourseRepository.getByCourseId(courseId);
+        studentCourseService.deactivateStudentCourseByIds(studentCourseIds);
     }
 
     @Override
@@ -118,7 +181,7 @@ public class CourseServiceImpl implements CourseService {
         List<Standard> standards = standardRepository.findByGradeAndSchoolInfoId(courseDTO.getGrade(), courseDTO.getSchoolInfoId());
 
         Map<String, Map<String, Long>> sectionTopicCountMap = new HashMap<>();
-        for (Standard standard: standards) {
+        for (Standard standard : standards) {
             sectionTopicCountMap.computeIfAbsent(standard.getSection(), k -> new HashMap<>());
             Map<String, Long> topicCountMap = sectionTopicCountMap.get(standard.getSection());
 
@@ -134,5 +197,21 @@ public class CourseServiceImpl implements CourseService {
         }
 
         return new CourseTrackDTO(courseDTO, courseContentDTOS, sectionTopicCountMap);
+    }
+
+    private void createOrUpdateStudentCourse(Course course) {
+        AcademicSession academicSession = academicSessionRepository.nearestSessionToDate(course.getSchoolInfo().getId(), LocalDate.now());
+        List<Long> listOfIds = studentStandardRepository.getBySessionIdAndGrade(academicSession.getId(), course.getGrade());
+        List<StudentCourseDTO> studentCourseDTOs = new ArrayList<>();
+        if (!listOfIds.isEmpty()) {
+            for (Long id : listOfIds) {
+                StudentCourseDTO studentCourseDTO = new StudentCourseDTO();
+                studentCourseDTO.setStudentStandardId(id);
+                studentCourseDTO.setCourseId(course.getId());
+                studentCourseDTOs.add(studentCourseDTO);
+            }
+            studentCourseService.saveOrUpdate(studentCourseDTOs);
+        }
+
     }
 }

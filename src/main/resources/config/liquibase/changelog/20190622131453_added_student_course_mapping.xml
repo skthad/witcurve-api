@@ -38,4 +38,15 @@
     <changeSet author="WitCurve (generated)" id="1561209306067-6">
         <addUniqueConstraint columnNames="student_standard_id, course_id" constraintName="student_course_unique_UK" tableName="student_course"/>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1561209306067-7">
+        <addColumn tableName="student_course">
+            <column defaultValueBoolean="true" name="active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1561209306067-8">
+        <sql>delete from student_course</sql>
+    </changeSet>
+
 </databaseChangeLog>
