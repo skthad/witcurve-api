@@ -117,13 +117,13 @@ public class EventServiceImpl implements EventService {
         Arrays.asList(EventType.TEST.toString()));
 
     private static final ArrayList<EventType> SNS_DATE_UPDATE = new ArrayList<>(
-        Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST));
+        Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST,EventType.DAILY_UPDATE));
 
 
     @Override
     public List<EventDTO> saveOrUpdate(List<EventDTO> eventDTOs, Long schoolInfoId) throws WitcurveException, UnsupportedEncodingException {
         Map<Long, LocalDate> dateMap = new HashMap<>();
-        List<Long> updateTestOrAssignmentOrPeriodicTestIds = new ArrayList<>();
+        List<Long> updateEventIds = new ArrayList<>();
         log.debug("Request to save or update eventDTOs : {}", eventDTOs);
         isEventValid(eventDTOs);
         Optional<SchoolInfo> result = schoolInfoRepository.findById(schoolInfoId);
@@ -142,10 +142,10 @@ public class EventServiceImpl implements EventService {
                     if (eventDTO.getType().equals(EventType.PERIODIC_TEST)) {
                         Optional<Event> event=eventRepository.findById(eventDTO.getId());
                         if (event.get().getCourse()!=null) {
-                            updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                            updateEventIds.add(eventDTO.getId());
                         }
                     } else {
-                        updateTestOrAssignmentOrPeriodicTestIds.add(eventDTO.getId());
+                        updateEventIds.add(eventDTO.getId());
                     }
                 }
             }
@@ -154,8 +154,8 @@ public class EventServiceImpl implements EventService {
             }
         }
 
-        List<Event> updateTestOrAssignmentEvents = eventRepository.findAllById(updateTestOrAssignmentOrPeriodicTestIds);
-        for (Event event : updateTestOrAssignmentEvents) {
+        List<Event> updateEvents = eventRepository.findAllById(updateEventIds);
+        for (Event event : updateEvents) {
             dateMap.put(event.getId(), event.getDate());
         }
 
