@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1569063088743-1">
+        <sql>delete from report_card_design</sql>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-2">
+        <createTable tableName="report_card_design_course">
+            <column name="report_card_design_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-3">
+        <addColumn tableName="report_card_design">
+            <column name="best_of_value" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-4">
+        <addColumn tableName="report_card_design">
+            <column name="calculation_type" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-5">
+        <addColumn tableName="report_card_design">
+            <column name="grade" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-6">
+        <addColumn tableName="report_card_design">
+            <column name="selected_periodic_tests" type="longtext"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-7">
+        <addPrimaryKey columnNames="report_card_design_id, course_id" tableName="report_card_design_course"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-8">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="report_card_design_course"
+                                 constraintName="FK1ffv11jviht1cccvce79pdagm" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-9">
+        <addForeignKeyConstraint baseColumnNames="report_card_design_id" baseTableName="report_card_design_course"
+                                 constraintName="FKcum7vok1k5kfnve87glmaxhmm" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-10">
+        <dropColumn columnName="binding_id" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-11">
+        <dropColumn columnName="show_grades_only" tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-12">
+        <dropColumn columnName="show_marks_only" tableName="report_card_design"/>
+    </changeSet>
+</databaseChangeLog>

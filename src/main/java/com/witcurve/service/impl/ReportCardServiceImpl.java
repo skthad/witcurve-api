@@ -1,9 +1,8 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.*;
+import com.witcurve.domain.ConfigSettings;
+import com.witcurve.domain.Course;
 import com.witcurve.domain.enumeration.ConfigType;
-import com.witcurve.domain.enumeration.ExamStatus;
-import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.ReportCardService;
@@ -21,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,61 +87,61 @@ public class ReportCardServiceImpl implements ReportCardService {
         Map<String, String> definingGrades;
         Map<String, Object> marksAndGradesMap = null;
         Map<String, Object> marksAndGradesValueMap = new HashMap<>();
-        if(examId != null) {
-            Optional<Exam> exam = examRepository.findById(examId);
-            if(!exam.isPresent()) {
-                throw new WitcurveException("No Exam with given Id " + examId);
-            }
-            if(exam.get().getStatus().equals(ExamStatus.DRAFT)) {
-                throw new WitcurveException("Draft exams cannot have report card design");
-            }
-            String examName = exam.get().getName().toUpperCase();
-            String schoolName = exam.get().getSchoolInfo().getSchool().getName().toUpperCase();
-            List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExam(examId);
-            colorForGrades = getGradeDetails(exam.get().getSchoolInfo().getSchool().getId(), ConfigType.GRADING_SCALE_COLOR);
-//            List<ConfigSettings>
-//            definingGrades = getGradeDetails();
-            List<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId);
-            for(StudentStandard  studentStandard : studentStandards)  {
-                reportCardVM = new ReportCardVM();
-                reportCardVM.setExamName(examName);
-                reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
-                reportCardVM.setStandard(studentStandard.getStandard().getGrade().toString());
-                reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
-                reportCardVM.setRollNo(studentStandard.getRollNo());
-                List<Course> courses = examCourseDetailsRepository.findCoursesByGradesAndExamId(Arrays.asList(studentStandard.getStandard().getGrade()), examId);
-                courses = getCoursesForStudentId(courses, studentStandard.getStudent().getId());
-                for(ReportCardDesign reportCardDesign : reportCardDesigns) {
-                    marksAndGradesValueMap = new HashMap<>();
-                    marksAndGradesValueMap.put("showGrade", reportCardDesign.getShowGradesOnly());
-                    marksAndGradesValueMap.put("showMarks", reportCardDesign.getShowMarksOnly());
-                    if(reportCardDesign.getFieldType().equals(ReportFieldType.MAIN)) {
-                        List<StudentMarks> studentMarks = studentMarksRepository.getByStudentIdForExam(examId, studentStandard.getStudent().getId(), Arrays.asList(Boolean.TRUE));
-//                        updateMarksAndGrades(marksAndGradesMap, studentMarks, courses);
-                    } else if(reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
-
-                    } else if(reportCardDesign.getFieldType().equals(ReportFieldType.REMARKS)) {
-                        reportCardVM.setShowRemarks(true);
-                        //add remarks
-                    } else if(reportCardDesign.getFieldType().equals(ReportFieldType.ATTENDANCE)) {
-                        reportCardVM.setShowAttendance(true);
-                        //calculate attendance
-                    } else {
-
-                    }
-                }
-            }
-        } else {
-            List<Event> events = eventRepository.findPeriodicEventsByBindingId(bindingId);
-            if(events.size() == 0) {
-                throw new WitcurveException("No Periodic Test exists with given bindingId " + bindingId);
-            }
-            String examName = events.get(0).getName().toUpperCase();
-            String schoolName = events.get(0).getSchoolInfo().getSchool().getName().toUpperCase();
-            List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExam(examId);
-            colorForGrades = getGradeDetails(events.get(0).getSchoolInfo().getSchool().getId(), ConfigType.GRADING_SCALE_COLOR);
-            definingGrades = getGradeDetails(events.get(0).getSchoolInfo().getSchool().getId(), ConfigType.GRADING_SCALE);
-            List<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId);
+//        if(examId != null) {
+//            Optional<Exam> exam = examRepository.findById(examId);
+//            if(!exam.isPresent()) {
+//                throw new WitcurveException("No Exam with given Id " + examId);
+//            }
+//            if(exam.get().getStatus().equals(ExamStatus.DRAFT)) {
+//                throw new WitcurveException("Draft exams cannot have report card design");
+//            }
+//            String examName = exam.get().getName().toUpperCase();
+//            String schoolName = exam.get().getSchoolInfo().getSchool().getName().toUpperCase();
+//            List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExam(examId);
+//            colorForGrades = getGradeDetails(exam.get().getSchoolInfo().getSchool().getId(), ConfigType.GRADING_SCALE_COLOR);
+////            List<ConfigSettings>
+////            definingGrades = getGradeDetails();
+//            List<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId);
+//            for(StudentStandard  studentStandard : studentStandards)  {
+//                reportCardVM = new ReportCardVM();
+//                reportCardVM.setExamName(examName);
+//                reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
+//                reportCardVM.setStandard(studentStandard.getStandard().getGrade().toString());
+//                reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
+//                reportCardVM.setRollNo(studentStandard.getRollNo());
+//                List<Course> courses = examCourseDetailsRepository.findCoursesByGradesAndExamId(Arrays.asList(studentStandard.getStandard().getGrade()), examId);
+//                courses = getCoursesForStudentId(courses, studentStandard.getStudent().getId());
+//                for(ReportCardDesign reportCardDesign : reportCardDesigns) {
+//                    marksAndGradesValueMap = new HashMap<>();
+//                    marksAndGradesValueMap.put("showGrade", reportCardDesign.getShowGradesOnly());
+//                    marksAndGradesValueMap.put("showMarks", reportCardDesign.getShowMarksOnly());
+//                    if(reportCardDesign.getFieldType().equals(ReportFieldType.MAIN)) {
+//                        List<StudentMarks> studentMarks = studentMarksRepository.getByStudentIdForExam(examId, studentStandard.getStudent().getId(), Arrays.asList(Boolean.TRUE));
+////                        updateMarksAndGrades(marksAndGradesMap, studentMarks, courses);
+//                    } else if(reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
+//
+//                    } else if(reportCardDesign.getFieldType().equals(ReportFieldType.REMARKS)) {
+//                        reportCardVM.setShowRemarks(true);
+//                        //add remarks
+//                    } else if(reportCardDesign.getFieldType().equals(ReportFieldType.ATTENDANCE)) {
+//                        reportCardVM.setShowAttendance(true);
+//                        //calculate attendance
+//                    } else {
+//
+//                    }
+//                }
+//            }
+//        } else {
+//            List<Event> events = eventRepository.findPeriodicEventsByBindingId(bindingId);
+//            if(events.size() == 0) {
+//                throw new WitcurveException("No Periodic Test exists with given bindingId " + bindingId);
+//            }
+//            String examName = events.get(0).getName().toUpperCase();
+//            String schoolName = events.get(0).getSchoolInfo().getSchool().getName().toUpperCase();
+//            List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExam(examId);
+//            colorForGrades = getGradeDetails(events.get(0).getSchoolInfo().getSchool().getId(), ConfigType.GRADING_SCALE_COLOR);
+//            definingGrades = getGradeDetails(events.get(0).getSchoolInfo().getSchool().getId(), ConfigType.GRADING_SCALE);
+//            List<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId);
 //            for(StudentStandard  studentStandard : studentStandards)  {
 //                reportCardVM = new ReportCardVM();
 //                reportCardVM.setExamName(examName);
@@ -166,8 +168,8 @@ public class ReportCardServiceImpl implements ReportCardService {
 //                    }
 //                }
 //            }
-
-        }
+//
+//        }
         return null;
     }
 

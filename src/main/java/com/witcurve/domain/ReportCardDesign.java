@@ -1,11 +1,20 @@
 package com.witcurve.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.witcurve.domain.enumeration.CalculationType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ReportFieldType;
+import com.witcurve.service.util.ListToStringConverter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "report_card_design")
@@ -35,19 +44,36 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
     private Double marks;
 
     @Column
-    private Boolean showGradesOnly;
-
-    @Column
-    private Boolean showMarksOnly;
-
-    @Column
     private Boolean selected;
 
     @ManyToOne
     private Exam exam;
 
+    @Column(length = 500)
+    @Convert(converter = ListToStringConverter.class)
+    private List<String> selectedPeriodicTests;
+
     @Column
-    private String bindingId;
+    @Enumerated(EnumType.STRING)
+    private CalculationType calculationType;
+
+    @Column
+    private Integer bestOfValue;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Grade grade;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "report_card_design_course",
+        joinColumns = {@JoinColumn(name = "report_card_design_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")})
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @BatchSize(size = 20)
+    private Set<Course> courses = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -97,28 +123,12 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
         this.marks = marks;
     }
 
-    public Boolean getShowGradesOnly() {
-        return showGradesOnly;
-    }
-
-    public void setShowGradesOnly(Boolean showGradesOnly) {
-        this.showGradesOnly = showGradesOnly;
-    }
-
     public Boolean getSelected() {
         return selected;
     }
 
     public void setSelected(Boolean selected) {
         this.selected = selected;
-    }
-
-    public Boolean getShowMarksOnly() {
-        return showMarksOnly;
-    }
-
-    public void setShowMarksOnly(Boolean showMarksOnly) {
-        this.showMarksOnly = showMarksOnly;
     }
 
     public Exam getExam() {
@@ -129,12 +139,44 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
         this.exam = exam;
     }
 
-    public String getBindingId() {
-        return bindingId;
+    public List<String> getSelectedPeriodicTests() {
+        return selectedPeriodicTests;
     }
 
-    public void setBindingId(String bindingId) {
-        this.bindingId = bindingId;
+    public void setSelectedPeriodicTests(List<String> selectedPeriodicTests) {
+        this.selectedPeriodicTests = selectedPeriodicTests;
+    }
+
+    public CalculationType getCalculationType() {
+        return calculationType;
+    }
+
+    public void setCalculationType(CalculationType calculationType) {
+        this.calculationType = calculationType;
+    }
+
+    public Integer getBestOfValue() {
+        return bestOfValue;
+    }
+
+    public void setBestOfValue(Integer bestOfValue) {
+        this.bestOfValue = bestOfValue;
+    }
+
+    public Grade getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Grade grade) {
+        this.grade = grade;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 
     @Override
