@@ -102,7 +102,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                 if(rcdId != null) {
                     return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseIdAndRcdIdAndStandardId(courseId, rcdId, standardId));
                 } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseIdAndStandardId(courseId, standardId));
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseIdAndExamIdAndStandardId(courseId,examId, standardId));
                 }
             }
         } else {
