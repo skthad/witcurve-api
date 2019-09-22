@@ -33,6 +33,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     private final List<Boolean> ALL = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
     private final List<Boolean> PUBLISHED_ONLY = Arrays.asList(Boolean.TRUE);
     private final List<EventType> ALLOWED_EVENT_TYPES = Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST);
+    private final List<ReportFieldType> ALLOWED_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.NON_SCHOLASTIC, ReportFieldType.MANUAL_ENTRY);
 
     @Autowired
     StudentMarksMapper studentMarksMapper;
@@ -233,8 +234,8 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                 if(!reportCardDesign.isPresent()) {
                     throw new WitcurveException("There is no report card design with given id");
                 }
-                if(!reportCardDesign.get().getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
-                    throw new WitcurveException("Invalid report card design, make sure it is of manual entry field");
+                if(!ALLOWED_FIELD_TYPES.contains(reportCardDesign.get().getFieldType()) ) {
+                    throw new WitcurveException("Invalid report card design, make sure it is of manual entry or main or non_scholastic field");
                 }
                 reportCardDesignDTO = new ReportCardDesignDTO();
                 reportCardDesignDTO.setId(rcdId);
