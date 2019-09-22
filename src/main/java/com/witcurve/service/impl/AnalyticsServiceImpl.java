@@ -56,7 +56,8 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                 if (subjectCountMap.get(masterSubject) == null) {
                     subjectTotalMap.put(masterSubject, 0.0);
                     subjectCountMap.put(masterSubject, 0);
-                    subjectFullMarksMap.put(masterSubject, studentMarksDTO.getExamCourseDetailsDTO().getFullMarks());
+//                    todo fix this after using rcd remark
+//                    subjectFullMarksMap.put(masterSubject, studentMarksDTO.getExamCourseDetailsDTO().getFullMarks());
                 }
 
                 Double subjectTotal = subjectTotalMap.get(masterSubject);

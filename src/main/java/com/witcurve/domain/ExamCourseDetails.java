@@ -41,10 +41,6 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
     @JoinColumn(nullable = false)
     private Course course;
 
-    @NotNull
-    @Column(name = "full_marks", nullable = false)
-    private Integer fullMarks;
-
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="exam_course_details_id", insertable = false, updatable = false)
     @Size(min=1, max=1)
@@ -88,14 +84,6 @@ public class ExamCourseDetails extends AbstractAuditingEntity implements Seriali
 
     public void setCourse(Course course) {
         this.course = course;
-    }
-
-    public Integer getFullMarks() {
-        return fullMarks;
-    }
-
-    public void setFullMarks(Integer fullMarks) {
-        this.fullMarks = fullMarks;
     }
 
     public Set<EventContent> getEventContents() {

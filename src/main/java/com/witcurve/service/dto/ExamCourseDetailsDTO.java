@@ -27,9 +27,6 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
     @NotNull
     private CourseDTO course;
 
-    @NotNull
-    private Integer fullMarks;
-
     private Boolean courseContentAttached = false;
 
     private Boolean doesAllStudentMarksExist = true;
@@ -72,14 +69,6 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     public void setCourse(CourseDTO course) {
         this.course = course;
-    }
-
-    public Integer getFullMarks() {
-        return fullMarks;
-    }
-
-    public void setFullMarks(Integer fullMarks) {
-        this.fullMarks = fullMarks;
     }
 
     public Boolean getCourseContentAttached() {

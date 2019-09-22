@@ -58,12 +58,12 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="exam_id", insertable = false, updatable = false)
     @Where(clause = "field_type='ATTRIBUTES'")
-    private Set<GeneralSlotDetails> attributeReportCardDesigns;
+    private Set<ReportCardDesign> attributeReportCardDesigns;
 
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="exam_id", insertable = false, updatable = false)
     @Where(clause = "field_type='REMARKS'")
-    private Set<GeneralSlotDetails> remarkReportCardDesigns;
+    private Set<ReportCardDesign> remarkReportCardDesigns;
 
 
 
@@ -131,19 +131,19 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
         this.mainReportCardDesigns = mainReportCardDesigns;
     }
 
-    public Set<GeneralSlotDetails> getAttributeReportCardDesigns() {
+    public Set<ReportCardDesign> getAttributeReportCardDesigns() {
         return attributeReportCardDesigns;
     }
 
-    public void setAttributeReportCardDesigns(Set<GeneralSlotDetails> attributeReportCardDesigns) {
+    public void setAttributeReportCardDesigns(Set<ReportCardDesign> attributeReportCardDesigns) {
         this.attributeReportCardDesigns = attributeReportCardDesigns;
     }
 
-    public Set<GeneralSlotDetails> getRemarkReportCardDesigns() {
+    public Set<ReportCardDesign> getRemarkReportCardDesigns() {
         return remarkReportCardDesigns;
     }
 
-    public void setRemarkReportCardDesigns(Set<GeneralSlotDetails> remarkReportCardDesigns) {
+    public void setRemarkReportCardDesigns(Set<ReportCardDesign> remarkReportCardDesigns) {
         this.remarkReportCardDesigns = remarkReportCardDesigns;
     }
 
