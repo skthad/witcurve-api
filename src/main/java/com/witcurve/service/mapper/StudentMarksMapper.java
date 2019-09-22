@@ -12,13 +12,13 @@ import org.mapstruct.Mapping;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses={StudentMapperLite.class, EventMapper.class, ExamCourseDetailsMapper.class, ReportCardDesignMapper.class})
+@Mapper(componentModel = "spring", uses={StudentMapperLite.class, EventMapper.class, ReportCardDesignMapper.class, CourseMapper.class})
 public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, StudentMarks>{
 
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "eventDTO", source = "event")
-    @Mapping(target= "examCourseDetailsDTO",source= "examCourseDetails")
     @Mapping(target= "reportCardDesignDTO",source= "reportCardDesign")
+    @Mapping(target= "courseDTO",source= "course")
     @Mapping(target= "studentName", expression = "java(getName(studentMarks.getStudent()))")
     @Mapping(target= "standardId", expression = "java(getStandardId(studentMarks.getStudent()))")
     @Mapping(target= "grade", expression = "java(getGrade(studentMarks.getStudent()))")
@@ -28,7 +28,7 @@ public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, Studen
 
     @Mapping(source = "studentId", target = "student")
     @Mapping(source = "eventDTO", target = "event")
-    @Mapping(source="examCourseDetailsDTO", target="examCourseDetails")
+    @Mapping(source= "courseDTO",target= "course")
     @Mapping(source= "reportCardDesignDTO",target= "reportCardDesign")
     StudentMarks toEntity(StudentMarksDTO studentMarksDTO);
 

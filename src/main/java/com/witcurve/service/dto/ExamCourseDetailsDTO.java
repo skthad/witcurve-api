@@ -29,8 +29,6 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     private Boolean courseContentAttached = false;
 
-    private Boolean doesAllStudentMarksExist = true;
-
     public Long getId() {
         return id;
     }
@@ -77,14 +75,6 @@ public class ExamCourseDetailsDTO extends AbstractAuditingDTO implements Seriali
 
     public void setCourseContentAttached(Boolean courseContentAttached) {
         this.courseContentAttached = courseContentAttached;
-    }
-
-    public Boolean getDoesAllStudentMarksExist() {
-        return doesAllStudentMarksExist;
-    }
-
-    public void setDoesAllStudentMarksExist(Boolean doesAllStudentMarksExist) {
-        this.doesAllStudentMarksExist = doesAllStudentMarksExist;
     }
 
     @Override

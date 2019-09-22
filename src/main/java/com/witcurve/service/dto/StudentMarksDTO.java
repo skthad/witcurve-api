@@ -32,9 +32,10 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
     @Pattern(regexp = "\\d+(\\.\\d{1,2})?")
     private Double marks;
 
-    private ExamCourseDetailsDTO examCourseDetailsDTO;
-
     private ReportCardDesignDTO reportCardDesignDTO;
+
+    private CourseDTO courseDTO;
+
 
     public Long getId() {
         return id;
@@ -108,20 +109,20 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
         this.marks = marks;
     }
 
-    public ExamCourseDetailsDTO getExamCourseDetailsDTO() {
-        return examCourseDetailsDTO;
-    }
-
-    public void setExamCourseDetailsDTO(ExamCourseDetailsDTO examCourseDetailsDTO) {
-        this.examCourseDetailsDTO = examCourseDetailsDTO;
-    }
-
     public ReportCardDesignDTO getReportCardDesignDTO() {
         return reportCardDesignDTO;
     }
 
     public void setReportCardDesignDTO(ReportCardDesignDTO reportCardDesignDTO) {
         this.reportCardDesignDTO = reportCardDesignDTO;
+    }
+
+    public CourseDTO getCourseDTO() {
+        return courseDTO;
+    }
+
+    public void setCourseDTO(CourseDTO courseDTO) {
+        this.courseDTO = courseDTO;
     }
 
     @Override

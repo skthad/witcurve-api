@@ -93,15 +93,6 @@ public class ExamCourseDetailsServiceImpl implements ExamCourseDetailsService {
             examCourseDetailsList = examCourseDetailsRepository.findByExamId(examId);
         }
         List<ExamCourseDetailsDTO> result = examCourseDetailsMapper.toDto(examCourseDetailsList);
-        for(ExamCourseDetailsDTO examCourseDetails : result) {
-            List<Standard> standards = standardRepository.findByGradeAndSchoolInfoId(examCourseDetails.getGsd().getGrade(), examCourseDetails.getCourse().getSchoolInfoId());
-            for(Standard standard : standards) {
-                List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByEcdIdAndStandardId(examCourseDetails.getId(), standard.getId(), Arrays.asList(true, false));
-                if(studentMarks.size() ==0) {
-                    examCourseDetails.setDoesAllStudentMarksExist(false);
-                }
-            }
-        }
         return result;
     }
 
