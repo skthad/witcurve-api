@@ -354,7 +354,7 @@ public class SnsService {
 
                         List<Standard> listOfStandard = standardRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
                         for (Standard std : listOfStandard) {
-                            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPeriodicTest = userMobileEndPointRepository.findStudentEndPointByCourseIdAndGradeAndSchoolInfoId(course.getId(), std.getGrade(), course.getSchoolInfo().getId());
+                            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPeriodicTest = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(),std.getId());
                             variableMap.put("class", "'" + std.getGrade().toString() + "-" + std.getSection() + "'");
                             if (keys.contains(eventDTO.getId())) {
                                 if (!eventDTO.getDate().equals(map.get(eventDTO.getId()))) {

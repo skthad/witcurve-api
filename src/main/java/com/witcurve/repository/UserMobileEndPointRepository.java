@@ -58,6 +58,4 @@ public interface UserMobileEndPointRepository extends JpaRepository<UserMobileEn
     @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select staff.user.id from Staff staff where staff.id in (Select ss.standard.classTeacher.id from StudentStandard ss where ss.active = true and ss.student.id=?1 ))")
     List<UserMobileEndPoint> findClassTeacherEndPointByStudentId(Long studentId);
 
-    @Query("Select umep from UserMobileEndPoint umep where umep.user.id in (Select sc.studentStandard.student.user.id from StudentCourse sc where sc.active=true and sc.course.id in ?1 and sc.course.grade = ?2 and sc.course.schoolInfo.id = ?3)")
-    List<UserMobileEndPoint> findStudentEndPointByCourseIdAndGradeAndSchoolInfoId(Long courseId,Grade grade, Long schoolInfoId);
 }
