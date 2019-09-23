@@ -7,6 +7,7 @@ import com.witcurve.domain.enumeration.ReportFieldType;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
 
     private Double marks;
 
-    private Boolean selected;
+    private Boolean selected = true;
 
     private Long examId;
 
@@ -38,6 +39,12 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
     private Grade grade;
 
     private Set<CourseDTO> courseDTOs;
+
+    private List<AttributeDTO> attributeDTOs;
+
+    private List<String> attributeTitles;
+
+    private Map<String, Map<Integer, String>> attributeTitleColumnMap;
 
     public Long getId() {
         return id;
@@ -141,6 +148,30 @@ public class ReportCardDesignDTO  extends AbstractAuditingDTO implements Seriali
 
     public void setBestOfValue(Integer bestOfValue) {
         this.bestOfValue = bestOfValue;
+    }
+
+    public List<AttributeDTO> getAttributeDTOs() {
+        return attributeDTOs;
+    }
+
+    public void setAttributeDTOs(List<AttributeDTO> attributeDTOs) {
+        this.attributeDTOs = attributeDTOs;
+    }
+
+    public List<String> getAttributeTitles() {
+        return attributeTitles;
+    }
+
+    public void setAttributeTitles(List<String> attributeTitles) {
+        this.attributeTitles = attributeTitles;
+    }
+
+    public Map<String, Map<Integer, String>> getAttributeTitleColumnMap() {
+        return attributeTitleColumnMap;
+    }
+
+    public void setAttributeTitleColumnMap(Map<String, Map<Integer, String>> attributeTitleColumnMap) {
+        this.attributeTitleColumnMap = attributeTitleColumnMap;
     }
 
     @Override

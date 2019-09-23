@@ -75,6 +75,10 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
     @BatchSize(size = 20)
     private Set<Course> courses = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="report_card_design_id")
+    private List<Attribute> attributes;
+
     public Long getId() {
         return id;
     }
@@ -177,6 +181,14 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
 
     public void setCourses(Set<Course> courses) {
         this.courses = courses;
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
     }
 
     @Override

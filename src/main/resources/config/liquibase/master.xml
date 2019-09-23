@@ -47,5 +47,7 @@
     <include file="config/liquibase/changelog/20190915175833_changelog_course_grade_refactor_fix.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190917144845_added_not_null_constraints_in_StudentCourse.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190921105116_refactor_ReportCardDesign.xml" relativeToChangelogFile="false"/>
-
+    <include file="config/liquibase/changelog/20190922193117_removed_marks_in_ECD.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190922220359_refactor_StudentMarks_and_GeneralSlotDetails.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190923170926_added_entity_Attributes.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

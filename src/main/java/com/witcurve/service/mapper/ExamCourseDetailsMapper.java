@@ -14,7 +14,6 @@ public interface ExamCourseDetailsMapper extends EntityMapper<ExamCourseDetailsD
     @Mapping(target = "eventContents", ignore = true)
     ExamCourseDetails toEntity(ExamCourseDetailsDTO examCourseDetailsDTO);
 
-    @Mapping(target = "doesAllStudentMarksExist", ignore = true)
     @Mapping(target = "courseContentAttached", expression = "java(courseContentAttached(examCourseDetails.getEventContents()))")
     ExamCourseDetailsDTO toDto(ExamCourseDetails examCourseDetails);
 

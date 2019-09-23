@@ -48,6 +48,11 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         log.debug("Request to save ReportCardDesigns : {} for exam with id : {} for grade : {}", reportCardDesignDTOS, examId, grade);
         validAndFormatReportCardDesigns(reportCardDesignDTOS, examId, grade);
         List<ReportCardDesign> reportCardDesigns = reportCardDesignMapper.toEntity(reportCardDesignDTOS);
+//        for(ReportCardDesign reportCardDesign : reportCardDesigns) {
+////            if(reportCardDesign.getFieldType().equals(ReportFieldType.ATTRIBUTES) {
+////
+////            }
+////        }
         reportCardDesigns = reportCardDesignRepository.saveAll(reportCardDesigns);
         validTotalReportCardRecords(examId, grade);
         return reportCardDesignMapper.toDto(reportCardDesigns);
@@ -91,7 +96,8 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
     private void validAndFormatReportCardDesigns(List<ReportCardDesignDTO> reportCardDesignDTOS, Long examId, Grade grade) {
         Boolean mainRecordExists = false, totalRecordExists = false,
             remarksRecordExists =false, attendanceRecordExists = false,
-            periodicTestRecordExists=false, nonScholasticRecordExists=false;
+            periodicTestRecordExists=false, nonScholasticRecordExists=false,
+            attributeRecordExists = false;
         List<ReportCardDesign> existingReportCardDesigns = null;
         Optional<Exam> exam = examRepository.findById(examId);
         if(!exam.isPresent()) {
@@ -106,6 +112,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                 case TOTAL:
                 case PERIODIC_TEST:
                 case NON_SCHOLASTIC:
+                case ATTRIBUTES:
                     if(fieldType.equals(ReportFieldType.MAIN)) {
                         if(mainRecordExists) {
                             throw new WitcurveException("There should be only one main field type record for a model");
@@ -117,6 +124,10 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                     } else if(fieldType.equals(ReportFieldType.PERIODIC_TEST)){
                         if(periodicTestRecordExists) {
                             throw new WitcurveException("There should be only one periodic test field type record for a model");
+                        }
+                    } else if(fieldType.equals(ReportFieldType.ATTRIBUTES)){
+                        if(attributeRecordExists) {
+                            throw new WitcurveException("There should be only one attribute field type record for a model");
                         }
                     } else {
                         if(nonScholasticRecordExists) {
@@ -140,8 +151,10 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                     } else {
                         throw new WitcurveException("There are multiple "+fieldType+" type records stored for this model");
                     }
-                    if(reportCardDesignDTO.getMarks() == null) {
-                        throw new WitcurveException(fieldType+" type record needs to have marks");
+                    if(!reportCardDesignDTO.getFieldType().equals(ReportFieldType.ATTRIBUTES)) {
+                        if(reportCardDesignDTO.getMarks() == null) {
+                            throw new WitcurveException(fieldType+" type record needs to have marks");
+                        }
                     }
                     if(fieldType.equals(ReportFieldType.MAIN)) {
                         reportCardDesignDTO.setName("Exam");
@@ -156,6 +169,11 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                             throw new WitcurveException("Non scholastic field requires list of courses");
                         }
                         nonScholasticRecordExists = true;
+                    } else if(fieldType.equals(ReportFieldType.ATTRIBUTES)) {
+                        if(reportCardDesignDTO.getAttributeDTOs() == null || reportCardDesignDTO.getAttributeDTOs().size() == 0) {
+                            throw new WitcurveException("Attribute field requires list of attributes");
+                        }
+                        attributeRecordExists = true;
                     } else {
                         if(reportCardDesignDTO.getSelectedPeriodicTests() == null || reportCardDesignDTO.getSelectedPeriodicTests().size() == 0) {
                             throw new WitcurveException("Periodic Test field requires list of binding id values");

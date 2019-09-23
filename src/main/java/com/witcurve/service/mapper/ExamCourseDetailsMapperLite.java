@@ -14,7 +14,6 @@ public interface ExamCourseDetailsMapperLite extends EntityMapper<ExamCourseDeta
     ExamCourseDetails toEntity(ExamCourseDetailsDTO examCourseDetailsDTO);
 
     @Mapping(target = "courseContentAttached", ignore = true)
-    @Mapping(target = "doesAllStudentMarksExist", ignore = true)
     ExamCourseDetailsDTO toDto(ExamCourseDetails examCourseDetails);
 
     default ExamCourseDetails fromId(Long id) {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1569189852311-1">
+        <addColumn tableName="student_marks">
+            <column name="course_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569189852311-2">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="student_marks"
+                                 constraintName="FKc4fm0ksp2ow0ulq5tyuvjegu5" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569189852311-3">
+        <sql>update student_marks as sm set sm.course_id=(Select ecd.course_id from exam_course_details as ecd where ecd.id=sm.exam_course_details_id) where sm.exam_course_details_id is not null</sql>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569189852311-4">
+        <dropForeignKeyConstraint baseTableName="student_marks" constraintName="FK3m9k1yr3pbkrkkvg6jfehwvit"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569189852311-5">
+        <dropColumn columnName="exam_course_details_id" tableName="student_marks"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569189852311-6">
+        <dropColumn columnName="marks_published" tableName="general_slot_details"/>
+    </changeSet>
+</databaseChangeLog>

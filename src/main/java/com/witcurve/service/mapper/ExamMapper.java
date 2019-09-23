@@ -2,6 +2,7 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Exam;
 import com.witcurve.domain.GeneralSlotDetails;
+import com.witcurve.domain.ReportCardDesign;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.dto.ExamDTO;
 import org.mapstruct.Mapper;
@@ -20,6 +21,9 @@ public interface ExamMapper extends EntityMapper<ExamDTO, Exam> {
 
     @Mapping(target = "schoolInfoId", source = "schoolInfo.id")
     @Mapping(target = "grades", expression = "java(getGrades(exam.getGeneralSlotDetails()))")
+    @Mapping(target = "mainGrades", expression = "java(getGradesFromRcds(exam.getMainReportCardDesigns()))")
+    @Mapping(target = "attributesGrades", expression = "java(getGradesFromRcds(exam.getAttributeReportCardDesigns()))")
+    @Mapping(target = "remarksGrades", expression = "java(getGradesFromRcds(exam.getRemarkReportCardDesigns()))")
     ExamDTO toDto(Exam exam);
 
 
@@ -42,4 +46,15 @@ public interface ExamMapper extends EntityMapper<ExamDTO, Exam> {
         }
         return grades;
      }
+
+    default Set<Grade> getGradesFromRcds(Set<ReportCardDesign> rcds) {
+        if(rcds == null || rcds.size()==0) {
+            return null;
+        }
+        SortedSet<Grade> grades = new TreeSet<>();
+        for(ReportCardDesign reportCardDesign : rcds) {
+            grades.add(reportCardDesign.getGrade());
+        }
+        return grades;
+    }
 }

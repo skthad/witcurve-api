@@ -51,7 +51,6 @@ public class ReportCardDesignResource {
     /**
      * get reportCardDesigns by examId or by bindingId
      * @param examId
-     * @param bindingId
      * @param fieldType
      * @return
      * @throws WitcurveException

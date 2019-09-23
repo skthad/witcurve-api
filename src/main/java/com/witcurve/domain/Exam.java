@@ -50,6 +50,23 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @Where(clause = "status='ACTIVE'")
     private Set<GeneralSlotDetails> generalSlotDetails;
 
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="exam_id", insertable = false, updatable = false)
+    @Where(clause = "field_type='MAIN' and selected = true")
+    private Set<ReportCardDesign> mainReportCardDesigns;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="exam_id", insertable = false, updatable = false)
+    @Where(clause = "field_type='ATTRIBUTES' and selected = true")
+    private Set<ReportCardDesign> attributeReportCardDesigns;
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="exam_id", insertable = false, updatable = false)
+    @Where(clause = "field_type='REMARKS' and selected = true")
+    private Set<ReportCardDesign> remarkReportCardDesigns;
+
+
+
     public Long getId() {
         return id;
     }
@@ -104,6 +121,30 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     public void setGeneralSlotDetails(Set<GeneralSlotDetails> generalSlotDetails) {
         this.generalSlotDetails = generalSlotDetails;
+    }
+
+    public Set<ReportCardDesign> getMainReportCardDesigns() {
+        return mainReportCardDesigns;
+    }
+
+    public void setMainReportCardDesigns(Set<ReportCardDesign> mainReportCardDesigns) {
+        this.mainReportCardDesigns = mainReportCardDesigns;
+    }
+
+    public Set<ReportCardDesign> getAttributeReportCardDesigns() {
+        return attributeReportCardDesigns;
+    }
+
+    public void setAttributeReportCardDesigns(Set<ReportCardDesign> attributeReportCardDesigns) {
+        this.attributeReportCardDesigns = attributeReportCardDesigns;
+    }
+
+    public Set<ReportCardDesign> getRemarkReportCardDesigns() {
+        return remarkReportCardDesigns;
+    }
+
+    public void setRemarkReportCardDesigns(Set<ReportCardDesign> remarkReportCardDesigns) {
+        this.remarkReportCardDesigns = remarkReportCardDesigns;
     }
 
     @Override

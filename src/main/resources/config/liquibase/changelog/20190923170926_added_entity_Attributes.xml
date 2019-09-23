@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1569258579884-1">
+        <createTable tableName="attribute">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="attributePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="attribute_column" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="column_order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="field" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="highlight" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title_order" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_card_design_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569258579884-2">
+        <addForeignKeyConstraint baseColumnNames="report_card_design_id" baseTableName="attribute"
+                                 constraintName="FKcvjymjj9prm41efmlrhjh7rmb" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card_design"/>
+    </changeSet>
+</databaseChangeLog>

@@ -29,10 +29,10 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
     private Double marks;
 
     @ManyToOne
-    private ExamCourseDetails examCourseDetails;
+    private ReportCardDesign reportCardDesign;
 
     @ManyToOne
-    private ReportCardDesign reportCardDesign;
+    private Course course;
 
     public Long getId() {
         return id;
@@ -66,20 +66,20 @@ public class StudentMarks extends AbstractAuditingEntity implements Serializable
         this.marks = marks;
     }
 
-    public ExamCourseDetails getExamCourseDetails() {
-        return examCourseDetails;
-    }
-
-    public void setExamCourseDetails(ExamCourseDetails examCourseDetails) {
-        this.examCourseDetails = examCourseDetails;
-    }
-
     public ReportCardDesign getReportCardDesign() {
         return reportCardDesign;
     }
 
     public void setReportCardDesign(ReportCardDesign reportCardDesign) {
         this.reportCardDesign = reportCardDesign;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     @Override
