@@ -42,6 +42,10 @@ public class Attribute extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false)
     private Integer columnOrder;
 
+    @NotNull
+    @Column(nullable = false)
+    private Integer fieldOrder;
+
     @ManyToOne
     private ReportCardDesign reportCardDesign;
 
@@ -99,6 +103,14 @@ public class Attribute extends AbstractAuditingEntity implements Serializable {
 
     public void setColumnOrder(Integer columnOrder) {
         this.columnOrder = columnOrder;
+    }
+
+    public Integer getFieldOrder() {
+        return fieldOrder;
+    }
+
+    public void setFieldOrder(Integer fieldOrder) {
+        this.fieldOrder = fieldOrder;
     }
 
     public ReportCardDesign getReportCardDesign() {

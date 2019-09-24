@@ -43,4 +43,12 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="report_card_design"/>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569258579884-3">
+        <addColumn tableName="attribute">
+            <column name="field_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
