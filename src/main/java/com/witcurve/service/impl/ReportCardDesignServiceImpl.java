@@ -80,7 +80,8 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         log.debug("Request to delete report card design with ids : {}");
         List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findAllById(ids);
         for(ReportCardDesign reportCardDesign : reportCardDesigns) {
-            if(!reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
+            if(!reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)
+                || !reportCardDesign.getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
                 throw new WitcurveException("You can only delete manual entry report card designs");
             }
         }
@@ -165,7 +166,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                             throw new WitcurveException("Non scholastic field requires list of courses");
                         }
                         nonScholasticRecordExists = true;
-                    } else if(fieldType.equals(ReportFieldType.ATTRIBUTES)) {
+                    } else if(fieldType.equals(ReportFieldType.ATTRIBUTES) && reportCardDesignDTO.getSelected()) {
                         if(reportCardDesignDTO.getAttributeDTOs() == null || reportCardDesignDTO.getAttributeDTOs().size() == 0) {
                             throw new WitcurveException("Attribute field requires list of attributes");
                         }
