@@ -154,8 +154,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         if(reportCardDesignDTO.getOrder() == null) {
                             throw new WitcurveException("Main field needs have order");
                         }
-                        reportCardDesignDTO.setName("Exam");
-                        reportCardDesignDTO.setShortForm("Exam");
+
                         mainRecordExists = true;
                     } else if(fieldType.equals(ReportFieldType.TOTAL)) {
                         reportCardDesignDTO.setName("Total");
