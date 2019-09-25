@@ -61,4 +61,11 @@
     <changeSet author="srujankuamar (generated)" id="1569063088743-12">
         <dropColumn columnName="show_marks_only" tableName="report_card_design"/>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-13">
+        <addDefaultValue columnDataType="boolean" columnName="selected" defaultValueBoolean="true"
+                         tableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569063088743-14">
+        <sql>update report_card_design set selected =true where selected is null</sql>
+    </changeSet>
 </databaseChangeLog>

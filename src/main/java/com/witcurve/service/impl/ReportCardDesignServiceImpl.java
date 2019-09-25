@@ -81,8 +81,8 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findAllById(ids);
         for(ReportCardDesign reportCardDesign : reportCardDesigns) {
             if(!reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)
-                || !reportCardDesign.getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
-                throw new WitcurveException("You can only delete manual entry report card designs");
+                && !reportCardDesign.getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
+                throw new WitcurveException("You can only delete manual entry  or non scholastic report card designs");
             }
         }
         studentMarksRepository.deleteStudentMarksByRcdIds(ids);
@@ -98,7 +98,11 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         if(!exam.isPresent()) {
             throw new WitcurveException("No Exam with given Id " + examId);
         }
+
         for(ReportCardDesignDTO reportCardDesignDTO : reportCardDesignDTOS) {
+            if(reportCardDesignDTO.getSelected() == null) {
+                reportCardDesignDTO.setSelected(true);
+            }
             reportCardDesignDTO.setGrade(grade);
             reportCardDesignDTO.setExamId(examId);
             ReportFieldType fieldType = reportCardDesignDTO.getFieldType();
@@ -243,7 +247,6 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         || reportCardDesignDTO.getOrder()== null) {
                         throw new WitcurveException("Manual Entry field type record needs to have name, shortForm, marks, order and show grade only values");
                     }
-                    reportCardDesignDTO.setSelected(null);
                     break;
             }
         }
@@ -256,12 +259,14 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         reportCardDesigns = reportCardDesignRepository.findByExamAndGrade(examId, grade);
         for(ReportCardDesign reportCardDesign : reportCardDesigns) {
             ReportFieldType fieldType = reportCardDesign.getFieldType();
-            if(fieldType.equals(ReportFieldType.MAIN) ||
-                fieldType.equals(ReportFieldType.MANUAL_ENTRY) ||
-                fieldType.equals(ReportFieldType.PERIODIC_TEST)) {
-                totalCalculated += reportCardDesign.getMarks();
-            } else if(reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
-                totalRecordMarks = reportCardDesign.getMarks();
+            if(reportCardDesign.getSelected()) {
+                if(fieldType.equals(ReportFieldType.MAIN) ||
+                    fieldType.equals(ReportFieldType.MANUAL_ENTRY) ||
+                    fieldType.equals(ReportFieldType.PERIODIC_TEST)) {
+                    totalCalculated += reportCardDesign.getMarks();
+                } else if(reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
+                    totalRecordMarks = reportCardDesign.getMarks();
+                }
             }
         }
         if(totalRecordMarks != null) {
