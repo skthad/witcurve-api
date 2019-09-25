@@ -52,7 +52,7 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="exam_id", insertable = false, updatable = false)
-    @Where(clause = "field_type='MAIN' and selected = true")
+    @Where(clause = "(field_type='MAIN' or filed_type='MANUAL_ENTRY') and selected = true")
     private Set<ReportCardDesign> mainReportCardDesigns;
 
     @OneToMany(fetch=FetchType.LAZY)
