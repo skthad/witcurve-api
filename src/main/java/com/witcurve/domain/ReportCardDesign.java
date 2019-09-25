@@ -43,8 +43,8 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
     @Column(name = "marks", precision=10, scale=2)
     private Double marks;
 
-    @Column
-    private Boolean selected;
+    @Column(columnDefinition = "boolean default true")
+    private Boolean selected = true;
 
     @ManyToOne
     private Exam exam;

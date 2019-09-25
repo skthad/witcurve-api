@@ -48,11 +48,6 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         log.debug("Request to save ReportCardDesigns : {} for exam with id : {} for grade : {}", reportCardDesignDTOS, examId, grade);
         validAndFormatReportCardDesigns(reportCardDesignDTOS, examId, grade);
         List<ReportCardDesign> reportCardDesigns = reportCardDesignMapper.toEntity(reportCardDesignDTOS);
-//        for(ReportCardDesign reportCardDesign : reportCardDesigns) {
-////            if(reportCardDesign.getFieldType().equals(ReportFieldType.ATTRIBUTES) {
-////
-////            }
-////        }
         reportCardDesigns = reportCardDesignRepository.saveAll(reportCardDesigns);
         validTotalReportCardRecords(examId, grade);
         return reportCardDesignMapper.toDto(reportCardDesigns);
@@ -84,26 +79,30 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
     public void deleteReportCardDesign(List<Long> ids) {
         log.debug("Request to delete report card design with ids : {}");
         List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findAllById(ids);
-//        for(ReportCardDesign reportCardDesign : reportCardDesigns) {
-//            if(!reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
-//                throw new WitcurveException("You can only delete manual entry report card designs");
-//            }
-//        }
+        for(ReportCardDesign reportCardDesign : reportCardDesigns) {
+            if(!reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)
+                && !reportCardDesign.getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
+                throw new WitcurveException("You can only delete manual entry  or non scholastic report card designs");
+            }
+        }
         studentMarksRepository.deleteStudentMarksByRcdIds(ids);
         reportCardDesignRepository.deleteByIds(ids);
     }
 
     private void validAndFormatReportCardDesigns(List<ReportCardDesignDTO> reportCardDesignDTOS, Long examId, Grade grade) {
         Boolean mainRecordExists = false, totalRecordExists = false,
-            remarksRecordExists =false, attendanceRecordExists = false,
-            periodicTestRecordExists=false, nonScholasticRecordExists=false,
-            attributeRecordExists = false;
+            remarksRecordExists =false, periodicTestRecordExists=false,
+            nonScholasticRecordExists=false, attributeRecordExists = false;
         List<ReportCardDesign> existingReportCardDesigns = null;
         Optional<Exam> exam = examRepository.findById(examId);
         if(!exam.isPresent()) {
             throw new WitcurveException("No Exam with given Id " + examId);
         }
+
         for(ReportCardDesignDTO reportCardDesignDTO : reportCardDesignDTOS) {
+            if(reportCardDesignDTO.getSelected() == null) {
+                reportCardDesignDTO.setSelected(true);
+            }
             reportCardDesignDTO.setGrade(grade);
             reportCardDesignDTO.setExamId(examId);
             ReportFieldType fieldType = reportCardDesignDTO.getFieldType();
@@ -157,8 +156,10 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         }
                     }
                     if(fieldType.equals(ReportFieldType.MAIN)) {
-                        reportCardDesignDTO.setName("Exam");
-                        reportCardDesignDTO.setShortForm("Exam");
+                        if(reportCardDesignDTO.getOrder() == null) {
+                            throw new WitcurveException("Main field needs have order");
+                        }
+
                         mainRecordExists = true;
                     } else if(fieldType.equals(ReportFieldType.TOTAL)) {
                         reportCardDesignDTO.setName("Total");
@@ -170,11 +171,16 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         }
                         nonScholasticRecordExists = true;
                     } else if(fieldType.equals(ReportFieldType.ATTRIBUTES)) {
-                        if(reportCardDesignDTO.getAttributeDTOs() == null || reportCardDesignDTO.getAttributeDTOs().size() == 0) {
-                            throw new WitcurveException("Attribute field requires list of attributes");
+                        if(reportCardDesignDTO.getSelected()) {
+                            if(reportCardDesignDTO.getAttributeDTOs() == null || reportCardDesignDTO.getAttributeDTOs().size() == 0) {
+                                throw new WitcurveException("Attribute field requires list of attributes");
+                            }
                         }
                         attributeRecordExists = true;
                     } else {
+                        if(reportCardDesignDTO.getOrder() == null) {
+                            throw new WitcurveException("Periodic Test field needs have order");
+                        }
                         if(reportCardDesignDTO.getSelectedPeriodicTests() == null || reportCardDesignDTO.getSelectedPeriodicTests().size() == 0) {
                             throw new WitcurveException("Periodic Test field requires list of binding id values");
                         }
@@ -201,10 +207,6 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         if(remarksRecordExists) {
                             throw new WitcurveException("There should be only one remarks field type record for this model");
                         }
-                    } else {
-                        if(attendanceRecordExists) {
-                            throw new WitcurveException("There should be only one attendance field type record for this model");
-                        }
                     }
                     existingReportCardDesigns = reportCardDesignRepository.findByFieldTypeAndExamAndGrade(fieldType, examId, grade);
                     if(existingReportCardDesigns.size()==0) {
@@ -229,8 +231,6 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                     reportCardDesignDTO.setMarks(null);
                     if(fieldType.equals(ReportFieldType.REMARKS)) {
                         remarksRecordExists = true;
-                    } else {
-                        attendanceRecordExists = true;
                     }
                     break;
                 case MANUAL_ENTRY:
@@ -249,10 +249,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         || reportCardDesignDTO.getOrder()== null) {
                         throw new WitcurveException("Manual Entry field type record needs to have name, shortForm, marks, order and show grade only values");
                     }
-                    reportCardDesignDTO.setSelected(null);
                     break;
-
-
             }
         }
 
@@ -264,12 +261,14 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         reportCardDesigns = reportCardDesignRepository.findByExamAndGrade(examId, grade);
         for(ReportCardDesign reportCardDesign : reportCardDesigns) {
             ReportFieldType fieldType = reportCardDesign.getFieldType();
-            if(fieldType.equals(ReportFieldType.MAIN) ||
-                fieldType.equals(ReportFieldType.MANUAL_ENTRY) ||
-                fieldType.equals(ReportFieldType.PERIODIC_TEST)) {
-                totalCalculated += reportCardDesign.getMarks();
-            } else if(reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
-                totalRecordMarks = reportCardDesign.getMarks();
+            if(reportCardDesign.getSelected()) {
+                if(fieldType.equals(ReportFieldType.MAIN) ||
+                    fieldType.equals(ReportFieldType.MANUAL_ENTRY) ||
+                    fieldType.equals(ReportFieldType.PERIODIC_TEST)) {
+                    totalCalculated += reportCardDesign.getMarks();
+                } else if(reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
+                    totalRecordMarks = reportCardDesign.getMarks();
+                }
             }
         }
         if(totalRecordMarks != null) {

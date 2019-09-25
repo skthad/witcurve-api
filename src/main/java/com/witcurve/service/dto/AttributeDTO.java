@@ -32,6 +32,9 @@ public class AttributeDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Integer columnOrder;
 
+    @NotNull
+    private Integer fieldOrder;
+
     public Long getId() {
         return id;
     }
@@ -94,6 +97,14 @@ public class AttributeDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setColumnOrder(Integer columnOrder) {
         this.columnOrder = columnOrder;
+    }
+
+    public Integer getFieldOrder() {
+        return fieldOrder;
+    }
+
+    public void setFieldOrder(Integer fieldOrder) {
+        this.fieldOrder = fieldOrder;
     }
 
     @Override
