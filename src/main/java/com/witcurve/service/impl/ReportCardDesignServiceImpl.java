@@ -170,9 +170,11 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                             throw new WitcurveException("Non scholastic field requires list of courses");
                         }
                         nonScholasticRecordExists = true;
-                    } else if(fieldType.equals(ReportFieldType.ATTRIBUTES) && reportCardDesignDTO.getSelected()) {
-                        if(reportCardDesignDTO.getAttributeDTOs() == null || reportCardDesignDTO.getAttributeDTOs().size() == 0) {
-                            throw new WitcurveException("Attribute field requires list of attributes");
+                    } else if(fieldType.equals(ReportFieldType.ATTRIBUTES)) {
+                        if(reportCardDesignDTO.getSelected()) {
+                            if(reportCardDesignDTO.getAttributeDTOs() == null || reportCardDesignDTO.getAttributeDTOs().size() == 0) {
+                                throw new WitcurveException("Attribute field requires list of attributes");
+                            }
                         }
                         attributeRecordExists = true;
                     } else {
