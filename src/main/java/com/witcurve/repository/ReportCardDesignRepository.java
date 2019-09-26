@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface ReportCardDesignRepository extends JpaRepository<ReportCardDesign, Long> {
 
-    @Query("Select rcd from ReportCardDesign rcd where rcd.exam.id=?1 and rcd.grade = ?2 order by rcd.order asc")
+    @Query("Select rcd from ReportCardDesign rcd where rcd.exam.id=?1 and rcd.grade = ?2 order by rcd.fieldType asc, rcd.order asc")
     List<ReportCardDesign> findByExamAndGrade(Long examId, Grade grade);
 
     @Query("Select rcd from ReportCardDesign rcd where rcd.fieldType=?1 and rcd.exam.id=?2 and rcd.grade=?3 order by rcd.order asc")
