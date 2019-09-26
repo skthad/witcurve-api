@@ -162,10 +162,11 @@ public class ExamServiceImpl implements ExamService {
                 .map(CourseTeacher::getCourse)
                 .map(s -> s.getId())
                 .collect(Collectors.toSet());
+            Long schoolInfoId = courseTeachers.get(0).getTeacher().getSchoolInfo().getId();
             if(statuses != null && !statuses.isEmpty()) {
-                exams = examRepository.findExamsForCourseIdsWithStatus(courseIds, fromDate, endDate, statuses, pageable);
+                exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statuses, pageable);
             } else {
-                exams = examRepository.findExamsForCourseIds(courseIds, fromDate, endDate, pageable);
+                exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate, pageable);
             }
             return exams.map(examMapper::toDto);
         }
