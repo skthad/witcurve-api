@@ -62,5 +62,9 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     @Query("delete from StudentMarks sm where sm.reportCardDesign.id in ?1")
     void deleteStudentMarksByRcdIds(List<Long> rcdId);
 
+    @Modifying
+    @Query("delete from StudentMarks sm where sm.id in ?1")
+    void deleteStudentMarksByIds(List<Long> ids);
+
 }
 

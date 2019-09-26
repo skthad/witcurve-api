@@ -70,7 +70,7 @@ public class StudentRemarksResource {
     @Timed
     public ResponseEntity<Void> deleteStudentRemarks(@RequestParam List<Long> ids) throws WitcurveException {
         log.debug("Request to delete StudentRemarks with ids : {} ", ids);
-        studentRemarksService.deleteStudentMarks(ids);
+        studentRemarksService.deleteStudentRemarks(ids);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

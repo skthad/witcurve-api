@@ -122,13 +122,9 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public void deleteStudentMarks(Long studentMarksId) throws WitcurveException {
-        log.debug("Request to delete student Marks with id {}", studentMarksId);
-        Optional<StudentMarks> studentMarks = studentMarksRepository.findById(studentMarksId);
-        if (!studentMarks.isPresent()){
-            throw new WitcurveException("No student Marks relation with given Id: " + studentMarksId);
-        }
-        studentMarksRepository.delete(studentMarks.get());
+    public void deleteStudentMarks(List<Long> studentMarksIds) throws WitcurveException {
+        log.debug("Request to delete student Marks with id {}", studentMarksIds);
+        studentMarksRepository.deleteStudentMarksByIds(studentMarksIds);
     }
     private List<StudentMarksDTO> validateAndFormatStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) {
         List<StudentMarks> existingStudentMarksList;

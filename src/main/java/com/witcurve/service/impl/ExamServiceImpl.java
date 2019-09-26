@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,13 +134,13 @@ public class ExamServiceImpl implements ExamService {
             if(grade == null) {
                 exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statusList, pageable);
             } else {
-                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, grade, fromDate, endDate, statusList, pageable);
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, Arrays.asList(grade), fromDate, endDate, statusList, pageable);
             }
         } else {
             if(grade == null) {
                 exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate, pageable);
             } else {
-                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, grade, fromDate, endDate, pageable);
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, Arrays.asList(grade), fromDate, endDate, pageable);
             }
         }
         return exams.map(examMapper::toDto);
@@ -157,16 +154,16 @@ public class ExamServiceImpl implements ExamService {
         if(courseTeachers.isEmpty()) {
             return new PageImpl<>(new ArrayList<>(), pageable, 0);
         } else {
-            Set<Long> courseIds = courseTeachers
+            Set<Grade> grades = courseTeachers
                 .stream()
                 .map(CourseTeacher::getCourse)
-                .map(s -> s.getId())
+                .map(s -> s.getGrade())
                 .collect(Collectors.toSet());
             Long schoolInfoId = courseTeachers.get(0).getTeacher().getSchoolInfo().getId();
             if(statuses != null && !statuses.isEmpty()) {
-                exams = examRepository.findAllBySchoolInfoAndDateRangeAndStatuses(schoolInfoId, fromDate, endDate, statuses, pageable);
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRangeAndStatuses(schoolInfoId, new ArrayList<>(grades), fromDate, endDate, statuses, pageable);
             } else {
-                exams = examRepository.findAllBySchoolInfoAndDateRange(schoolInfoId, fromDate, endDate, pageable);
+                exams = examRepository.findAllBySchoolInfoAndGradeAndDateRange(schoolInfoId, new ArrayList<>(grades), fromDate, endDate, pageable);
             }
             return exams.map(examMapper::toDto);
         }

@@ -61,7 +61,7 @@ public class StudentRemarksServiceImpl implements StudentRemarksService {
     }
 
     @Override
-    public void deleteStudentMarks(List<Long> ids) {
+    public void deleteStudentRemarks(List<Long> ids) {
         log.debug("Request to delete all student remarks with ids : {}", ids);
         studentRemarksRepository.deleteByIds(ids);
     }

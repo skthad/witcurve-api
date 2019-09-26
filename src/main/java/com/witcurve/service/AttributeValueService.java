@@ -9,4 +9,6 @@ public interface AttributeValueService {
     List<AttributeValueDTO> saveOrUpdate(List<AttributeValueDTO> attributeValueDTOS);
 
     List<AttributeValueDTO> getAttributeValueByReportCardDesign(Long rcdId,Long studentId);
+
+    void deleteAttributeValues(List<Long> ids);
 }
