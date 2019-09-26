@@ -143,7 +143,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         if(reportCardDesignDTO.getId() == null) {
                             throw new WitcurveException("There already exists a report card design "+fieldType.toString().toLowerCase()+" field type for this model, so another record cannot be created");
                         } else {
-                            if(reportCardDesignDTO.getId() != existingReportCardDesigns.get(0).getId()) {
+                            if(!reportCardDesignDTO.getId().equals(existingReportCardDesigns.get(0).getId())  ) {
                                 throw new WitcurveException("Id of the "+fieldType.toString().toLowerCase()+" field type with id "+reportCardDesignDTO.getId()+" doesn't match with existing record");
                             }
                         }
@@ -217,7 +217,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                         if(reportCardDesignDTO.getId() == null) {
                             throw new WitcurveException("There already exists a report card design "+fieldType.toString().toLowerCase()+" field type for this model, so another record cannot be created");
                         } else {
-                            if(reportCardDesignDTO.getId() != existingReportCardDesigns.get(0).getId()) {
+                            if(!reportCardDesignDTO.getId().equals(existingReportCardDesigns.get(0).getId())) {
                                 throw new WitcurveException("Id of the remarks field type : "+reportCardDesignDTO.getId()+" doesn't match with existing record");
                             }
                         }
