@@ -5,7 +5,6 @@ import com.witcurve.domain.enumeration.EventType;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
-import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,19 +98,18 @@ public class StudentMarksResource {
     }
 
     /**
-     * delete the studentMarks
-     * @param studentMarksId
+     * delete the studentMarks with ids
+     * @param ids
      * @return
      * @throws WitcurveException
      */
-    @DeleteMapping("/student-marks/{studentMarksId}")
+    @DeleteMapping("/student-marks")
     @Timed
-    public ResponseEntity<Void> deleteStudentMarks(@PathVariable Long studentMarksId) throws WitcurveException {
-        log.debug("REST request to delete student marks: {}", studentMarksId);
+    public ResponseEntity<Void> deleteStudentMarks(@RequestParam List<Long> ids) throws WitcurveException {
+        log.debug("REST request to delete student marks: with ids {}", ids);
         try {
-            studentMarksService.deleteStudentMarks(studentMarksId);
-            return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("A student marks relation is deleted with identifier " + studentMarksId,
-                studentMarksId.toString())).build();
+            studentMarksService.deleteStudentMarks(ids);
+            return ResponseEntity.ok(null);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key constraint might have failed while deleting");

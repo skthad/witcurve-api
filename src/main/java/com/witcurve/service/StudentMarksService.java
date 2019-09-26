@@ -9,7 +9,7 @@ import java.util.List;
 public interface StudentMarksService {
     List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTO, Long eventId, Long rcdId, Long courseId) throws WitcurveException;
 
-    void deleteStudentMarks(Long studentMarksId) throws WitcurveException;
+    void deleteStudentMarks(List<Long> studentMarksIds) throws WitcurveException;
 
     List<StudentMarksDTO> getStudentMarksByEventId(Long eventId, Long rcdId) throws WitcurveException;
 
