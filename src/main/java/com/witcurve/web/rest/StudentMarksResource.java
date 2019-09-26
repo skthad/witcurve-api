@@ -8,7 +8,6 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,16 +106,8 @@ public class StudentMarksResource {
     @Timed
     public ResponseEntity<Void> deleteStudentMarks(@RequestParam List<Long> ids) throws WitcurveException {
         log.debug("REST request to delete student marks: with ids {}", ids);
-        try {
-            studentMarksService.deleteStudentMarks(ids);
-            return ResponseEntity.ok(null);
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key constraint might have failed while deleting");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
+        studentMarksService.deleteStudentMarks(ids);
+        return ResponseEntity.ok(null);
     }
 }
 
