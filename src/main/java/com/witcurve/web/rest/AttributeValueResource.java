@@ -7,6 +7,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,21 @@ public class AttributeValueResource {
     @Timed
     public ResponseEntity<List<AttributeValueDTO>> saveOrUpdateAttributeValue(@RequestBody @Valid List<AttributeValueDTO> attributeValueDTOs) throws WitcurveException, URISyntaxException {
         log.debug("Request Save or Update AttributeValues : {}",attributeValueDTOs);
-        List<AttributeValueDTO> result =attributeValueService.saveOrUpdate(attributeValueDTOs);
-        return ResponseEntity.ok(result);
+        try {
+            List<AttributeValueDTO> result =attributeValueService.saveOrUpdate(attributeValueDTOs);
+            return ResponseEntity.ok(result);
+        }catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("attribute_student_value_UK")) {
+                log.debug("Unique constraint (attribute_id, value, student_id) violated");
+                throw new WitcurveException("Duplicated records cannot be created");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+
+        }
+
     }
 
 
