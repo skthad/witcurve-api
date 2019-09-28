@@ -2,9 +2,19 @@ package com.witcurve.web.rest.vm;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ReportCardVM {
+
+//    private  ScholasticDetailsVM scholasticDetailVM = new ScholasticDetailsVM();
+//    private  ScholasticVM scholasticVM = new ScholasticVM();
+//    private  NonScholasticVM nonScholasticVM = new NonScholasticVM();
+//    private  OverallVM overallVM = new OverallVM();
+//    private  MarksAndGradeDetailsVM marksAndGradeDetailsVM = new MarksAndGradeDetailsVM();
+//    private  ExamDetailsVM examDetailsVM = new ExamDetailsVM();
+//    private AttributeDetailVM attributeDetailVM = new AttributeDetailVM();
+//    private AttributeVM attributeVM = new AttributeVM();
 
     @NotNull
     private String studentName;
@@ -16,19 +26,7 @@ public class ReportCardVM {
     private String admissionId;
 
     @NotNull
-    private String rollNo;
-
-    @NotNull
-    private Boolean showAttendance = false;
-
-    @NotNull
     private String attendance;
-
-    @NotNull
-    private String examName;
-
-    @NotNull
-    private String schoolName;
 
     @NotNull
     private Boolean showHeader = true;
@@ -37,22 +35,24 @@ public class ReportCardVM {
     private String logoLink;
 
     @NotNull
-    private Boolean showRemarks = false;
+    private String schoolPrimaryColor = "#000000";
 
-    @NotNull
     private String remarks;
 
-    @NotNull
-    private String[] subjectsArray;
+    private List<AttributeVM> attributes;
 
-    @NotNull
     private Map<String, String> colorForGrades;
 
-    @NotNull
-    private Map<String, String> definingGrades;
+    private Map<String, String> definingGrade;
+
+    private Map<String, String> note;
 
     @NotNull
-    private Map<String, Object> marksAndGrades;
+    private String title;
+
+    private ScholasticVM scholastic;
+
+    private NonScholasticVM nonScholastic;
 
     public String getStudentName() {
         return studentName;
@@ -78,44 +78,12 @@ public class ReportCardVM {
         this.admissionId = admissionId;
     }
 
-    public String getRollNo() {
-        return rollNo;
-    }
-
-    public void setRollNo(String rollNo) {
-        this.rollNo = rollNo;
-    }
-
-    public Boolean getShowAttendance() {
-        return showAttendance;
-    }
-
-    public void setShowAttendance(Boolean showAttendance) {
-        this.showAttendance = showAttendance;
-    }
-
     public String getAttendance() {
         return attendance;
     }
 
     public void setAttendance(String attendance) {
         this.attendance = attendance;
-    }
-
-    public String getExamName() {
-        return examName;
-    }
-
-    public void setExamName(String examName) {
-        this.examName = examName;
-    }
-
-    public String getSchoolName() {
-        return schoolName;
-    }
-
-    public void setSchoolName(String schoolName) {
-        this.schoolName = schoolName;
     }
 
     public Boolean getShowHeader() {
@@ -134,12 +102,12 @@ public class ReportCardVM {
         this.logoLink = logoLink;
     }
 
-    public Boolean getShowRemarks() {
-        return showRemarks;
+    public String getSchoolPrimaryColor() {
+        return schoolPrimaryColor;
     }
 
-    public void setShowRemarks(Boolean showRemarks) {
-        this.showRemarks = showRemarks;
+    public void setSchoolPrimaryColor(String schoolPrimaryColor) {
+        this.schoolPrimaryColor = schoolPrimaryColor;
     }
 
     public String getRemarks() {
@@ -150,12 +118,12 @@ public class ReportCardVM {
         this.remarks = remarks;
     }
 
-    public String[] getSubjectsArray() {
-        return subjectsArray;
+    public List<AttributeVM> getAttributes() {
+        return attributes;
     }
 
-    public void setSubjectsArray(String[] subjectsArray) {
-        this.subjectsArray = subjectsArray;
+    public void setAttributes(List<AttributeVM> attributes) {
+        this.attributes = attributes;
     }
 
     public Map<String, String> getColorForGrades() {
@@ -166,20 +134,367 @@ public class ReportCardVM {
         this.colorForGrades = colorForGrades;
     }
 
-    public Map<String, String> getDefiningGrades() {
-        return definingGrades;
+    public Map<String, String> getDefiningGrade() {
+        return definingGrade;
     }
 
-    public void setDefiningGrades(Map<String, String> definingGrades) {
-        this.definingGrades = definingGrades;
+    public void setDefiningGrade(Map<String, String> definingGrade) {
+        this.definingGrade = definingGrade;
     }
 
-    public Map<String, Object> getMarksAndGrades() {
-        return marksAndGrades;
+    public Map<String, String> getNote() {
+        return note;
     }
 
-    public void setMarksAndGrades(Map<String, Object> marksAndGrades) {
-        this.marksAndGrades = marksAndGrades;
+    public void setNote(Map<String, String> note) {
+        this.note = note;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public ScholasticVM getScholastic() {
+        return scholastic;
+    }
+
+    public void setScholastic(ScholasticVM scholastic) {
+        this.scholastic = scholastic;
+    }
+
+    public NonScholasticVM getNonScholastic() {
+        return nonScholastic;
+    }
+
+    public void setNonScholastic(NonScholasticVM nonScholastic) {
+        this.nonScholastic = nonScholastic;
+    }
+
+    public static class ScholasticVM {
+
+        @NotNull
+        private List<String> subjectsArray;
+
+        @NotNull
+        private ScholasticDetailsVM scholasticDetails;
+
+        public List<String> getSubjectsArray() {
+            return subjectsArray;
+        }
+
+        public void setSubjectsArray(List<String> subjectsArray) {
+            this.subjectsArray = subjectsArray;
+        }
+
+        public ScholasticDetailsVM getScholasticDetails() {
+            return scholasticDetails;
+        }
+
+        public void setScholasticDetails(ScholasticDetailsVM scholasticDetails) {
+            this.scholasticDetails = scholasticDetails;
+        }
+
+
+        public static class ScholasticDetailsVM {
+
+            private List<ExamDetailsVM> examDetails;
+
+            private OverallVM overall;
+
+            public List<ExamDetailsVM> getExamDetails() {
+                return examDetails;
+            }
+
+            public void setExamDetails(List<ExamDetailsVM> examDetails) {
+                this.examDetails = examDetails;
+            }
+
+            public OverallVM getOverall() {
+                return overall;
+            }
+
+            public void setOverall(OverallVM overall) {
+                this.overall = overall;
+            }
+
+            @Override
+            public String toString() {
+                return "ScholasticDetailsVM{" +
+                    "examDetails=" + examDetails +
+                    ", overall=" + overall +
+                    '}';
+            }
+
+            public static class ExamDetailsVM {
+
+                @NotNull
+                private String examName;
+
+                @NotNull
+                private List<MarksAndGradeDetailsVM> marksAndGradesDetails;
+
+                public String getExamName() {
+                    return examName;
+                }
+
+                public void setExamName(String examName) {
+                    this.examName = examName;
+                }
+
+                public List<MarksAndGradeDetailsVM> getMarksAndGradesDetails() {
+                    return marksAndGradesDetails;
+                }
+
+                public void setMarksAndGradesDetails(List<MarksAndGradeDetailsVM> marksAndGradesDetails) {
+                    this.marksAndGradesDetails = marksAndGradesDetails;
+                }
+
+                @Override
+                public String toString() {
+                    return "ExamDetailsVM{" +
+                        "examName='" + examName + '\'' +
+                        ", marksAndGradesDetails=" + marksAndGradesDetails +
+                        '}';
+                }
+
+                public static class MarksAndGradeDetailsVM extends OverallVM {
+
+                    @NotNull
+                    private String name;
+
+                    @NotNull
+                    private String shortForm;
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    public void setName(String name) {
+                        this.name = name;
+                    }
+
+                    public String getShortForm() {
+                        return shortForm;
+                    }
+
+                    public void setShortForm(String shortForm) {
+                        this.shortForm = shortForm;
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "MarksAndGradeDetailsVM{" +
+                            "name='" + name + '\'' +
+                            ", shortForm='" + shortForm + '\'' +
+                            '}';
+                    }
+                }
+
+
+            }
+
+            public static class OverallVM {
+
+                private Map<String, String> marks;
+
+                private Map<String, String> grade;
+
+                @NotNull
+                private Boolean showMarks = true;
+
+                @NotNull
+                private Boolean showGrade = true;
+
+                public Map<String, String> getMarks() {
+                    return marks;
+                }
+
+                public void setMarks(Map<String, String> marks) {
+                    this.marks = marks;
+                }
+
+                public Map<String, String> getGrade() {
+                    return grade;
+                }
+
+                public void setGrade(Map<String, String> grade) {
+                    this.grade = grade;
+                }
+
+                public Boolean getShowMarks() {
+                    return showMarks;
+                }
+
+                public void setShowMarks(Boolean showMarks) {
+                    this.showMarks = showMarks;
+                }
+
+                public Boolean getShowGrade() {
+                    return showGrade;
+                }
+
+                public void setShowGrade(Boolean showGrade) {
+                    this.showGrade = showGrade;
+                }
+
+                @Override
+                public String toString() {
+                    return "OverallVM{" +
+                        "marks=" + marks +
+                        ", grade=" + grade +
+                        ", showMarks=" + showMarks +
+                        ", showGrade=" + showGrade +
+                        '}';
+                }
+            }
+
+
+        }
+
+        @Override
+        public String toString() {
+            return "ScholasticVM{" +
+                "subjectsArray=" + subjectsArray +
+                ", scholasticDetails=" + scholasticDetails +
+                '}';
+        }
+    }
+
+    public static class NonScholasticVM {
+
+        @NotNull
+        private String titleName = "Subjects";
+
+        @NotNull
+        private List<String> subjectsArray;
+
+        @NotNull
+        private List<AttributeDetailVM> nonScholasticDetails;
+
+        public String getTitleName() {
+            return titleName;
+        }
+
+        public void setTitleName(String titleName) {
+            this.titleName = titleName;
+        }
+
+        public List<String> getSubjectsArray() {
+            return subjectsArray;
+        }
+
+        public void setSubjectsArray(List<String> subjectsArray) {
+            this.subjectsArray = subjectsArray;
+        }
+        public List<AttributeDetailVM> getNonScholasticDetails() {
+            return nonScholasticDetails;
+        }
+
+        public void setNonScholasticDetails(List<AttributeDetailVM> nonScholasticDetails) {
+            this.nonScholasticDetails = nonScholasticDetails;
+        }
+
+        @Override
+        public String toString() {
+            return "NonScholasticVM{" +
+                "titleName='" + titleName + '\'' +
+                ", subjectsArray=" + subjectsArray +
+                ", nonScholasticDetails=" + nonScholasticDetails +
+                '}';
+        }
+    }
+
+    public static class AttributeVM {
+
+        @NotNull
+        private String titleName;
+
+        @NotNull
+        private List<String> fieldArray;
+
+        private List<String> boldColumnsArray;
+
+        @NotNull
+        private List<AttributeDetailVM> attributeDetails;
+
+        public String getTitleName() {
+            return titleName;
+        }
+
+        public void setTitleName(String titleName) {
+            this.titleName = titleName;
+        }
+
+        public List<String> getFieldArray() {
+            return fieldArray;
+        }
+
+        public void setFieldArray(List<String> fieldArray) {
+            this.fieldArray = fieldArray;
+        }
+
+        public List<String> getBoldColumnsArray() {
+            return boldColumnsArray;
+        }
+
+        public void setBoldColumnsArray(List<String> boldColumnsArray) {
+            this.boldColumnsArray = boldColumnsArray;
+        }
+
+        public List<AttributeDetailVM> getAttributeDetails() {
+            return attributeDetails;
+        }
+
+        public void setAttributeDetails(List<AttributeDetailVM> attributeDetails) {
+            this.attributeDetails = attributeDetails;
+        }
+
+        @Override
+        public String toString() {
+            return "AttributeVM{" +
+                "titleName='" + titleName + '\'' +
+                ", fieldArray=" + fieldArray +
+                ", boldColumnsArray=" + boldColumnsArray +
+                ", attributeDetails=" + attributeDetails +
+                '}';
+        }
+    }
+
+    public static class AttributeDetailVM {
+
+        @NotNull
+        private String columnName;
+
+        @NotNull
+        private Map<String, String> values;
+
+        public String getColumnName() {
+            return columnName;
+        }
+
+        public void setColumnName(String columnName) {
+            this.columnName = columnName;
+        }
+
+        public Map<String, String> getValues() {
+            return values;
+        }
+
+        public void setValues(Map<String, String> values) {
+            this.values = values;
+        }
+
+        @Override
+        public String toString() {
+            return "AttributeDetailVM{" +
+                "columnName='" + columnName + '\'' +
+                ", values=" + values +
+                '}';
+        }
     }
 
     @Override
@@ -188,17 +503,18 @@ public class ReportCardVM {
             "studentName='" + studentName + '\'' +
             ", standard='" + standard + '\'' +
             ", admissionId='" + admissionId + '\'' +
-            ", rollNo='" + rollNo + '\'' +
             ", attendance='" + attendance + '\'' +
-            ", examName='" + examName + '\'' +
-            ", schoolName='" + schoolName + '\'' +
             ", showHeader=" + showHeader +
             ", logoLink='" + logoLink + '\'' +
+            ", schoolPrimaryColor='" + schoolPrimaryColor + '\'' +
             ", remarks='" + remarks + '\'' +
-            ", subjectsArray=" + Arrays.toString(subjectsArray) +
+            ", attributes=" + attributes +
             ", colorForGrades=" + colorForGrades +
-            ", definingGrades=" + definingGrades +
-            ", marksAndGrades=" + marksAndGrades +
+            ", definingGrade=" + definingGrade +
+            ", note=" + note +
+            ", title='" + title + '\'' +
+            ", scholastic=" + scholastic +
+            ", nonScholastic=" + nonScholastic +
             '}';
     }
 }

@@ -56,20 +56,21 @@ public class ReportCardServiceImpl implements ReportCardService {
     @Autowired
     StudentMarksRepository studentMarksRepository;
 
-    public File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl)  {
+    public File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl) {
+        isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         return htmlToPdfUtil.htmlToPdf(inputFile);
-
     }
 
-    public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl)  {
+    public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl) {
+        isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         String xml = htmlToPdfUtil.getReportHtmlXml(inputFile);
         try {
             File result = WitcurveUtil.createTempFile("result-template.html");
-            FileWriter fw=new FileWriter(result);
+            FileWriter fw = new FileWriter(result);
             fw.write(xml);
             fw.close();
             return result;
@@ -173,21 +174,21 @@ public class ReportCardServiceImpl implements ReportCardService {
         return null;
     }
 
-    private  Map<String, String> getGradeDetails(Long schoolId, ConfigType configType) {
+    private Map<String, String> getGradeDetails(Long schoolId, ConfigType configType) {
         Integer max = 100;
         Map<String, String> result = new HashMap<>();
         ConfigType[] configTypes = new ConfigType[0];
         configTypes[0] = configType;
         List<ConfigSettings> configSettingsList = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, configTypes);
-        for(ConfigSettings configSettings : configSettingsList) {
-            if(configType.equals(ConfigType.GRADING_SCALE_COLOR)) {
+        for (ConfigSettings configSettings : configSettingsList) {
+            if (configType.equals(ConfigType.GRADING_SCALE_COLOR)) {
                 result.put(configSettings.getDisplayFieldName(), configSettings.getFieldValue());
             } else {
                 Integer min = Integer.parseInt(configSettings.getFieldValue());
-                if(min != null) {
-                    result.put(configSettings.getDisplayFieldName(), min.toString()+"-"+max.toString());
+                if (min != null) {
+                    result.put(configSettings.getDisplayFieldName(), min.toString() + "-" + max.toString());
                 }
-                max= min-1;
+                max = min - 1;
             }
         }
         return result;
@@ -196,10 +197,10 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     private List<Course> getCoursesForStudentId(List<Course> courses, Long studentId) {
         Map<Long, Course> examCoursesMap = courses.stream().collect(Collectors.toMap(Course::getId, course -> course));
-        List<CourseDTO> validCourses= new ArrayList<>(); //courseService.getCourseByStudentId(studentId);
+        List<CourseDTO> validCourses = new ArrayList<>(); //courseService.getCourseByStudentId(studentId);
         List<Course> result = new ArrayList<>();
-        for(CourseDTO courseDTO : validCourses) {
-            if(examCoursesMap.keySet().contains(courseDTO.getId())) {
+        for (CourseDTO courseDTO : validCourses) {
+            if (examCoursesMap.keySet().contains(courseDTO.getId())) {
                 result.add(examCoursesMap.get(courseDTO.getId()));
             }
         }
@@ -212,17 +213,47 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 
     private void anyOne(Long examId, String bindingId) {
-        if(examId == null && bindingId == null) {
+        if (examId == null && bindingId == null) {
             throw new WitcurveException("Both examId and bindingId cannot be null");
         }
-        if(examId != null && bindingId != null) {
+        if (examId != null && bindingId != null) {
             throw new WitcurveException("Both examId and bindingId cannot be not null");
         }
     }
 
+    private void isValid(ReportCardVM reportCardVM) {
+        if (!reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade() && !reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks()) {
+            throw new WitcurveException("Both showMarks and showGrade can't be false at the same time");
+        }
+        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade()) {
+            if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getGrade() == null) {
+                throw new WitcurveException("Grades require to show grade");
+            }
+        }
+        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks()) {
+            if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getMarks() == null) {
+                throw new WitcurveException("Marks require to show marks");
+            }
+        }
+        List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
+        for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
 
-
-
-
-
+            List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM> listOfMarksAndGradeDetail = examDetailsVM.getMarksAndGradesDetails();
+            for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM : listOfMarksAndGradeDetail) {
+                if (!marksAndGradeDetailsVM.getShowGrade() && !marksAndGradeDetailsVM.getShowMarks()) {
+                    throw new WitcurveException("Both showMarks and showGrade can't be false at same time");
+                }
+                if (marksAndGradeDetailsVM.getShowMarks()) {
+                    if (marksAndGradeDetailsVM.getMarks() == null) {
+                        throw new WitcurveException("Marks require to show marks");
+                    }
+                }
+                if (marksAndGradeDetailsVM.getShowGrade()) {
+                    if (marksAndGradeDetailsVM.getGrade() == null) {
+                        throw new WitcurveException("Grades require to show grade");
+                    }
+                }
+            }
+        }
+    }
 }
