@@ -13,10 +13,13 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -86,6 +89,14 @@ public class WitcurveUtil {
         }
 
         return file;
+    }
+
+    public static List<Long> convertBigIntToLong(List<BigInteger> list) {
+        List<Long> result = new ArrayList<>();
+        for (BigInteger num : list) {
+            result.add(num.longValue());
+        }
+        return result;
     }
 
     public static Double roundToTwoDecimal(Double value) {

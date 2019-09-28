@@ -88,7 +88,6 @@ public class StudentMarksResource {
     @Timed
     public ResponseEntity<List<StudentMarksDTO>> getAllMarksForAStudentInACourse(@PathVariable("studentId")  Long studentId,
                                                                                 @PathVariable("courseId")  Long courseId,
-                                                                                @RequestParam("type") EventType type,
                                                                                  @RequestParam(value = "startDate") LocalDate startDate,
                                                                                  @RequestParam(value = "endDate") LocalDate endDate) throws WitcurveException {
         log.debug("Request to get list of Student marks by course id and event type and student id");
