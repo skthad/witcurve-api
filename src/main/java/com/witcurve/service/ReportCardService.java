@@ -1,5 +1,8 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.ReportCard;
+import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.service.dto.ReportCardDTO;
 import com.witcurve.web.rest.vm.ReportCardVM;
 
 import java.io.File;
@@ -11,7 +14,13 @@ public interface ReportCardService {
 
     File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl);
 
-    List<ReportCardVM> getReportCardDetailsForStandard(Long standardId, Long examId, String bindingId);
+    ReportCardDTO saveOrUpdate(ReportCardDTO reportCardDTO);
+
+    List<ReportCardDTO> getReportCardByExam(Long examId, Grade grade);
+
+    ReportCardDTO findOne(Long id);
+
+
 
 
 }

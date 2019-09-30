@@ -18,6 +18,8 @@ public interface CourseService {
 
     List<CourseDTO> getCourseBySchoolInfoAndGrade(Long schoolInfoId, Grade grade, CourseType courseType,Boolean elective,Boolean mandatory) throws WitcurveException;
 
+    List<CourseDTO> getCourseByExamIdAndGradeAndCourseType(Long examId, Grade grade, CourseType courseType);
+
     void deleteCourse(Long courseId) throws WitcurveException;
 
     List<CourseDTO> getCourseByStudentId(Long studentId) throws WitcurveException;
