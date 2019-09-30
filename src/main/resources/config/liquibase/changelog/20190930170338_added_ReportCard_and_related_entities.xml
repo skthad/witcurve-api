@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="WitCurve (generated)" id="1569863032627-1">
+        <createTable tableName="non_scholastic_report_details">
+            <column name="report_card_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_card_design_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-2">
+        <createTable tableName="report_card">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="report_cardPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="grade" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="show_attributes" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="show_overall_grade" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="show_overall_marks" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="show_remarks" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exam_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-3">
+        <createTable tableName="report_card_non_scholastic_course">
+            <column name="report_card_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-4">
+        <createTable tableName="report_card_scholastic_course">
+            <column name="report_card_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-5">
+        <createTable tableName="scholastic_report_details">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="scholastic_report_detailsPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="marks_normalisation" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="show_grades" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="show_marks" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_card_id" type="BIGINT"/>
+            <column name="report_card_design_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-6">
+        <addPrimaryKey columnNames="report_card_id, report_card_design_id" tableName="non_scholastic_report_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-7">
+        <addPrimaryKey columnNames="report_card_id, course_id" tableName="report_card_non_scholastic_course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-8">
+        <addPrimaryKey columnNames="report_card_id, course_id" tableName="report_card_scholastic_course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-9">
+        <addUniqueConstraint columnNames="grade, exam_id" constraintName="grade_exam_UK" tableName="report_card"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-10">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="report_card_scholastic_course"
+                                 constraintName="FK262p4pkw30vxa1b6andtffs1s" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-11">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="scholastic_report_details"
+                                 constraintName="FK2wmhnde0kx1ijiqup7rmb29ou" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-12">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="non_scholastic_report_details"
+                                 constraintName="FK6922l08vfaahbhawodymf23my" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-13">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="report_card_scholastic_course"
+                                 constraintName="FKcqce3wdq0tps0epduf89jrmbj" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-14">
+        <addForeignKeyConstraint baseColumnNames="report_card_design_id" baseTableName="scholastic_report_details"
+                                 constraintName="FKdew8qvvosplwf8rcjpsnv0fha" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-15">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="report_card_non_scholastic_course"
+                                 constraintName="FKjxtchh9r93x6lenjj2699u5ek" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-16">
+        <addForeignKeyConstraint baseColumnNames="exam_id" baseTableName="report_card"
+                                 constraintName="FKmvy0c9e9dcj5ifmmmfd6vvs9a" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="exam"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-17">
+        <addForeignKeyConstraint baseColumnNames="report_card_design_id" baseTableName="non_scholastic_report_details"
+                                 constraintName="FKqbxxvof080x9gn8i9kaqm4sc3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-18">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="report_card_non_scholastic_course"
+                                 constraintName="FKreu3l95ft7m07mqtrcy3cdiq9" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-19">
+        <addColumn tableName="scholastic_report_details">
+            <column name="header" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-20">
+        <addColumn tableName="report_card">
+            <column name="non_scholastic_header_map" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

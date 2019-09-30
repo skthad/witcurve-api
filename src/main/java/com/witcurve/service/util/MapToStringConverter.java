@@ -6,10 +6,10 @@ import com.google.gson.Gson;
 import javax.persistence.AttributeConverter;
 import java.util.Map;
 
-public class MapToStringConverter implements AttributeConverter<Map<Integer, String>, String> {
+public class MapToStringConverter implements AttributeConverter<Map<String, String>, String> {
 
     @Override
-    public String convertToDatabaseColumn(Map<Integer, String> tokens) {
+    public String convertToDatabaseColumn(Map<String, String> tokens) {
         if (tokens == null || tokens.size() == 0) {
             return null;
         }
@@ -18,7 +18,7 @@ public class MapToStringConverter implements AttributeConverter<Map<Integer, Str
     }
 
     @Override
-    public Map<Integer, String> convertToEntityAttribute(String json) {
+    public Map<String, String> convertToEntityAttribute(String json) {
         if (Strings.isNullOrEmpty(json)) {
             return null;
         }
