@@ -55,4 +55,11 @@ public class AttributeValueServiceImpl implements AttributeValueService {
        return attributeValueMapper.toDto(listOfAttributeValue);
     }
 
+    @Override
+    public void deleteAttributeValues(List<Long> ids) {
+        log.debug("Request to delete attribute values by ids : {}", ids);
+        attributeValueRepository.deleteAttributeValueByIds(ids);
+
+    }
+
 }

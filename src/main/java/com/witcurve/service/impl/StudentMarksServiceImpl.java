@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -52,6 +53,12 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     @Autowired
     ReportCardDesignRepository reportCardDesignRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
 
 
     @Override
@@ -114,21 +121,28 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate) throws WitcurveException{
         log.debug("Request to get all marks for student {} in course {}", studentId, courseId);
         WitcurveUtil.correctDateFormat(startDate, endDate);
+        List<StudentMarksDTO> result = new ArrayList<>();
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (!student.isPresent()) {
+            throw new WitcurveException("No student found with ID: " + studentId);
+        }
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+        List<BigInteger> ids = eventRepository.findMarksEventsByDateRangeForStudent(startDate, endDate, studentStandards.get(0).getStandard().getId(), Arrays.asList(courseId));
+        List<Long> eventIds = WitcurveUtil.convertBigIntToLong(ids);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
         }
-        return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId(courseId, studentId, startDate, endDate));
+        result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId( studentId, courseId, startDate, endDate)));
+        result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByStudentIdAndEventIds(studentId, eventIds)));
+        Collections.sort(result, new StudentMarksDTOAscComparator());
+        return result;
     }
 
     @Override
-    public void deleteStudentMarks(Long studentMarksId) throws WitcurveException {
-        log.debug("Request to delete student Marks with id {}", studentMarksId);
-        Optional<StudentMarks> studentMarks = studentMarksRepository.findById(studentMarksId);
-        if (!studentMarks.isPresent()){
-            throw new WitcurveException("No student Marks relation with given Id: " + studentMarksId);
-        }
-        studentMarksRepository.delete(studentMarks.get());
+    public void deleteStudentMarks(List<Long> studentMarksIds) throws WitcurveException {
+        log.debug("Request to delete student Marks with id {}", studentMarksIds);
+        studentMarksRepository.deleteStudentMarksByIds(studentMarksIds);
     }
     private List<StudentMarksDTO> validateAndFormatStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) {
         List<StudentMarks> existingStudentMarksList;
@@ -203,5 +217,19 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             requestStudentIds.add(studentMarksDTO.getStudentId());
         }
         return studentMarksDTOs;
+    }
+
+    public class StudentMarksDTOAscComparator implements Comparator<StudentMarksDTO> {
+
+        @Override
+        public int compare(StudentMarksDTO o1, StudentMarksDTO o2) {
+            if (o1.getEventOrExamDate().isAfter(o2.getEventOrExamDate())) {
+                return 1;
+            } else if (o1.getEventOrExamDate().isBefore(o2.getEventOrExamDate())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 }

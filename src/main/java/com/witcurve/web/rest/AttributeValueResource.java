@@ -72,4 +72,18 @@ public class AttributeValueResource {
         List<AttributeValueDTO> result =attributeValueService.getAttributeValueByReportCardDesign(rcdId,studentId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    /**
+     * delete AttributeValues by ids
+     * @param ids
+     * @return
+     * @throws WitcurveException
+     */
+    @DeleteMapping("/attribute-value")
+    @Timed
+    public ResponseEntity<Void> deleteStudentRemarks(@RequestParam List<Long> ids) throws WitcurveException {
+        log.debug("Request to delete AttributeValues with ids : {} ", ids);
+        attributeValueService.deleteAttributeValues(ids);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 }

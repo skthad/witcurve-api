@@ -52,15 +52,20 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
     List<StudentMarks> getStudentMarksByCourseIdAndStandardId(Long courseId, Long standardId);
 
 
-    @Query("select sm from StudentMarks sm where sm.student.id=?2 and " +
-        "(((sm.event.course.id=?1 or sm.event.courseTeacher.course.id=?1 or sm.event.scd.courseTeacher.course.id=?1) and sm.event.date between ?3 and ?4) " +
-        "or (sm.course.id=?1 and sm.reportCardDesign.exam.startDate between ?3 and ?4)) order by sm.event.date asc, sm.reportCardDesign.exam.startDate asc")
-    List<StudentMarks> getByCourseIdAndStudentId(Long courseId, Long studentId, LocalDate startDate, LocalDate endDate);
+    @Query("select sm from StudentMarks sm where sm.student.id=?1 and  (sm.course.id=?2 and sm.reportCardDesign.fieldType='MAIN' and sm.reportCardDesign.exam.startDate between ?3 and ?4)")
+    List<StudentMarks> getByCourseIdAndStudentId(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate);
+
+    @Query("select sm from StudentMarks sm where sm.student.id=?1 and (sm.event.id in ?2)")
+    List<StudentMarks> getByStudentIdAndEventIds(Long studentId, List<Long> eventIds);
 
 
     @Modifying
     @Query("delete from StudentMarks sm where sm.reportCardDesign.id in ?1")
     void deleteStudentMarksByRcdIds(List<Long> rcdId);
+
+    @Modifying
+    @Query("delete from StudentMarks sm where sm.id in ?1")
+    void deleteStudentMarksByIds(List<Long> ids);
 
 }
 

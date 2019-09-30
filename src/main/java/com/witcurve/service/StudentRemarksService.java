@@ -10,7 +10,7 @@ public interface StudentRemarksService {
 
     List<StudentRemarksDTO> findByExamIdOrBindingId(Long examId, String bindingId);
 
-    void deleteStudentMarks(List<Long> ids);
+    void deleteStudentRemarks(List<Long> ids);
 
 
 }
