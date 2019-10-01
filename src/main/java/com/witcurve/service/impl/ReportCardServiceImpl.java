@@ -207,10 +207,16 @@ public class ReportCardServiceImpl implements ReportCardService {
         return result;
     }
 
+<<<<<<< HEAD
 //    private void updateMarksAndGrades(Map<String, Object>marksAndGradesMap, List<StudentMarks> studentMarks, List<Course> courses, ) {
 //
 //    }
+=======
+    private void isValid(ReportCardVM reportCardVM) {
+>>>>>>> added two fields in overall
 
+        List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
+        for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
 
     private void anyOne(Long examId, String bindingId) {
         if (examId == null && bindingId == null) {
@@ -221,11 +227,14 @@ public class ReportCardServiceImpl implements ReportCardService {
         }
     }
 
+<<<<<<< HEAD
     private void isValid(ReportCardVM reportCardVM) {
 
         List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
         for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
 
+=======
+>>>>>>> added two fields in overall
             List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM> listOfMarksAndGradeDetail = examDetailsVM.getMarksAndGradesDetails();
             for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM : listOfMarksAndGradeDetail) {
                 if (!marksAndGradeDetailsVM.getShowGrade() && !marksAndGradeDetailsVM.getShowMarks()) {
