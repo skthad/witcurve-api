@@ -1,7 +1,6 @@
 package com.witcurve.web.rest.vm;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -261,13 +260,23 @@ public class ReportCardVM {
                         '}';
                 }
 
-                public static class MarksAndGradeDetailsVM extends OverallVM {
+                public static class MarksAndGradeDetailsVM  {
 
                     @NotNull
                     private String name;
 
                     @NotNull
                     private String shortForm;
+
+                    private Map<String, String> marks;
+
+                    private Map<String, String> grade;
+
+                    @NotNull
+                    private Boolean showMarks = true;
+
+                    @NotNull
+                    private Boolean showGrade = true;
 
                     public String getName() {
                         return name;
@@ -284,17 +293,50 @@ public class ReportCardVM {
                     public void setShortForm(String shortForm) {
                         this.shortForm = shortForm;
                     }
+                    public Map<String, String> getMarks() {
+                        return marks;
+                    }
+
+                    public void setMarks(Map<String, String> marks) {
+                        this.marks = marks;
+                    }
+
+                    public Map<String, String> getGrade() {
+                        return grade;
+                    }
+
+                    public void setGrade(Map<String, String> grade) {
+                        this.grade = grade;
+                    }
+
+                    public Boolean getShowMarks() {
+                        return showMarks;
+                    }
+
+                    public void setShowMarks(Boolean showMarks) {
+                        this.showMarks = showMarks;
+                    }
+
+                    public Boolean getShowGrade() {
+                        return showGrade;
+                    }
+
+                    public void setShowGrade(Boolean showGrade) {
+                        this.showGrade = showGrade;
+                    }
 
                     @Override
                     public String toString() {
                         return "MarksAndGradeDetailsVM{" +
                             "name='" + name + '\'' +
                             ", shortForm='" + shortForm + '\'' +
+                            ", marks=" + marks +
+                            ", grade=" + grade +
+                            ", showMarks=" + showMarks +
+                            ", showGrade=" + showGrade +
                             '}';
                     }
                 }
-
-
             }
 
             public static class OverallVM {
@@ -308,6 +350,12 @@ public class ReportCardVM {
 
                 @NotNull
                 private Boolean showGrade = true;
+
+                @NotNull
+                private String overAllGrade;
+
+                @NotNull
+                private String overAllMarks;
 
                 public Map<String, String> getMarks() {
                     return marks;
@@ -341,6 +389,14 @@ public class ReportCardVM {
                     this.showGrade = showGrade;
                 }
 
+                public String getOverAllGrade() { return overAllGrade; }
+
+                public void setOverAllGrade(String overAllGrade) { this.overAllGrade = overAllGrade; }
+
+                public String getOverAllMarks() { return overAllMarks; }
+
+                public void setOverAllMarks(String overAllMarks) { this.overAllMarks = overAllMarks; }
+
                 @Override
                 public String toString() {
                     return "OverallVM{" +
@@ -348,11 +404,11 @@ public class ReportCardVM {
                         ", grade=" + grade +
                         ", showMarks=" + showMarks +
                         ", showGrade=" + showGrade +
+                        ", overAllGrade='" + overAllGrade + '\'' +
+                        ", overAllMarks='" + overAllMarks + '\'' +
                         '}';
                 }
             }
-
-
         }
 
         @Override

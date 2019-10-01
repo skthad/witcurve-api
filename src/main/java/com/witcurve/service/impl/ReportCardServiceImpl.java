@@ -73,6 +73,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 
     public File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl)  {
+        isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         return htmlToPdfUtil.htmlToPdf(inputFile);
@@ -80,6 +81,7 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl)  {
+        isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         String xml = htmlToPdfUtil.getReportHtmlXml(inputFile);
@@ -175,7 +177,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                     throw new WitcurveException("Both grades and marks cannot be false, atleast one of them has to be true");
                 }
             }
-
         }
     }
 
@@ -212,9 +213,46 @@ public class ReportCardServiceImpl implements ReportCardService {
         return result;
     }
 
+    private void isValid(ReportCardVM reportCardVM) {
+
+        List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
+        for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
 
 
-
-
-
+            List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM> listOfMarksAndGradeDetail = examDetailsVM.getMarksAndGradesDetails();
+            for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM : listOfMarksAndGradeDetail) {
+                if (!marksAndGradeDetailsVM.getShowGrade() && !marksAndGradeDetailsVM.getShowMarks()) {
+                    throw new WitcurveException("Both showMarks and showGrade can't be false at same time for MarksAndGradeDetails");
+                }
+                if (marksAndGradeDetailsVM.getShowMarks()) {
+                    if (marksAndGradeDetailsVM.getMarks() == null) {
+                        throw new WitcurveException("Marks require to show marks");
+                    }
+                }
+                if (marksAndGradeDetailsVM.getShowGrade()) {
+                    if (marksAndGradeDetailsVM.getGrade() == null) {
+                        throw new WitcurveException("Grades require to show grade");
+                    }
+                }
+            }
+        }
+        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade()) {
+            if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getGrade() == null) {
+                throw new WitcurveException("Grades require to show grade");
+            }
+        }
+        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks()) {
+            if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getMarks() == null) {
+                throw new WitcurveException("Marks require to show marks");
+            }
+        }
+        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllGrade() == null ||
+            reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllGrade().isEmpty()) {
+            throw new WitcurveException("ShowGrade is true than OverAllGrade can't be null or empty");
+        }
+        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllMarks() == null ||
+            reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllMarks().isEmpty()) {
+            throw new WitcurveException("ShowMarks is true than OverAllMarks can't be null or empty");
+        }
+    }
 }

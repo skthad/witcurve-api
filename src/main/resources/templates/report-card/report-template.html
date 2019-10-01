@@ -2,7 +2,9 @@
 <html>
 
 <head>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Report Card</title>
 </head>
 
 <body>
@@ -13,7 +15,7 @@
 <div>
     <h3 id="Heading">report card tittle</h3>
 </div>
-<table style="width: 930px">
+<table style="width: 950px">
     <tbody>
     <tr>
         <th style="text-align: left;"><p>Name:<span id="nameOfStudent">student Name</span></p></th>
@@ -24,16 +26,16 @@
 </table>
 
 <div class="term-table">
-    <table cellpadding="1" id="markstable" class="term-table" style="width: 930px; text-align: center; border: 1px solid black">
+    <table cellpadding="1" id="markstable" class="term-table" style="width: 950px; text-align: center; border: 1px solid black">
         <tr class="subjectRow" id="Subject">
-            <th rowspan="3" class="firstcolumnstyle" style="border: 1px solid black;text-align: left;">SUBJECT</th>
+            <th rowspan="3" class="firstcolumnstyle" style="border: 1px solid black;text-align: left">SUBJECT</th>
         </tr>
 
     </table>
 </div>
 <div class="valuesTable">
     <table cellpadding="1" class="valuesTable"
-           style="width: 930px;margin-top: 10px;border: 1px solid black;text-align: center;border-collapse: collapse;">
+           style="width: 950px;margin-top: 10px;border: 1px solid black;text-align: center;border-collapse: collapse;">
         <tbody>
 
         </tbody>
@@ -41,12 +43,10 @@
     </table>
 
 </div>
-<div id="ForAttributesTable">
-
-</div>
+<div id="ForAttributesTable"> </div>
 
 <div
-    style="width: 930px ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px">
+    style="width: 950px ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px">
     <h5 id="remark-header"
         style=" margin-top: 10px; margin-bottom: 5px; text-align: center;">
         CLASS TEACHERS REMARKS
@@ -55,7 +55,7 @@
 </div>
 
 <div style="margin-top: 55px;margin-bottom: 0x;">
-    <table style="width: 930px; ">
+    <table style="width: 950px; ">
         <tbody>
         <tr>
             <th><p style="padding-top: 10px;padding-left:10px; padding-right:10px; border-top:1px solid black; width: 100px;  ">Principal</p></th>
@@ -67,7 +67,7 @@
 </div>
 
 <div class="GradingScaleTable" style="margin-top: 0px; ">
-    <table id="GradingScaleTable" cellpadding="1" style="margin-top: 0px; width: 930px; text-align:center;">
+    <table id="GradingScaleTable" cellpadding="1" style="margin-top: 0px; width: 950px; text-align:center;">
         <tr>
             <th colspan="10" id="grading-sacle-heading">GRADING SCALE</th>
         </tr>
@@ -112,6 +112,8 @@
                 newTh.innerHTML= report.scholastic.scholasticDetails.examDetails[i].examName;
                 newTh.setAttribute("colspan", (Object.keys(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length));
                 newTh.style.border = "1px solid black";
+
+
 
             }
             //for creating "Overall" Header
@@ -289,6 +291,47 @@
                 }
             }
 
+            if(reportObjectKeys.indexOf("scholastic") > -1){
+                if(forCheckingOverall.indexOf("overall") > -1){
+                    if(((report.scholastic.scholasticDetails.overall.showMarks) === true )
+                        &&((report.scholastic.scholasticDetails.overall.showGrade) === true )=== true){
+                        var newTr = document.createElement("tr");
+                        var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                        connectingRow.appendChild(newTr);
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = "Overall Marks: "+ report.scholastic.scholasticDetails.overall.overAllMarks;
+                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length/2);
+
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = "Overall Grade: "+ report.scholastic.scholasticDetails.overall.overAllGrade;
+                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length/2);
+
+                    }
+                    else{
+                        if((report.scholastic.scholasticDetails.overall.showMarks) === true ){
+                            var newTr = document.createElement("tr");
+                            var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                            connectingRow.appendChild(newTr);
+                            var newTh = document.createElement("th");
+                            newTr.appendChild(newTh);
+                            newTh.textContent = "Overall Marks: "+ report.scholastic.scholasticDetails.overall.overAllMarks;
+                            newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length);
+                        }
+                        if((report.scholastic.scholasticDetails.overall.showGrade) === true ){
+                            var newTr = document.createElement("tr");
+                            var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                            connectingRow.appendChild(newTr);
+                            var newTh = document.createElement("th");
+                            newTr.appendChild(newTh);
+                            newTh.textContent = "Overall Grade: "+ report.scholastic.scholasticDetails.overall.overAllGrade;
+                            newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length);
+                        }
+                    }
+                }
+            }
+
 
             // creating Header saying "Scholastic Area"
             var newTr = document.createElement("tr");
@@ -373,7 +416,7 @@
                 var newTable = document.createElement("table");
                 var addingTable = document.getElementById("ForAttributesTable");
                 addingTable.appendChild(newTable);
-                newTable.style.width = "930px";
+                newTable.style.width = "950px";
                 newTable.style.border = "1px solid black";
                 newTable.style.borderCollapse = "collapse";
                 newTable.style.textAlign = "center";
@@ -536,6 +579,7 @@
             document.getElementById("abbrevations").style.display = "none";
         }
     })();
+
 
 
 </script>
