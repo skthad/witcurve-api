@@ -73,6 +73,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 
     public File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl)  {
+        isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         return htmlToPdfUtil.htmlToPdf(inputFile);
@@ -80,6 +81,7 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl)  {
+        isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         String xml = htmlToPdfUtil.getReportHtmlXml(inputFile);
@@ -175,7 +177,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                     throw new WitcurveException("Both grades and marks cannot be false, atleast one of them has to be true");
                 }
             }
-
         }
     }
 
