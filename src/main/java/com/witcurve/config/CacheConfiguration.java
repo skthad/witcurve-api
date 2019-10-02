@@ -45,6 +45,9 @@ public class CacheConfiguration {
             cm.createCache(com.witcurve.domain.Authority.class.getName() + ".permissions", jcacheConfiguration);
             cm.createCache(com.witcurve.domain.Event.class.getName() + ".keywords", jcacheConfiguration);
             cm.createCache(com.witcurve.domain.ReportCardDesign.class.getName() + ".courses", jcacheConfiguration);
+            cm.createCache(com.witcurve.domain.ReportCard.class.getName() + ".scholasticCourses", jcacheConfiguration);
+            cm.createCache(com.witcurve.domain.ReportCard.class.getName() + ".nonScholasticCourses", jcacheConfiguration);
+            cm.createCache(com.witcurve.domain.ReportCard.class.getName() + ".nonScholasticRcds", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

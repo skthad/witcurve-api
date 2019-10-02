@@ -130,6 +130,25 @@ public class CourseResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * get course by grade and examId
+     *
+     * @param grade
+     * @param examId
+     * @param courseType
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/courses/exam/{examId}/grades/{grade}")
+    @Timed
+    public ResponseEntity<List<CourseDTO>> getCourseByExamAndGrde(@PathVariable("examId") Long examId,
+                                                         @PathVariable("grade") Grade grade, @RequestParam CourseType courseType) throws WitcurveException {
+        log.debug("Request to get Courses with grade {} for exam with id : {} of course type : {}", grade, examId, courseType);
+        List<CourseDTO> result = courseService.getCourseByExamIdAndGradeAndCourseType(examId, grade, courseType);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
     /**
      * delete the course
