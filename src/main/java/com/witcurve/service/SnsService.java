@@ -5,10 +5,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.model.*;
 import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.AttendanceType;
-import com.witcurve.domain.enumeration.ExamStatus;
-import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.domain.enumeration.TopicType;
+import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.util.WitCurveConstants;
@@ -62,6 +59,9 @@ public class SnsService {
 
     @Autowired
     EventRepository eventRepository;
+
+    @Autowired
+    ReportCardDesignRepository reportCardDesignRepository;
 
     public String createEndPointWithToken(String token) throws WitcurveException {
         log.debug("Create Platform end point with token : {}", token);
@@ -215,7 +215,7 @@ public class SnsService {
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToTest = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), eventDTO.getStandardId());
 
                     variableMap = new HashMap<>();
-                    variableMap.put("subject", course.getMasterSubject().getName());
+                    variableMap.put("subject", course.getDisplayName());
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
                     variableMap.put("class", "'" + standard.getGrade().toString() + "-" + standard.getSection() + "'");
 
@@ -240,7 +240,7 @@ public class SnsService {
                     List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToAssignment = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), eventDTO.getStandardId());
 
                     variableMap = new HashMap<>();
-                    variableMap.put("subject", course.getMasterSubject().getName());
+                    variableMap.put("subject", course.getDisplayName());
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
                     variableMap.put("class", "'" + standard.getGrade().toString() + "-" + standard.getSection() + "'");
 
@@ -258,10 +258,10 @@ public class SnsService {
                     }
                     break;
                 case DAILY_UPDATE:
-                    if(!keys.contains(eventDTO.getId())) {
+                    if (!keys.contains(eventDTO.getId())) {
                         course = courseRepository.findBySlotCourseDetailId(eventDTO.getScd().getId());
                         variableMap = new HashMap<>();
-                        variableMap.put("subject", course.getMasterSubject().getName());
+                        variableMap.put("subject", course.getDisplayName());
 
                         List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToDailyUpdate = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), eventDTO.getStandardId());
 
@@ -349,12 +349,12 @@ public class SnsService {
                     if (eventDTO.getCourse() != null) {
                         course = courseRepository.getOne(eventDTO.getCourse().getId());
                         variableMap = new HashMap<>();
-                        variableMap.put("subject", course.getMasterSubject().getName());
+                        variableMap.put("subject", course.getDisplayName());
                         variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
 
                         List<Standard> listOfStandard = standardRepository.findByGradeAndSchoolInfoId(eventDTO.getGrade(), eventDTO.getSchoolInfoId());
                         for (Standard std : listOfStandard) {
-                            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPeriodicTest = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(),std.getId());
+                            List<UserMobileEndPoint> listOfUserMobileEndPointsRelatedToPeriodicTest = userMobileEndPointRepository.findStudentEndPointsByCourseIdAndStandardId(course.getId(), std.getId());
                             variableMap.put("class", "'" + std.getGrade().toString() + "-" + std.getSection() + "'");
                             if (keys.contains(eventDTO.getId())) {
                                 if (!eventDTO.getDate().equals(map.get(eventDTO.getId()))) {
@@ -517,6 +517,69 @@ public class SnsService {
             for (UserMobileEndPoint userMobileEndPoint : userMobileEndPointOfClassTeacher) {
                 String urlOfLeaveApp = "?userId=" + userMobileEndPoint.getUser().getId() + "&leave=true";
                 publishMessage(message, urlOfLeaveApp, userMobileEndPoint.getEndPoint());
+            }
+        }
+    }
+
+    @Async
+    public void sendPushNotificationWhenMarksSaved(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) {
+        //for Periodic Test,Test and Assignment
+        String message = " ";
+        String url;
+        Course course = null;
+        Optional<Course> optionalCourse;
+        List<UserMobileEndPoint> mobileEndPointsOfStudent;
+        Map<String, String> varMap = new HashMap<>();
+        if (eventId != null) {
+            Optional<Event> event = eventRepository.findById(eventId);
+            varMap.put("date", WitcurveUtil.format(event.get().getDate()));
+
+            switch (event.get().getType()) {
+                case TEST:
+                    course = courseRepository.findBySlotCourseDetailId(event.get().getScd().getId());
+                    varMap.put("subjectName", course.getDisplayName());
+                    message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.TEST_MARKS_SAVE);
+                    break;
+                case ASSIGNMENT:
+                    course = courseRepository.findByCourseTeacherId(event.get().getCourseTeacher().getId());
+                    varMap.put("subjectName", course.getDisplayName());
+                    message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.ASSIGNMENT_MARKS_SAVE);
+                    break;
+                case PERIODIC_TEST:
+                    optionalCourse = courseRepository.findById(event.get().getCourse().getId());
+                    course = optionalCourse.get();
+                    varMap.put("subjectName", course.getDisplayName());
+                    message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.PERIODIC_TEST_MARKS_SAVE);
+                    break;
+            }
+            for (StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                if (studentMarksDTO.getId() == null) {
+                    mobileEndPointsOfStudent = userMobileEndPointRepository.findStudentEndPointByStudentId(studentMarksDTO.getStudentId());
+                    for (UserMobileEndPoint userMobileEndPoint : mobileEndPointsOfStudent) {
+                        url = "?marks=true&courseId=" + course.getId() + "&userId=" + userMobileEndPoint.getUser().getId();
+                        publishMessage(message, url, userMobileEndPoint.getEndPoint());
+                    }
+                }
+            }
+        } else { //for Exams
+            Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(rcdId);
+            optionalCourse = courseRepository.findById(courseId);
+            course = optionalCourse.get();
+
+            varMap.put("examName", reportCardDesign.get().getExam().getName());
+            varMap.put("subjectName", course.getDisplayName());
+
+            if (reportCardDesign.get().getFieldType().equals(ReportFieldType.MAIN) || reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
+                message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.EXAM_MARKS_SAVE);
+                for (StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                    if (studentMarksDTO.getId() == null) {
+                        mobileEndPointsOfStudent = userMobileEndPointRepository.findStudentEndPointByStudentId(studentMarksDTO.getStudentId());
+                        for (UserMobileEndPoint userMobileEndPoint : mobileEndPointsOfStudent) {
+                            url = "?marks=true&courseId=" + course.getId() + "&userId=" + userMobileEndPoint.getUser().getId();
+                            publishMessage(message, url, userMobileEndPoint.getEndPoint());
+                        }
+                    }
+                }
             }
         }
     }
