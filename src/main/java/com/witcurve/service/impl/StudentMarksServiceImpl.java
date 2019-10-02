@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
+import com.witcurve.service.SnsService;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.StudentMarksMapper;
@@ -60,10 +61,14 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     @Autowired
     StudentStandardRepository studentStandardRepository;
 
+    @Autowired
+    SnsService snsService;
+
 
     @Override
     public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) throws WitcurveException {
         studentMarksDTOs = validateAndFormatStudentMarks(studentMarksDTOs, eventId, rcdId, courseId);
+        snsService.sendPushNotificationWhenMarksSaved(studentMarksDTOs,eventId,rcdId,courseId);
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
         studentMarks = studentMarksRepository.saveAll(studentMarks);
         return studentMarksMapper.toDto(studentMarks);
