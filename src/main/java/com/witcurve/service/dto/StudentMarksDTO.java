@@ -39,6 +39,8 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     private LocalDate eventOrExamDate;
 
+    private String examName;
+
     public Long getId() {
         return id;
     }
@@ -133,6 +135,14 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     public void setEventOrExamDate(LocalDate eventOrExamDate) {
         this.eventOrExamDate = eventOrExamDate;
+    }
+
+    public String getExamName() {
+        return examName;
+    }
+
+    public void setExamName(String examName) {
+        this.examName = examName;
     }
 
     @Override

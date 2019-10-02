@@ -26,6 +26,7 @@ public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, Studen
     @Mapping(target= "section", expression = "java(getSection(studentMarks.getStudent()))")
     @Mapping(target= "rollNo", expression = "java(getRollNo(studentMarks.getStudent()))")
     @Mapping(target = "eventOrExamDate", expression = "java(getDate(studentMarks))")
+    @Mapping(target = "examName", expression = "java(getExamName(studentMarks))")
     StudentMarksDTO toDto(StudentMarks studentMarks);
 
     @Mapping(source = "studentId", target = "student")
@@ -99,6 +100,22 @@ public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, Studen
             }
         }
         return null;
+    }
+
+    default String getExamName(StudentMarks studentMarks) {
+        if (studentMarks == null) {
+            return null;
+        } else {
+            if(studentMarks.getReportCardDesign() == null) {
+                return null;
+            } else {
+                if(studentMarks.getReportCardDesign().getExam() == null) {
+                    return null;
+                } else {
+                    return studentMarks.getReportCardDesign().getExam().getName();
+                }
+            }
+        }
     }
 
 }
