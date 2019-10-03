@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ConfigType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.service.ReportCardService;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -117,5 +119,13 @@ public class ReportCardResource {
         log.debug("Request to get reportCardVM list for standard with id : {} for exam with id : {} or periodic test with bindingId : {}", standardId, examId, bindingId);
         List<ReportCardVM> result = null;
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/report-card/grade-details/exam/{examId}")
+    @Timed
+    public ResponseEntity<Map<String,String>> getGradeDetailsByExamIdAndConfigType(@PathVariable Long examId, @RequestParam ConfigType configType) throws WitcurveException {
+        log.debug("Request to get reportCardDesigns for configType : {} and for exam with id : {}", configType, examId);
+        Map<String,String> result = reportCardService.getGradeDetailsByExamIdAndConfigType(examId,configType);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
