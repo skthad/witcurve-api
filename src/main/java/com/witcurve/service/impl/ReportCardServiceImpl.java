@@ -178,7 +178,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     private Map<String, String> getGradeDetails(Long schoolId, ConfigType configType) {
         Integer max = 100;
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = new LinkedHashMap<>();
         ConfigType[] configTypes = new ConfigType[1];
         configTypes[0] = configType;
         List<ConfigSettings> configSettingsList = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, configTypes);
