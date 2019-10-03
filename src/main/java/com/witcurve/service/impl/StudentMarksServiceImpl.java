@@ -132,14 +132,16 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             throw new WitcurveException("No student found with ID: " + studentId);
         }
         List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
-        List<BigInteger> ids = eventRepository.findMarksEventsByDateRangeForStudent(startDate, endDate, studentStandards.get(0).getStandard().getId(), Arrays.asList(courseId));
+        List<BigInteger> ids = eventRepository.findMarksEventsByDateRangeForStudent(startDate, endDate, studentStandards.get(0).getStandard().getId(), courseId);
         List<Long> eventIds = WitcurveUtil.convertBigIntToLong(ids);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
         }
         result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId( studentId, courseId, startDate, endDate)));
-        result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByStudentIdAndEventIds(studentId, eventIds)));
+        if(!eventIds.isEmpty()) {
+            result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByStudentIdAndEventIds(studentId, eventIds)));
+        }
         Collections.sort(result, new StudentMarksDTOAscComparator());
         return result;
     }
