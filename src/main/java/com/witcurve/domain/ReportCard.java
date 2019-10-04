@@ -61,24 +61,15 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Course> nonScholasticCourses = new HashSet<>();
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "non_scholastic_report_details",
-        joinColumns = {@JoinColumn(name = "report_card_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "report_card_design_id", referencedColumnName = "id")})
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @BatchSize(size = 20)
-    private Set<ReportCardDesign> nonScholasticRcds = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="report_card_id")
+    @OrderBy("non_scholastic_order asc")
+    private List<NonScholasticReportDetails> nonScholasticReportDetails;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="report_card_id")
     @OrderBy("scholastic_order asc")
     private List<ScholasticReportDetails> scholasticDetails;
-
-    @Column
-    @Convert(converter = MapToStringConverter.class)
-    private Map<String, String> nonScholasticHeaderMap;
 
     @NotNull
     @Column(nullable = false, columnDefinition = "boolean default false")
@@ -149,12 +140,12 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         this.nonScholasticCourses = nonScholasticCourses;
     }
 
-    public Set<ReportCardDesign> getNonScholasticRcds() {
-        return nonScholasticRcds;
+    public List<NonScholasticReportDetails> getNonScholasticReportDetails() {
+        return nonScholasticReportDetails;
     }
 
-    public void setNonScholasticRcds(Set<ReportCardDesign> nonScholasticRcds) {
-        this.nonScholasticRcds = nonScholasticRcds;
+    public void setNonScholasticReportDetails(List<NonScholasticReportDetails> nonScholasticReportDetails) {
+        this.nonScholasticReportDetails = nonScholasticReportDetails;
     }
 
     public List<ScholasticReportDetails> getScholasticDetails() {
@@ -163,14 +154,6 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
 
     public void setScholasticDetails(List<ScholasticReportDetails> scholasticDetails) {
         this.scholasticDetails = scholasticDetails;
-    }
-
-    public Map<String, String> getNonScholasticHeaderMap() {
-        return nonScholasticHeaderMap;
-    }
-
-    public void setNonScholasticHeaderMap(Map<String, String> nonScholasticHeaderMap) {
-        this.nonScholasticHeaderMap = nonScholasticHeaderMap;
     }
 
     public Boolean getShowAttributes() {

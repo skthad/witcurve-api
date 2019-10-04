@@ -184,4 +184,53 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-23">
+        <dropForeignKeyConstraint baseTableName="non_scholastic_report_details"
+                                  constraintName="FK6922l08vfaahbhawodymf23my"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-24">
+        <dropForeignKeyConstraint baseTableName="non_scholastic_report_details"
+                                  constraintName="FKqbxxvof080x9gn8i9kaqm4sc3"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-25">
+        <dropTable tableName="non_scholastic_report_details"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-26">
+        <createTable tableName="non_scholastic_report_details">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="non_scholastic_report_detailsPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="header" type="VARCHAR(255)"/>
+            <column name="non_scholastic_order" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_card_id" type="BIGINT"/>
+            <column name="report_card_design_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-27">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="non_scholastic_report_details"
+                                 constraintName="FK6922l08vfaahbhawodymf23my" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-28">
+        <addForeignKeyConstraint baseColumnNames="report_card_design_id" baseTableName="non_scholastic_report_details"
+                                 constraintName="FKqbxxvof080x9gn8i9kaqm4sc3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-29">
+        <dropColumn columnName="non_scholastic_header_map" tableName="report_card"/>
+    </changeSet>
 </databaseChangeLog>
