@@ -46,6 +46,9 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Boolean showOverallGrade = false;
 
+    @NotNull
+    private Boolean showAttendance=false;
+
     public Long getId() {
         return id;
     }
@@ -148,6 +151,14 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setShowOverallGrade(Boolean showOverallGrade) {
         this.showOverallGrade = showOverallGrade;
+    }
+
+    public Boolean getShowAttendance() {
+        return showAttendance;
+    }
+
+    public void setShowAttendance(Boolean showAttendance) {
+        this.showAttendance = showAttendance;
     }
 
     @Override
