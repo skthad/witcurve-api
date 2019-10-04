@@ -170,4 +170,11 @@
             <column name="non_scholastic_header_map" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-21">
+        <addColumn tableName="report_card">
+            <column defaultValueBoolean="false" name="show_attendance" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

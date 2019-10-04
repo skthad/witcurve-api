@@ -95,6 +95,10 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean showOverallGrade=false;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean showAttendance=false;
+
 
     public Long getId() {
         return id;
@@ -200,6 +204,13 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         this.showOverallGrade = showOverallGrade;
     }
 
+    public Boolean getShowAttendance() {
+        return showAttendance;
+    }
+
+    public void setShowAttendance(Boolean showAttendance) {
+        this.showAttendance = showAttendance;
+    }
 
     @Override
     public String toString() {
