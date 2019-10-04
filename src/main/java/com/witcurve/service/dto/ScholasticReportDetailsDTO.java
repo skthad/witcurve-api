@@ -18,6 +18,9 @@ public class ScholasticReportDetailsDTO extends AbstractAuditingDTO implements S
     @NotNull
     private Double marksNormalisation;
 
+    @NotNull
+    private Integer scholasticOrder;
+
     private String header;
 
     @NotNull
@@ -79,6 +82,14 @@ public class ScholasticReportDetailsDTO extends AbstractAuditingDTO implements S
 
     public void setReportCardId(Long reportCardId) {
         this.reportCardId = reportCardId;
+    }
+
+    public Integer getScholasticOrder() {
+        return scholasticOrder;
+    }
+
+    public void setScholasticOrder(Integer scholasticOrder) {
+        this.scholasticOrder = scholasticOrder;
     }
 
     @Override

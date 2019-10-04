@@ -31,6 +31,10 @@ public class ScholasticReportDetails extends AbstractAuditingEntity implements S
     private String header;
 
     @NotNull
+    @Column(nullable = false)
+    private Long scholasticOrder;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
     private ReportCardDesign reportCardDesign;
@@ -80,6 +84,14 @@ public class ScholasticReportDetails extends AbstractAuditingEntity implements S
 
     public ReportCardDesign getReportCardDesign() {
         return reportCardDesign;
+    }
+
+    public Long getScholasticOrder() {
+        return scholasticOrder;
+    }
+
+    public void setScholasticOrder(Long scholasticOrder) {
+        this.scholasticOrder = scholasticOrder;
     }
 
     public void setReportCardDesign(ReportCardDesign reportCardDesign) {

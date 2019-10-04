@@ -177,4 +177,11 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="WitCurve (generated)" id="1569863032627-22">
+        <addColumn tableName="scholastic_report_details">
+            <column name="scholastic_order" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
