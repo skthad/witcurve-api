@@ -73,6 +73,7 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="report_card_id")
+    @OrderBy("scholastic_order asc")
     private List<ScholasticReportDetails> scholasticDetails;
 
     @Column
