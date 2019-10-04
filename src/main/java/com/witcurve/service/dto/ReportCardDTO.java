@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.Course;
+import com.witcurve.domain.NonScholasticReportDetails;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.persistence.Column;
@@ -28,11 +29,9 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     private Set<CourseDTO> nonScholasticCourses;
 
-    private Set<ReportCardDesignDTO> nonScholasticRcds;
-
     private List<ScholasticReportDetailsDTO> scholasticDetails;
 
-    private Map<String, String> nonScholasticHeaderMap;
+    private List<NonScholasticReportDetailsDTO> nonScholasticDetails;
 
     @NotNull
     private Boolean showAttributes = false;
@@ -97,14 +96,6 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
         this.nonScholasticCourses = nonScholasticCourses;
     }
 
-    public Set<ReportCardDesignDTO> getNonScholasticRcds() {
-        return nonScholasticRcds;
-    }
-
-    public void setNonScholasticRcds(Set<ReportCardDesignDTO> nonScholasticRcds) {
-        this.nonScholasticRcds = nonScholasticRcds;
-    }
-
     public List<ScholasticReportDetailsDTO> getScholasticDetails() {
         return scholasticDetails;
     }
@@ -113,12 +104,12 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
         this.scholasticDetails = scholasticDetails;
     }
 
-    public Map<String, String> getNonScholasticHeaderMap() {
-        return nonScholasticHeaderMap;
+    public List<NonScholasticReportDetailsDTO> getNonScholasticDetails() {
+        return nonScholasticDetails;
     }
 
-    public void setNonScholasticHeaderMap(Map<String, String> nonScholasticHeaderMap) {
-        this.nonScholasticHeaderMap = nonScholasticHeaderMap;
+    public void setNonScholasticDetails(List<NonScholasticReportDetailsDTO> nonScholasticDetails) {
+        this.nonScholasticDetails = nonScholasticDetails;
     }
 
     public Boolean getShowAttributes() {

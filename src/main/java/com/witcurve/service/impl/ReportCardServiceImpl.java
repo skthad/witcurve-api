@@ -5,10 +5,7 @@ import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.ReportCardService;
-import com.witcurve.service.dto.CourseDTO;
-import com.witcurve.service.dto.ReportCardDTO;
-import com.witcurve.service.dto.ReportCardDesignDTO;
-import com.witcurve.service.dto.ScholasticReportDetailsDTO;
+import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.ReportCardMapper;
 import com.witcurve.service.util.HtmlToPdfUtil;
 import com.witcurve.service.util.WitcurveUtil;
@@ -149,11 +146,11 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
             }
         }
-        if (reportCardDTO.getNonScholasticRcds() != null && !reportCardDTO.getNonScholasticRcds().isEmpty()) {
-            for (ReportCardDesignDTO reportCardDesignDTO : reportCardDTO.getNonScholasticRcds()) {
-                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(reportCardDesignDTO.getId());
+        if (reportCardDTO.getNonScholasticDetails() != null && !reportCardDTO.getNonScholasticDetails().isEmpty()) {
+            for (NonScholasticReportDetailsDTO nonScholasticReportDetailsDTO : reportCardDTO.getNonScholasticDetails()) {
+                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(nonScholasticReportDetailsDTO.getReportCardDesignId());
                 if (!reportCardDesign.isPresent()) {
-                    throw new WitcurveException("No report card design found with id : " + reportCardDesignDTO.getId());
+                    throw new WitcurveException("No report card design found with id : " + nonScholasticReportDetailsDTO.getReportCardDesignId());
                 }
                 if (!reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
                     throw new WitcurveException("Only non scholastic report field type allowed in non scholastic rcsds");
@@ -174,6 +171,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
             }
         }
+
     }
 
     private Map<String, String> getGradeDetails(Long schoolId, ConfigType configType) {
