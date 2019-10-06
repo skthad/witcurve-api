@@ -43,6 +43,8 @@ public class ExamDTO extends AbstractAuditingDTO implements Serializable {
 
     private Set<Grade> remarksGrades;
 
+    private Set<Grade> reportCardGrades;
+
     public Long getId() {
         return id;
     }
@@ -121,6 +123,14 @@ public class ExamDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setRemarksGrades(Set<Grade> remarksGrades) {
         this.remarksGrades = remarksGrades;
+    }
+
+    public Set<Grade> getReportCardGrades() {
+        return reportCardGrades;
+    }
+
+    public void setReportCardGrades(Set<Grade> reportCardGrades) {
+        this.reportCardGrades = reportCardGrades;
     }
 
     @Override

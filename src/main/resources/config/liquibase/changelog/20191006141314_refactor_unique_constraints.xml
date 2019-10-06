@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1570371208858-1">
+        <dropForeignKeyConstraint constraintName="FK4cspvpl9wp8uvgpy22upf5mx3" baseTableName="attribute_value"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570371208858-2">
+        <dropForeignKeyConstraint constraintName="FK59xqw12tl928rqcdu2h9o6mau" baseTableName="attribute_value"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570371208858-3">
+        <dropUniqueConstraint constraintName="attribute_student_value_UK" tableName="attribute_value"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569339158236-4">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="attribute_value"
+                                 constraintName="FK4cspvpl9wp8uvgpy22upf5mx3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569339158236-5">
+        <addForeignKeyConstraint baseColumnNames="attribute_id" baseTableName="attribute_value"
+                                 constraintName="FK59xqw12tl928rqcdu2h9o6mau" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attribute"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570371208858-6">
+        <addUniqueConstraint columnNames="attribute_id, student_id" constraintName="attribute_student_UK"
+                             tableName="attribute_value"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570371208858-7">
+        <addUniqueConstraint columnNames="student_id, exam_id" constraintName="student_exam_UK"
+                             tableName="student_remarks"/>
+    </changeSet>
+</databaseChangeLog>

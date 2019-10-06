@@ -1,17 +1,18 @@
 package com.witcurve.web.rest.vm;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ReportCardVM {
 
-//    private  ScholasticDetailsVM scholasticDetailVM = new ScholasticDetailsVM();
+//    private ScholasticVM.ScholasticDetailsVM scholasticDetailVM = new ScholasticDetailsVM();
 //    private  ScholasticVM scholasticVM = new ScholasticVM();
 //    private  NonScholasticVM nonScholasticVM = new NonScholasticVM();
-//    private  OverallVM overallVM = new OverallVM();
-//    private  MarksAndGradeDetailsVM marksAndGradeDetailsVM = new MarksAndGradeDetailsVM();
-//    private  ExamDetailsVM examDetailsVM = new ExamDetailsVM();
+//    private ScholasticVM.ScholasticDetailsVM.OverallVM overallVM = new OverallVM();
+//    private ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM = new MarksAndGradeDetailsVM();
+//    private ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM = new ScholasticVM.ScholasticDetailsVM.ExamDetailsVM();
 //    private AttributeDetailVM attributeDetailVM = new AttributeDetailVM();
 //    private AttributeVM attributeVM = new AttributeVM();
 
@@ -125,6 +126,13 @@ public class ReportCardVM {
         this.attributes = attributes;
     }
 
+    public void addAttributes(AttributeVM attributeVM) {
+        if(this.attributes == null) {
+            this.attributes = new ArrayList<>();
+        }
+        this.attributes.add(attributeVM);
+    }
+
     public Map<String, String> getColorForGrades() {
         return colorForGrades;
     }
@@ -212,6 +220,13 @@ public class ReportCardVM {
                 this.examDetails = examDetails;
             }
 
+            public void addExamDetails(ExamDetailsVM examDetailsVM) {
+                if(this.examDetails == null) {
+                    this.examDetails = new ArrayList<>();
+                }
+                this.examDetails.add(examDetailsVM);
+            }
+
             public OverallVM getOverall() {
                 return overall;
             }
@@ -250,6 +265,13 @@ public class ReportCardVM {
 
                 public void setMarksAndGradesDetails(List<MarksAndGradeDetailsVM> marksAndGradesDetails) {
                     this.marksAndGradesDetails = marksAndGradesDetails;
+                }
+
+                public void addMarksAndGradeDetails(MarksAndGradeDetailsVM marksAndGradeDetailsVM) {
+                    if(this.marksAndGradesDetails == null) {
+                        this.marksAndGradesDetails = new ArrayList<>();
+                    }
+                    this.marksAndGradesDetails.add(marksAndGradeDetailsVM);
                 }
 
                 @Override
@@ -454,6 +476,13 @@ public class ReportCardVM {
             this.nonScholasticDetails = nonScholasticDetails;
         }
 
+        public void addNonScholasticDetails(AttributeDetailVM attributeDetailVM) {
+            if(this.nonScholasticDetails == null) {
+                this.nonScholasticDetails = new ArrayList<>();
+            }
+            this.nonScholasticDetails.add(attributeDetailVM);
+        }
+
         @Override
         public String toString() {
             return "NonScholasticVM{" +
@@ -503,6 +532,13 @@ public class ReportCardVM {
 
         public List<AttributeDetailVM> getAttributeDetails() {
             return attributeDetails;
+        }
+
+        public void addAttributeDetails(AttributeDetailVM attributeDetailVM) {
+            if(this.attributeDetails == null) {
+                this.attributeDetails = new ArrayList<>();
+            }
+            this.attributeDetails.add(attributeDetailVM);
         }
 
         public void setAttributeDetails(List<AttributeDetailVM> attributeDetails) {

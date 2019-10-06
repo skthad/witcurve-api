@@ -23,14 +23,17 @@ public class HtmlToPdfUtil {
 
     private final Logger log = LoggerFactory.getLogger(HtmlToPdfUtil.class);
 
-    public File htmlToPdf(File templateFile) {
+    public File htmlToPdf(File templateFile, String name) {
         try {
+            if(name == null) {
+                name = "result";
+            }
             String xml = getReportHtmlXml(templateFile);
-            File inputFile = WitcurveUtil.createTempFile("input.html");
+            File inputFile = WitcurveUtil.createTempFile(name+".html");
             FileWriter fw=new FileWriter(inputFile);
             fw.write(xml);
             fw.close();
-            File output = WitcurveUtil.createTempFile("output.pdf");
+            File output = WitcurveUtil.createTempFile(name+".pdf");
             PdfWriter writer = new PdfWriter(output);
             HtmlConverter.convertToPdf(xml, writer);
             return output;

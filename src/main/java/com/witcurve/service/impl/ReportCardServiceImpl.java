@@ -1,28 +1,37 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.*;
+import com.witcurve.domain.enumeration.ConfigType;
+import com.witcurve.domain.enumeration.CourseType;
+import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseService;
+import com.witcurve.service.EventService;
 import com.witcurve.service.ReportCardService;
+import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.ReportCardMapper;
-import com.witcurve.service.util.HtmlToPdfUtil;
-import com.witcurve.service.util.WitcurveUtil;
+import com.witcurve.service.util.*;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ReportCardVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional
@@ -52,7 +61,10 @@ public class ReportCardServiceImpl implements ReportCardService {
     CourseService courseService;
 
     @Autowired
-    StudentMarksRepository studentMarksRepository;
+    StudentMarksService studentMarksService;
+
+    @Autowired
+    StudentRemarksRepository studentRemarksRepository;
 
     @Autowired
     ReportCardMapper reportCardMapper;
@@ -63,14 +75,31 @@ public class ReportCardServiceImpl implements ReportCardService {
     @Autowired
     CourseRepository courseRepository;
 
+    @Autowired
+    StandardRepository standardRepository;
+
+    @Autowired
+    AcademicSessionRepository academicSessionRepository;
+
+    @Autowired
+    EventService eventService;
+
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
+    @Autowired
+    AttributeValueRepository attributeValueRepository;
+
+
+
     private final List<ReportFieldType> SCHOLASTIC_FIELD_TYPE_LISTS = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.MANUAL_ENTRY, ReportFieldType.PERIODIC_TEST, ReportFieldType.TOTAL);
 
 
-    public File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl) {
+    public File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl, String nameOfFile) {
         isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
-        return htmlToPdfUtil.htmlToPdf(inputFile);
+        return htmlToPdfUtil.htmlToPdf(inputFile, nameOfFile);
 
     }
 
@@ -122,6 +151,375 @@ public class ReportCardServiceImpl implements ReportCardService {
         return reportCardMapper.toDto(reportCard.get());
     }
 
+    @Override
+    public Map<String, String> getGradeDetailsByExamIdAndConfigType(Long examId, ConfigType configType) {
+        Optional<Exam> exam = examRepository.findById(examId);
+        return getGradeDetails(exam.get().getSchoolInfo().getSchool().getId(), configType);
+    }
+
+    @Override
+    public Page<File> getReportCardPreviewForStandard(Long examId, Long standardId, Pageable pageable) {
+        log.debug("Get report card preview with exam with id : {} and for standard with id : {}", examId, standardId);
+        Optional<Standard> standard = standardRepository.findById(standardId);
+        if (!standard.isPresent()) {
+            throw new WitcurveException("No standard found with id : " + standardId);
+        }
+        ReportCard reportCard = reportCardRepository.findByExamIdAndGrade(examId, standard.get().getGrade());
+        if(reportCard == null) {
+            throw new WitcurveException("There is no report card setting available for this exam for the grade :  "+standard.get().getGrade());
+        }
+        Page<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId, pageable);
+        List<StudentStandard> studentStandardList = studentStandards.getContent();
+        List<File> result = new ArrayList<>();
+        Long schoolId = reportCard.getExam().getSchoolInfo().getSchool().getId();
+        List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.GRADING_SCALE});
+        String subDomainName = standard.get().getSchoolInfo().getSchool().getInstitute().getSubDomainName();
+        Long id = standard.get().getSchoolInfo().getSchool().getInstitute().getId();
+        String headerUrl = "http://"+subDomainName+".witcurve-app.com/assets/images/top-logo/"+id+"-logo.png";
+        List<ConfigSettings> schoolPrimaryColorSettings  = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.SCHOOL_PRIMARY_COLOR});
+        String schoolPrimaryColor = "#00000";
+        if(!configSettings.isEmpty()) {
+            schoolPrimaryColor = schoolPrimaryColorSettings.get(0).getFieldValue();
+        }
+        for(StudentStandard studentStandard : studentStandardList) {
+            ReportCardVM reportCardVM = new ReportCardVM();
+            reportCardVM.setLogoLink(headerUrl);
+            reportCardVM.setTitle(reportCard.getTitle());
+            reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
+            reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
+            reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
+            reportCardVM.setStandard(standard.get().getGrade().toString()+"-"+standard.get().getSection());
+            setAttendance(reportCard, reportCardVM, studentStandard.getStudent());
+            setScholasticDetails(reportCard, reportCardVM, studentStandard, configSettings);
+            setNonScholasticDetails(reportCard, reportCardVM, studentStandard, configSettings);
+            setAttributeDetails(reportCard, reportCardVM, studentStandard);
+            if(reportCard.getShowRemarks()) {
+                StudentRemarks studentRemarks = studentRemarksRepository.
+                    findByExamIdAndStudentId(reportCard.getExam().getId(), studentStandard.getStudent().getId());
+                if(studentRemarks != null) {
+                    reportCardVM.setRemarks(studentRemarks.getRemarks());
+                } else {
+                    reportCardVM.setRemarks("");
+                }
+            }
+            result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, reportCardVM.getStudentName()+"("+reportCardVM.getAdmissionId()+")"));
+        }
+        return new PageImpl<>(result, pageable, studentStandards.getTotalElements());
+    }
+
+    private void setAttendance(ReportCard reportCard, ReportCardVM reportCardVM, Student student) {
+        if(reportCard.getShowAttendance()) {
+            LocalDate startDate = reportCard.getExam().getStartDate();
+            AcademicSession nearestAcademicSession = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), startDate);
+            if(nearestAcademicSession == null) {
+                throw new WitcurveException("There is no current active academic session");
+            }
+            LocalDate sessionStartDate = nearestAcademicSession.getStartDate();
+            Integer count = eventRepository.findPresentCountForStudent(sessionStartDate, startDate, student.getId());
+            Long totalCalendarDays = DAYS.between(sessionStartDate, startDate) + 1;
+            List<EventDTO> allHolidays = eventService.findHolidaysInSchoolInfo(student.getSchoolInfo().getId(), sessionStartDate, startDate);
+            long noOfHolidays = allHolidays.size();
+            long noOfSundays =  WeekdayUtil.getNoOfWeekDayBetweenDates
+                (sessionStartDate, startDate, DayOfWeek.SUNDAY);
+            for (EventDTO holiday : allHolidays) {
+                if (holiday.getDate().isAfter(startDate)) {
+                    noOfHolidays--;
+                }
+            }
+            Long totalWorkingDays = totalCalendarDays-noOfHolidays-noOfSundays;
+            reportCardVM.setAttendance(count.toString()+"/"+totalWorkingDays.toString());
+        }
+    }
+
+    private void setScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard,  List<ConfigSettings> configSettings) {
+        if(reportCard.getScholasticCourses() != null && !reportCard.getScholasticCourses().isEmpty()
+            && reportCard.getScholasticDetails() != null && !reportCard.getScholasticDetails().isEmpty()) {
+            Map<String, String> notes = new LinkedHashMap<>();
+            List<ConfigSettings> gradeColorConfigSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(studentStandard.getStudent().getSchoolInfo().getSchool().getId(), new ConfigType[]{ConfigType.GRADING_SCALE_COLOR});
+            reportCardVM.setDefiningGrade(getGradeDetailsWithConfigSettings(configSettings));
+            reportCardVM.setColorForGrades(getGradeDetailsWithConfigSettings(gradeColorConfigSettings));
+            List<Course> courses = new ArrayList<>(reportCard.getScholasticCourses());
+            Collections.sort(courses, new CourseComparator());
+            List<String> subjectArray = new ArrayList<>();
+            ReportCardVM.ScholasticVM scholasticVM= new ReportCardVM.ScholasticVM();
+            ReportCardVM.ScholasticVM.ScholasticDetailsVM scholasticDetailsVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM();
+            ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM();
+            ReportCardVM.ScholasticVM.ScholasticDetailsVM.OverallVM overallVM = null;
+            Map<Integer, Map<CourseDTO, Double>> totalMarksMap = new LinkedHashMap<>();
+            Map<Integer, Double> totalMap = new LinkedHashMap<>();
+            Integer titleChangeCounter =0;
+            //set subjet list
+            for(Course course : reportCard.getScholasticCourses()) {
+                //check if course belongs to this student
+                StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
+                if(studentCourse != null && studentCourse.getActive()) {
+                    subjectArray.add(course.getDisplayName());
+                }
+            }
+            //set exam details for each scholastic report details
+            for(ScholasticReportDetails scholasticReportDetails: reportCard.getScholasticDetails()) {
+                if(examDetailsVM.getExamName() == null) {
+                    //set title for first time
+                    titleChangeCounter++;
+                    examDetailsVM.setExamName(scholasticReportDetails.getHeader());
+                } else {
+                    if(!examDetailsVM.getExamName().equals(scholasticReportDetails.getHeader())) {
+
+                        //create new when title changes and add the old one
+                        titleChangeCounter++;
+                        scholasticDetailsVM.addExamDetails(examDetailsVM);
+                        examDetailsVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM();
+                        examDetailsVM.setExamName(scholasticReportDetails.getHeader());
+                    }
+                }
+                Map<String, String> marksMap = new HashMap<>();
+                Map<String, String> gradeMap = new HashMap<>();
+                ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM
+                    = new ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM();
+
+                List<StudentMarksDTO> studentMarksList = studentMarksService.getStudentMarksByRcdIdAndStudentId(scholasticReportDetails.getReportCardDesign(),
+                    studentStandard.getStudent().getId());
+                Double multiplyingFactor = scholasticReportDetails.getMarksNormalisation()/scholasticReportDetails.getReportCardDesign().getMarks();
+                for(StudentMarksDTO studentMarks : studentMarksList) {
+                    Double finalMarks = Math.round(studentMarks.getMarks()*multiplyingFactor * 10)/10.0;
+                    marksMap.put(studentMarks.getCourseDTO().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
+                    gradeMap.put(studentMarks.getCourseDTO().getDisplayName(), getGrade(configSettings, finalMarks, scholasticReportDetails.getMarksNormalisation()));
+
+                    if(totalMarksMap.get(titleChangeCounter) == null) {
+                      totalMarksMap.put(titleChangeCounter, new LinkedHashMap<>());
+                    }
+                    Map<CourseDTO, Double> courseMap = totalMarksMap.get(titleChangeCounter);
+                    Double previousMarks = courseMap.get(studentMarks.getCourseDTO());
+                    if( previousMarks == null) {
+                        courseMap.put(studentMarks.getCourseDTO(), finalMarks);
+                    } else {
+                        if(scholasticReportDetails.getReportCardDesign().getFieldType().equals(ReportFieldType.TOTAL)) {
+                            //as soon as total appear, we no longer add, we replace with total marks
+                            courseMap.put(studentMarks.getCourseDTO(), finalMarks);
+                        } else {
+                            courseMap.put(studentMarks.getCourseDTO(), finalMarks+previousMarks);
+                        }
+                    }
+                    totalMarksMap.put(titleChangeCounter, courseMap);
+                }
+                Double previousTotalMarks = totalMap.get(scholasticReportDetails.getHeader());
+                if( previousTotalMarks == null) {
+                    totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation());
+                } else {
+                    if(scholasticReportDetails.getReportCardDesign().getFieldType().equals(ReportFieldType.TOTAL)) {
+                        //as soon as total appear, we no longer add, we replace with total marks
+                        totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation());
+                    } else {
+                        totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation()+previousTotalMarks);
+                    }
+                }
+                String formattedMarks = WitcurveUtil.formatDouble(scholasticReportDetails.getMarksNormalisation());
+                notes.put(scholasticReportDetails.getReportCardDesign().getShortForm(), scholasticReportDetails.getReportCardDesign().getName());
+                marksAndGradeDetailsVM.setName(scholasticReportDetails.getReportCardDesign().getName()+"("+formattedMarks+")");
+                marksAndGradeDetailsVM.setShortForm(scholasticReportDetails.getReportCardDesign().getShortForm()+"("+formattedMarks+")");
+                marksAndGradeDetailsVM.setShowMarks(scholasticReportDetails.getShowMarks());
+                marksAndGradeDetailsVM.setShowGrade(scholasticReportDetails.getShowGrades());
+                marksAndGradeDetailsVM.setMarks(marksMap);
+                marksAndGradeDetailsVM.setGrade(gradeMap);
+                examDetailsVM.addMarksAndGradeDetails(marksAndGradeDetailsVM);
+            }
+            scholasticDetailsVM.addExamDetails(examDetailsVM);
+            // overall details
+            if(reportCard.getShowOverallGrade() || reportCard.getShowOverallMarks()) {
+                overallVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM.OverallVM();
+                overallVM.setShowGrade(reportCard.getShowOverallGrade());
+                overallVM.setShowMarks(reportCard.getShowOverallMarks());
+
+            }
+            Double overallFullMarks = 0.00;
+            for(Map.Entry<Integer, Double> overallFullEntry : totalMap.entrySet()) {
+                overallFullMarks += overallFullEntry.getValue();
+            }
+            Map<CourseDTO, Double> overAllCourseMap = new HashMap<>();
+            for(Map.Entry<Integer, Map<CourseDTO, Double>> titleMapEntry : totalMarksMap.entrySet()) {
+                for(Map.Entry<CourseDTO, Double> courseMapEntry : titleMapEntry.getValue().entrySet()) {
+                    Double overallCourseMap = overAllCourseMap.get(courseMapEntry.getKey());
+                    if(overallCourseMap == null) {
+                        overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue());
+                    } else {
+                        overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue()+overallCourseMap);
+                    }
+                }
+            }
+            Map<String, String> overallMarks = new HashMap<>();
+            Map<String, String> overallGrade = new HashMap<>();
+            Double overallFinalMarks = 0.0;
+            Double overallTotalMarks = 0.0;
+            for(Map.Entry<CourseDTO, Double> courseEntry : overAllCourseMap.entrySet()) {
+                Double finalMarks = (double) Math.round(courseEntry.getValue());
+                overallFinalMarks += finalMarks;
+                overallTotalMarks += overallFullMarks;
+                overallMarks.put(courseEntry.getKey().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
+                overallGrade.put(courseEntry.getKey().getDisplayName(), getGrade(configSettings, finalMarks, overallFullMarks));
+            }
+            overallVM.setGrade(overallGrade);
+            overallVM.setMarks(overallMarks);
+            overallVM.setOverAllMarks(overallFinalMarks.toString());
+            overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
+
+            scholasticDetailsVM.setOverall(overallVM);
+            scholasticVM.setSubjectsArray(subjectArray);
+            scholasticVM.setScholasticDetails(scholasticDetailsVM);
+            reportCardVM.setScholastic(scholasticVM);
+            reportCardVM.setNote(notes);
+        }
+    }
+
+    private void setNonScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard, List<ConfigSettings> configSettings) {
+        if(reportCard.getNonScholasticCourses() != null && !reportCard.getNonScholasticCourses().isEmpty()
+            && reportCard.getNonScholasticReportDetails() != null && !reportCard.getNonScholasticReportDetails().isEmpty()) {
+            if(reportCardVM.getColorForGrades() == null || reportCardVM.getDefiningGrade() == null) {
+                List<ConfigSettings> gradeColorConfigSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(studentStandard.getStudent().getSchoolInfo().getSchool().getId(), new ConfigType[]{ConfigType.GRADING_SCALE_COLOR});
+                reportCardVM.setDefiningGrade(getGradeDetailsWithConfigSettings(configSettings));
+                reportCardVM.setColorForGrades(getGradeDetailsWithConfigSettings(gradeColorConfigSettings));
+            }
+            List<Course> courses = new ArrayList<>(reportCard.getNonScholasticCourses());
+            Collections.sort(courses, new CourseComparator());
+            List<String> subjectArray = new ArrayList<>();
+            ReportCardVM.NonScholasticVM nonScholasticVM = new ReportCardVM.NonScholasticVM();
+            nonScholasticVM.setTitleName("Subjects");
+            //set subjet list
+            for(Course course : reportCard.getNonScholasticCourses()) {
+                //check if course belongs to this student
+                StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
+                if(studentCourse != null && studentCourse.getActive()) {
+                    subjectArray.add(course.getDisplayName());
+                }
+            }
+            //set attribute details vm for each scholastic report details
+            for(NonScholasticReportDetails nonScholasticReportDetails: reportCard.getNonScholasticReportDetails()) {
+                ReportCardVM.AttributeDetailVM attributeDetailVM = new ReportCardVM.AttributeDetailVM();
+                attributeDetailVM.setColumnName(nonScholasticReportDetails.getHeader());
+                List<StudentMarksDTO> studentMarksDTOS = studentMarksService.
+                    getStudentMarksByRcdIdAndStudentId(nonScholasticReportDetails.getReportCardDesign(), studentStandard.getStudent().getId());
+                Map<String, String> gradeMap = new HashMap<>();
+                for(StudentMarksDTO studentMarksDTO : studentMarksDTOS) {
+                    Double roundedMarks = (double)Math.round(studentMarksDTO.getMarks());
+                    gradeMap.put(studentMarksDTO.getCourseDTO().getDisplayName(), getGrade(configSettings, roundedMarks, nonScholasticReportDetails.getReportCardDesign().getMarks()));
+                }
+                attributeDetailVM.setValues(gradeMap);
+                nonScholasticVM.addNonScholasticDetails(attributeDetailVM);
+            }
+            nonScholasticVM.setSubjectsArray(subjectArray);
+            reportCardVM.setNonScholastic(nonScholasticVM);
+        }
+    }
+
+    private void setAttributeDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard) {
+        if(reportCard.getShowAttributes()) {
+            List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByFieldTypeAndExamAndGrade(ReportFieldType.ATTRIBUTES, reportCard.getExam().getId(), reportCard.getGrade());
+            if(!reportCardDesigns.isEmpty() && reportCardDesigns.get(0).getSelected() ) {
+                ReportCardVM.AttributeVM attributeVM = null;
+                ReportCardVM.AttributeDetailVM attributeDetailVM = null;
+                int columnCount = 0;
+                Boolean freshTitle = true;
+                List<Attribute> attributes = reportCardDesigns.get(0).getAttributes();
+                List<String> fieldList = null;
+                List<String> boldFieldList = null;
+                List<ReportCardVM.AttributeDetailVM> attributeDetailVMList = null;
+                List<ReportCardVM.AttributeVM> attributeVMList = null;
+                String previousTitle = null, previousColumn = null, previousField = null;
+                Map<String, String> fieldValue = new HashMap<>();
+                for(Attribute attribute : attributes) {
+                    if(previousTitle == null || !previousTitle.equals(attribute.getTitle())) {
+                        freshTitle = true;
+                        if(attributeVM != null) {
+                            attributeVM.addAttributeDetails(attributeDetailVM);
+                            reportCardVM.addAttributes(attributeVM);
+                        }
+                        previousTitle = attribute.getTitle();
+                        attributeVM = new ReportCardVM.AttributeVM();
+                        attributeVM.setTitleName(attribute.getTitle());
+                        fieldList = new ArrayList<>();
+                        boldFieldList = new ArrayList<>();
+                        columnCount =0;
+                    } else {
+                        freshTitle = false;
+                    }
+                    if((previousColumn == null || !previousColumn.equals(attribute.getColumn()))) {
+                        ++columnCount;
+                        if(attributeDetailVM != null && !freshTitle) {
+                            attributeVM.addAttributeDetails(attributeDetailVM);
+                        }
+                        previousColumn = attribute.getColumn();
+                        fieldValue = new HashMap<>();
+                        attributeDetailVM = new ReportCardVM.AttributeDetailVM();
+                        attributeDetailVM.setColumnName(attribute.getColumn());
+
+                    }
+                    if(previousField == null || !previousField.equals(attribute.getField())) {
+                        if(columnCount ==1) {
+                            previousField = attribute.getField();
+                            fieldList.add(attribute.getField());
+                            if(attribute.getHighlight()) {
+                                boldFieldList.add(attribute.getField());
+                            }
+                            attributeVM.setFieldArray(fieldList);
+                            attributeVM.setBoldColumnsArray(boldFieldList);
+                        }
+                    }
+                    AttributeValue attributeValue = attributeValueRepository.findByStudentIdAndAttributeId(studentStandard.getStudent().getId(), attribute.getId());
+                    if(attributeValue != null) {
+                        fieldValue.put(attribute.getField(), attributeValue.getValue());
+                    }
+                    attributeDetailVM.setValues(fieldValue);
+                }
+                attributeVM.addAttributeDetails(attributeDetailVM);
+                reportCardVM.addAttributes(attributeVM);
+            }
+        }
+    }
+
+    private String getGrade(List<ConfigSettings> configSettingsList, Double marks, Double totalMarks) {
+        Double percent = (marks/totalMarks) * 100;
+        String result = null;
+        for(ConfigSettings configSettings : configSettingsList) {
+            Double min = Double.parseDouble(configSettings.getFieldValue());
+            if(min == null) {
+                throw new WitcurveException("There is a problem with generating grade");
+            } else {
+                if(percent >= min) {
+                    result = configSettings.getDisplayFieldName();
+                    break;
+                }
+            }
+        }
+        if(result != null) {
+            return result;
+        } else {
+            throw new WitcurveException("There is a problem with generating grade");
+        }
+    }
+
+    private Map<String, String> getGradeDetails(Long schoolId, ConfigType configType) {
+        ConfigType[] configTypes = new ConfigType[1];
+        configTypes[0] = configType;
+        List<ConfigSettings> configSettingsList = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, configTypes);
+        return getGradeDetailsWithConfigSettings(configSettingsList);
+
+    }
+
+    private Map<String, String> getGradeDetailsWithConfigSettings(List<ConfigSettings> configSettingsList) {
+        Integer max = 100;
+        Map<String, String> result = new LinkedHashMap<>();
+        for (ConfigSettings configSettings : configSettingsList) {
+            if (configSettings.getConfigType().equals(ConfigType.GRADING_SCALE_COLOR)) {
+                result.put(configSettings.getDisplayFieldName(), configSettings.getFieldValue());
+            } else {
+                Integer min = Integer.parseInt(configSettings.getFieldValue());
+                if (min != null) {
+                    result.put(configSettings.getDisplayFieldName(), min.toString() + "-" + max.toString());
+                }
+                max = min - 1;
+            }
+        }
+        return result;
+    }
 
     private void isValidReportCard(ReportCardDTO reportCardDTO) {
         if (reportCardDTO.getScholasticCourses() != null && !reportCardDTO.getScholasticCourses().isEmpty()) {
@@ -174,85 +572,53 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     }
 
-    private Map<String, String> getGradeDetails(Long schoolId, ConfigType configType) {
-        Integer max = 100;
-        Map<String, String> result = new LinkedHashMap<>();
-        ConfigType[] configTypes = new ConfigType[1];
-        configTypes[0] = configType;
-        List<ConfigSettings> configSettingsList = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, configTypes);
-        for (ConfigSettings configSettings : configSettingsList) {
-            if (configType.equals(ConfigType.GRADING_SCALE_COLOR)) {
-                result.put(configSettings.getDisplayFieldName(), configSettings.getFieldValue());
-            } else {
-                Integer min = Integer.parseInt(configSettings.getFieldValue());
-                if (min != null) {
-                    result.put(configSettings.getDisplayFieldName(), min.toString() + "-" + max.toString());
-                }
-                max = min - 1;
-            }
-        }
-        return result;
-    }
-
-
-    private List<Course> getCoursesForStudentId(List<Course> courses, Long studentId) {
-        Map<Long, Course> examCoursesMap = courses.stream().collect(Collectors.toMap(Course::getId, course -> course));
-        List<CourseDTO> validCourses = new ArrayList<>(); //courseService.getCourseByStudentId(studentId);
-        List<Course> result = new ArrayList<>();
-        for (CourseDTO courseDTO : validCourses) {
-            if (examCoursesMap.keySet().contains(courseDTO.getId())) {
-                result.add(examCoursesMap.get(courseDTO.getId()));
-            }
-        }
-        return result;
-    }
-
     private void isValid(ReportCardVM reportCardVM) {
 
-        List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
-        for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
-
-
-            List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM> listOfMarksAndGradeDetail = examDetailsVM.getMarksAndGradesDetails();
-            for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM : listOfMarksAndGradeDetail) {
-                if (!marksAndGradeDetailsVM.getShowGrade() && !marksAndGradeDetailsVM.getShowMarks()) {
-                    throw new WitcurveException("Both showMarks and showGrade can't be false at same time for MarksAndGradeDetails");
-                }
-                if (marksAndGradeDetailsVM.getShowMarks()) {
-                    if (marksAndGradeDetailsVM.getMarks() == null) {
-                        throw new WitcurveException("Marks require to show marks");
+        if(reportCardVM.getScholastic() != null) {
+            List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
+            if( listOfExamDetailsVM!= null && !listOfExamDetailsVM.isEmpty()) {
+                for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
+                    List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM> listOfMarksAndGradeDetail = examDetailsVM.getMarksAndGradesDetails();
+                    for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM : listOfMarksAndGradeDetail) {
+                        if (!marksAndGradeDetailsVM.getShowGrade() && !marksAndGradeDetailsVM.getShowMarks()) {
+                            throw new WitcurveException("Both showMarks and showGrade can't be false at same time for MarksAndGradeDetails");
+                        }
+                        if (marksAndGradeDetailsVM.getShowMarks()) {
+                            if (marksAndGradeDetailsVM.getMarks() == null) {
+                                throw new WitcurveException("Marks require to show marks");
+                            }
+                        }
+                        if (marksAndGradeDetailsVM.getShowGrade()) {
+                            if (marksAndGradeDetailsVM.getGrade() == null) {
+                                throw new WitcurveException("Grades require to show grade");
+                            }
+                        }
                     }
                 }
-                if (marksAndGradeDetailsVM.getShowGrade()) {
-                    if (marksAndGradeDetailsVM.getGrade() == null) {
+            }
+            ReportCardVM.ScholasticVM.ScholasticDetailsVM.OverallVM overallVM = reportCardVM.getScholastic().getScholasticDetails().getOverall();
+            if(overallVM != null) {
+                if (overallVM.getShowGrade()) {
+                    if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getGrade() == null) {
                         throw new WitcurveException("Grades require to show grade");
                     }
                 }
+                if (overallVM.getShowMarks()) {
+                    if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getMarks() == null) {
+                        throw new WitcurveException("Marks require to show marks");
+                    }
+                }
+                if (overallVM.getShowGrade() && overallVM.getOverAllGrade() == null ||
+                    reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllGrade().isEmpty()) {
+                    throw new WitcurveException("ShowGrade is true than OverAllGrade can't be null or empty");
+                }
+                if (overallVM.getShowMarks() && overallVM.getOverAllMarks() == null ||
+                    reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllMarks().isEmpty()) {
+                    throw new WitcurveException("ShowMarks is true than OverAllMarks can't be null or empty");
+                }
             }
-        }
-        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade()) {
-            if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getGrade() == null) {
-                throw new WitcurveException("Grades require to show grade");
-            }
-        }
-        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks()) {
-            if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getMarks() == null) {
-                throw new WitcurveException("Marks require to show marks");
-            }
-        }
-        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllGrade() == null ||
-            reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowGrade() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllGrade().isEmpty()) {
-            throw new WitcurveException("ShowGrade is true than OverAllGrade can't be null or empty");
-        }
-        if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllMarks() == null ||
-            reportCardVM.getScholastic().getScholasticDetails().getOverall().getShowMarks() && reportCardVM.getScholastic().getScholasticDetails().getOverall().getOverAllMarks().isEmpty()) {
-            throw new WitcurveException("ShowMarks is true than OverAllMarks can't be null or empty");
         }
     }
 
-    @Override
-    public Map<String, String> getGradeDetailsByExamIdAndConfigType(Long examId, ConfigType configType) {
-        Optional<Exam> exam = examRepository.findById(examId);
-        return getGradeDetails(exam.get().getSchoolInfo().getSchool().getId(), configType);
-    }
+
 }
