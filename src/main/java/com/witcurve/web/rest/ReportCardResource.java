@@ -1,31 +1,35 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Function;
 import com.witcurve.domain.enumeration.ConfigType;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.domain.enumeration.ReportFieldType;
 import com.witcurve.service.ReportCardService;
 import com.witcurve.service.dto.ReportCardDTO;
-import com.witcurve.service.dto.ReportCardDesignDTO;
 import com.witcurve.service.util.WitCurveConstants;
+import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.ReportCardVM;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -41,28 +45,19 @@ public class ReportCardResource {
     @PostMapping("/report-card/preview")
     public ResponseEntity<Resource> getReportCardTemplate(@Valid @RequestBody ReportCardVM reportCardVM) {
         log.debug("Request to get report card pdf template with details : {}", reportCardVM);
-        try {
-            File result = reportCardService.getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE);
-            Resource  resource = new InputStreamResource(new FileInputStream(result));
-            return ResponseEntity.ok(resource);
-        } catch (IOException e) {
-            log.debug("Error while reading contents : {}",e.getMessage());
-            throw new WitcurveException("There was a problem generating pdf preview");
-        }
+        File result = reportCardService.getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, null);
+        Resource resource = WitcurveUtil.getResourceFromFile(result);
+        return ResponseEntity.ok(resource);
+
 
     }
 
     @PostMapping("/report-card/template-html")
     public ResponseEntity<Resource> getReportCardTemplateHtmlFile(@Valid @RequestBody ReportCardVM reportCardVM) {
         log.debug("Request to get report card html template with details : {}", reportCardVM);
-        try {
-            File result = reportCardService.getReportCardTemplateHtml(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE);
-            Resource  resource = new InputStreamResource(new FileInputStream(result));
-            return ResponseEntity.ok(resource);
-        } catch (IOException e) {
-            log.debug("Error while reading contents : {}",e.getMessage());
-            throw new WitcurveException("There was a problem generating html preview");
-        }
+        File result = reportCardService.getReportCardTemplateHtml(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE);
+        Resource resource = WitcurveUtil.getResourceFromFile(result);
+        return ResponseEntity.ok(resource);
     }
 
     /**
@@ -96,6 +91,33 @@ public class ReportCardResource {
     public ResponseEntity<List<ReportCardDTO>> getReportCardsByExamId(@PathVariable Long examId, @RequestParam(required = false) Grade grade) throws WitcurveException {
         log.debug("Request to get reportCardDesigns for grade : {} and for exam with id : {}", grade, examId);
         List<ReportCardDTO> result = reportCardService.getReportCardByExam(examId, grade);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get reportCard preview by examId and standardId
+     * @param examId
+     * @param standardId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/report-card/exam/{examId}/preview")
+    @Timed
+    public ResponseEntity<Page<String>> getReportCardsForExamIdStandardId(@PathVariable Long examId, @RequestParam Long standardId, @ApiParam Pageable pageable) throws WitcurveException {
+        log.debug("Request to get reportCardDesigns with report card with id : {} and for standard with id : {}", examId, standardId);
+        Page<File> fileList = reportCardService.getReportCardPreviewForStandard(examId, standardId, pageable);
+        Page<String> result = fileList.map(new Function<File, String>() {
+            @Override
+            public String apply(File file) {
+                try {
+                    byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+                    String result = new String(Base64.getEncoder().encode(fileBytes));
+                    return result;
+                } catch (IOException e) {
+                    return "Error: File Corrupted";
+                }
+            }
+        });
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

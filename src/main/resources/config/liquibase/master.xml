@@ -52,4 +52,5 @@
     <include file="config/liquibase/changelog/20190923170926_added_entity_Attributes.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190924153225_added_entity_AttributeValue.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190930170338_added_ReportCard_and_related_entities.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191006141314_refactor_unique_constraints.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

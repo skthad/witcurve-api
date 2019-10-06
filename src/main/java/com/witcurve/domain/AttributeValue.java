@@ -7,8 +7,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name="attribute_value", uniqueConstraints = {
-    @UniqueConstraint(name = "attribute_student_value_UK",
-        columnNames = {"attribute_id", "student_id", "value"})
+    @UniqueConstraint(name = "attribute_student_UK",
+        columnNames = {"attribute_id", "student_id"})
 })
 public class AttributeValue extends AbstractAuditingEntity implements Serializable {
 

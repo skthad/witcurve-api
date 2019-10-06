@@ -28,5 +28,8 @@ public interface ReportCardDesignRepository extends JpaRepository<ReportCardDesi
     @Query("Select rcd from ReportCardDesign rcd where rcd.grade=?1 and rcd.fieldType='NON_SCHOLASTIC' and rcd.exam.endDate between ?2 and ?3 ")
     List<ReportCardDesign> getNonScholasticReportCardDesigns(Grade grade, LocalDate startDate, LocalDate endDate);
 
+    @Modifying
+    @Query("delete from ReportCardDesign rcd where rcd.exam.id=?1")
+    void deleteByExamId(Long examId);
 
 }
