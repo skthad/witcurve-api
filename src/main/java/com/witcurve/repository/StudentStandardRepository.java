@@ -2,6 +2,8 @@ package com.witcurve.repository;
 
 import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.Grade;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +23,9 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
     List<StudentStandard> getByStandardId(Long standardId);
+
+    @Query("select ss from StudentStandard ss where ss.standard.id = ?1 and ss.active = true order by ss.rollNo")
+    Page<StudentStandard> getByStandardId(Long standardId, Pageable pageable);
 
     @Query("select sc.studentStandard from StudentCourse sc where sc.studentStandard.standard.id = ?1 and sc.course.id=?2 and sc.active=true order by sc.studentStandard.rollNo")
     List<StudentStandard> getByStandardIdAndCourseId(Long standardId, Long courseId);

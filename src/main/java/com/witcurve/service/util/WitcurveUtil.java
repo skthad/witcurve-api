@@ -5,9 +5,12 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -73,6 +76,16 @@ public class WitcurveUtil {
         }
     }
 
+    public static Resource getResourceFromFile(File file) {
+        try {
+            return new InputStreamResource(new FileInputStream(file));
+        } catch (IOException e) {
+            log.debug("Error while reading contents : {}",e.getMessage());
+            throw new WitcurveException("There was a problem generating resource");
+        }
+
+    }
+
     public static File createTempFile(String name) throws WitcurveException {
         String directoryPath;
         if (name == null || name.isEmpty()) {
@@ -90,6 +103,15 @@ public class WitcurveUtil {
 
         return file;
     }
+
+    public static String formatDouble(double d) {
+        if(d == (long) d)
+            return String.format("%d",(long)d);
+        else
+            return String.format("%s",d);
+    }
+
+
 
     public static List<Long> convertBigIntToLong(List<BigInteger> list) {
         List<Long> result = new ArrayList<>();

@@ -82,6 +82,7 @@ public class ConfigSettingsResource {
             throw new WitcurveException("ID must be null for a create request");
         } else if (!configSetting.getConfigType().equals(ConfigType.GRADING_SCALE)
             && !configSetting.getConfigType().equals(ConfigType.GRADING_SCALE_COLOR)
+            && !configSetting.getConfigType().equals(ConfigType.SCHOOL_PRIMARY_COLOR)
             && !(configSetting.getConfigType().equals(ConfigType.STUDENT_HOUSE)
             && configSetting.getFieldName().equals(ConfigFieldName.HOUSE))) {
             throw new WitcurveException("Create not supported for given config type/field name");

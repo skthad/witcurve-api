@@ -55,6 +55,9 @@ public class ExamServiceImpl implements ExamService {
     @Autowired
     SnsService snsService;
 
+    @Autowired
+    ReportCardDesignRepository reportCardDesignRepository;
+
     @Override
     public ExamDTO saveOrUpdate(ExamDTO examDTO) throws WitcurveException {
         log.debug("Request to save or update exam: {}", examDTO);
@@ -182,6 +185,7 @@ public class ExamServiceImpl implements ExamService {
         eventContentRepository.deleteByExamId(examId);
         examCourseDetailsRepository.deleteByExamId(examId);
         generalSlotDetailsRepository.deleteByExamId(examId);
+        reportCardDesignRepository.deleteByExamId(examId);
         examRepository.delete(exam.get());
     }
 }

@@ -1,5 +1,6 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.ReportCardDesign;
 import com.witcurve.service.dto.StudentMarksDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
@@ -16,5 +17,7 @@ public interface StudentMarksService {
     List<StudentMarksDTO> getStudentMarksByExamId(Long examId, Long courseId, Long rcdId, Long standardId) throws WitcurveException;
 
     List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate) throws WitcurveException;
+
+    List<StudentMarksDTO> getStudentMarksByRcdIdAndStudentId(ReportCardDesign reportCardDesign, Long studentId);
 
 }

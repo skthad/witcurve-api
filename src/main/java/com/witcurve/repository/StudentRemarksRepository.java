@@ -17,6 +17,9 @@ public interface StudentRemarksRepository extends JpaRepository<StudentRemarks, 
     @Query("Select sr from StudentRemarks sr where sr.exam.id = ?1")
     List<StudentRemarks> findByExamId(Long examId);
 
+    @Query("Select sr from StudentRemarks sr where sr.exam.id = ?1 and sr.student.id = ?2")
+    StudentRemarks findByExamIdAndStudentId(Long examId, Long studentId);
+
     @Modifying
     @Query("delete from StudentRemarks sr where sr.id in ?1")
     void deleteByIds(List<Long> ids);
