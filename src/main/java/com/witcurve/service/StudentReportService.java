@@ -12,5 +12,5 @@ public interface StudentReportService {
 
     List<StudentReportDTO> getStudentReportByStudentId(Long studentId);
 
-    void deleteStudentReportById(Long studetReportId);
+    void deleteStudentReportById(Long studentReportId);
 }

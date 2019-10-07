@@ -25,7 +25,6 @@ public class ReportCardVM {
     @NotNull
     private String admissionId;
 
-    @NotNull
     private String attendance;
 
     @NotNull

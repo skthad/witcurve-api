@@ -1,7 +1,6 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.Attachment;
-import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -21,6 +20,8 @@ public class StudentReportDTO extends AbstractAuditingDTO implements Serializabl
 
     @NotNull
     private Attachment attachment;
+
+    private String examName;
 
     public Long getId() {
         return id;
@@ -54,6 +55,14 @@ public class StudentReportDTO extends AbstractAuditingDTO implements Serializabl
         this.attachment = attachment;
     }
 
+    public String getExamName() {
+        return examName;
+    }
+
+    public void setExamName(String examName) {
+        this.examName = examName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,9 +80,6 @@ public class StudentReportDTO extends AbstractAuditingDTO implements Serializabl
     public String toString() {
         return "StudentReportDTO{" +
             "id=" + id +
-            ", reportCardId=" + reportCardId +
-            ", studentId=" + studentId +
-            ", attachment=" + attachment +
             '}';
     }
 }

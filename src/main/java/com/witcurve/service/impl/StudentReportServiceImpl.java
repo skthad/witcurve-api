@@ -60,13 +60,13 @@ public class StudentReportServiceImpl implements StudentReportService {
     }
 
     @Override
-    public void deleteStudentReportById(Long studetReportId) {
-        log.debug("Request to delete studentReport with id {}", studetReportId);
-        Optional<StudentReport> studentReport = studentReportRepository.findById(studetReportId);
+    public void deleteStudentReportById(Long studentReportId) {
+        log.debug("Request to delete studentReport with id {}", studentReportId);
+        Optional<StudentReport> studentReport = studentReportRepository.findById(studentReportId);
         if (!studentReport.isPresent()) {
-            throw new WitcurveException("No StudentReport with given id " + studetReportId);
+            throw new WitcurveException("No StudentReport with given id " + studentReportId);
         }
-        studentReportRepository.deleteById(studetReportId);
+        studentReportRepository.deleteById(studentReportId);
         attachmentService.delete(studentReport.get().getAttachment().getId());
     }
 }

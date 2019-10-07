@@ -1,7 +1,5 @@
 package com.witcurve.repository;
 
-import com.witcurve.domain.Student;
-import com.witcurve.domain.StudentRemarks;
 import com.witcurve.domain.StudentReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +11,7 @@ import java.util.List;
 @Repository
 public interface StudentReportRepository extends JpaRepository<StudentReport, Long> {
 
-    @Query("select studentReport from StudentReport studentReport where studentReport.student.id=1?")
+    @Query("select sr from StudentReport sr where sr.student.id=?1 order by sr.reportCard.exam.startDate asc")
     List<StudentReport> findByStudentId(Long studentId);
 
 }
