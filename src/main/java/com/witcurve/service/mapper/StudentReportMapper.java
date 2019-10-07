@@ -10,6 +10,7 @@ public interface StudentReportMapper extends EntityMapper<StudentReportDTO, Stud
 
     @Mapping(source = "student.id", target = "studentId")
     @Mapping(source = "reportCard.id", target = "reportCardId")
+    @Mapping(source = "reportCard.exam.name", target = "examName")
     StudentReportDTO toDto(StudentReport studentReport);
 
     @Mapping(target = "student", source = "studentId")

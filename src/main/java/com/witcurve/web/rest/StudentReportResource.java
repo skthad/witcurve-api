@@ -1,7 +1,6 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.witcurve.domain.StudentReport;
 import com.witcurve.service.StudentReportService;
 import com.witcurve.service.dto.StudentReportDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -84,7 +83,7 @@ public class StudentReportResource {
      */
     @DeleteMapping("/student-report/{studentReportId}")
     @Timed
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long studentReportId) throws WitcurveException {
+    public ResponseEntity<Void> deleteStudentReport(@PathVariable Long studentReportId) throws WitcurveException {
         log.debug("REST request to delete studentReport: {}", studentReportId);
         studentReportService.deleteStudentReportById(studentReportId);
         return ResponseEntity.ok(null);

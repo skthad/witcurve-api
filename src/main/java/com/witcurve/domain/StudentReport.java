@@ -6,7 +6,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "student_report")
+@Table(name = "student_report",   uniqueConstraints = {
+    @UniqueConstraint(name = "student_report_card_UK",
+        columnNames = {"student_id", "report_card_id"})
+})
 public class StudentReport extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -17,7 +20,7 @@ public class StudentReport extends AbstractAuditingEntity implements Serializabl
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "reportCard_id", nullable = false)
+    @JoinColumn(name = "report_card_id", nullable = false)
     private ReportCard reportCard;
 
     @NotNull
@@ -29,6 +32,7 @@ public class StudentReport extends AbstractAuditingEntity implements Serializabl
     @OneToOne
     @JoinColumn(name = "attachment_id", nullable = false)
     private Attachment attachment;
+
 
     public Long getId() {
         return id;
@@ -79,9 +83,6 @@ public class StudentReport extends AbstractAuditingEntity implements Serializabl
     public String toString() {
         return "StudentReport{" +
             "id=" + id +
-            ", reportCard=" + reportCard +
-            ", student=" + student +
-            ", attachment=" + attachment +
             '}';
     }
 }
