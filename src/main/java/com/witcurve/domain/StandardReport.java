@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "standard",   uniqueConstraints = {
+@Table(name = "standard_report",   uniqueConstraints = {
     @UniqueConstraint(name = "standard_report_card_UK",
         columnNames = {"standard_id", "report_card_id"})
 })
@@ -34,15 +34,15 @@ public class StandardReport extends AbstractAuditingEntity implements Serializab
     @Column(nullable = false)
     private ReportStatus status;
 
-    @NotNull
+
     @OneToOne
-    @JoinColumn(nullable = false)
     private Attachment withHeader;
 
-    @NotNull
     @OneToOne
-    @JoinColumn(nullable = false)
     private Attachment withOutHeader;
+
+    @Column
+    private String failureReason;
 
     public Long getId() {
         return id;
@@ -90,6 +90,14 @@ public class StandardReport extends AbstractAuditingEntity implements Serializab
 
     public void setWithOutHeader(Attachment withOutHeader) {
         this.withOutHeader = withOutHeader;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.*;
 
 @Service
@@ -112,8 +113,8 @@ public class InstituteServiceImpl implements InstituteService {
         if(!ALLOWED_LOGO_MEDIA_TYPES.contains(file.getContentType())) {
             throw new WitcurveException("File extensions allowed for logo are png, jpeg, jpg only");
         }
-        String directoryName = AttachmentType.INSTITUTE_LOGO.toString()+"/"+instituteId;
-        Attachment attachment = attachmentService.saveAttachment(file, AttachmentType.INSTITUTE_LOGO, directoryName);
+        String directoryName = AttachmentType.INSTITUTE_LOGO.toString()+ File.separator+instituteId;
+        Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, AttachmentType.INSTITUTE_LOGO, directoryName);
         institute.get().setInstituteLogo(attachment);
         return instituteMapper.toDto(institute.get());
     }

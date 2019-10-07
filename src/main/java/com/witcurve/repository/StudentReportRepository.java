@@ -14,4 +14,9 @@ public interface StudentReportRepository extends JpaRepository<StudentReport, Lo
     @Query("select sr from StudentReport sr where sr.student.id=?1 order by sr.reportCard.exam.startDate asc")
     List<StudentReport> findByStudentId(Long studentId);
 
+    @Query("select sr from StudentReport sr where sr.student.id=?1 and sr.reportCard.id=?2")
+    StudentReport findByStudentIdAndReportCardId(Long studentId, Long reportCardId);
+
+
+
 }

@@ -10,7 +10,7 @@ public interface StudentReportService {
 
     StudentReportDTO getStudentReportById(Long studentReportId);
 
-    List<StudentReportDTO> getStudentReportByStudentId(Long studentId);
+    List<StudentReportDTO> getStudentReportByStudentId(Long studentId, Long reportCardId);
 
     void deleteStudentReportById(Long studentReportId);
 }

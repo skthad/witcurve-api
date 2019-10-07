@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1570487619910-1">
+        <createTable tableName="standard_report">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="standard_reportPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="failure_reason" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_card_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="standard_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_header_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="with_out_header_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-2">
+        <createTable tableName="student_report">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_reportPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="attachment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report_card_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-3">
+        <addUniqueConstraint columnNames="standard_id, report_card_id" constraintName="standard_report_card_UK"
+                             tableName="standard_report"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-4">
+        <addUniqueConstraint columnNames="student_id, report_card_id" constraintName="student_report_card_UK"
+                             tableName="student_report"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-5">
+        <addForeignKeyConstraint baseColumnNames="attachment_id" baseTableName="student_report"
+                                 constraintName="FK3ktqo486kol4x8x77kgnafqaw" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-6">
+        <addForeignKeyConstraint baseColumnNames="with_out_header_id" baseTableName="standard_report"
+                                 constraintName="FK703igto0ljidn9abohmn7te46" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-7">
+        <addForeignKeyConstraint baseColumnNames="with_header_id" baseTableName="standard_report"
+                                 constraintName="FKa2urkq0xo3sgq5w9quo0muvby" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-8">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="student_report"
+                                 constraintName="FKbnmw2rvh0hom7grq7tplsnulo" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-9">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="standard_report"
+                                 constraintName="FKdayis5itij79pd07s4pkrs2ik" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-10">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_report"
+                                 constraintName="FKggpclr9ij2lankkn76129uhgw" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-11">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="standard_report"
+                                 constraintName="FKrbpjsurwqnqrun0o1jiea9j87" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-12">
+        <dropNotNullConstraint columnDataType="bigint" columnName="with_header_id" tableName="standard_report"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1570487619910-13">
+        <dropNotNullConstraint columnDataType="bigint" columnName="with_out_header_id" tableName="standard_report"/>
+    </changeSet>
+</databaseChangeLog>
