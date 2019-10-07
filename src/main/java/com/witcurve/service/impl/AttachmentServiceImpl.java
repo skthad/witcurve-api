@@ -44,7 +44,13 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Autowired
     ApplicationProperties applicationProperties;
 
-    public Attachment saveAttachment(MultipartFile file, AttachmentType type, String destinationDirectory) throws WitcurveException {
+    public Attachment saveAttachmentWithMultipart(MultipartFile file, AttachmentType type, String destinationDirectory) throws WitcurveException {
+        log.debug("Request to save attachment for multipart file : {} and of type : {}", file.getName(), type);
+        File normalFile = WitcurveUtil.getFile(file);
+        return saveAttachmentWithFile(normalFile, type, destinationDirectory);
+    }
+
+    public Attachment saveAttachmentWithFile(File file, AttachmentType type, String destinationDirectory) throws WitcurveException {
         log.debug("Request to save attachment for file : {} and of type : {}", file.getName(), type);
         String newFileName = RandomStringUtils.randomAlphabetic(8);
         if(destinationDirectory == null) {
@@ -52,12 +58,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         } else {
             destinationDirectory += "/"+newFileName;
         }
-        File normalFile = WitcurveUtil.getFile(file);
         Attachment attachment = new Attachment();
         attachment.setType(type);
         attachment.setFilePath(destinationDirectory);
-        attachment.setOriginalFileName(file.getOriginalFilename());
-        fileManager.uploadFile(applicationProperties.getAws().getBucketName(), destinationDirectory, normalFile, null, false);
+        attachment.setOriginalFileName(file.getName());
+        fileManager.uploadFile(applicationProperties.getAws().getBucketName(), destinationDirectory, file, null, false);
         attachment = attachmentRepository.save(attachment);
         return attachment;
     }

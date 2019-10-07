@@ -43,7 +43,7 @@ public class AttachmentResource {
     @Timed
     public ResponseEntity<Attachment> createAttachment(@RequestParam MultipartFile file, @RequestParam AttachmentType type) throws WitcurveException, URISyntaxException {
         log.debug("Request to save for file : {} and of type : {}", file.getName(), type);
-        Attachment result = attachmentService.saveAttachment(file, type, null);
+        Attachment result = attachmentService.saveAttachmentWithMultipart(file, type, null);
         return ResponseEntity.created(new URI("/api/attachments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("attachment", result.getId().toString()))
             .body(result);

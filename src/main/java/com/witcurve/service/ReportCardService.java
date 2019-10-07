@@ -21,7 +21,7 @@ public interface ReportCardService {
 
     List<ReportCardDTO> getReportCardByExam(Long examId, Grade grade);
 
-    Page<File> getReportCardPreviewForStandard(Long examId, Long standardId, Pageable pageable);
+    Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader);
 
     Map<String,String> getGradeDetailsByExamIdAndConfigType(Long examId, ConfigType configType);
 

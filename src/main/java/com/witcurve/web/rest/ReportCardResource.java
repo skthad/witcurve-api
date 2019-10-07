@@ -95,17 +95,17 @@ public class ReportCardResource {
     }
 
     /**
-     * get reportCard preview by examId and standardId
-     * @param examId
+     * get reportCard preview by reportCardId and standardId
+     * @param reportCardId
      * @param standardId
      * @return
      * @throws WitcurveException
      */
-    @GetMapping("/report-card/exam/{examId}/preview")
+    @GetMapping("/report-card/{reportCardId}/preview")
     @Timed
-    public ResponseEntity<Page<String>> getReportCardsForExamIdStandardId(@PathVariable Long examId, @RequestParam Long standardId, @ApiParam Pageable pageable) throws WitcurveException {
-        log.debug("Request to get reportCardDesigns with report card with id : {} and for standard with id : {}", examId, standardId);
-        Page<File> fileList = reportCardService.getReportCardPreviewForStandard(examId, standardId, pageable);
+    public ResponseEntity<Page<String>> getReportCardsForExamIdStandardId(@PathVariable Long reportCardId, @RequestParam Long standardId, @RequestParam(defaultValue = "true") Boolean showHeader, @ApiParam Pageable pageable) throws WitcurveException {
+        log.debug("Request to get reportCardDesigns with report card with id : {} and for standard with id : {}", reportCardId, standardId);
+        Page<File> fileList = reportCardService.getReportCardPreviewForStandard(reportCardId, standardId, pageable, showHeader);
         Page<String> result = fileList.map(new Function<File, String>() {
             @Override
             public String apply(File file) {

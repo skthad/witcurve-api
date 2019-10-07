@@ -17,7 +17,9 @@ import java.util.List;
 @Transactional
 public interface AttachmentService {
 
-    Attachment saveAttachment(MultipartFile file, AttachmentType type, String destinationDirectory) throws WitcurveException;
+    Attachment saveAttachmentWithMultipart(MultipartFile file, AttachmentType type, String destinationDirectory) throws WitcurveException;
+
+    Attachment saveAttachmentWithFile(File file, AttachmentType type, String destinationDirectory) throws WitcurveException;
 
     Attachment findById(Long id) throws WitcurveException;
 

@@ -158,20 +158,23 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     @Override
-    public Page<File> getReportCardPreviewForStandard(Long examId, Long standardId, Pageable pageable) {
-        log.debug("Get report card preview with exam with id : {} and for standard with id : {}", examId, standardId);
+    public Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader) {
+        log.debug("Get report card preview with report card id : {} and for standard with id : {}", reportCardId, standardId);
         Optional<Standard> standard = standardRepository.findById(standardId);
         if (!standard.isPresent()) {
             throw new WitcurveException("No standard found with id : " + standardId);
         }
-        ReportCard reportCard = reportCardRepository.findByExamIdAndGrade(examId, standard.get().getGrade());
-        if(reportCard == null) {
-            throw new WitcurveException("There is no report card setting available for this exam for the grade :  "+standard.get().getGrade());
+        Optional<ReportCard> reportCard = reportCardRepository.findById(reportCardId);
+        if(!reportCard.isPresent()) {
+            throw new WitcurveException("There is no report card setting available with id : "+reportCardId);
+        }
+        if(!reportCard.get().getGrade().equals(standard.get().getGrade())) {
+            throw new WitcurveException("Given report card with id : "+reportCardId+" is not valid for grade to which standard belongs to");
         }
         Page<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId, pageable);
         List<StudentStandard> studentStandardList = studentStandards.getContent();
         List<File> result = new ArrayList<>();
-        Long schoolId = reportCard.getExam().getSchoolInfo().getSchool().getId();
+        Long schoolId = reportCard.get().getExam().getSchoolInfo().getSchool().getId();
         List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.GRADING_SCALE});
         String subDomainName = standard.get().getSchoolInfo().getSchool().getInstitute().getSubDomainName();
         Long id = standard.get().getSchoolInfo().getSchool().getInstitute().getId();
@@ -183,26 +186,28 @@ public class ReportCardServiceImpl implements ReportCardService {
         }
         for(StudentStandard studentStandard : studentStandardList) {
             ReportCardVM reportCardVM = new ReportCardVM();
+            reportCardVM.setShowHeader(showHeader);
             reportCardVM.setLogoLink(headerUrl);
-            reportCardVM.setTitle(reportCard.getTitle());
+            reportCardVM.setTitle(reportCard.get().getTitle());
             reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
             reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
             reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
             reportCardVM.setStandard(standard.get().getGrade().toString()+"-"+standard.get().getSection());
-            setAttendance(reportCard, reportCardVM, studentStandard.getStudent());
-            setScholasticDetails(reportCard, reportCardVM, studentStandard, configSettings);
-            setNonScholasticDetails(reportCard, reportCardVM, studentStandard, configSettings);
-            setAttributeDetails(reportCard, reportCardVM, studentStandard);
-            if(reportCard.getShowRemarks()) {
+            setAttendance(reportCard.get(), reportCardVM, studentStandard.getStudent());
+            setScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
+            setNonScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
+            setAttributeDetails(reportCard.get(), reportCardVM, studentStandard);
+            if(reportCard.get().getShowRemarks()) {
                 StudentRemarks studentRemarks = studentRemarksRepository.
-                    findByExamIdAndStudentId(reportCard.getExam().getId(), studentStandard.getStudent().getId());
+                    findByExamIdAndStudentId(reportCard.get().getExam().getId(), studentStandard.getStudent().getId());
                 if(studentRemarks != null) {
                     reportCardVM.setRemarks(studentRemarks.getRemarks());
                 } else {
                     reportCardVM.setRemarks("");
                 }
             }
-            result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, reportCardVM.getStudentName()+"("+reportCardVM.getAdmissionId()+")"));
+            String nameOfFile = showHeader ? reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId() : reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId()+"_without_header";
+            result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
         }
         return new PageImpl<>(result, pageable, studentStandards.getTotalElements());
     }

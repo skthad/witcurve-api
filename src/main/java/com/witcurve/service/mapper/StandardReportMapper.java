@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {StandardMapper.class, ReportCardMapper.class})
-public interface StandardReportMapper {
+public interface StandardReportMapper  extends EntityMapper<StandardReportDTO, StandardReport>{
 
     @Mapping(source = "standard.id", target = "standardId")
     @Mapping(source = "reportCard.id", target = "reportCardId")

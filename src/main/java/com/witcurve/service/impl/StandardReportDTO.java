@@ -4,8 +4,6 @@ import com.witcurve.domain.Attachment;
 import com.witcurve.domain.enumeration.ReportStatus;
 import com.witcurve.service.dto.AbstractAuditingDTO;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -22,15 +20,11 @@ public class StandardReportDTO extends AbstractAuditingDTO implements Serializab
     @NotNull
     private ReportStatus status;
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(nullable = false)
     private Attachment withHeader;
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(nullable = false)
     private Attachment withOutHeader;
+
+    private String failureReason;
 
     public Long getId() {
         return id;
@@ -78,6 +72,14 @@ public class StandardReportDTO extends AbstractAuditingDTO implements Serializab
 
     public void setWithOutHeader(Attachment withOutHeader) {
         this.withOutHeader = withOutHeader;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 
     @Override
