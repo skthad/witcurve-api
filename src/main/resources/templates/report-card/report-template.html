@@ -86,7 +86,7 @@
 
 </div>
 
-<script>
+<script >
     var report ={{report}};
 
     if(report.showHeader===true){
@@ -351,12 +351,12 @@
                         var newTh = document.createElement("th");
                         newTr.appendChild(newTh);
                         newTh.textContent = "Overall Marks: "+ report.scholastic.scholasticDetails.overall.overAllMarks;
-                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length/2);
+                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[3].cells.length/2);
 
                         var newTh = document.createElement("th");
                         newTr.appendChild(newTh);
                         newTh.textContent = "Overall Grade: "+ report.scholastic.scholasticDetails.overall.overAllGrade;
-                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length/2);
+                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[3].cells.length/2);
 
                     }
                     else{
@@ -367,7 +367,7 @@
                             var newTh = document.createElement("th");
                             newTr.appendChild(newTh);
                             newTh.textContent = "Overall Marks: "+ report.scholastic.scholasticDetails.overall.overAllMarks;
-                            newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length);
+                            newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length].cells.length);
                         }
                         if((report.scholastic.scholasticDetails.overall.showGrade) === true ){
                             var newTr = document.createElement("tr");
@@ -376,7 +376,7 @@
                             var newTh = document.createElement("th");
                             newTr.appendChild(newTh);
                             newTh.textContent = "Overall Grade: "+ report.scholastic.scholasticDetails.overall.overAllGrade;
-                            newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length);
+                            newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length].cells.length);
                         }
                     }
                 }
@@ -392,7 +392,7 @@
             newTh.textContent = "Scholastic";
             newTh.style.color = "white";
             newTh.style.backgroundColor = report.schoolPrimaryColor;
-            newTh.setAttribute("colspan", document.getElementById('markstable').rows[4].cells.length);
+            newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length].cells.length);
         }
         else{
             document.getElementById("markstable").style.display = "none";
@@ -482,12 +482,16 @@
                 newTh.style.border = "1px solid black";
                 newTh.style.textAlign = "left";
                 newTh.style.width = "450px";
-                for(var j =0; j<report.attributes[i].attributeDetails.length; j++){
-                    var newTh = document.createElement("th");
-                    newTr.appendChild(newTh);
-                    newTh.textContent = report.attributes[i].attributeDetails[j].columnName;
-                    newTh.style.borderCollapse = "collapse";
-                    newTh.style.border = "1px solid black";
+                var attributeDetailsNull = true;
+                if(report.attributes[i].attributeDetails){
+                    for(var j =0; j<report.attributes[i].attributeDetails.length; j++){
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = report.attributes[i].attributeDetails[j].columnName;
+                        newTh.style.borderCollapse = "collapse";
+                        newTh.style.border = "1px solid black";
+                        attributeDetailsNull = false;
+                    }
                 }
 
 
@@ -535,19 +539,21 @@
                         newTd.style.borderCollapse = "collapse";
                         newTd.style.border = "1px solid black";
                         newTd.style.textAlign = "left";
-                        for(var m=0; m<report.attributes[i].attributeDetails.length; m++){
-                            var newTd = document.createElement("td");
-                            newTr.appendChild(newTd);
-                            if(report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]] !== undefined){
-                                newTd.textContent = report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]];
-                                newTd.style.borderCollapse = "collapse";
-                                newTd.style.border = "1px solid black";
-                            }
-                            else{
-                                newTd.textContent = " ";
-                                newTd.style.borderCollapse = "collapse";
-                                newTd.style.border = "1px solid black";
-                                newTd.style.color = "red";
+                        if(attributeDetailsNull === false){
+                            for(var m=0; m<report.attributes[i].attributeDetails.length; m++){
+                                var newTd = document.createElement("td");
+                                newTr.appendChild(newTd);
+                                if(report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]] !== undefined){
+                                    newTd.textContent = report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]];
+                                    newTd.style.borderCollapse = "collapse";
+                                    newTd.style.border = "1px solid black";
+                                }
+                                else{
+                                    newTd.textContent = " ";
+                                    newTd.style.borderCollapse = "collapse";
+                                    newTd.style.border = "1px solid black";
+                                    newTd.style.color = "red";
+                                }
                             }
                         }
                     }
