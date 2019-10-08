@@ -7,27 +7,27 @@
     <title> Report Card</title>
 </head>
 
-<body>
+<body style="font-family: Cambria; width: 18cm">
 <div id="forSchoolNameAndLogo" class="header" style=" margin: 10px 50px;display: flex;justify-content: space-around;">
-    <img id="logo" alt="School logo" style=" float: left;width: 450px;height: auto;"/>
+    <img id="logo" alt="School logo" style=" float: left;width: 18cm;height: auto;"/>
 </div>
 <hr id="Header-line">
 <div>
-    <h3 id="Heading">report card tittle</h3>
+    <h2 id="Heading">ACADEMIC SESSION : 2019-20</h2>
 </div>
-<table style="width: 950px">
+<table style="width: 18cm">
     <tbody>
     <tr>
-        <th style="text-align: left; width: 300px;"><p>Name:<span id="nameOfStudent">student Name</span></p></th>
-        <th  id="Attendance-Header" style="width: 300px"><p>Attendance:<span id="attendance"></span></p></th>
-        <th style="text-align: right;width: 300px"><p>Class:<span id="Class"></span></p></th>
+        <td style="text-align: left; "><p><b>Name: &nbsp</b><span id="nameOfStudent">student Name</span></p></td>
+        <td  id="Attendance-Header"style="text-align: center;" ><p><b>Attendance: &nbsp</b><span id="attendance"></span></p></td>
+        <td style="text-align: right;width: 300px"><p><b>Class: &nbsp</b><span id="Class"></span></p></td>
 
     </tr>
     </tbody>
 </table>
 
 <div class="term-table">
-    <table cellpadding="1" id="markstable" class="term-table" style="width: 950px; text-align: center; border: 1px solid black">
+    <table cellpadding="1" id="markstable" class="term-table" style="width: 18cm; text-align: center; border: 1px solid black">
         <tr  id="ExamRow">
             <th rowspan="2" class="firstcolumnstyle" style="border: 1px solid black;text-align: left">SUBJECT</th>
         </tr>
@@ -36,7 +36,7 @@
 </div>
 <div class="valuesTable">
     <table cellpadding="1" class="valuesTable"
-           style="width: 950px;margin-top: 10px;border: 1px solid black;text-align: center;border-collapse: collapse;">
+           style="width: 18cm;margin-top: 40px;border: 1px solid black;text-align: center;border-collapse: collapse;">
         <tbody>
 
         </tbody>
@@ -47,7 +47,7 @@
 <div id="ForAttributesTable"> </div>
 
 <div id="remarks-block"
-     style="width: 950px ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px">
+     style="width: 18cm ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 40px;">
     <h5 id="remark-header"
         style=" margin-top: 10px; margin-bottom: 5px; text-align: center;">
         CLASS TEACHERS REMARKS
@@ -55,29 +55,30 @@
     <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
 </div>
 
-<div style="margin-top: 55px;margin-bottom: 0x;">
-    <table style="width: 950px; ">
+<div style="margin-top: 100px;margin-bottom: 0x;">
+    <table style="width: 18cm; ">
         <tbody>
         <tr>
-            <th><p style="padding-top: 10px;padding-left:10px; padding-right:10px; border-top:1px solid black; width: 100px;  ">Principal</p></th>
-            <th><p style="padding-top: 10px;padding-left:10px; padding-right:10px; border-top:1px solid black;width: 100px;margin-left: 100px;" >Class Teacher</p></th>
-            <th><p  style="padding-top: 10px;padding-left:10px; padding-right:10px; border-top:1px solid black;width: 100px;margin-left: 100px;" >Parent</p></th>
+            <th><p style="padding-top: 10px; border-top:1px solid black; width: (950/3)px;  ">Principal</p></th>
+            <th><p style="padding-top: 10px; border-top:1px solid black;width: (950/3)px;margin-left: 100px;" >Class Teacher</p></th>
+            <th><p  style="padding-top: 10px; border-top:1px solid black;width: (950/3)px;margin-left: 100px;" >Parent</p></th>
         </tr>
         </tbody>
     </table>
 </div>
 
-<div class="GradingScaleTable" style="margin-top: 0px; ">
-    <table id="GradingScaleTable" cellpadding="1" style="margin-top: 0px; width: 950px; text-align:center;">
-        <tr >
-            <th  id="grading-sacle-heading">GRADING SCALE</th>
+<div style="margin-top: 30px; ">
+    <table id="GradingScaleTable" cellpadding="1" style="margin-top: 0px; width: 18cm; text-align:center;border-collapse: collapse">
+        <tbody>
+        <tr id="Marks_Range_Row">
+            <th style="border:1px solid black;">Marks Range</th>
         </tr>
-        <tr>
+        <tr id="Grade_Row">
             <th style="border:1px solid black;">Grade</th>
-            <th style="border:1px solid black;">Range of Marks</th>
+
 
         </tr>
-
+        </tbody>
     </table>
 </div>
 <div id="abbrevations">
@@ -86,7 +87,7 @@
 
 </div>
 
-<script >
+<script>
     var report ={{report}};
 
     if(report.showHeader===true){
@@ -98,7 +99,7 @@
     }
     document.getElementById("Heading").innerHTML = report.title;
     document.getElementById("Heading").style.textAlign = "center";
-    document.getElementById("nameOfStudent").textContent = report.studentName + " " +"(" + report.admissionId + ")";
+    document.getElementById("nameOfStudent").textContent = report.studentName.toUpperCase() + " " +"(" + report.admissionId + ")";
     document.getElementById("Class").textContent = report.standard;
     if(report.attendance){
         document.getElementById("attendance").textContent = report.attendance;
@@ -133,7 +134,7 @@
                     var newTh = document.createElement("th");
                     var connectingHeader = document.getElementsByClassName("term-table")[1].getElementsByTagName("tr")[0];
                     connectingHeader.appendChild(newTh);
-                    newTh.innerHTML= "Overall";
+                    newTh.innerHTML= "Total";
                     newTh.style.border = "1px solid black";
                     newTh.setAttribute("colspan", 1 );
                     newTh.setAttribute("rowspan", 2);
@@ -390,8 +391,11 @@
             var newTh = document.createElement("th");
             newTr.appendChild(newTh);
             newTh.textContent = "Scholastic";
+
+
             newTh.style.color = "white";
             newTh.style.backgroundColor = report.schoolPrimaryColor;
+
             newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length].cells.length);
         }
         else{
@@ -414,7 +418,7 @@
             newTh.textContent = "Subjects";
             newTh.style.border = "1px solid black";
             newTh.style.textAlign = "left";
-            newTh.style.width = "450px"
+            newTh.style.width = "12cm"
             for(var i=0; i<report.nonScholastic.nonScholasticDetails.length; i++){
                 var newTh = document.createElement("th");
                 newTr.appendChild(newTh);
@@ -430,7 +434,7 @@
                 newTd.textContent = report.nonScholastic.subjectsArray[i];
                 newTd.style.border = "1px solid black";
                 newTd.style.textAlign = "left";
-                newTd.style.width = "450px"
+                newTd.style.width = "12cm"
                 for(var j=0; j<report.nonScholastic.nonScholasticDetails.length;j++){
                     var newTd = document.createElement("td");
                     newTr.appendChild(newTd);
@@ -452,8 +456,11 @@
             var newTh = document.createElement("th");
             newTr.appendChild(newTh);
             newTh.textContent = "Non Scholastic";
+
             newTh.style.color = "white";
             newTh.style.backgroundColor = report.schoolPrimaryColor;
+
+
             newTh.setAttribute("colspan", document.getElementsByClassName('valuesTable')[1].rows[1].cells.length);
         }
     })();
@@ -466,11 +473,11 @@
                 var newTable = document.createElement("table");
                 var addingTable = document.getElementById("ForAttributesTable");
                 addingTable.appendChild(newTable);
-                newTable.style.width = "950px";
+                newTable.style.width = "18cm";
                 newTable.style.border = "1px solid black";
                 newTable.style.borderCollapse = "collapse";
                 newTable.style.textAlign = "center";
-                newTable.style.marginTop = "10px";
+                newTable.style.marginTop = "30px";
                 var newTableBody = document.createElement("tbody");
                 newTable.appendChild(newTableBody);
                 var newTr = document.createElement("tr");
@@ -481,7 +488,7 @@
                 newTh.style.borderCollapse = "collapse";
                 newTh.style.border = "1px solid black";
                 newTh.style.textAlign = "left";
-                newTh.style.width = "450px";
+                newTh.style.width = "12cm";
                 var attributeDetailsNull = true;
                 if(report.attributes[i].attributeDetails){
                     for(var j =0; j<report.attributes[i].attributeDetails.length; j++){
@@ -566,60 +573,38 @@
     // remarks
     if(report.remarks){
         document.getElementById("remarks").textContent = report.remarks;
+
         document.getElementById("remark-header").style.backgroundColor = report.schoolPrimaryColor;
         document.getElementById("remark-header").style.color = "white";
+
     }
     else{
         document.getElementById("remarks-block").style.display = "none";
     }
 
     // grade table
-    (function definingGradeTable(){
-        if(report.definingGrade){
-            document.getElementById("grading-sacle-heading").style.backgroundColor = report.schoolPrimaryColor;
-            document.getElementById("grading-sacle-heading").style.color = "white";
-            var storingGrades = Object.keys(report.definingGrade);
-            var t = Math.ceil(storingGrades.length / 4);  //roundfigure value
-            for (var x = 0; x < 4; x++) {
-                var newTr = document.createElement("tr");
-                var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tbody")[0];
-                addingRow.appendChild(newTr);
-                for (var y = 0; y < (storingGrades.length / 4); y++) {
-                    if (storingGrades[t * (x) + y] !== undefined) {
-                        var newTd = document.createElement("td");
-                        newTr.appendChild(newTd);
-                        newTd.innerHTML = storingGrades[t * (x) + y];
-                        newTd.style.border = "1px solid black";
-                        newTd.style.backgroundColor = report.colorForGrades[storingGrades[t * (x) + y]];
-                        // newTd.style.borderCollapse = "none";
-                        var newTd = document.createElement("td");
-                        newTd.style.border = "1px solid black";
-                        newTr.appendChild(newTd);
-                        newTd.innerHTML = report.definingGrade[storingGrades[t * (x) + y]];
-                        newTd.style.border = "1px solid black";
 
-                    }
-                }
-            }
-            //for displaying grades and range (headings)
-            for (var x = 0; x < ((storingGrades.length / 4) - 1); x++) {
-                var newTh = document.createElement("th");
-                var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tr")[1];
-                addingRow.appendChild(newTh);
-                newTh.textContent = "Grade";
-                newTh.style.border = "1px solid black";
-                var newTh = document.createElement("th");
-                addingRow.appendChild(newTh);
-                newTh.textContent = "Range Of Marks";
-                newTh.style.border = "1px solid black";
-            }
+
+    (function gradeTable(){
+        var grades = Object.keys(report.definingGrade);
+        for(var i=0; i<grades.length; i++){
+            var newTd = document.createElement("td");
+            var connectTd = document.getElementById("Marks_Range_Row");
+            connectTd.appendChild(newTd);
+            newTd.textContent = grades[i];
+            newTd.style.border = "1px solid black";
+        }
+        for(var i=0; i<grades.length; i++){
+            var newTd = document.createElement("td");
+            var connectTd = document.getElementById("Grade_Row");
+            connectTd.appendChild(newTd);
+            newTd.textContent = report.definingGrade[grades[i]];
+            newTd.style.border = "1px solid black";
+            newTd.style.backgroundColor = report.colorForGrades[grades[i]];
+
+
 
         }
-        else{
-            document.getElementById("GradingScaleTable").style.display = "none";
-        }
-        newTh = document.getElementById("grading-sacle-heading");
-        newTh.setAttribute("colspan", document.getElementById('GradingScaleTable').rows[1].cells.length);
 
     })();
 
