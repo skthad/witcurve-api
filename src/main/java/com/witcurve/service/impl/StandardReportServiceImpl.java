@@ -123,8 +123,6 @@ public class StandardReportServiceImpl implements StandardReportService {
         if(!reportCard.isPresent()) {
             throw new WitcurveException("There is no report card setting available with id : "+reportCardId);
         }
-        String standardName = standard.get().getGrade()+"_"+standard.get().getSection();
-        String examName = reportCard.get().getExam().getName();
         StandardReport standardReport = standardReportRepository.findByStandardIdAndReportCardId(standardId, reportCardId);
         StandardReportDTO standardReportDTO;
         if(standardReport == null) {
@@ -140,22 +138,21 @@ public class StandardReportServiceImpl implements StandardReportService {
             standardReportDTO = standardReportMapper.toDto(standardReport);
         }
         standardReportDTO = saveOrUpdate(standardReportDTO);
-        createReportCards(standardReportDTO, standardName, examName);
         return standardReportDTO;
     }
 
     @Async
-    public void createReportCards(StandardReportDTO standardReportDTO, String standardName, String examName) {
+    public void createReportCards(StandardReportDTO standardReportDTO) {
         log.debug("Request to create report cards with for standard report : {}", standardReportDTO);
         try {
             Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
             List<File> reportsWithHeader = new ArrayList<>(reportCardService.getReportCardPreviewForStandard(standardReportDTO.getReportCardId(), standardReportDTO.getStandardId(), pageable, true).getContent());
             List<File> reportsWithOutHeader = new ArrayList<>(reportCardService.getReportCardPreviewForStandard(standardReportDTO.getReportCardId(), standardReportDTO.getStandardId(), pageable, false).getContent());
             List<StudentStandard> studentStandards = new ArrayList<>(studentStandardRepository.getByStandardId(standardReportDTO.getStandardId(), pageable).getContent());
-            File headerZipFile = WitcurveUtil.createTempFile(standardName+"_report.zip");
+            File headerZipFile = WitcurveUtil.createTempFile(standardReportDTO.getStandardName()+"_report.zip");
             FileOutputStream fos = new FileOutputStream( headerZipFile.getPath());
             ZipOutputStream zos = new ZipOutputStream(fos);
-            File noHeaderZipFile = WitcurveUtil.createTempFile(standardName+"_report_without_header.zip");
+            File noHeaderZipFile = WitcurveUtil.createTempFile(standardReportDTO.getStandardName()+"_report_without_header.zip");
             FileOutputStream fosNoHeader = new FileOutputStream( noHeaderZipFile.getPath());
             ZipOutputStream zosNoHeader = new ZipOutputStream(fosNoHeader);
             for(int count =0; count < studentStandards.size(); count++) {
@@ -180,9 +177,13 @@ public class StandardReportServiceImpl implements StandardReportService {
                 //add no header file to zip
                addToZipFile(reportsWithOutHeader.get(count), zosNoHeader);
             }
-            String destinationDirectory = AttachmentType.STANDARD_REPORT.toString()+File.separator+examName;
+            zos.close();
+            zosNoHeader.close();
+            fos.close();
+            fosNoHeader.close();
+            String destinationDirectory = AttachmentType.STANDARD_REPORT.toString()+File.separator+standardReportDTO.getExamName();
             Attachment attachmentWithHeader = attachmentService.saveAttachmentWithFile(headerZipFile, AttachmentType.STANDARD_REPORT, destinationDirectory);
-            destinationDirectory = AttachmentType.STANDARD_REPORT_WITHOUT_HEADER.toString()+File.separator+examName;
+            destinationDirectory = AttachmentType.STANDARD_REPORT_WITHOUT_HEADER.toString()+File.separator+standardReportDTO.getExamName();
             Attachment attachmentWithoutHeader = attachmentService.saveAttachmentWithFile(noHeaderZipFile, AttachmentType.STANDARD_REPORT_WITHOUT_HEADER, destinationDirectory);
             standardReportDTO.setStatus(ReportStatus.SUCCESS);
             standardReportDTO.setWithHeader(attachmentWithHeader);

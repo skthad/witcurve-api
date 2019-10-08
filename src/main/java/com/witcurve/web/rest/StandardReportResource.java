@@ -78,6 +78,8 @@ public class StandardReportResource {
     public ResponseEntity<StandardReportDTO> generateStandardReport(@RequestParam Long standardId, @RequestParam Long reportCardId) {
         log.debug("Request to generate report card for standard with id {} with report card id : {}", standardId, reportCardId);
         StandardReportDTO result = standardReportService.generateStandardReport(standardId, reportCardId);
+        standardReportService.createReportCards(result);
         return ResponseEntity.ok(result);
     }
 }
+

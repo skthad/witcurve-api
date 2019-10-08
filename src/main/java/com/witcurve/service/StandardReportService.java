@@ -14,6 +14,8 @@ public interface StandardReportService {
 
     StandardReportDTO generateStandardReport(Long standardId, Long reportCardId);
 
+    void createReportCards(StandardReportDTO standardReportDTO);
+
 
 
 }

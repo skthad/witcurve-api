@@ -26,6 +26,10 @@ public class StandardReportDTO extends AbstractAuditingDTO implements Serializab
 
     private String failureReason;
 
+    private String standardName;
+
+    private String examName;
+
     public Long getId() {
         return id;
     }
@@ -80,6 +84,22 @@ public class StandardReportDTO extends AbstractAuditingDTO implements Serializab
 
     public void setFailureReason(String failureReason) {
         this.failureReason = failureReason;
+    }
+
+    public String getStandardName() {
+        return standardName;
+    }
+
+    public void setStandardName(String standardName) {
+        this.standardName = standardName;
+    }
+
+    public String getExamName() {
+        return examName;
+    }
+
+    public void setExamName(String examName) {
+        this.examName = examName;
     }
 
     @Override

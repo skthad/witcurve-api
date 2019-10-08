@@ -1,5 +1,6 @@
 package com.witcurve.service.mapper;
 
+import com.witcurve.domain.Standard;
 import com.witcurve.domain.StandardReport;
 import com.witcurve.service.impl.StandardReportDTO;
 import org.mapstruct.Mapper;
@@ -10,6 +11,8 @@ public interface StandardReportMapper  extends EntityMapper<StandardReportDTO, S
 
     @Mapping(source = "standard.id", target = "standardId")
     @Mapping(source = "reportCard.id", target = "reportCardId")
+    @Mapping(source = "reportCard.exam.name", target = "examName")
+    @Mapping(target = "standardName", expression = "java(getStandardName(standardReport.getStandard()))")
     StandardReportDTO toDto(StandardReport standardReport);
 
     @Mapping(target = "standard", source = "standardId")
@@ -23,6 +26,13 @@ public interface StandardReportMapper  extends EntityMapper<StandardReportDTO, S
         StandardReport standardReport = new StandardReport();
         standardReport.setId(id);
         return standardReport;
+    }
+
+    default String getStandardName(Standard standard) {
+        if(standard == null) {
+            return null;
+        }
+        return standard.getGrade()+"_"+standard.getSection();
     }
 
 }
