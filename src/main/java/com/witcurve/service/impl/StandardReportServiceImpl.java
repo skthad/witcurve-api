@@ -2,6 +2,7 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.AttachmentType;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ReportStatus;
 import com.witcurve.repository.ReportCardRepository;
 import com.witcurve.repository.StandardReportRepository;
@@ -111,9 +112,14 @@ public class StandardReportServiceImpl implements StandardReportService {
         return standardReportMapper.toDto(standardReport);
     }
 
-    public List<StandardReportDTO> findByExamId(Long examId) {
-        log.debug("Request to get standard report for exam with id : {} ", examId);
-        List<StandardReport> standardReports = standardReportRepository.findByExamId(examId);
+    public List<StandardReportDTO> findByExamId(Long examId, Grade grade) {
+        log.debug("Request to get standard report for exam with id : {}  for grade : {}", examId, grade);
+        List<StandardReport> standardReports;
+        if(grade == null) {
+            standardReports = standardReportRepository.findByExamId(examId);
+        } else {
+            standardReports = standardReportRepository.findByExamIdAndGrade(examId, grade);
+        }
         return standardReportMapper.toDto(standardReports);
     }
 
