@@ -55,7 +55,7 @@ public class ReportCardResource {
     @PostMapping("/report-card/template-html")
     public ResponseEntity<Resource> getReportCardTemplateHtmlFile(@Valid @RequestBody ReportCardVM reportCardVM) {
         log.debug("Request to get report card html template with details : {}", reportCardVM);
-        File result = reportCardService.getReportCardTemplateHtml(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE);
+        File result = reportCardService.getReportCardTemplateHtml(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, null);
         Resource resource = WitcurveUtil.getResourceFromFile(result);
         return ResponseEntity.ok(resource);
     }
@@ -103,9 +103,12 @@ public class ReportCardResource {
      */
     @GetMapping("/report-card/{reportCardId}/preview")
     @Timed
-    public ResponseEntity<Page<String>> getReportCardsForExamIdStandardId(@PathVariable Long reportCardId, @RequestParam Long standardId, @RequestParam(defaultValue = "true") Boolean showHeader, @ApiParam Pageable pageable) throws WitcurveException {
+    public ResponseEntity<Page<String>> getReportCardsForExamIdStandardId(@PathVariable Long reportCardId, @RequestParam Long standardId,
+                                                                          @RequestParam(defaultValue = "true") Boolean showHeader,
+                                                                          @RequestParam(defaultValue = "pdf") String type,
+                                                                          @ApiParam Pageable pageable) throws WitcurveException {
         log.debug("Request to get reportCardDesigns with report card with id : {} and for standard with id : {}", reportCardId, standardId);
-        Page<File> fileList = reportCardService.getReportCardPreviewForStandard(reportCardId, standardId, pageable, showHeader);
+        Page<File> fileList = reportCardService.getReportCardPreviewForStandard(reportCardId, standardId, pageable, showHeader, type);
         Page<String> result = fileList.map(new Function<File, String>() {
             @Override
             public String apply(File file) {

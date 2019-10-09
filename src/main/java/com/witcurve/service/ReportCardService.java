@@ -15,13 +15,13 @@ public interface ReportCardService {
 
     File getReportCardTemplatePdf(ReportCardVM reportCardVM, String templateUrl, String fileName);
 
-    File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl);
+    File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl, String fileName);
 
     ReportCardDTO saveOrUpdate(ReportCardDTO reportCardDTO);
 
     List<ReportCardDTO> getReportCardByExam(Long examId, Grade grade);
 
-    Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader);
+    Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader, String type);
 
     Map<String,String> getGradeDetailsByExamIdAndConfigType(Long examId, ConfigType configType);
 

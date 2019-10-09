@@ -104,13 +104,19 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     }
 
-    public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl) {
+    public File getReportCardTemplateHtml(ReportCardVM reportCardVM, String templateUrl, String nameOfFile) {
         isValid(reportCardVM);
         HtmlToPdfUtil htmlToPdfUtil = new HtmlToPdfUtil();
         File inputFile = htmlToPdfUtil.getParsedReportCard(reportCardVM, templateUrl);
         String xml = htmlToPdfUtil.getReportHtmlXml(inputFile);
         try {
-            File result = WitcurveUtil.createTempFile("result-template.html");
+            String fileName;
+            if(nameOfFile == null) {
+                fileName  = "result-template.html";
+            } else {
+                fileName = nameOfFile+"_template.html";
+            }
+            File result = WitcurveUtil.createTempFile(fileName);
             FileWriter fw = new FileWriter(result);
             fw.write(xml);
             fw.close();
@@ -159,7 +165,7 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     @Override
-    public Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader) {
+    public Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader, String type) {
         log.debug("Get report card preview with report card id : {} and for standard with id : {}", reportCardId, standardId);
         Optional<Standard> standard = standardRepository.findById(standardId);
         if (!standard.isPresent()) {
@@ -210,7 +216,11 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
             }
             String nameOfFile = showHeader ? reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId() : reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId()+"_without_header";
-            result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
+            if(type.equalsIgnoreCase("pdf")) {
+                result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
+            } else {
+                result.add(getReportCardTemplateHtml(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
+            }
         }
         return new PageImpl<>(result, pageable, studentStandards.getTotalElements());
     }
