@@ -233,4 +233,9 @@
     <changeSet author="WitCurve (generated)" id="1569863032627-29">
         <dropColumn columnName="non_scholastic_header_map" tableName="report_card"/>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1569863032627-30">
+        <addColumn tableName="report_card">
+            <column name="note" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

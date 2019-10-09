@@ -47,7 +47,7 @@ public class ReportCardVM {
 
     private Map<String, String> definingGrade;
 
-    private Map<String, String> note;
+    private String note;
 
     @NotNull
     private String title;
@@ -151,11 +151,11 @@ public class ReportCardVM {
         this.definingGrade = definingGrade;
     }
 
-    public Map<String, String> getNote() {
+    public String getNote() {
         return note;
     }
 
-    public void setNote(Map<String, String> note) {
+    public void setNote(String note) {
         this.note = note;
     }
 

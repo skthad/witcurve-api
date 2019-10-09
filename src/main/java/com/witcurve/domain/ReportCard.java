@@ -2,7 +2,6 @@ package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.service.util.MapToStringConverter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -11,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -90,6 +88,9 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean showAttendance=false;
+
+    @Column
+    private String note;
 
 
     public Long getId() {
@@ -194,6 +195,14 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
 
     public void setShowAttendance(Boolean showAttendance) {
         this.showAttendance = showAttendance;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
