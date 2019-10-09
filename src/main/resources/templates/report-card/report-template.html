@@ -5,23 +5,36 @@
     <title> Report Card</title>
 </head>
 <body style="font-family: Cambria; width: 18cm; font-size: 12px">
-<div id="forSchoolNameAndLogo" class="header" style=" margin: 10px 50px;display: flex;justify-content: space-around;">
-    <img id="logo" alt="School logo" style=" float: left;width: 18cm;height: auto;"/>
+<div id="forSchoolNameAndLogo" class="header">
+    <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
 <hr id="Header-line">
 <div>
     <h2 id="Heading">ACADEMIC SESSION : 2019-20</h2>
 </div>
 <table style="width: 18cm; margin-bottom: 10px">
+    <thead>
+        <th style="width: 20%"></th>
+        <th style="width: 40%"></th>
+        <th style="width: 20%"></th>
+        <th style="width: 20%"></th>
+    </thead>
     <tbody>
     <tr>
-        <td style="text-align: left;" colspan="2"><b>Name </b><span id="nameOfStudent">student Name</span></td>
-        <td style="text-align: right; padding-right: 50px"><b>Class <span style="padding-left: 25px">:</span></b><span id="Class" style="padding-right: 0px;"></span></td>
+        <td><b>Name:</b></td>
+        <td><span id="nameOfStudent">Chota Bheem</span></td>
+        <td><b>Class:</b></td>
+        <td><span id="Class">X-A</span></td>
     </tr>
     <tr>
-        <td style="text-align: left;"><b>DOB </b><span id="DOB"></span></td>
-        <td  id="Attendance-Header"style="text-align: center;" ><b>Attendance </b><span id="attendance"></span></td>
-        <td style="text-align: right; "><b> Admission ID </b><span id="admission-Id">student Name</span></td>
+        <td><b>DOB:</b></td>
+        <td><span id="DOB">00/00/0000</span></td>
+        <td><b>Admission ID:</b></td>
+        <td><span id="admission-Id">A10134</span></td>
+    </tr>
+    <tr id="attendance-row">
+        <td><b>Attendance:</b></td>
+        <td><span id="attendance">25/30</span></td>
     </tr>
     </tbody>
 </table>
@@ -93,17 +106,17 @@
     }
     document.getElementById("Heading").innerHTML = report.title;
     document.getElementById("Heading").style.textAlign = "center";
-    document.getElementById("nameOfStudent").textContent = ":" + " " +report.studentName.toUpperCase();
+    document.getElementById("nameOfStudent").textContent = report.studentName.toUpperCase();
     document.getElementById("Class").textContent = report.standard ;
     if(report.attendance){
-        document.getElementById("attendance").textContent = ":" + " " +report.attendance;
+        document.getElementById("attendance").textContent = report.attendance;
     }
     else{
-        document.getElementById("attendance").textContent = ":" + " " +report.attendance;
-        document.getElementById("Attendance-Header").style.opacity = 0;
+        document.getElementById("attendance").textContent = report.attendance;
+        document.getElementById("attendance-row").style.display = 'none';
     }
-    document.getElementById("admission-Id").textContent= ":" + " " +report.admissionId;
-    document.getElementById("DOB").textContent = ":" + " " +report.dateOfBirth;
+    document.getElementById("admission-Id").textContent= report.admissionId;
+    document.getElementById("DOB").textContent = report.dateOfBirth;
 
 
     (function creatingScholasticTable() {
