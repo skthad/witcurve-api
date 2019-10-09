@@ -1,14 +1,10 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.Course;
-import com.witcurve.domain.NonScholasticReportDetails;
 import com.witcurve.domain.enumeration.Grade;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,6 +43,8 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private Boolean showAttendance=false;
+
+    private String note;
 
     public Long getId() {
         return id;
@@ -150,6 +148,14 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setShowAttendance(Boolean showAttendance) {
         this.showAttendance = showAttendance;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override

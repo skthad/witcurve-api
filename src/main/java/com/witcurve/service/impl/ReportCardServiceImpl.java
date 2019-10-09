@@ -190,6 +190,7 @@ public class ReportCardServiceImpl implements ReportCardService {
             reportCardVM.setDateOfBirth(studentStandard.getStudent().getDateOfBirth().format(DateTimeFormatter.ofPattern(WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT)));
             reportCardVM.setShowHeader(showHeader);
             reportCardVM.setLogoLink(headerUrl);
+            reportCardVM.setNote(reportCard.get().getNote());
             reportCardVM.setTitle(reportCard.get().getTitle());
             reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
             reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
@@ -241,7 +242,6 @@ public class ReportCardServiceImpl implements ReportCardService {
     private void setScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard,  List<ConfigSettings> configSettings) {
         if(reportCard.getScholasticCourses() != null && !reportCard.getScholasticCourses().isEmpty()
             && reportCard.getScholasticDetails() != null && !reportCard.getScholasticDetails().isEmpty()) {
-            Map<String, String> notes = new LinkedHashMap<>();
             List<ConfigSettings> gradeColorConfigSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(studentStandard.getStudent().getSchoolInfo().getSchool().getId(), new ConfigType[]{ConfigType.GRADING_SCALE_COLOR});
             reportCardVM.setDefiningGrade(getGradeDetailsWithConfigSettings(configSettings));
             reportCardVM.setColorForGrades(getGradeDetailsWithConfigSettings(gradeColorConfigSettings));
@@ -309,7 +309,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                     }
                     totalMarksMap.put(titleChangeCounter, courseMap);
                 }
-                Double previousTotalMarks = totalMap.get(scholasticReportDetails.getHeader());
+                Double previousTotalMarks = totalMap.get(titleChangeCounter);
                 if( previousTotalMarks == null) {
                     totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation());
                 } else {
@@ -321,7 +321,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                     }
                 }
                 String formattedMarks = WitcurveUtil.formatDouble(scholasticReportDetails.getMarksNormalisation());
-                notes.put(scholasticReportDetails.getReportCardDesign().getShortForm(), scholasticReportDetails.getReportCardDesign().getName());
                 marksAndGradeDetailsVM.setName(scholasticReportDetails.getReportCardDesign().getName()+"("+formattedMarks+")");
                 marksAndGradeDetailsVM.setShortForm(scholasticReportDetails.getReportCardDesign().getShortForm()+"("+formattedMarks+")");
                 marksAndGradeDetailsVM.setShowMarks(scholasticReportDetails.getShowMarks());
@@ -337,43 +336,43 @@ public class ReportCardServiceImpl implements ReportCardService {
                 overallVM.setShowGrade(reportCard.getShowOverallGrade());
                 overallVM.setShowMarks(reportCard.getShowOverallMarks());
 
-            }
-            Double overallFullMarks = 0.00;
-            for(Map.Entry<Integer, Double> overallFullEntry : totalMap.entrySet()) {
-                overallFullMarks += overallFullEntry.getValue();
-            }
-            Map<CourseDTO, Double> overAllCourseMap = new HashMap<>();
-            for(Map.Entry<Integer, Map<CourseDTO, Double>> titleMapEntry : totalMarksMap.entrySet()) {
-                for(Map.Entry<CourseDTO, Double> courseMapEntry : titleMapEntry.getValue().entrySet()) {
-                    Double overallCourseMap = overAllCourseMap.get(courseMapEntry.getKey());
-                    if(overallCourseMap == null) {
-                        overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue());
-                    } else {
-                        overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue()+overallCourseMap);
+                Double overallFullMarks = 0.00;
+                for(Map.Entry<Integer, Double> overallFullEntry : totalMap.entrySet()) {
+                    overallFullMarks += overallFullEntry.getValue();
+                }
+                Map<CourseDTO, Double> overAllCourseMap = new HashMap<>();
+                for(Map.Entry<Integer, Map<CourseDTO, Double>> titleMapEntry : totalMarksMap.entrySet()) {
+                    for(Map.Entry<CourseDTO, Double> courseMapEntry : titleMapEntry.getValue().entrySet()) {
+                        Double overallCourseMap = overAllCourseMap.get(courseMapEntry.getKey());
+                        if(overallCourseMap == null) {
+                            overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue());
+                        } else {
+                            overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue()+overallCourseMap);
+                        }
                     }
                 }
-            }
-            Map<String, String> overallMarks = new HashMap<>();
-            Map<String, String> overallGrade = new HashMap<>();
-            Double overallFinalMarks = 0.0;
-            Double overallTotalMarks = 0.0;
-            for(Map.Entry<CourseDTO, Double> courseEntry : overAllCourseMap.entrySet()) {
-                Double finalMarks = (double) Math.round(courseEntry.getValue());
-                overallFinalMarks += finalMarks;
-                overallTotalMarks += overallFullMarks;
-                overallMarks.put(courseEntry.getKey().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
-                overallGrade.put(courseEntry.getKey().getDisplayName(), getGrade(configSettings, finalMarks, overallFullMarks));
-            }
-            overallVM.setGrade(overallGrade);
-            overallVM.setMarks(overallMarks);
-            overallVM.setOverAllMarks(overallFinalMarks.toString());
-            overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
+                Map<String, String> overallMarks = new HashMap<>();
+                Map<String, String> overallGrade = new HashMap<>();
+                Double overallFinalMarks = 0.0;
+                Double overallTotalMarks = 0.0;
+                for(Map.Entry<CourseDTO, Double> courseEntry : overAllCourseMap.entrySet()) {
+                    Double finalMarks = (double) Math.round(courseEntry.getValue());
+                    overallFinalMarks += finalMarks;
+                    overallTotalMarks += overallFullMarks;
+                    overallMarks.put(courseEntry.getKey().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
+                    overallGrade.put(courseEntry.getKey().getDisplayName(), getGrade(configSettings, finalMarks, overallFullMarks));
+                }
+                overallVM.setGrade(overallGrade);
+                overallVM.setMarks(overallMarks);
+                overallVM.setOverAllMarks(overallFinalMarks.toString());
+                overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
 
-            scholasticDetailsVM.setOverall(overallVM);
+                scholasticDetailsVM.setOverall(overallVM);
+            }
+
             scholasticVM.setSubjectsArray(subjectArray);
             scholasticVM.setScholasticDetails(scholasticDetailsVM);
             reportCardVM.setScholastic(scholasticVM);
-            reportCardVM.setNote(notes);
         }
     }
 
