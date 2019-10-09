@@ -80,11 +80,24 @@ public class StandardReportServiceImpl implements StandardReportService {
             if(!existingStandardReport.isPresent()) {
                 throw new WitcurveException("No standard report found with id : "+standardReportDTO.getId());
             }
-            if(!standardReportDTO.getWithOutHeader().equals(existingStandardReport.get().getWithOutHeader())) {
-                deleteWithoutHeaderAttachmentId = existingStandardReport.get().getWithOutHeader().getId();
+
+            if(existingStandardReport.get().getWithOutHeader() != null) {
+                if(standardReportDTO.getWithOutHeader() == null) {
+                    deleteWithoutHeaderAttachmentId = existingStandardReport.get().getWithOutHeader().getId();
+                } else {
+                    if(!standardReportDTO.getWithOutHeader().equals(existingStandardReport.get().getWithOutHeader())) {
+                        deleteWithoutHeaderAttachmentId = existingStandardReport.get().getWithOutHeader().getId();
+                    }
+                }
             }
-            if(!standardReportDTO.getWithHeader().equals(existingStandardReport.get().getWithHeader())) {
-                deleteWithHeaderAttachmentId = existingStandardReport.get().getWithHeader().getId();
+            if(existingStandardReport.get().getWithHeader() != null) {
+                if(standardReportDTO.getWithHeader() == null) {
+                    deleteWithHeaderAttachmentId = existingStandardReport.get().getWithHeader().getId();
+                } else {
+                    if(!standardReportDTO.getWithHeader().equals(existingStandardReport.get().getWithHeader())) {
+                        deleteWithHeaderAttachmentId = existingStandardReport.get().getWithHeader().getId();
+                    }
+                }
             }
         }
         StandardReport standardReport = standardReportMapper.toEntity(standardReportDTO);
@@ -138,6 +151,8 @@ public class StandardReportServiceImpl implements StandardReportService {
             standardReportDTO = standardReportMapper.toDto(standardReport);
         }
         standardReportDTO = saveOrUpdate(standardReportDTO);
+        standardReportDTO.setStandardName(standard.get().getGrade()+"_"+standard.get().getSection());
+        standardReportDTO.setExamName(reportCard.get().getExam().getName());
         return standardReportDTO;
     }
 
