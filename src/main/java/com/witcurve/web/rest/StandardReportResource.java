@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.service.StandardReportService;
 import com.witcurve.service.impl.StandardReportDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -67,9 +68,9 @@ public class StandardReportResource {
 
     @GetMapping("/standard-report/exam/{examId}")
     @Timed
-    public ResponseEntity<List<StandardReportDTO>> getStandardReportByStudent(@PathVariable("examId") Long examId) throws WitcurveException {
-        log.debug("Request to get standard reports for exam with id : {} ",examId);
-        List<StandardReportDTO> result = standardReportService.findByExamId(examId);
+    public ResponseEntity<List<StandardReportDTO>> getStandardReportByStudent(@PathVariable("examId") Long examId, @RequestParam(required = false) Grade grade) throws WitcurveException {
+        log.debug("Request to get standard reports for exam with id : {} for grade  : {} ",examId, grade);
+        List<StandardReportDTO> result = standardReportService.findByExamId(examId, grade);
         return ResponseEntity.ok(result);
     }
 
