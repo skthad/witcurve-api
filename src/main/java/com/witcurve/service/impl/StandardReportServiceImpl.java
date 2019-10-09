@@ -167,8 +167,8 @@ public class StandardReportServiceImpl implements StandardReportService {
         log.debug("Request to create report cards with for standard report : {}", standardReportDTO);
         try {
             Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-            List<File> reportsWithHeader = new ArrayList<>(reportCardService.getReportCardPreviewForStandard(standardReportDTO.getReportCardId(), standardReportDTO.getStandardId(), pageable, true).getContent());
-            List<File> reportsWithOutHeader = new ArrayList<>(reportCardService.getReportCardPreviewForStandard(standardReportDTO.getReportCardId(), standardReportDTO.getStandardId(), pageable, false).getContent());
+            List<File> reportsWithHeader = new ArrayList<>(reportCardService.getReportCardPreviewForStandard(standardReportDTO.getReportCardId(), standardReportDTO.getStandardId(), pageable, true, "pdf").getContent());
+            List<File> reportsWithOutHeader = new ArrayList<>(reportCardService.getReportCardPreviewForStandard(standardReportDTO.getReportCardId(), standardReportDTO.getStandardId(), pageable, false, "pdf").getContent());
             List<StudentStandard> studentStandards = new ArrayList<>(studentStandardRepository.getByStandardId(standardReportDTO.getStandardId(), pageable).getContent());
             File headerZipFile = WitcurveUtil.createTempFile(standardReportDTO.getStandardName()+"_report.zip");
             FileOutputStream fos = new FileOutputStream( headerZipFile.getPath());
