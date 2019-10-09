@@ -157,7 +157,7 @@ public class StandardReportServiceImpl implements StandardReportService {
             ZipOutputStream zosNoHeader = new ZipOutputStream(fosNoHeader);
             for(int count =0; count < studentStandards.size(); count++) {
                 String destinationDirectory = AttachmentType.STUDENT_REPORT.toString()+File.separator+studentStandards.get(count).getStudent().getAdmissionId();
-                Attachment studentAttachment = attachmentService.saveAttachmentWithFile(reportsWithHeader.get(0), AttachmentType.STUDENT_REPORT, destinationDirectory);
+                Attachment studentAttachment = attachmentService.saveAttachmentWithFile(reportsWithHeader.get(count), AttachmentType.STUDENT_REPORT, destinationDirectory);
                 List<StudentReportDTO> studentReports = studentReportService.getStudentReportByStudentId(studentStandards.get(count).getStudent().getId(), standardReportDTO.getReportCardId());
                 if(studentReports.isEmpty()) {
                     StudentReportDTO studentReportDTO = new StudentReportDTO();

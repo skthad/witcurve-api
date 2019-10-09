@@ -28,6 +28,9 @@ public class ReportCardVM {
     private String attendance;
 
     @NotNull
+    private String dateOfBirth = "00/00/0000";
+
+    @NotNull
     private Boolean showHeader = true;
 
     @NotNull
@@ -178,6 +181,14 @@ public class ReportCardVM {
 
     public void setNonScholastic(NonScholasticVM nonScholastic) {
         this.nonScholastic = nonScholastic;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public static class ScholasticVM {
