@@ -29,6 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -178,7 +179,7 @@ public class ReportCardServiceImpl implements ReportCardService {
         List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.GRADING_SCALE});
         String subDomainName = standard.get().getSchoolInfo().getSchool().getInstitute().getSubDomainName();
         Long id = standard.get().getSchoolInfo().getSchool().getInstitute().getId();
-        String headerUrl = "http://"+subDomainName+".witcurve-app.com/assets/images/top-logo/"+id+"-logo.png";
+        String headerUrl = "http://"+subDomainName+".witcurve-app.com/assets/images/header-logo/"+id+"-header-logo.png";
         List<ConfigSettings> schoolPrimaryColorSettings  = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.SCHOOL_PRIMARY_COLOR});
         String schoolPrimaryColor = "#00000";
         if(!configSettings.isEmpty()) {
@@ -186,6 +187,7 @@ public class ReportCardServiceImpl implements ReportCardService {
         }
         for(StudentStandard studentStandard : studentStandardList) {
             ReportCardVM reportCardVM = new ReportCardVM();
+            reportCardVM.setDateOfBirth(studentStandard.getStudent().getDateOfBirth().format(DateTimeFormatter.ofPattern(WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT)));
             reportCardVM.setShowHeader(showHeader);
             reportCardVM.setLogoLink(headerUrl);
             reportCardVM.setTitle(reportCard.get().getTitle());
