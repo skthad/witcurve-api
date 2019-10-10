@@ -48,8 +48,8 @@
     </table>
 </div>
 <div class="valuesTable">
-    <table  class="valuesTable"
-            style="width: 18cm;margin-top: 30px;border: 1px solid black;text-align: center;border-collapse: collapse;">
+    <table id="valuesTable" class="valuesTable"
+            style="width: 18cm;margin-top: 30px;text-align: center;border: 1px solid black;">
         <tbody>
         </tbody>
     </table>
@@ -462,6 +462,8 @@
             newTh.style.color = "white";
             newTh.style.backgroundColor = report.schoolPrimaryColor;
             newTh.setAttribute("colspan", document.getElementsByClassName('valuesTable')[1].rows[1].cells.length);
+        } else {
+            document.getElementById("valuesTable").style.display = "none";
         }
     })();
 
@@ -545,6 +547,7 @@
                         var newTd = document.createElement("td");
                         newTr.appendChild(newTd);
                         newTd.textContent = report.attributes[i].fieldArray[j];
+                        newTd.style.height = "18px";
                         newTd.style.borderCollapse = "collapse";
                         newTd.style.border = "1px solid black";
                         newTd.style.textAlign = "left";
