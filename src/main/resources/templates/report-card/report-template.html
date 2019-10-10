@@ -610,6 +610,9 @@
                 connectTd.appendChild(newTd);
                 newTd.textContent = grades[i];
                 newTd.style.border = "1px solid black";
+                if(report.colorForGrades){
+                    newTd.style.backgroundColor = report.colorForGrades[grades[i]];
+                }
             }
             for(var i=0; i<grades.length; i++){
                 var newTd = document.createElement("td");
@@ -617,9 +620,6 @@
                 connectTd.appendChild(newTd);
                 newTd.textContent = report.definingGrade[grades[i]];
                 newTd.style.border = "1px solid black";
-                if(report.colorForGrades){
-                    newTd.style.backgroundColor = report.colorForGrades[grades[i]];
-                }
             }
         }
         else{
