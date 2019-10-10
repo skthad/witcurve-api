@@ -215,6 +215,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                     reportCardVM.setRemarks("");
                 }
             }
+            log.info("\n\n\n report card vn : {} \n\n\n", reportCardVM);
             String nameOfFile = showHeader ? reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId() : reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId()+"_without_header";
             if(type.equalsIgnoreCase("pdf")) {
                 result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
