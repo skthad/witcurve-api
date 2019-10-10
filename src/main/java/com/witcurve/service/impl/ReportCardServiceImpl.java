@@ -266,7 +266,7 @@ public class ReportCardServiceImpl implements ReportCardService {
             Map<Integer, Double> totalMap = new LinkedHashMap<>();
             Integer titleChangeCounter =0;
             //set subjet list
-            for(Course course : reportCard.getScholasticCourses()) {
+            for(Course course : courses) {
                 //check if course belongs to this student
                 StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
                 if(studentCourse != null && studentCourse.getActive()) {
@@ -400,7 +400,7 @@ public class ReportCardServiceImpl implements ReportCardService {
             ReportCardVM.NonScholasticVM nonScholasticVM = new ReportCardVM.NonScholasticVM();
             nonScholasticVM.setTitleName("Subjects");
             //set subjet list
-            for(Course course : reportCard.getNonScholasticCourses()) {
+            for(Course course : courses) {
                 //check if course belongs to this student
                 StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
                 if(studentCourse != null && studentCourse.getActive()) {
