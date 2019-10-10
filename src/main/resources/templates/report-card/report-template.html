@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link href='https://fonts.googleapis.com/css?family=Cambria' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Cambria:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
     <title> Report Card</title>
 </head>
-<body style="font-family: Cambria; width: 18cm; font-size: 11px">
+<body style="font-family: 'Cambria', sans-serif; width: 18cm; font-size: 11px">
 <div id="forSchoolNameAndLogo" class="header">
     <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
@@ -55,11 +55,11 @@
 </div>
 <div id="ForAttributesTable"> </div>
 <div id="remarks-block"
-     style="width: 18cm ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 10px;">
-    <h3 id="remark-header"
-        style=" margin-top: 10px; margin-bottom: 5px; text-align: center;">
+     style="width: 18cm ;display: block; border: 1px solid black; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 10px;">
+    <h4 id="remark-header"
+        style=" margin-top: 0px; margin-bottom: 0px; text-align: center; border-bottom: 1px solid black">
         CLASS TEACHERS REMARKS
-    </h3>
+    </h4>
     <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
 </div>
 <div style="margin-top: 80px;margin-bottom: 0x;">
@@ -390,8 +390,13 @@
             var newTh = document.createElement("th");
             newTr.appendChild(newTh);
             newTh.textContent = "SCHOLASTIC";
-            newTh.style.color = "white";
+            if(report.schoolPrimaryColor === "#ffffff") {
+                newTh.style.color = "black";
+            } else {
+                newTh.style.color = "white";
+            }
             newTh.style.backgroundColor = report.schoolPrimaryColor;
+
             if(showExamNames){
                 newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length+3].cells.length);
             }
@@ -458,7 +463,11 @@
             var newTh = document.createElement("th");
             newTr.appendChild(newTh);
             newTh.textContent = "NON SCHOLASTIC";
-            newTh.style.color = "white";
+            if(report.schoolPrimaryColor === "#ffffff") {
+                newTh.style.color = "black";
+            } else {
+                newTh.style.color = "white";
+            }
             newTh.style.backgroundColor = report.schoolPrimaryColor;
             newTh.setAttribute("colspan", document.getElementsByClassName('valuesTable')[1].rows[1].cells.length);
         } else {
@@ -577,8 +586,12 @@
     // remarks
     if(report.remarks){
         document.getElementById("remarks").textContent = report.remarks;
+        if(report.schoolPrimaryColor === "#ffffff") {
+            document.getElementById("remark-header").style.color = "black";
+        } else {
+            document.getElementById("remark-header").style.color = "white";
+        }
         document.getElementById("remark-header").style.backgroundColor = report.schoolPrimaryColor;
-        document.getElementById("remark-header").style.color = "white";
     }
     else{
         document.getElementById("remarks-block").style.display = "none";
