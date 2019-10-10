@@ -1,6 +1,5 @@
 package com.witcurve.repository;
 
-import com.witcurve.domain.Course;
 import com.witcurve.domain.ReportCardDesign;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.ReportFieldType;
@@ -25,8 +24,8 @@ public interface ReportCardDesignRepository extends JpaRepository<ReportCardDesi
     @Query("delete from ReportCardDesign rcd where rcd.id in ?1")
     void deleteByIds(List<Long> ids);
 
-    @Query("Select rcd from ReportCardDesign rcd where rcd.grade=?1 and rcd.fieldType='NON_SCHOLASTIC' and rcd.exam.endDate between ?2 and ?3 ")
-    List<ReportCardDesign> getNonScholasticReportCardDesigns(Grade grade, LocalDate startDate, LocalDate endDate);
+    @Query("Select rcd from ReportCardDesign rcd where rcd.grade=?1 and rcd.exam.schoolInfo.id = ?2 and rcd.fieldType='NON_SCHOLASTIC' and rcd.exam.endDate between ?3 and ?4 ")
+    List<ReportCardDesign> getNonScholasticReportCardDesigns(Grade grade, Long schoolInfoId, LocalDate startDate, LocalDate endDate);
 
     @Modifying
     @Query("delete from ReportCardDesign rcd where rcd.exam.id=?1")

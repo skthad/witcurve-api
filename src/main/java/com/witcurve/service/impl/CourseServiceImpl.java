@@ -173,12 +173,12 @@ public class CourseServiceImpl implements CourseService {
             throw new WitcurveException("No nearest active session found");
         }
         if(courseType.equals(CourseType.SCHOLASTIC)) {
-            List<Course> courses = examCourseDetailsRepository.findScholasticCourse(grade, academicSession.getStartDate(), exam.get().getEndDate());
+            List<Course> courses = examCourseDetailsRepository.findScholasticCourse(grade, exam.get().getSchoolInfo().getId(), academicSession.getStartDate(), exam.get().getEndDate());
             Collections.sort(courses, new CourseComparator());
             result = courseMapper.toDto(courses);
         } else {
             Set<Course> courses = new HashSet<>();
-            List<ReportCardDesign> rcds = reportCardDesignRepository.getNonScholasticReportCardDesigns(grade, academicSession.getStartDate(), exam.get().getEndDate());
+            List<ReportCardDesign> rcds = reportCardDesignRepository.getNonScholasticReportCardDesigns(grade, exam.get().getSchoolInfo().getId(), academicSession.getStartDate(), exam.get().getEndDate().plusDays(1));
             for(ReportCardDesign reportCardDesign : rcds) {
                 courses.addAll(reportCardDesign.getCourses());
             }
