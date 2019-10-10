@@ -1,6 +1,5 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.CourseType;
 import com.witcurve.domain.enumeration.Grade;
@@ -9,6 +8,7 @@ import com.witcurve.repository.*;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.CourseMapper;
+import com.witcurve.service.util.CourseComparator;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,15 +174,17 @@ public class CourseServiceImpl implements CourseService {
         }
         if(courseType.equals(CourseType.SCHOLASTIC)) {
             List<Course> courses = examCourseDetailsRepository.findScholasticCourse(grade, academicSession.getStartDate(), exam.get().getEndDate());
-            Set<Course> courseSet = new HashSet<>(courses);
-            result = courseMapper.toDto(new ArrayList<>(courseSet));
+            Collections.sort(courses, new CourseComparator());
+            result = courseMapper.toDto(courses);
         } else {
             Set<Course> courses = new HashSet<>();
             List<ReportCardDesign> rcds = reportCardDesignRepository.getNonScholasticReportCardDesigns(grade, academicSession.getStartDate(), exam.get().getEndDate());
             for(ReportCardDesign reportCardDesign : rcds) {
                 courses.addAll(reportCardDesign.getCourses());
             }
-            result = courseMapper.toDto(new ArrayList<>(courses));
+            List<Course> courseList = new ArrayList<>(courses);
+            Collections.sort(courseList, new CourseComparator());
+            result = courseMapper.toDto(courseList);
         }
         return result;
     }

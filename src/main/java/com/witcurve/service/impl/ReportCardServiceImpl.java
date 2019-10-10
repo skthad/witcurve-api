@@ -399,7 +399,7 @@ public class ReportCardServiceImpl implements ReportCardService {
             List<String> subjectArray = new ArrayList<>();
             ReportCardVM.NonScholasticVM nonScholasticVM = new ReportCardVM.NonScholasticVM();
             nonScholasticVM.setTitleName("Subjects");
-            //set subjet list
+            //set subject list
             for(Course course : courses) {
                 //check if course belongs to this student
                 StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
