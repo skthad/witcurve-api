@@ -2,7 +2,9 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css?family=Cambria:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
+<!--    <link href="https://fonts.googleapis.com/css?family=Cambria:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">-->
+    <link href='https://fonts.googleapis.com/css?family=Cambria:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap' rel='stylesheet' type='text/css'>
+
     <title> Report Card</title>
 </head>
 <body style="font-family: 'Cambria', sans-serif; width: 18cm; font-size: 11px">
@@ -604,14 +606,14 @@
             var grades = Object.keys(report.definingGrade);
             for(var i=0; i<grades.length; i++){
                 var newTd = document.createElement("td");
-                var connectTd = document.getElementById("Marks_Range_Row");
+                var connectTd = document.getElementById("Grade_Row");
                 connectTd.appendChild(newTd);
                 newTd.textContent = grades[i];
                 newTd.style.border = "1px solid black";
             }
             for(var i=0; i<grades.length; i++){
                 var newTd = document.createElement("td");
-                var connectTd = document.getElementById("Grade_Row");
+                var connectTd = document.getElementById("Marks_Range_Row");
                 connectTd.appendChild(newTd);
                 newTd.textContent = report.definingGrade[grades[i]];
                 newTd.style.border = "1px solid black";
