@@ -6,7 +6,7 @@
           href="https://fonts.googleapis.com/css?family=Cambria"/>
     <title> Report Card</title>
 </head>
-<body style="font-family: Cambria; width: 18cm; font-size: 12px">
+<body style="font-family: Cambria; width: 18cm; font-size: 10px">
 <div id="forSchoolNameAndLogo" class="header">
     <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
@@ -14,7 +14,7 @@
 <div>
     <h2 id="Heading">ACADEMIC SESSION : 2019-20</h2>
 </div>
-<table style="width: 18cm; margin-bottom: 10px">
+<table style="width: 18cm; margin-bottom: 0px">
     <thead>
         <th style="width: 20%"></th>
         <th style="width: 40%"></th>
@@ -43,27 +43,27 @@
 <div class="term-table">
     <table  id="markstable" class="term-table" style="width: 18cm; text-align: center; border: 1px solid black">
         <tr  id="ExamRow">
-            <th rowspan="2" class="firstcolumnstyle" style="border: 1px solid black;text-align: left">SUBJECT</th>
+            <th rowspan="2" class="firstcolumnstyle" style="border: 1px solid black;text-align: left"><strong>SUBJECT</strong></th>
         </tr>
     </table>
 </div>
 <div class="valuesTable">
     <table id="valuesTable" class="valuesTable"
-            style="width: 18cm;margin-top: 30px;text-align: center;border: 1px solid black; border-collapse: collapse;">
+            style="width: 18cm;margin-top: 20px;text-align: center;border: 1px solid black; border-collapse: collapse;">
         <tbody>
         </tbody>
     </table>
 </div>
 <div id="ForAttributesTable"> </div>
 <div id="remarks-block"
-     style="width: 18cm ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 30px;">
-    <h5 id="remark-header"
+     style="width: 18cm ;display: block; border: 1px solid black;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 10px;">
+    <h3 id="remark-header"
         style=" margin-top: 10px; margin-bottom: 5px; text-align: center;">
         CLASS TEACHERS REMARKS
-    </h5>
+    </h3>
     <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
 </div>
-<div style="margin-top: 90px;margin-bottom: 0x;">
+<div style="margin-top: 80px;margin-bottom: 0x;">
     <table style="width: 18cm; ">
         <tbody>
         <tr>
@@ -479,7 +479,7 @@
                 newTable.style.border = "1px solid black";
                 newTable.style.borderCollapse = "collapse";
                 newTable.style.textAlign = "center";
-                newTable.style.marginTop = "30px";
+                newTable.style.marginTop = "20px";
                 var newTableBody = document.createElement("tbody");
                 newTable.appendChild(newTableBody);
                 var newTr = document.createElement("tr");
