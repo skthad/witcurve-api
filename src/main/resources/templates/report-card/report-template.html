@@ -9,7 +9,6 @@
 <div id="forSchoolNameAndLogo" class="header">
     <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
-<hr id="Header-line">
 <div>
     <h2 id="Heading">ACADEMIC SESSION : 2019-20</h2>
 </div>
@@ -103,7 +102,7 @@
     }else{
         document.getElementById("logo").setAttribute("src", report.logoLink);
         document.getElementById("forSchoolNameAndLogo").style.opacity = 0;
-        document.getElementById("Header-line").style.opacity = 0;
+        // document.getElementById("Header-line").style.opacity = 0;
     }
     document.getElementById("Heading").innerHTML = report.title;
     document.getElementById("Heading").style.textAlign = "center";
