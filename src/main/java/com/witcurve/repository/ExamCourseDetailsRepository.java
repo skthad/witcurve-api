@@ -18,7 +18,7 @@ public interface ExamCourseDetailsRepository extends JpaRepository<ExamCourseDet
     @Query("Select ecd.course from ExamCourseDetails ecd where ecd.gsd.grade in ?1 and ecd.gsd.exam.id = ?2 order by ecd.gsd.grade asc, ecd.date asc, ecd.gsd.start asc")
     List<Course> findCoursesByGradesAndExamId(List<Grade> grades, Long examId);
 
-    @Query("Select ecd.course from ExamCourseDetails ecd where ecd.gsd.grade = ?1 and ecd.course.courseType ='SCHOLASTIC' and ecd.date between ?2 and ?3 order by ecd.course.elective asc, ecd.course.displayName asc")
+    @Query("Select distinct(ecd.course) from ExamCourseDetails ecd where ecd.gsd.grade = ?1 and ecd.course.courseType ='SCHOLASTIC' and ecd.date between ?2 and ?3 order by ecd.course.elective asc, ecd.course.displayName asc")
     List<Course> findScholasticCourse(Grade grade, LocalDate startDate, LocalDate endDate);
 
     @Query("Select ecd from ExamCourseDetails ecd where ecd.gsd.exam.id = ?1 order by ecd.gsd.grade asc, ecd.date asc, ecd.gsd.start asc")

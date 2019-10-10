@@ -21,9 +21,9 @@ public class CourseComparator implements Comparator<Course> {
             if((o1.getElective() && o2.getElective()) || (!o1.getElective() && !o2.getElective())) {
                 return o1.getDisplayName().compareTo(o2.getDisplayName());
             } else if(o1.getElective() && !o2.getElective()) {
-                return 1;
-            } else {
                 return -1;
+            } else {
+                return 1;
             }
         }
 
