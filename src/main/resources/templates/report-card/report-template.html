@@ -93,8 +93,7 @@
     </table>
 </div>
 <div id="abbrevations" style="margin-top: 20px">
-    <b>
-    </b>
+    <pre style="font-weight: bold;font-family: 'Cambria', sans-serif;font-size: 11px;"></pre>
 </div>
 <script>
     var report ={{report}};
@@ -630,7 +629,7 @@
 
     // abbrevations
     if(report.note){
-        document.getElementById("abbrevations").getElementsByTagName("b")[0].textContent = report.note;
+        document.getElementById("abbrevations").getElementsByTagName("pre")[0].innerHTML = report.note;
     }
     else{
         document.getElementById("abbrevations").style.display = "none";
