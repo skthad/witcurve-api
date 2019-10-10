@@ -114,7 +114,12 @@ public class ReportCardResource {
             public String apply(File file) {
                 try {
                     byte[] fileBytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-                    String result = new String(Base64.getEncoder().encode(fileBytes));
+                    String result ;
+                    if(type.equalsIgnoreCase("pdf")) {
+                        result= new String(Base64.getEncoder().encode(fileBytes));
+                    } else {
+                        result= new String(Base64.getEncoder().encode(fileBytes));
+                    }
                     return result;
                 } catch (IOException e) {
                     return "Error: File Corrupted";
