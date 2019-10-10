@@ -5,18 +5,24 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,6 +76,16 @@ public class WitcurveUtil {
         }
     }
 
+    public static Resource getResourceFromFile(File file) {
+        try {
+            return new InputStreamResource(new FileInputStream(file));
+        } catch (IOException e) {
+            log.debug("Error while reading contents : {}",e.getMessage());
+            throw new WitcurveException("There was a problem generating resource");
+        }
+
+    }
+
     public static File createTempFile(String name) throws WitcurveException {
         String directoryPath;
         if (name == null || name.isEmpty()) {
@@ -86,6 +102,23 @@ public class WitcurveUtil {
         }
 
         return file;
+    }
+
+    public static String formatDouble(double d) {
+        if(d == (long) d)
+            return String.format("%d",(long)d);
+        else
+            return String.format("%s",d);
+    }
+
+
+
+    public static List<Long> convertBigIntToLong(List<BigInteger> list) {
+        List<Long> result = new ArrayList<>();
+        for (BigInteger num : list) {
+            result.add(num.longValue());
+        }
+        return result;
     }
 
     public static Double roundToTwoDecimal(Double value) {

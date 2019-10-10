@@ -3,8 +3,10 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
+import com.witcurve.service.SnsService;
 import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.*;
+import com.witcurve.service.mapper.ReportCardDesignMapper;
 import com.witcurve.service.mapper.StudentMarksMapper;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,10 +27,9 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     private final Logger log  = LoggerFactory.getLogger(StandardServiceImpl.class);
 
-    private final List<Boolean> ALL = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
-    private final List<Boolean> PUBLISHED_ONLY = Arrays.asList(Boolean.TRUE);
     private final List<EventType> ALLOWED_EVENT_TYPES = Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST);
     private final List<ReportFieldType> ALLOWED_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.NON_SCHOLASTIC, ReportFieldType.MANUAL_ENTRY);
+    private final List<ReportFieldType> SCHOLASTIC_CHILD_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.PERIODIC_TEST, ReportFieldType.MANUAL_ENTRY);
 
     @Autowired
     StudentMarksMapper studentMarksMapper;
@@ -53,10 +55,23 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     @Autowired
     ReportCardDesignRepository reportCardDesignRepository;
 
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    SnsService snsService;
+
+    @Autowired
+    ReportCardDesignMapper reportCardDesignMapper;
+
 
     @Override
     public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) throws WitcurveException {
         studentMarksDTOs = validateAndFormatStudentMarks(studentMarksDTOs, eventId, rcdId, courseId);
+        snsService.sendPushNotificationWhenMarksSaved(studentMarksDTOs,eventId,rcdId,courseId);
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
         studentMarks = studentMarksRepository.saveAll(studentMarks);
         return studentMarksMapper.toDto(studentMarks);
@@ -114,11 +129,24 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate) throws WitcurveException{
         log.debug("Request to get all marks for student {} in course {}", studentId, courseId);
         WitcurveUtil.correctDateFormat(startDate, endDate);
+        List<StudentMarksDTO> result = new ArrayList<>();
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (!student.isPresent()) {
+            throw new WitcurveException("No student found with ID: " + studentId);
+        }
+        List<StudentStandard> studentStandards = studentStandardRepository.getByStudentId(studentId);
+        List<BigInteger> ids = eventRepository.findMarksEventsByDateRangeForStudent(startDate, endDate, studentStandards.get(0).getStandard().getId(), courseId);
+        List<Long> eventIds = WitcurveUtil.convertBigIntToLong(ids);
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
         }
-        return studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId(courseId, studentId, startDate, endDate));
+        result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId( studentId, courseId, startDate, endDate)));
+        if(!eventIds.isEmpty()) {
+            result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByStudentIdAndEventIds(studentId, eventIds)));
+        }
+        Collections.sort(result, new StudentMarksDTOAscComparator());
+        return result;
     }
 
     @Override
@@ -126,6 +154,62 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         log.debug("Request to delete student Marks with id {}", studentMarksIds);
         studentMarksRepository.deleteStudentMarksByIds(studentMarksIds);
     }
+
+    @Override
+    public List<StudentMarksDTO> getStudentMarksByRcdIdAndStudentId(ReportCardDesign reportCardDesign, Long studentId) {
+        if(!reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
+            if(reportCardDesign.getFieldType().equals(ReportFieldType.PERIODIC_TEST)) {
+                //todo add periodic test logic again
+                return new ArrayList<>();
+            } else {
+                List<StudentMarks> studentMarks = studentMarksRepository.getStudentMarksByRcdIdAndStudentId(reportCardDesign.getId(), studentId);
+                return studentMarksMapper.toDto(studentMarks);
+            }
+        } else {
+            Map<Long, Map<CourseDTO,Double>> rcdCourseMap= new HashMap<>();
+            List<StudentMarksDTO> result = new ArrayList<>();
+            List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExamAndGrade(reportCardDesign.getExam().getId(), reportCardDesign.getGrade());
+            for(ReportCardDesign childReportCardDesign : reportCardDesigns) {
+                if(SCHOLASTIC_CHILD_FIELD_TYPES.contains(childReportCardDesign.getFieldType()) &&  childReportCardDesign.getSelected()) {
+                    List<StudentMarksDTO> studentMarksDTOs = getStudentMarksByRcdIdAndStudentId(childReportCardDesign, studentId);
+                    for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                        if(rcdCourseMap.get(childReportCardDesign.getId()) == null) {
+                            rcdCourseMap.put(childReportCardDesign.getId(), new HashMap<>());
+                        }
+                        Map<CourseDTO, Double> courseMap = rcdCourseMap.get(childReportCardDesign.getId());
+                        Double previousMarks = courseMap.get(studentMarksDTO.getCourseDTO());
+                        if( previousMarks == null) {
+                            courseMap.put(studentMarksDTO.getCourseDTO(), studentMarksDTO.getMarks());
+                        } else {
+                            courseMap.put(studentMarksDTO.getCourseDTO(), previousMarks+studentMarksDTO.getMarks());
+                        }
+                    }
+                }
+            }
+            Map<CourseDTO, Double> totalCourseMap = new HashMap<>();
+            for(Map.Entry<Long, Map<CourseDTO, Double>> rcdEntry : rcdCourseMap.entrySet()) {
+                for(Map.Entry<CourseDTO, Double> courseEntry : rcdEntry.getValue().entrySet()) {
+                    if(totalCourseMap.get(courseEntry.getKey()) ==  null) {
+                        totalCourseMap.put(courseEntry.getKey(), courseEntry.getValue());
+                    } else {
+                        totalCourseMap.put(courseEntry.getKey(), totalCourseMap.get(courseEntry.getKey())+courseEntry.getValue());
+                    }
+                }
+            }
+            for(Map.Entry<CourseDTO, Double> totalCourseEntry : totalCourseMap.entrySet()) {
+                StudentMarksDTO studentMarksDTO = new StudentMarksDTO();
+                studentMarksDTO.setReportCardDesignDTO(reportCardDesignMapper.toDto(reportCardDesign));
+                studentMarksDTO.setStudentId(studentId);
+                studentMarksDTO.setMarks((double)Math.round(totalCourseEntry.getValue()));
+                studentMarksDTO.setCourseDTO(totalCourseEntry.getKey());
+                result.add(studentMarksDTO);
+            }
+            return result;
+        }
+
+    }
+
+
     private List<StudentMarksDTO> validateAndFormatStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) {
         List<StudentMarks> existingStudentMarksList;
         List<Long> requestStudentIds = new ArrayList<>();
@@ -199,5 +283,19 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             requestStudentIds.add(studentMarksDTO.getStudentId());
         }
         return studentMarksDTOs;
+    }
+
+    public class StudentMarksDTOAscComparator implements Comparator<StudentMarksDTO> {
+
+        @Override
+        public int compare(StudentMarksDTO o1, StudentMarksDTO o2) {
+            if (o1.getEventOrExamDate().isAfter(o2.getEventOrExamDate())) {
+                return 1;
+            } else if (o1.getEventOrExamDate().isBefore(o2.getEventOrExamDate())) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 }

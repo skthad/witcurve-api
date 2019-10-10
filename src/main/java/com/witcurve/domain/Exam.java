@@ -65,7 +65,9 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
     @Where(clause = "field_type='REMARKS' and selected = true")
     private Set<ReportCardDesign> remarkReportCardDesigns;
 
-
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name="exam_id", insertable = false, updatable = false)
+    private Set<ReportCard> reportCards;
 
     public Long getId() {
         return id;
@@ -145,6 +147,14 @@ public class Exam extends AbstractAuditingEntity implements Serializable {
 
     public void setRemarkReportCardDesigns(Set<ReportCardDesign> remarkReportCardDesigns) {
         this.remarkReportCardDesigns = remarkReportCardDesigns;
+    }
+
+    public Set<ReportCard> getReportCards() {
+        return reportCards;
+    }
+
+    public void setReportCards(Set<ReportCard> reportCards) {
+        this.reportCards = reportCards;
     }
 
     @Override

@@ -268,7 +268,7 @@ public class EventServiceImpl implements EventService {
             List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
 
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(eventDate, eventDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DAY);
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
 
@@ -300,7 +300,7 @@ public class EventServiceImpl implements EventService {
                 }
                 substractDays += 7;
             }
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateDescComparator());
         }
 
@@ -328,7 +328,7 @@ public class EventServiceImpl implements EventService {
                 throw new WitcurveException("No staff found with ID: " + staffId);
             }
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(eventDate, eventDate, staffId, courseTeacherIds, courseIds, standardIds, grades, staff.get().getSchoolInfo().getId(), LIST_FOR_DAY);
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {
             //need to get school info events
@@ -339,13 +339,6 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDto(result);
     }
 
-    private List<Long> convertBigIntToLong(List<BigInteger> list) {
-        List<Long> result = new ArrayList<>();
-        for (BigInteger num : list) {
-            result.add(num.longValue());
-        }
-        return result;
-    }
 
     @Override
     public List<EventDTO> findAllEventsOnGivenMonthForStudent(Integer month, Integer year, Long studentId) throws WitcurveException {
@@ -361,7 +354,7 @@ public class EventServiceImpl implements EventService {
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
             List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(monthStart, monthEnd, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
         return eventMapper.toDto(result);
@@ -408,7 +401,7 @@ public class EventServiceImpl implements EventService {
             LocalDate monthStart = LocalDate.of(year, month, 1);
             LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(monthStart, monthEnd, staffId, courseTeacherIds, courseIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
 
@@ -442,7 +435,7 @@ public class EventServiceImpl implements EventService {
             Long schoolInfoId = studentStandard.getStandard().getSchoolInfo().getId();
             List<Long> courseIds = studentCourseRepository.getCourseIdsByStudentId(studentId);
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStudent(date, endDate, studentId, standardId, grade.toString(), schoolInfoId, courseIds, LIST_FOR_DATE_RANGE);
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         }
 
@@ -498,7 +491,7 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toSet());
 
             List<BigInteger> eventIds = eventRepository.findEventsByDateRangeForStaff(date, endDate, staffId, courseTeacherIds, courseIds, standardIds, grades, schoolInfo.getId(), LIST_FOR_DATE_RANGE);
-            result = eventRepository.findAllById(convertBigIntToLong(eventIds));
+            result = eventRepository.findAllById(WitcurveUtil.convertBigIntToLong(eventIds));
             Collections.sort(result, new EventDateAscComparator());
         } else {
 

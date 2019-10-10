@@ -1,299 +1,579 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head></head>
-<body>
-<div id="forSchoolNameAndLogo" class="header"
-     style="margin : 10px 50px;display: flex;justify-content: space-around;align-items: center;">
-    <img id="logo" src="img/logo.png" alt="logo" style="float: left;width: 100px;" />
-    <h1 id="SchoolName" style="text-align: center;position: relative;">Lead India Bharat Ratnas School</h1>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Cambria:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap" rel="stylesheet">
+    <title> Report Card</title>
+</head>
+<body style="font-family: 'Cambria', sans-serif; width: 18cm; font-size: 11px">
+<div id="forSchoolNameAndLogo" class="header">
+    <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
-<div style="display: block; clear:left; margin-top: 10px;padding-bottom: 10px;">
-    <div style="display: inline; justify-content: space-between">
-        <div><span style="float: right;" id="admissionNumber">admission id</span><span style="font-weight: bold; float: right;">Admission Id: </span>
-            <div><span style="font-weight: bold;">Name: </span><span id="nameOfStudent">Student Name</span></div></div>
-    </div>
-    <div style="display: inline; justify-content: space-between">
-        <div><span style="float: right;" id="rollNo">20</span><span style="font-weight: bold; float: right;">Roll No.:</span></div>
-        <div><span style="font-weight: bold;">Standard:</span> <span id="standard">V-A</span></div>
-    </div>
-    <div style="display: flex; justify-content: space-between" id="showAttendance">
-        <div><span style="font-weight: bold;">Attendance:</span> <span id="attendance"></span></div>
-    </div>
+<div>
+    <h2 id="Heading">ACADEMIC SESSION : 2019-20</h2>
 </div>
-<div class="forReportTable">
-    <table cellpadding="5" id="report-table" class="forReportTable" style="margin-top: 5px; margin-bottom: 20px;">
-        <tr>
-            <th id="examName" class="forReportTable" colspan="9" style="background-color: #005E54; color: white;width: 43em;
-        border: 1px solid black;
-        border-collapse: collapse;
-        text-align: center;">REPORT CARD (Unit Test-1)</th>
-        </tr>
-        <tr id="title">
-            <th rowspan="2" id="Subject" class="forReportTable" style="width: 43em;
-        border: 1px solid black;
-        border-collapse: collapse;
-        text-align: center;">Subject</th>
+<table style="width: 18cm; margin-bottom: 0px">
+    <thead>
+        <th style="width: 20%"></th>
+        <th style="width: 40%"></th>
+        <th style="width: 20%"></th>
+        <th style="width: 20%"></th>
+    </thead>
+    <tbody>
+    <tr>
+        <td><b>Name:</b></td>
+        <td><span id="nameOfStudent">Chota Bheem</span></td>
+        <td><b>Class:</b></td>
+        <td><span id="Class">X-A</span></td>
+    </tr>
+    <tr>
+        <td><b>DOB:</b></td>
+        <td><span id="DOB">00/00/0000</span></td>
+        <td><b>Admission ID:</b></td>
+        <td><span id="admission-Id">A10134</span></td>
+    </tr>
+    <tr id="attendance-row">
+        <td><b>Attendance:</b></td>
+        <td><span id="attendance">25/30</span></td>
+    </tr>
+    </tbody>
+</table>
+<div class="term-table">
+    <table  id="markstable" class="term-table" style="width: 18cm; text-align: center; border: 1px solid black">
+        <tr  id="ExamRow">
+            <th rowspan="2" class="firstcolumnstyle" style="border: 1px solid black;text-align: left"><strong>SUBJECT</strong></th>
         </tr>
     </table>
 </div>
-<div
-    style="display: block; border: 1px solid #005E54;border-top: 0px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px", id="showRemarks">
-    <h5 style="background-color: #005E54; color: white; padding: 5px; margin-top: 0px; margin-bottom: 5px;">CLASS
-        TEACHERS REMARKS
-    </h5>
+<div class="valuesTable">
+    <table id="valuesTable" class="valuesTable"
+            style="width: 18cm;margin-top: 20px;text-align: center;border: 1px solid black; border-collapse: collapse;">
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div id="ForAttributesTable"> </div>
+<div id="remarks-block"
+     style="width: 18cm ;display: block; border: 1px solid black; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 10px;">
+    <h4 id="remark-header"
+        style=" margin-top: 0px; margin-bottom: 0px; text-align: center; border-bottom: 1px solid black">
+        CLASS TEACHERS REMARKS
+    </h4>
     <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
 </div>
-
-<div style="display: block; clear:left; margin-bottom: 55px; margin-top: 50px; padding-bottom: 10px;">
-    <h4
-        style="float: left;  padding-top: 3px;padding-left: 20px; border-top: 1px solid black;padding-right: 20px;">
-        Principal
-    </h4>
-    <h4
-        style="float: left; margin-left: 180px;padding-top: 3px;border-top: 1px solid black;padding-left: 20px;padding-right: 20px;">
-        Class Teacher
-    </h4>
-    <h4
-        style="float: right;padding-top: 3px; padding-right: 30px;border-top: 1px solid black;padding-left: 30px;">
-        Parent
-    </h4>
-</div>
-
-<div class="GradingScaleTable">
-    <table id="GradingScaleTable" cellpadding="1" style="margin-top: 20px; margin-bottom: 20px;">
+<div style="margin-top: 80px;margin-bottom: 0x;">
+    <table style="width: 18cm; ">
+        <tbody>
         <tr>
-            <th colspan="10" id="gradingScale";
-                style="background-color: #005E54; color: white;width: 43em;
-        border: 1px solid black;
-        border-collapse: collapse;
-        text-align: center;">Grading Scale</th>
+            <th>
+                <p style="padding-top: 10px; border-top:1px solid black; width: (18/3)cm;  ">Principal</p>
+            </th>
+            <th>
+                <p style="padding-top: 10px; border-top:1px solid black;width: (18/3)cm;margin-left: 100px;" >Class Teacher</p>
+            </th>
+            <th>
+                <p  style="padding-top: 10px; border-top:1px solid black;width: (18/3)cm;margin-left: 100px;" >Parent</p>
+            </th>
         </tr>
-        <tr>
-            <th style="width: 43em;
-        border: 1px solid black;
-        border-collapse: collapse;
-        text-align: center;">Grade</th>
-            <th style="width: 43em;
-        border: 1px solid black;
-        border-collapse: collapse;
-        text-align: center;">Range of Marks(/100)</th>
-        </tr>
+        </tbody>
     </table>
 </div>
-<script type="text/javascript">
-    var report = {{report}};
-    var reportColSpan = 1;
-    var titleNames = Object.keys(report.marksAndGrades);
-    var titleRows = document.getElementById("title").getElementsByTagName("th");
+<div style="margin-top: 20px; ">
+    <table id="GradingScaleTable"  style="margin-top: 0px; width: 18cm; text-align:center;border-collapse: collapse">
+        <tbody>
+        <tr id="Marks_Range_Row">
+            <th style="border:1px solid black;">Marks Range</th>
+        </tr>
+        <tr id="Grade_Row">
+            <th style="border:1px solid black;">Grade</th>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div id="abbrevations" style="margin-top: 20px">
+    <b>
+    </b>
+</div>
+<script>
+    var report ={{report}};
 
-    document.getElementById("SchoolName").innerHTML = report.schoolName;
-    document.getElementById("nameOfStudent").textContent = report.studentName;
-    document.getElementById("admissionNumber").textContent = report.admissionId;
-    document.getElementById("standard").textContent = report.standard;
-    document.getElementById("rollNo").textContent = report.rollNo;
-    document.getElementById("examName").textContent = "REPORT CARD - " + report.examName;
-    document.getElementById("logo").setAttribute("src", report.logoLink);
-    if(report.showAttendance) {
+    if(report.showHeader===true){
+        document.getElementById("logo").setAttribute("src", report.logoLink);
+    }else{
+        document.getElementById("logo").setAttribute("src", report.logoLink);
+        document.getElementById("forSchoolNameAndLogo").style.opacity = 0;
+        // document.getElementById("Header-line").style.opacity = 0;
+    }
+    document.getElementById("Heading").innerHTML = report.title;
+    document.getElementById("Heading").style.textAlign = "center";
+    document.getElementById("nameOfStudent").textContent = report.studentName.toUpperCase();
+    document.getElementById("Class").textContent = report.standard ;
+    if(report.attendance){
         document.getElementById("attendance").textContent = report.attendance;
-    } else {
-        document.getElementById("showAttendance").setAttribute("style", "display:none");
     }
-
-    if(report.showRemarks) {
-        document.getElementById("remarks").textContent = report.remarks;
-    } else {
-        document.getElementById("showRemarks").setAttribute("style", "display:none");
+    else{
+        document.getElementById("attendance").textContent = report.attendance;
+        document.getElementById("attendance-row").style.display = 'none';
     }
+    document.getElementById("admission-Id").textContent= report.admissionId;
+    document.getElementById("DOB").textContent = report.dateOfBirth;
 
-    if (!report.showHeader) {
-        document.getElementById("forSchoolNameAndLogo").setAttribute("style", "visibility: hidden;");
-    }
 
-    (function creatingTableHeader() {
-        //to add main header titles
-        var allGradesOnly = true;
-        for (var i = 0; i < titleNames.length; i++) {
-            var newTh = document.createElement("th");
-            newTh.className = "forReportTable";
-
-            newTh.style.width = '43em';
-            newTh.style.border = '1px solid black';
-            newTh.style.borderCollapse= 'collapse';
-            newTh.style.textAlign= 'center';
-
-            var addingheader = document.getElementById("report-table").getElementsByTagName("tr")[1];
-            addingheader.appendChild(newTh);
-            addingheader.insertBefore(newTh, addingheader.getElementsByTagName("th")[i + 1]);
-            if (((report.marksAndGrades[titleNames[i]]["showGrade"]) && (report.marksAndGrades[titleNames[i]]["showMarks"])) === true) {
-                reportColSpan+=2;
-                allGradesOnly = false;
-                newTh.setAttribute("colspan", "2");
-            } else {
-                reportColSpan+=1;
-                newTh.setAttribute("rowspan", "2");
+    (function creatingScholasticTable() {
+        if(report.scholastic){
+            // Creating and Adding Header
+            var showExamNames= false;
+            for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
+                if(report.scholastic.scholasticDetails.examDetails[i].examName){
+                    var newTh = document.createElement("th");
+                    var connectingHeader = document.getElementsByClassName("term-table")[1].getElementsByTagName("tr")[0];
+                    connectingHeader.appendChild(newTh);
+                    newTh.innerHTML= report.scholastic.scholasticDetails.examDetails[i].examName;
+                    newTh.setAttribute("colspan", (Object.keys(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length));
+                    newTh.style.border = "1px solid black";
+                    showExamNames = true;
+                    document.getElementsByClassName("firstcolumnstyle")[0].setAttribute("rowspan", 3);
+                }
             }
-            newTh.innerHTML = titleNames[i];
-            newTh.setAttribute("id", titleNames[i]);
+            //for creating "Overall" Header
+            if(showExamNames === true){
+                var forCheckingOverall = Object.keys(report.scholastic.scholasticDetails);
+                if(report.scholastic.scholasticDetails.overall){
+                    var newTh = document.createElement("th");
+                    var connectingHeader = document.getElementsByClassName("term-table")[1].getElementsByTagName("tr")[0];
+                    connectingHeader.appendChild(newTh);
+                    newTh.innerHTML= "Total";
+                    newTh.style.border = "1px solid black";
+                    newTh.setAttribute("colspan", 1 );
+                    newTh.setAttribute("rowspan", 2);
+                    if((report.scholastic.scholasticDetails.overall.showMarks) === true &&
+                        (report.scholastic.scholasticDetails.overall.showGrade) === true ){
+                        newTh.setAttribute("colspan", 2 );
+                    }
+                    else{
+                        newTh.setAttribute("colspan", 1 );
+                    }
+                }
+            }
 
-            //to add sub header marks or grades
-            if (((report.marksAndGrades[titleNames[i]]["showGrade"]) && (report.marksAndGrades[titleNames[i]]["showMarks"])) === true) {
-                var newTd = document.createElement("td");
-                newTd.className = "forReportTable";
 
-                newTd.style.width = '43em';
-                newTd.style.border = '1px solid black';
-                newTd.style.borderCollapse= 'collapse';
-                newTd.style.textAlign= 'center';
+            // Creating and Adding sub Header
+            if(showExamNames===true){
+                var newTr = document.createElement("tr");
+                var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                connectingRow.appendChild(newTr);
+                for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
+                    var x = (Object.keys(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length);
+                    var y=1;
+                    for(var j=0; j<(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length; j++){
+                        var newTh = document.createElement('th');
+                        newTr.appendChild(newTh);
+                        newTh.className = "term-table";
+                        newTh.innerHTML= report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].shortForm ;
+                        newTh.style.border = "1px solid black";
+                        // Adding colspan for SubHeader
+                        if((report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showGrade) === true &&
+                            (report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showMarks) === true ){
+                            newTh.setAttribute("colspan", 2 );
+                            // manuplating colspan for Header
+                            document.getElementById("ExamRow").getElementsByTagName("th")[i+1].setAttribute("colspan", x+y);
+                            y++
+                        }
+                        else{
+                            newTh.setAttribute("colspan", 1 );
+                        }
+                    }
+                }
+            }
+            if(showExamNames===false){
+                for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
+                    for(var j=0; j<(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length; j++){
+                        var newTh = document.createElement('th');
+                        var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tr")[0];
+                        connectingRow.appendChild(newTh);
+                        newTh.className = "term-table";
+                        newTh.innerHTML= report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].shortForm ;
+                        newTh.style.border = "1px solid black";
+                        // Adding colspan for SubHeader
+                        if((report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showGrade) === true &&
+                            (report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showMarks) === true ){
+                            newTh.setAttribute("colspan", 2 );
+                        }
+                        else{
+                            newTh.setAttribute("colspan", 1 );
+                        }
+                    }
+                }
+            }
+            if(showExamNames===false){
+                var forCheckingOverall = Object.keys(report.scholastic.scholasticDetails);
+                if(showExamNames === false){
+                    if(report.scholastic.scholasticDetails.overall){
+                        var newTh = document.createElement("th");
+                        connectingRow.appendChild(newTh);
+                        newTh.innerHTML= "Overall";
+                        newTh.style.border = "1px solid black";
+                        newTh.setAttribute("colspan", 1 );
+                        newTh.setAttribute("rowspan", 1);
+                        if((report.scholastic.scholasticDetails.overall.showMarks) === true &&
+                            (report.scholastic.scholasticDetails.overall.showGrade) === true ){
+                            newTh.setAttribute("colspan", 2 );
+                        }
+                        else{
+                            newTh.setAttribute("colspan", 1 );
+                        }
+                    }
+                }
+            }
 
-                var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
-                addingRow.appendChild(newTd);
-                newTd.textContent = "Marks";
-                var newTd = document.createElement("td");
-                newTd.className = "forReportTable";
+            // Displaying "Marks" and "Grades" in Scholastic Area
+            var newTr = document.createElement("tr");
+            var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+            connectingRow.appendChild(newTr);
+            for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
+                for(var j=0; j<(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length; j++){
+                    if((report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showMarks) === true){
+                        var newTd = document.createElement("td");
+                        newTr.appendChild(newTd);
+                        newTd.textContent = "Marks";
+                        newTd.style.border = "1px solid black";
+                    }
+                    if((report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showGrade) === true){
+                        var newTd = document.createElement("td");
+                        newTr.appendChild(newTd);
+                        newTd.textContent = "Grade";
+                        newTd.style.border = "1px solid black";
+                    }
+                }
+            }
 
-                newTd.style.width = '43em';
-                newTd.style.border = '1px solid black';
-                newTd.style.borderCollapse= 'collapse';
-                newTd.style.textAlign= 'center';
+            // Displaying "marks" and "Grades in OverAll"
+            if(report.scholastic.scholasticDetails.overall){
+                if((report.scholastic.scholasticDetails.overall.showMarks) === true ){
+                    var newTd = document.createElement("td");
+                    newTr.appendChild(newTd);
+                    newTd.textContent = "Marks";
+                    newTd.style.border = "1px solid black";
+                }
+                if((report.scholastic.scholasticDetails.overall.showGrade) === true ){
+                    var newTd = document.createElement("td");
+                    newTr.appendChild(newTd);
+                    newTd.textContent = "Grade";
+                    newTd.style.border = "1px solid black";
+                }
+            }
+            // displaying data for Scholastic Area
+            for(var k=0; k<report.scholastic.subjectsArray.length; k++){
+                var newTr = document.createElement("tr");
+                var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                connectingRow.appendChild(newTr);
+                var newTh = document.createElement("th");
+                newTr.appendChild(newTh);
+                newTh.innerHTML = report.scholastic.subjectsArray[k];
+                newTh.style.border = "1px solid black";
+                newTh.style.textAlign = "left";
+                for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
+                    for(var j=0; j<(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length; j++){
+                        if((report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showMarks) === true){
+                            var newTd = document.createElement("td");
+                            newTr.appendChild(newTd);
+                            if(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].marks[report.scholastic.subjectsArray[k]]){
+                                newTd.textContent = report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].marks[report.scholastic.subjectsArray[k]];
+                                newTd.style.border = "1px solid black";
+                            }
+                            else{
+                                newTd.textContent = "N/A";
+                                newTd.style.border = "1px solid black";
+                                newTd.style.color = "red";
+                            }
+                        }
+                        if((report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].showGrade) === true){
+                            var newTd = document.createElement("td");
+                            newTr.appendChild(newTd);
+                            if(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].grade[report.scholastic.subjectsArray[k]]){
+                                newTd.textContent = report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].grade[report.scholastic.subjectsArray[k]];
+                                newTd.style.border = "1px solid black";
+                            }
+                            else{
+                                newTd.textContent = "N/A";
+                                newTd.style.border = "1px solid black";
+                                newTd.style.color = "red";
+                            }
+                            if(report.colorForGrades){
+                                newTd.style.backgroundColor = report.colorForGrades[report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].grade[report.scholastic.subjectsArray[k]]];
+                            }
+                        }
+                    }
+                }
+                // Displaying data in overall
+                if(report.scholastic.scholasticDetails.overall){
+                    if((report.scholastic.scholasticDetails.overall.showMarks) === true ){
+                        var newTd = document.createElement("td");
+                        newTr.appendChild(newTd);
+                        if(report.scholastic.scholasticDetails.overall.marks[report.scholastic.subjectsArray[k]]){
+                            newTd.textContent = report.scholastic.scholasticDetails.overall.marks[report.scholastic.subjectsArray[k]];
+                            newTd.style.border = "1px solid black";
+                        }
+                        else{
+                            newTd.textContent = "N/A";
+                            newTd.style.border = "1px solid black";
+                            newTd.style.color = "red";
+                        }
+                    }
+                    if((report.scholastic.scholasticDetails.overall.showGrade) === true ){
+                        var newTd = document.createElement("td");
+                        newTr.appendChild(newTd);
+                        if(report.scholastic.scholasticDetails.overall.grade[report.scholastic.subjectsArray[k]]){
+                            newTd.textContent = report.scholastic.scholasticDetails.overall.grade[report.scholastic.subjectsArray[k]];
+                            newTd.style.border = "1px solid black";
+                        }
+                        else{
+                            newTd.textContent = "N/A";
+                            newTd.style.border = "1px solid black";
+                            newTd.style.color = "red";
+                        }
+                        for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
+                            for(var j=0; j<(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length; j++){
+                                if(report.colorForGrades){
+                                    newTd.style.backgroundColor = report.colorForGrades[report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].grade[report.scholastic.subjectsArray[k]]];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-                var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
-                addingRow.appendChild(newTd);
-                newTd.textContent = "Grade";
+            if(report.scholastic.scholasticDetails.overall){
+                if(((report.scholastic.scholasticDetails.overall.showMarks) === true )
+                    &&((report.scholastic.scholasticDetails.overall.showGrade) === true )=== true){
+                    var newTr = document.createElement("tr");
+                    var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                    connectingRow.appendChild(newTr);
+                    var newTh = document.createElement("th");
+                    newTr.appendChild(newTh);
+                    newTh.textContent = "Overall Marks: "+ report.scholastic.scholasticDetails.overall.overAllMarks;
+                    newTh.setAttribute("colspan", document.getElementById('markstable').rows[3].cells.length/2);
+                    var newTh = document.createElement("th");
+                    newTr.appendChild(newTh);
+                    newTh.textContent = "Overall Grade: "+ report.scholastic.scholasticDetails.overall.overAllGrade;
+                    newTh.setAttribute("colspan", document.getElementById('markstable').rows[3].cells.length/2);
+
+                }
+                else{
+                    if((report.scholastic.scholasticDetails.overall.showMarks) === true ){
+                        var newTr = document.createElement("tr");
+                        var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                        connectingRow.appendChild(newTr);
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = "Overall Marks: "+ report.scholastic.scholasticDetails.overall.overAllMarks;
+                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length].cells.length);
+                    }
+                    if((report.scholastic.scholasticDetails.overall.showGrade) === true ){
+                        var newTr = document.createElement("tr");
+                        var connectingRow = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+                        connectingRow.appendChild(newTr);
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = "Overall Grade: "+ report.scholastic.scholasticDetails.overall.overAllGrade;
+                        newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length].cells.length);
+                    }
+                }
+            }
+
+
+            // creating Header saying "Scholastic Area"
+            var newTr = document.createElement("tr");
+            var addingTrBefore = document.getElementsByClassName("term-table")[1].getElementsByTagName("tbody")[0];
+            addingTrBefore.insertBefore(newTr, addingTrBefore.getElementsByTagName("tr")[0]);
+            var newTh = document.createElement("th");
+            newTr.appendChild(newTh);
+            newTh.textContent = "SCHOLASTIC";
+            if(report.schoolPrimaryColor === "#ffffff") {
+                newTh.style.color = "black";
+            } else {
+                newTh.style.color = "white";
+            }
+            newTh.style.backgroundColor = report.schoolPrimaryColor;
+
+            if(showExamNames){
+                newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length+3].cells.length);
+            }
+            if(showExamNames === false){
+                newTh.setAttribute("colspan", document.getElementById('markstable').rows[report.scholastic.subjectsArray.length+2].cells.length);
             }
 
         }
-        document.getElementById("examName").setAttribute("colspan", reportColSpan);
-        if (allGradesOnly) {
-            for (var i = 0; i < titleRows.length; i++) {
-                titleRows[i].setAttribute("rowspan", "1");
-            }
+        else{
+            document.getElementById("markstable").style.display = "none";
         }
     })();
 
-    (function createAndFillRows() {
-        for (var i = 0; i < report.subjectsArray.length; i++) {
+    // creating Non Scholastic table
+
+    (function forNonScholastic(){
+        if(report.nonScholastic){
+            var nsTable = Object.keys(report.nonScholastic);
             var newTr = document.createElement("tr");
-            newTr.className = "forReportTable";
-            var addingRow = document.getElementById("report-table").getElementsByTagName("tbody")[0];
-            addingRow.appendChild(newTr);
+            var connectingRow = document.getElementsByClassName("valuesTable")[1].getElementsByTagName("tbody")[0];
+            connectingRow.appendChild(newTr);
             var newTh = document.createElement("th");
-            newTh.className = "forReportTable";
-
-            newTh.style.width = '43em';
-            newTh.style.border = '1px solid black';
-            newTh.style.borderCollapse= 'collapse';
-            newTh.style.textAlign= 'center';
-
             newTr.appendChild(newTh);
-            newTh.innerHTML = report.subjectsArray[i];
-            for (var j = 0; j < titleRows.length; j++) {
-                var titleName = titleRows[j].innerHTML;
-                if (typeof titleName !== "undefined") {
-                    if (includes(titleName, titleNames)) {
-                        // add grades
-                        var gradeObject = report.marksAndGrades[titleName]["grade"];
-                        var marksObject = report.marksAndGrades[titleName]["marks"];
-                        if ((report.marksAndGrades[titleName]["showGrade"] === true) && (report.marksAndGrades[titleName]["showMarks"] === false)) {
-                            if (typeof gradeObject !== "undefined" &&
-                                typeof gradeObject[report.subjectsArray[i]] !== "undefined") {
-                                var newTd = document.createElement("td");
-                                newTd.className = "forReportTable";
+            newTh.textContent = "Subjects";
+            newTh.style.border = "1px solid black";
+            newTh.style.textAlign = "left";
+            newTh.style.width = "10cm"
+            for(var i=0; i<report.nonScholastic.nonScholasticDetails.length; i++){
+                var newTh = document.createElement("th");
+                newTr.appendChild(newTh);
+                newTh.textContent = report.nonScholastic.nonScholasticDetails[i].columnName;
+                newTh.style.border = "1px solid black";
+            }
+            for(var i=0; i<report.nonScholastic.subjectsArray.length; i++){
+                var newTr = document.createElement("tr");
+                var connectingRow = document.getElementsByClassName("valuesTable")[1].getElementsByTagName("tbody")[0];
+                connectingRow.appendChild(newTr);
+                var newTd = document.createElement("td");
+                newTr.appendChild(newTd);
+                newTd.textContent = report.nonScholastic.subjectsArray[i];
+                newTd.style.border = "1px solid black";
+                newTd.style.textAlign = "left";
+                newTd.style.width = "10cm"
+                for(var j=0; j<report.nonScholastic.nonScholasticDetails.length;j++){
+                    var newTd = document.createElement("td");
+                    newTr.appendChild(newTd);
+                    if(report.nonScholastic.nonScholasticDetails[j].values[report.nonScholastic.subjectsArray[i]]){
+                        newTd.textContent = report.nonScholastic.nonScholasticDetails[j].values[report.nonScholastic.subjectsArray[i]];
+                        if(report.colorForGrades){
+                            newTd.style.backgroundColor = report.colorForGrades[ report.nonScholastic.nonScholasticDetails[j].values[report.nonScholastic.subjectsArray[i]]]; //adding color for grades
+                        }
+                        newTd.style.border = "1px solid black";
+                    }
+                    else{
+                        newTd.textContent = "N/A";
+                        newTd.style.border = "1px solid black";
+                        newTd.style.color = "red";
+                    }
+                }
+            }
+            var newTr = document.createElement("tr");
+            var connectingHeadingRow = document.getElementsByClassName("valuesTable")[1].getElementsByTagName("tbody")[0];
+            connectingHeadingRow.insertBefore(newTr, connectingHeadingRow.getElementsByTagName("tr")[0]);
+            var newTh = document.createElement("th");
+            newTr.appendChild(newTh);
+            newTh.textContent = "NON SCHOLASTIC";
+            if(report.schoolPrimaryColor === "#ffffff") {
+                newTh.style.color = "black";
+            } else {
+                newTh.style.color = "white";
+            }
+            newTh.style.backgroundColor = report.schoolPrimaryColor;
+            newTh.setAttribute("colspan", document.getElementsByClassName('valuesTable')[1].rows[1].cells.length);
+        } else {
+            document.getElementById("valuesTable").style.display = "none";
+        }
+    })();
 
-                                newTd.style.width = '43em';
-                                newTd.style.border = '1px solid black';
-                                newTd.style.borderCollapse= 'collapse';
-                                newTd.style.textAlign= 'center';
 
-                                newTr.appendChild(newTd);
+    // creating Attributes table
+    (function creatingAttributesTable(){
+        if(report.attributes){
+            for(var i=0; i<report.attributes.length; i++){
+                var newTable = document.createElement("table");
+                var addingTable = document.getElementById("ForAttributesTable");
+                addingTable.appendChild(newTable);
+                newTable.style.width = "18cm";
+                newTable.style.border = "1px solid black";
+                newTable.style.borderCollapse = "collapse";
+                newTable.style.textAlign = "center";
+                newTable.style.marginTop = "20px";
+                var newTableBody = document.createElement("tbody");
+                newTable.appendChild(newTableBody);
+                var newTr = document.createElement("tr");
+                newTableBody.appendChild(newTr);
+                var newTh = document.createElement("th");
+                newTr.appendChild(newTh);
+                newTh.textContent = report.attributes[i].titleName;
+                newTh.style.borderCollapse = "collapse";
+                newTh.style.border = "1px solid black";
+                newTh.style.textAlign = "left";
+                newTh.style.width = "10cm";
+                var attributeDetailsNull = true;
+                if(report.attributes[i].attributeDetails){
+                    for(var j =0; j<report.attributes[i].attributeDetails.length; j++){
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = report.attributes[i].attributeDetails[j].columnName;
+                        newTh.style.borderCollapse = "collapse";
+                        newTh.style.border = "1px solid black";
+                        attributeDetailsNull = false;
+                    }
+                }
 
-                                newTd.innerHTML = gradeObject[report.subjectsArray[i]];
-                                forColoringGrade();
-                            } else {
-                                forElse();
+
+                // crearing body of the table
+
+                for(var j=0; j<report.attributes[i].fieldArray.length; j++){
+                    var newTr = document.createElement("tr");
+                    var addingRow = document.getElementById("ForAttributesTable").getElementsByTagName("tbody")[i];
+                    addingRow.appendChild(newTr);
+                    newTr.style.height = "18px";
+                    // checking for th or td
+                    var showAsHeader = false;
+                    if(report.attributes[i].boldColumnsArray){
+                        for(var k=0; k<report.attributes[i].boldColumnsArray.length; k++){
+                            if(report.attributes[i].fieldArray[j]===report.attributes[i].boldColumnsArray[k]){
+                                showAsHeader = true;
                             }
                         }
-                        if ((report.marksAndGrades[titleName]["showGrade"] === false) && (report.marksAndGrades[titleName]["showMarks"] === true)) {
-                            if (typeof marksObject !== "undefined" &&
-                                typeof marksObject[report.subjectsArray[i]] !== "undefined") {
-                                var newTd = document.createElement("td");
-                                newTd.className = "forReportTable";
-
-                                newTd.style.width = '43em';
-                                newTd.style.border = '1px solid black';
-                                newTd.style.borderCollapse= 'collapse';
-                                newTd.style.textAlign= 'center';
-
-                                newTr.appendChild(newTd);
-
-                                newTd.innerHTML = marksObject[report.subjectsArray[i]];
-                            } else {
-                                forElse();
+                    }
+                    if(showAsHeader){
+                        var newTh = document.createElement("th");
+                        newTr.appendChild(newTh);
+                        newTh.textContent = report.attributes[i].fieldArray[j];
+                        newTh.style.borderCollapse = "collapse";
+                        newTh.style.border = "1px solid black";
+                        newTh.style.textAlign = "left";
+                        for(var m=0; m<report.attributes[i].attributeDetails.length; m++){
+                            var newTh = document.createElement("th");
+                            newTr.appendChild(newTh);
+                            if(report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]] !== undefined){
+                                newTh.textContent = report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]];
+                                newTh.style.borderCollapse = "collapse";
+                                newTh.style.border = "1px solid black";
+                            }
+                            else{
+                                newTh.textContent = " ";
+                                newTh.style.borderCollapse = "collapse";
+                                newTh.style.border = "1px solid black";
+                                newTh.style.color = "red";
                             }
                         }
-                        if (((report.marksAndGrades[titleName]["showGrade"]) && (report.marksAndGrades[titleName]["showMarks"])) === true) {
-                            //add marks
-                            if (typeof marksObject !== "undefined" &&
-                                typeof marksObject[report.subjectsArray[i]] !== "undefined") {
+                    }
+                    else{
+                        var newTd = document.createElement("td");
+                        newTr.appendChild(newTd);
+                        newTd.textContent = report.attributes[i].fieldArray[j];
+                        newTd.style.height = "18px";
+                        newTd.style.borderCollapse = "collapse";
+                        newTd.style.border = "1px solid black";
+                        newTd.style.textAlign = "left";
+                        if(attributeDetailsNull === false){
+                            for(var m=0; m<report.attributes[i].attributeDetails.length; m++){
                                 var newTd = document.createElement("td");
-                                newTd.className = "forReportTable";
-
-                                newTd.style.width = '43em';
-                                newTd.style.border = '1px solid black';
-                                newTd.style.borderCollapse= 'collapse';
-                                newTd.style.textAlign= 'center';
-
                                 newTr.appendChild(newTd);
-
-                                newTd.innerHTML = marksObject[report.subjectsArray[i]];
-                            } else {
-                                forElse();
-                            }
-                            //add grades
-                            if (typeof gradeObject !== "undefined" &&
-                                typeof gradeObject[report.subjectsArray[i]] !== "undefined") {
-                                var newTd = document.createElement("td");
-                                newTd.className = "forReportTable";
-
-                                newTd.style.width = '43em';
-                                newTd.style.border = '1px solid black';
-                                newTd.style.borderCollapse= 'collapse';
-                                newTd.style.textAlign= 'center';
-
-                                newTr.appendChild(newTd);
-
-                                newTd.innerHTML = gradeObject[report.subjectsArray[i]];
-                                forColoringGrade();
-
-                            } else {
-                                forElse();
-                            }
-                        }
-
-                        function forElse() {
-                            var newTd = document.createElement("td");
-                            newTd.className = "forReportTable";
-
-                            newTd.style.width = '43em';
-                            newTd.style.border = '1px solid black';
-                            newTd.style.borderCollapse= 'collapse';
-                            newTd.style.textAlign= 'center';
-
-                            newTr.appendChild(newTd);
-                            newTd.innerHTML = "N/A"
-                            newTd.style.color = "red";
-                        }
-
-                        function forColoringGrade() {
-                            if (report.colorForGrades != undefined || report.colorForGrades != null) {
-                                var gradeType = Object.keys(report.colorForGrades);
-                                var gradeColor = getValues(report.colorForGrades, gradeType);
-                                for (var k = 0; k < gradeType.length; k++) {
-                                    if (gradeObject[report.subjectsArray[i]] === gradeType[k]) {
-                                        newTd.style.backgroundColor = gradeColor[k];
-                                    }
+                                if(report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]] !== undefined){
+                                    newTd.textContent = report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]];
+                                    newTd.style.borderCollapse = "collapse";
+                                    newTd.style.border = "1px solid black";
+                                }
+                                else{
+                                    newTd.textContent = " ";
+                                    newTd.style.borderCollapse = "collapse";
+                                    newTd.style.border = "1px solid black";
+                                    newTd.style.color = "red";
                                 }
                             }
-
                         }
                     }
                 }
@@ -301,81 +581,58 @@
         }
     })();
 
-    function includes(object, listOfObjects) {
-        for (var i = 0; i < listOfObjects.length; i++) {
-            if (object === listOfObjects[i]) {
-                return true;
+
+    // remarks
+    if(report.remarks){
+        document.getElementById("remarks").textContent = report.remarks;
+        if(report.schoolPrimaryColor === "#ffffff") {
+            document.getElementById("remark-header").style.color = "black";
+        } else {
+            document.getElementById("remark-header").style.color = "white";
+        }
+        document.getElementById("remark-header").style.backgroundColor = report.schoolPrimaryColor;
+    }
+    else{
+        document.getElementById("remarks-block").style.display = "none";
+    }
+
+    // grade table
+
+
+    (function gradeTable(){
+        if(report.definingGrade){
+            var grades = Object.keys(report.definingGrade);
+            for(var i=0; i<grades.length; i++){
+                var newTd = document.createElement("td");
+                var connectTd = document.getElementById("Marks_Range_Row");
+                connectTd.appendChild(newTd);
+                newTd.textContent = grades[i];
+                newTd.style.border = "1px solid black";
+            }
+            for(var i=0; i<grades.length; i++){
+                var newTd = document.createElement("td");
+                var connectTd = document.getElementById("Grade_Row");
+                connectTd.appendChild(newTd);
+                newTd.textContent = report.definingGrade[grades[i]];
+                newTd.style.border = "1px solid black";
+                if(report.colorForGrades){
+                    newTd.style.backgroundColor = report.colorForGrades[grades[i]];
+                }
             }
         }
-        return false;
-    }
-
-    function getValues(object, keys) {
-        var result = new Array();
-        for (var i = 0; i < keys.length; i++) {
-            result[i] = object[keys[i]];
+        else{
+            document.getElementById("GradingScaleTable").style.display = "none";
         }
-        return result;
+    })();
+
+
+    // abbrevations
+    if(report.note){
+        document.getElementById("abbrevations").getElementsByTagName("b")[0].textContent = report.note;
     }
-
-    // for displaying grade range
-    var gradeColSpan = 2;
-    var storingGrades = Object.keys(report.definingGrades);
-    var t = Math.ceil(storingGrades.length / 4);  //roundfigure value
-    for (let x = 0; x < 4; x++) {
-        var newTr = document.createElement("tr");
-        var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tbody")[0];
-        gradeColSpan+=2;
-        addingRow.appendChild(newTr);
-        for (var y = 0; y < (storingGrades.length / 4); y++) {
-            if (storingGrades[t * (x) + y] !== undefined) {
-                var newTd = document.createElement("td");
-
-                newTd.style.width = '43em';
-                newTd.style.border = '1px solid black';
-                newTd.style.borderCollapse= 'collapse';
-                newTd.style.textAlign= 'center';
-
-                newTr.appendChild(newTd);
-                newTd.innerHTML = storingGrades[t * (x) + y];
-                var newTd = document.createElement("td");
-
-                newTd.style.width = '43em';
-                newTd.style.border = '1px solid black';
-                newTd.style.borderCollapse= 'collapse';
-                newTd.style.textAlign= 'center';
-
-                newTr.appendChild(newTd);
-                newTd.innerHTML = report.definingGrades[storingGrades[t * (x) + y]];
-            }
-        }
+    else{
+        document.getElementById("abbrevations").style.display = "none";
     }
-    document.getElementById("gradingScale").setAttribute("colspan", reportColSpan);
-
-    //for displaying grades and range (headings)
-    for (var x = 0; x < ((storingGrades.length / 4) - 1); x++) {
-        var newTh = document.createElement("th");
-
-        newTh.style.width = '43em';
-        newTh.style.border = '1px solid black';
-        newTh.style.borderCollapse= 'collapse';
-        newTh.style.textAlign= 'center';
-
-        var addingRow = document.getElementById("GradingScaleTable").getElementsByTagName("tr")[1];
-        addingRow.appendChild(newTh);
-
-        newTh.style.width = '43em';
-        newTh.style.border = '1px solid black';
-        newTh.style.borderCollapse= 'collapse';
-        newTh.style.textAlign= 'center';
-
-        newTh.textContent = "Grade";
-        var newTh = document.createElement("th");
-        addingRow.appendChild(newTh);
-        newTh.textContent = "Range of Marks(/100)";
-
-    }
-
 </script>
 </body>
 </html>

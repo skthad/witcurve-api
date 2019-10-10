@@ -5,6 +5,7 @@ import com.witcurve.domain.enumeration.Grade;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable {
@@ -36,6 +37,9 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     private CourseDTO courseDTO;
 
+    private LocalDate eventOrExamDate;
+
+    private String examName;
 
     public Long getId() {
         return id;
@@ -123,6 +127,22 @@ public class StudentMarksDTO extends AbstractAuditingDTO implements Serializable
 
     public void setCourseDTO(CourseDTO courseDTO) {
         this.courseDTO = courseDTO;
+    }
+
+    public LocalDate getEventOrExamDate() {
+        return eventOrExamDate;
+    }
+
+    public void setEventOrExamDate(LocalDate eventOrExamDate) {
+        this.eventOrExamDate = eventOrExamDate;
+    }
+
+    public String getExamName() {
+        return examName;
+    }
+
+    public void setExamName(String examName) {
+        this.examName = examName;
     }
 
     @Override

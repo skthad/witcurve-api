@@ -40,6 +40,17 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query(value = "select distinct e.id from event e\n" +
         "left join slot_course_details scd on scd.id = e.scd_id\n" +
         "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
+        "left join course_teacher ct on ct.id = e.course_teacher_id \n" +
+        "left join course_teacher ct1 on ct1.id = scd.course_teacher_id \n" +
+        "where e.date BETWEEN ?1 AND ?2 AND \n" +
+        "((ct1.course_id=?4 and gsd.standard_id = ?3 and e.type = 'TEST') or \n" +
+        "(ct.course_id=?4 and ct.standard_id = ?3 and e.type = 'ASSIGNMENT') OR \n" +
+        "(e.course_id=?4 and e.type = 'PERIODIC_TEST'))", nativeQuery = true)
+    List<BigInteger> findMarksEventsByDateRangeForStudent(LocalDate startDate, LocalDate endDate, Long standardId, Long courseId);
+
+    @Query(value = "select distinct e.id from event e\n" +
+        "left join slot_course_details scd on scd.id = e.scd_id\n" +
+        "left join general_slot_details gsd on gsd.id = scd.gsd_id\n" +
         "left join course_teacher ct on ct.id = scd.course_teacher_id \n" +
         "where e.date BETWEEN ?1 AND ?2 AND \n" +
         "(ct.course_id in ?4 and gsd.standard_id = ?3 and e.type in ?5)", nativeQuery = true)
@@ -116,6 +127,12 @@ public interface EventRepository  extends JpaRepository<Event, Long> {
     @Query("Select e from Event e where e.date between ?1 and ?2 and e.student.id = ?3 " +
         "and e.type = 'ATTENDANCE' order by e.date desc")
     List<Event> findAttendanceForStudent(LocalDate fromDate, LocalDate toDate, Long student);
+
+    @Query("Select count (e) from Event e where e.date between ?1 and ?2 and e.student.id = ?3 " +
+        "and e.type = 'ATTENDANCE' and e.attendanceType='PRESENT' order by e.date desc")
+    Integer findPresentCountForStudent(LocalDate fromDate, LocalDate toDate, Long student);
+
+
 
     @Query("select distinct e.staff.id from Event e where e.type = 'ATTENDANCE' and e.attendanceType ='ABSENT' " +
         "and e.staff is not null and e.staff.id in ?1 and e.date = ?2")

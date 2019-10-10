@@ -8,6 +8,7 @@ import com.witcurve.repository.*;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.CourseMapper;
+import com.witcurve.service.util.CourseComparator;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    ExamCourseDetailsRepository examCourseDetailsRepository;
+
+    @Autowired
+    ExamRepository examRepository;
+
+    @Autowired
+    ReportCardDesignRepository reportCardDesignRepository;
 
     @Override
     public CourseDTO saveOrUpdate(CourseDTO courseDTO) {
@@ -148,6 +158,35 @@ public class CourseServiceImpl implements CourseService {
             }
         }
         return courseMapper.toDto(courses);
+    }
+
+    @Override
+    public List<CourseDTO> getCourseByExamIdAndGradeAndCourseType(Long examId, Grade grade, CourseType courseType) {
+        log.debug("Request to get courses for exam with id : {} and for grade : {} of course type {}", examId, grade, courseType);
+        List<CourseDTO> result = new ArrayList<>();
+        Optional<Exam> exam = examRepository.findById(examId);
+        if (!exam.isPresent()) {
+            throw  new WitcurveException("No Exam with given Id " + examId);
+        }
+        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(exam.get().getSchoolInfo().getId(), exam.get().getEndDate());
+        if(academicSession == null) {
+            throw new WitcurveException("No nearest active session found");
+        }
+        if(courseType.equals(CourseType.SCHOLASTIC)) {
+            List<Course> courses = examCourseDetailsRepository.findScholasticCourse(grade, academicSession.getStartDate(), exam.get().getEndDate());
+            Collections.sort(courses, new CourseComparator());
+            result = courseMapper.toDto(courses);
+        } else {
+            Set<Course> courses = new HashSet<>();
+            List<ReportCardDesign> rcds = reportCardDesignRepository.getNonScholasticReportCardDesigns(grade, academicSession.getStartDate(), exam.get().getEndDate());
+            for(ReportCardDesign reportCardDesign : rcds) {
+                courses.addAll(reportCardDesign.getCourses());
+            }
+            List<Course> courseList = new ArrayList<>(courses);
+            Collections.sort(courseList, new CourseComparator());
+            result = courseMapper.toDto(courseList);
+        }
+        return result;
     }
 
     @Override

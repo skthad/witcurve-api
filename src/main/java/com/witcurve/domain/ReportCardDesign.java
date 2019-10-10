@@ -77,6 +77,7 @@ public class ReportCardDesign extends AbstractAuditingEntity implements Serializ
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="report_card_design_id")
+    @OrderBy("title_order asc, column_order asc, field_order asc")
     private List<Attribute> attributes;
 
     public Long getId() {

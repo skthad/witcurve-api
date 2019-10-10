@@ -9,6 +9,7 @@ import com.witcurve.service.dto.StudentMarksDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, Studen
     @Mapping(target= "grade", expression = "java(getGrade(studentMarks.getStudent()))")
     @Mapping(target= "section", expression = "java(getSection(studentMarks.getStudent()))")
     @Mapping(target= "rollNo", expression = "java(getRollNo(studentMarks.getStudent()))")
+    @Mapping(target = "eventOrExamDate", expression = "java(getDate(studentMarks))")
+    @Mapping(target = "examName", expression = "java(getExamName(studentMarks))")
     StudentMarksDTO toDto(StudentMarks studentMarks);
 
     @Mapping(source = "studentId", target = "student")
@@ -81,6 +84,38 @@ public interface StudentMarksMapper extends EntityMapper<StudentMarksDTO, Studen
             return studentStandards.get(0).getRollNo();
         }
         return null;
+    }
+
+    default LocalDate getDate(StudentMarks studentMarks) {
+        if(studentMarks == null) {
+            return null;
+        }
+        if(studentMarks.getEvent()!= null) {
+            if(studentMarks.getEvent().getDate() != null) {
+                return studentMarks.getEvent().getDate();
+            }
+        } else if(studentMarks.getReportCardDesign() != null){
+            if(studentMarks.getReportCardDesign().getExam()!=null) {
+                return studentMarks.getReportCardDesign().getExam().getStartDate();
+            }
+        }
+        return null;
+    }
+
+    default String getExamName(StudentMarks studentMarks) {
+        if (studentMarks == null) {
+            return null;
+        } else {
+            if(studentMarks.getReportCardDesign() == null) {
+                return null;
+            } else {
+                if(studentMarks.getReportCardDesign().getExam() == null) {
+                    return null;
+                } else {
+                    return studentMarks.getReportCardDesign().getExam().getName();
+                }
+            }
+        }
     }
 
 }

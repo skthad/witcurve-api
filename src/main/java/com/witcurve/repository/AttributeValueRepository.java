@@ -21,4 +21,7 @@ public interface AttributeValueRepository extends JpaRepository<AttributeValue,L
     @Query("delete from AttributeValue av where av.id in ?1")
     void deleteAttributeValueByIds(List<Long> ids);
 
+    @Query("Select av from AttributeValue av where av.student.id=?1 and av.attribute.id=?2")
+    AttributeValue findByStudentIdAndAttributeId(Long studentId, Long attributeId);
+
 }
