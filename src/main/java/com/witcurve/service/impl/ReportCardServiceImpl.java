@@ -484,7 +484,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                     if(attributeValue != null) {
                         fieldValue.put(attribute.getField(), attributeValue.getValue());
                     }
-                    log.info("\n\n\n\n Field Value \n\n\n\n\n\n\n\n\n\n\n");
+                    log.info("\n\n\n\n Field Value :"+fieldValue+"\n\n\n\n\n\n\n\n\n\n\n");
                     attributeDetailVM.setValues(fieldValue);
                 }
                 attributeVM.addAttributeDetails(attributeDetailVM);
