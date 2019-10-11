@@ -52,6 +52,7 @@ public class AttributeValueServiceImpl implements AttributeValueService {
         }else {
             listOfAttributeValue = attributeValueRepository.findByStudentIdAndRcdId(studentId, rcdId);
         }
+        System.out.println("\n\n\n "+listOfAttributeValue+"\n\n\n");
        return attributeValueMapper.toDto(listOfAttributeValue);
     }
 
