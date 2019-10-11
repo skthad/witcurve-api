@@ -63,12 +63,14 @@ public class WitCurveConstants {
     public static final String DAILY_UPDATE= " {{subject}} Daily Update has been posted";
 
     //When student Marks Saved
-    public static final String TEST_MARKS_SAVE = " Marks have been posted for {{subjectName}} Test conducted on {{date}} ";
+    public static final String TEST_MARKS_SAVE = " {{subjectName}} Marks for Test conducted on {{date}} has been posted";
 
-    public static final String ASSIGNMENT_MARKS_SAVE = "Marks have been posted for {{subjectName}} Assignment submitted on {{date}} ";
+    public static final String ASSIGNMENT_MARKS_SAVE = " {{subjectName}} Marks for Assignment conducted on {{date}} has been posted";
 
-    public static final String PERIODIC_TEST_MARKS_SAVE = "Marks have been posted for {{subjectName}} Periodic Test conducted on {{date}} ";
+    public static final String PERIODIC_TEST_MARKS_SAVE = " {{subjectName}} Marks for Periodic Test conducted on {{date}} has been posted ";
 
-    public static final String EXAM_MARKS_SAVE = "Marks have been posted for {{subjectName}} for {{examName}}" ;
+    public static final String EXAM_MARKS_SAVE = " {{subjectName}} Marks for {{examName}} has been posted" ;
+
+    public static final String REPORT_CARD = " {{examName}} ReportCard is available for download";
 
 }

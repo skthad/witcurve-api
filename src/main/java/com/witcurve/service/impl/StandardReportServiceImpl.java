@@ -8,10 +8,7 @@ import com.witcurve.repository.ReportCardRepository;
 import com.witcurve.repository.StandardReportRepository;
 import com.witcurve.repository.StandardRepository;
 import com.witcurve.repository.StudentStandardRepository;
-import com.witcurve.service.AttachmentService;
-import com.witcurve.service.ReportCardService;
-import com.witcurve.service.StandardReportService;
-import com.witcurve.service.StudentReportService;
+import com.witcurve.service.*;
 import com.witcurve.service.dto.StudentReportDTO;
 import com.witcurve.service.mapper.StandardReportMapper;
 import com.witcurve.service.util.WitcurveUtil;
@@ -62,6 +59,9 @@ public class StandardReportServiceImpl implements StandardReportService {
 
     @Autowired
     ReportCardRepository reportCardRepository;
+
+    @Autowired
+    SnsService snsService;
 
     public StandardReportDTO saveOrUpdate(StandardReportDTO standardReportDTO) {
         log.debug("Request to save standard report : {}", standardReportDTO);
@@ -159,6 +159,9 @@ public class StandardReportServiceImpl implements StandardReportService {
         standardReportDTO = saveOrUpdate(standardReportDTO);
         standardReportDTO.setStandardName(standard.get().getGrade()+"_"+standard.get().getSection());
         standardReportDTO.setExamName(reportCard.get().getExam().getName());
+       if(standardReport == null) {
+           snsService.sendPushNotificationForReportCard(standardReportDTO);
+       }
         return standardReportDTO;
     }
 
