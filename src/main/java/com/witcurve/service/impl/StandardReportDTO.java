@@ -30,6 +30,8 @@ public class StandardReportDTO extends AbstractAuditingDTO implements Serializab
 
     private String examName;
 
+    private Boolean isExists = false;
+
     public Long getId() {
         return id;
     }
@@ -101,6 +103,10 @@ public class StandardReportDTO extends AbstractAuditingDTO implements Serializab
     public void setExamName(String examName) {
         this.examName = examName;
     }
+
+    public Boolean getExists() { return isExists; }
+
+    public void setExists(Boolean exists) { isExists = exists; }
 
     @Override
     public String toString() {

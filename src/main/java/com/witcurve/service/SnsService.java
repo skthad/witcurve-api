@@ -585,15 +585,16 @@ public class SnsService {
         }
     }
 
-    @Async
     public void sendPushNotificationForReportCard(StandardReportDTO standardReportDTO) {
-        log.info("\n about to send push notification for report card download \n");
-        Map<String, String> varMap = new HashMap<>();
-        varMap.put("examName", standardReportDTO.getExamName());
-        List<UserMobileEndPoint> userMobileEndPointOfStudents = userMobileEndPointRepository.findByStandardId(standardReportDTO.getStandardId());
-        String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPointOfStudents);
-        String url = "?userId=" + stringOfUserIds + "&gradeCard=true";
-        publishBulkMessage(WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.REPORT_CARD), url, TopicType.STANDARD, null, standardReportDTO.getStandardId());
+        if (standardReportDTO.getStatus().equals(ReportStatus.SUCCESS) && !standardReportDTO.getExists()) {
+            log.info("\n about to send push notification for report card download \n");
+            Map<String, String> varMap = new HashMap<>();
+            varMap.put("examName", standardReportDTO.getExamName());
+            List<UserMobileEndPoint> userMobileEndPointOfStudents = userMobileEndPointRepository.findByStandardId(standardReportDTO.getStandardId());
+            String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPointOfStudents);
+            String url = "?userId=" + stringOfUserIds + "&gradeCard=true";
+            publishBulkMessage(WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.REPORT_CARD), url, TopicType.STANDARD, null, standardReportDTO.getStandardId());
+        }
     }
 
     private String convertToCommaSeparatedStringOfUserIds(List<UserMobileEndPoint> listOfUserMobileEndPoint) {
