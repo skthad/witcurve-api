@@ -75,9 +75,11 @@ public class HtmlToPdfUtil {
             if(!resourceFile.exists()) {
                 throw new WitcurveException("Template file not found");
             }
+            log.info("\n\n\n report card vm "+reportCardVM+"\n\n\n");
             String contents = new String(Files.readAllBytes(Paths.get(resourceFile.getAbsolutePath())));
             ObjectMapper mapper = new ObjectMapper();
             String objectJson = mapper.writeValueAsString(reportCardVM);
+            log.info("\n\n\n report card vm "+objectJson+"\n\n\n");
             contents = contents.replace("{{report}}", objectJson);
             File inputFile = WitcurveUtil.createTempFile("parsed-template.html");
             FileWriter fw=new FileWriter(inputFile);
