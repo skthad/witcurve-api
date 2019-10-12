@@ -164,6 +164,9 @@ public class ConfigSettingsServiceImpl implements ConfigSettingsService {
                 }
                 break;
             case STRING:
+                if (existingSetting.getConfigType().equals(ConfigType.GRADING_SCALE_COLOR)) {
+                    existingSetting.setDisplayFieldName(configSetting.getDisplayFieldName().trim());
+                }
                 // no validation required
                 break;
             case BOOLEAN:

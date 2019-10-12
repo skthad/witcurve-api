@@ -8,6 +8,7 @@ import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.dto.*;
+import com.witcurve.service.impl.StandardReportDTO;
 import com.witcurve.service.util.WitCurveConstants;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -581,6 +582,18 @@ public class SnsService {
                     }
                 }
             }
+        }
+    }
+
+    public void sendPushNotificationForReportCard(StandardReportDTO standardReportDTO) {
+        if (standardReportDTO.getStatus().equals(ReportStatus.SUCCESS) && !standardReportDTO.getExists()) {
+            log.info("\n about to send push notification for report card download \n");
+            Map<String, String> varMap = new HashMap<>();
+            varMap.put("examName", standardReportDTO.getExamName());
+            List<UserMobileEndPoint> userMobileEndPointOfStudents = userMobileEndPointRepository.findByStandardId(standardReportDTO.getStandardId());
+            String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPointOfStudents);
+            String url = "?userId=" + stringOfUserIds + "&gradeCard=true";
+            publishBulkMessage(WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.REPORT_CARD), url, TopicType.STANDARD, null, standardReportDTO.getStandardId());
         }
     }
 
