@@ -1,11 +1,12 @@
 package com.witcurve.web.rest.vm;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ReportCardVM {
+public class ReportCardVM  implements Serializable {
 
 //    private ScholasticVM.ScholasticDetailsVM scholasticDetailVM = new ScholasticDetailsVM();
 //    private  ScholasticVM scholasticVM = new ScholasticVM();
@@ -191,7 +192,7 @@ public class ReportCardVM {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public static class ScholasticVM {
+    public static class ScholasticVM  implements Serializable {
 
         @NotNull
         private List<String> subjectsArray;
@@ -216,7 +217,7 @@ public class ReportCardVM {
         }
 
 
-        public static class ScholasticDetailsVM {
+        public static class ScholasticDetailsVM implements Serializable {
 
             private List<ExamDetailsVM> examDetails;
 
@@ -253,7 +254,7 @@ public class ReportCardVM {
                     '}';
             }
 
-            public static class ExamDetailsVM {
+            public static class ExamDetailsVM implements Serializable {
 
                 @NotNull
                 private String examName;
@@ -292,7 +293,7 @@ public class ReportCardVM {
                         '}';
                 }
 
-                public static class MarksAndGradeDetailsVM  {
+                public static class MarksAndGradeDetailsVM  implements Serializable {
 
                     @NotNull
                     private String name;
@@ -371,7 +372,7 @@ public class ReportCardVM {
                 }
             }
 
-            public static class OverallVM {
+            public static class OverallVM implements Serializable {
 
                 private Map<String, String> marks;
 
@@ -452,7 +453,7 @@ public class ReportCardVM {
         }
     }
 
-    public static class NonScholasticVM {
+    public static class NonScholasticVM implements Serializable {
 
         @NotNull
         private String titleName = "Subjects";
@@ -503,7 +504,7 @@ public class ReportCardVM {
         }
     }
 
-    public static class AttributeVM {
+    public static class AttributeVM implements Serializable {
 
         @NotNull
         private String titleName;
@@ -566,7 +567,7 @@ public class ReportCardVM {
         }
     }
 
-    public static class AttributeDetailVM {
+    public static class AttributeDetailVM implements Serializable {
 
         @NotNull
         private String columnName;
