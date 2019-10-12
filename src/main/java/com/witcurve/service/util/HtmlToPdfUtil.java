@@ -33,7 +33,6 @@ public class HtmlToPdfUtil {
             FileWriter fw=new FileWriter(inputFile);
             fw.write(xml);
             fw.close();
-            log.info("\n\n\n with xml file : "+inputFile+"\n\n\n");
             File output = WitcurveUtil.createTempFile(name+".pdf");
             PdfWriter writer = new PdfWriter(output);
             HtmlConverter.convertToPdf(xml, writer);
@@ -58,7 +57,6 @@ public class HtmlToPdfUtil {
             String script = StringUtils.substringBetween(xml, "<script>", "</script>");
             xml = xml.replace(script, "");
             xml = xml.replace("<script></script>", "");
-            log.info("\n\n\n xml generated " +xml+"\n\n\n");
             return xml;
         } catch (IOException e) {
             log.debug("There was problem while reading while converting template, : {}", e.getMessage());
@@ -75,17 +73,18 @@ public class HtmlToPdfUtil {
             if(!resourceFile.exists()) {
                 throw new WitcurveException("Template file not found");
             }
-            log.info("\n\n\n report card vm "+reportCardVM+"\n\n\n");
+            log.info("\n\n\n reportCard VM : "+reportCardVM+"\n\n\n");
+
+            log.info("\n\n\n tick  : ✔  \n\n\n");
             String contents = new String(Files.readAllBytes(Paths.get(resourceFile.getAbsolutePath())));
             ObjectMapper mapper = new ObjectMapper();
             String objectJson = mapper.writeValueAsString(reportCardVM);
-            log.info("\n\n\n report card vm "+objectJson+"\n\n\n");
+
             contents = contents.replace("{{report}}", objectJson);
             File inputFile = WitcurveUtil.createTempFile("parsed-template.html");
             FileWriter fw=new FileWriter(inputFile);
             fw.write(contents);
             fw.close();
-            log.info("\n\n\n report replaced"+inputFile+"\n\n\n");
             return inputFile;
         } catch (IOException e) {
             log.debug("Error while parsing template with reportCardVM : {}",e.getMessage());
