@@ -155,13 +155,15 @@ public class StandardReportServiceImpl implements StandardReportService {
             }
             standardReport.setStatus(ReportStatus.IN_PROCESS);
             standardReportDTO = standardReportMapper.toDto(standardReport);
+
         }
         standardReportDTO = saveOrUpdate(standardReportDTO);
         standardReportDTO.setStandardName(standard.get().getGrade()+"_"+standard.get().getSection());
         standardReportDTO.setExamName(reportCard.get().getExam().getName());
-       if(standardReport == null) {
-           snsService.sendPushNotificationForReportCard(standardReportDTO);
-       }
+
+        if(standardReport!=null){
+            standardReportDTO.setExists(true);
+        }
         return standardReportDTO;
     }
 
@@ -226,12 +228,11 @@ public class StandardReportServiceImpl implements StandardReportService {
             standardReportDTO.setFailureReason("UnknownException : "+e.getMessage());
         }
         saveOrUpdate(standardReportDTO);
+        snsService.sendPushNotificationForReportCard(standardReportDTO);
     }
 
     private static void addToZipFile(File file, ZipOutputStream zos) throws IOException {
         System.out.println("Writing '" + file.getName() + "' to zip file");
-
-
         FileInputStream fis = new FileInputStream(file);
         ZipEntry zipEntry = new ZipEntry(file.getName());
         zos.putNextEntry(zipEntry);
@@ -245,7 +246,4 @@ public class StandardReportServiceImpl implements StandardReportService {
         zos.closeEntry();
         fis.close();
     }
-
-
-
 }
