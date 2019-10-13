@@ -165,7 +165,8 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     @Override
-    public Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader, String type) {
+    @Transactional(readOnly = true, noRollbackFor = WitcurveException.class)
+    public Page<File> getReportCardPreviewForStandard(Long reportCardId, Long standardId, Pageable pageable, Boolean showHeader, String type) throws WitcurveException {
         log.debug("Get report card preview with report card id : {} and for standard with id : {}", reportCardId, standardId);
         Optional<Standard> standard = standardRepository.findById(standardId);
         if (!standard.isPresent()) {
@@ -493,7 +494,7 @@ public class ReportCardServiceImpl implements ReportCardService {
         }
     }
 
-    private String getGrade(List<ConfigSettings> configSettingsList, Double marks, Double totalMarks) {
+    private String getGrade(List<ConfigSettings> configSettingsList, Double marks, Double totalMarks) throws WitcurveException {
         Double percent = (marks/totalMarks) * 100;
         String result = null;
         for(ConfigSettings configSettings : configSettingsList) {
