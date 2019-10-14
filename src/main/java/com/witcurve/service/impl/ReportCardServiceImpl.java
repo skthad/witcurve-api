@@ -446,6 +446,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                 for(Attribute attribute : attributes) {
                     if(previousTitle == null || !previousTitle.equals(attribute.getTitle())) {
                         freshTitle = true;
+                        previousColumn=null;
                         if(attributeVM != null) {
                             attributeVM.addAttributeDetails(attributeDetailVM);
                             reportCardVM.addAttributes(attributeVM);
@@ -485,7 +486,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                     if(attributeValue != null) {
                         fieldValue.put(attribute.getField(), attributeValue.getValue());
                     }
-                    log.info("\n\n\n\n Field Value :"+fieldValue+"\n\n\n\n\n\n\n\n\n\n\n");
                     attributeDetailVM.setValues(fieldValue);
                 }
                 attributeVM.addAttributeDetails(attributeDetailVM);
