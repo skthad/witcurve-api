@@ -45,8 +45,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     @Query("select distinct e from Exam e join fetch e.mainReportCardDesigns em where e.schoolInfo.id = ?1 and e.startDate between ?2 and ?3 and em.selected = true and em.grade= ?4 order by e.startDate desc")
     List<Exam> findByAcademicsSessionGradeAndReportCardDesign(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Grade grade);
 
-    //@Query("select e from Exam e join fetch e.mainReportCardDesigns em where e.schoolInfo.id = ?1 and e.startDate between ?2 and ?3  and em.selected = true and em.grade= ?4 order by e.startDate desc")
-    //List<Exam> findByAcademicsSessionGradeAndReportCardDesi(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Grade grade);
-
 }
 

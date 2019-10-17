@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -93,19 +92,21 @@ public class StudentPerformanceServiceImpl implements StudentPerformanceService 
         Double totalMarks = 0.0;
         for (ReportCardDesign reportCardDesign : reportCardDesigns) {
             if (reportCardDesign.getFieldType().equals(ReportFieldType.MAIN) || reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
-                //w.r.t rcdId and courseId and courseId there should be one record?? check It??
                 Double marks = studentMarksRepository.getStudentMarksByRcdIdAndCourseIdAndStudentId(reportCardDesign.getId(), course.getId(), studentStandard.getStudent().getId());
                 if (marks != null)
                     totalMarks = totalMarks + marks;
             }
         }
-        return totalMarks;
+        if (totalMarks != 0.0) {
+            return totalMarks;
+        }
+        return null;
     }
 
     private Double findClassAvg(Course course, List<ReportCardDesign> reportCardDesigns) {
         List<Double> listOfAvg = new ArrayList<>();
         List<Integer> listOfCounts = new ArrayList<>();
-        //   Map<Double, Integer> mapOf = new HashMap<>();
+
         for (ReportCardDesign reportCardDesign : reportCardDesigns) {
             if (reportCardDesign.getFieldType().equals(ReportFieldType.MAIN) || reportCardDesign.getFieldType().equals(ReportFieldType.MANUAL_ENTRY)) {
                 Double avg = studentMarksRepository.getAvg(course.getId(), reportCardDesign.getId(), reportCardDesign.getGrade());
