@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -41,9 +40,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     @Query("select distinct ecd.gsd.exam.id from ExamCourseDetails ecd where ecd.course.id in ?1 and ecd.gsd.exam.startDate between ?2 and ?3 and ecd.gsd.exam.status in ?4 order by ecd.gsd.exam.startDate desc")
     List<Long> findExamIdsForCourseIdsWithStatus(Set<Long> courseIds, LocalDate startDate, LocalDate endDate, List<ExamStatus> statuses);
-
-    @Query("select distinct e from Exam e join fetch e.mainReportCardDesigns em where e.schoolInfo.id = ?1 and e.startDate between ?2 and ?3 and em.selected = true and em.grade= ?4 order by e.startDate desc")
-    List<Exam> findByAcademicsSessionGradeAndReportCardDesign(Long schoolInfoId, LocalDate startDate, LocalDate endDate, Grade grade);
-
 }
 

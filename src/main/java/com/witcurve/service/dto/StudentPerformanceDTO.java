@@ -6,12 +6,12 @@ public class StudentPerformanceDTO {
 
     List<ExamMarksDTO> exams;
 
-    public static class ExamMarksDTO {
+    public class ExamMarksDTO {
 
         String examName;
         List<CourseMarksDTO> courseMarks;
 
-        public static class CourseMarksDTO {
+        public  class CourseMarksDTO {
             String subjectName;
             Double marks;
             Double sectionAvg;
