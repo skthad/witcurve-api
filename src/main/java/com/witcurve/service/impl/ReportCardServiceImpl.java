@@ -379,7 +379,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
                 overallVM.setGrade(overallGrade);
                 overallVM.setMarks(overallMarks);
-                overallVM.setOverAllMarks(overallFinalMarks.toString());
+                overallVM.setOverAllMarks(WitcurveUtil.formatDouble(overallFinalMarks));
                 if(reportCard.getShowOverallGrade()) {
                     overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
                 }
@@ -537,7 +537,12 @@ public class ReportCardServiceImpl implements ReportCardService {
             } else {
                 Integer min = Integer.parseInt(configSettings.getFieldValue());
                 if (min != null) {
-                    result.put(configSettings.getDisplayFieldName(), min.toString() + "-" + max.toString());
+                    if(min ==0) {
+                        result.put(configSettings.getDisplayFieldName(), max.toString()+" & Below");
+                    } else {
+                        result.put(configSettings.getDisplayFieldName(), min.toString() + "-" + max.toString());
+                    }
+
                 }
                 max = min - 1;
             }

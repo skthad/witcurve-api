@@ -22,7 +22,7 @@
     <tr>
         <td><b>Name:</b></td>
         <td><span id="nameOfStudent">Chota Bheem</span></td>
-        <td><b>Class:</b></td>
+        <td><b>Class & Section:</b></td>
         <td><span id="Class">X-A</span></td>
     </tr>
     <tr>
@@ -56,7 +56,7 @@
      style="width: 18cm ;display: block; border: 1px solid black; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 10px;">
     <h4 id="remark-header"
         style=" margin-top: 0px; margin-bottom: 0px; text-align: center; border-bottom: 1px solid black">
-        CLASS TEACHERS REMARKS
+        CLASS TEACHER'S REMARK
     </h4>
     <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
 </div>
@@ -386,7 +386,7 @@
             addingTrBefore.insertBefore(newTr, addingTrBefore.getElementsByTagName("tr")[0]);
             var newTh = document.createElement("th");
             newTr.appendChild(newTh);
-            newTh.textContent = "SCHOLASTIC";
+            newTh.textContent = "SCHOLASTIC AREA";
             if(report.schoolPrimaryColor === "#ffffff") {
                 newTh.style.color = "black";
             } else {
@@ -459,7 +459,7 @@
             connectingHeadingRow.insertBefore(newTr, connectingHeadingRow.getElementsByTagName("tr")[0]);
             var newTh = document.createElement("th");
             newTr.appendChild(newTh);
-            newTh.textContent = "NON SCHOLASTIC";
+            newTh.textContent = "CO-SCHOLASTIC AREA";
             if(report.schoolPrimaryColor === "#ffffff") {
                 newTh.style.color = "black";
             } else {
