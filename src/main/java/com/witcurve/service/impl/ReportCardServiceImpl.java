@@ -302,8 +302,9 @@ public class ReportCardServiceImpl implements ReportCardService {
                 for(StudentMarksDTO studentMarks : studentMarksList) {
                     Double finalMarks = Math.round(studentMarks.getMarks()*multiplyingFactor * 10)/10.0;
                     marksMap.put(studentMarks.getCourseDTO().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
-                    gradeMap.put(studentMarks.getCourseDTO().getDisplayName(), getGrade(configSettings, finalMarks, scholasticReportDetails.getMarksNormalisation()));
-
+                    if(scholasticReportDetails.getShowGrades()) {
+                        gradeMap.put(studentMarks.getCourseDTO().getDisplayName(), getGrade(configSettings, finalMarks, scholasticReportDetails.getMarksNormalisation()));
+                    }
                     if(totalMarksMap.get(titleChangeCounter) == null) {
                       totalMarksMap.put(titleChangeCounter, new LinkedHashMap<>());
                     }
@@ -372,12 +373,16 @@ public class ReportCardServiceImpl implements ReportCardService {
                     overallFinalMarks += finalMarks;
                     overallTotalMarks += overallFullMarks;
                     overallMarks.put(courseEntry.getKey().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
-                    overallGrade.put(courseEntry.getKey().getDisplayName(), getGrade(configSettings, finalMarks, overallFullMarks));
+                    if(reportCard.getShowOverallGrade()) {
+                        overallGrade.put(courseEntry.getKey().getDisplayName(), getGrade(configSettings, finalMarks, overallFullMarks));
+                    }
                 }
                 overallVM.setGrade(overallGrade);
                 overallVM.setMarks(overallMarks);
                 overallVM.setOverAllMarks(overallFinalMarks.toString());
-                overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
+                if(reportCard.getShowOverallGrade()) {
+                    overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
+                }
 
                 scholasticDetailsVM.setOverall(overallVM);
             }
