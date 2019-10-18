@@ -201,7 +201,11 @@ public class ReportCardServiceImpl implements ReportCardService {
             reportCardVM.setTitle(reportCard.get().getTitle());
             reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
             reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
-            reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
+            if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
+                reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
+            } else {
+                reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName());
+            }
             reportCardVM.setStandard(standard.get().getGrade().toString()+"-"+standard.get().getSection());
             setAttendance(reportCard.get(), reportCardVM, studentStandard.getStudent());
             setScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
