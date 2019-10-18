@@ -40,6 +40,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 
     @Query("select distinct ecd.gsd.exam.id from ExamCourseDetails ecd where ecd.course.id in ?1 and ecd.gsd.exam.startDate between ?2 and ?3 and ecd.gsd.exam.status in ?4 order by ecd.gsd.exam.startDate desc")
     List<Long> findExamIdsForCourseIdsWithStatus(Set<Long> courseIds, LocalDate startDate, LocalDate endDate, List<ExamStatus> statuses);
-
 }
 
