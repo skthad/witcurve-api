@@ -333,7 +333,7 @@
                         for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
                             for(var j=0; j<(report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails).length; j++){
                                 if(report.colorForGrades){
-                                    newTd.style.backgroundColor = report.colorForGrades[report.scholastic.scholasticDetails.examDetails[i].marksAndGradesDetails[j].grade[report.scholastic.subjectsArray[k]]];
+                                    newTd.style.backgroundColor = report.colorForGrades[report.scholastic.scholasticDetails.overall.grade[report.scholastic.subjectsArray[k]]];
                                 }
                             }
                         }
