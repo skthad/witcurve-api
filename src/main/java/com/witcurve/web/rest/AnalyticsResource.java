@@ -3,6 +3,7 @@ package com.witcurve.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.witcurve.service.AnalyticsService;
 import com.witcurve.service.dto.SectionPerformanceDTO;
+import com.witcurve.service.dto.StudentPerformanceDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ public class AnalyticsResource {
 
     /**
      * get section performance by exam id
+     *
      * @param examId
      * @return list of section performance
      * @throws WitcurveException
@@ -39,4 +41,20 @@ public class AnalyticsResource {
         return new ResponseEntity<>(sectionPerformanceDTOList, HttpStatus.OK);
     }
 
+    /**
+     * get student performance by student id
+     *
+     * @param studentId
+     * @return StudentPerformanceDTO
+     * @throws WitcurveException
+     */
+    @GetMapping("/analytics/student/{studentId}")
+    @Timed
+    public ResponseEntity<StudentPerformanceDTO> getStudentPerformance(@PathVariable("studentId") Long studentId) throws WitcurveException {
+        log.debug("Request to get Student Performance for studentId{}", studentId);
+        StudentPerformanceDTO studentPerformanceDTO = analyticsService.getStudentPerformanceByStudentId(studentId);
+        return new ResponseEntity<>(studentPerformanceDTO, HttpStatus.OK);
+    }
 }
+
+
