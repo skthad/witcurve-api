@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -145,7 +146,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         StudentPerformanceDTO studentPerformanceDTO = new StudentPerformanceDTO();
         List<StudentPerformanceDTO.ExamMarksDTO> listOfExamMarks = new ArrayList<>();
 
-        for (Exam exam: exams) {
+        for (Exam exam : exams) {
 
             List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExamAndGrade(exam.getId(), studentStandard.get(0).getStandard().getGrade());
 
@@ -153,7 +154,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             List<StudentPerformanceDTO.ExamMarksDTO.CourseMarksDTO> listOfCourseMarks = new ArrayList<>();
             examMarksDTO.setExamName(exam.getName());
 
-            List<Course> listOfCourse = examCourseDetailsRepository.findCoursesByGradesAndExamId(Arrays.asList(studentStandard.get(0).getStandard().getGrade()),exam.getId());
+            List<Course> listOfCourse = examCourseDetailsRepository.findCoursesByGradesAndExamId(Arrays.asList(studentStandard.get(0).getStandard().getGrade()), exam.getId());
             Collections.sort(listOfCourse, new CourseComparator());
 
             for (Course course : listOfCourse) {
@@ -192,7 +193,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                 }
             }
         }
-        return totalMarks;
+        return WitcurveUtil.roundToTwoDecimal(totalMarks);
     }
 
     private Double findClassAvg(Course course, List<ReportCardDesign> reportCardDesigns) {
@@ -219,7 +220,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             for (int i = 0; i < listOfCount.size(); i++) {
                 average = average + listOfCount.get(i) * listOfAverage.get(i) / maxCount;
             }
-            return average;
+            return WitcurveUtil.roundToTwoDecimal(average);
         }
         return null;
     }

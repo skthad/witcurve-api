@@ -122,6 +122,9 @@ public class WitcurveUtil {
     }
 
     public static Double roundToTwoDecimal(Double value) {
+        if(value == null){
+            return null;
+        }
         return (double) Math.round(value * 100) / 100;
     }
 
