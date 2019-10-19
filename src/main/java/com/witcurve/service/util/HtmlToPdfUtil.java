@@ -54,9 +54,8 @@ public class HtmlToPdfUtil {
             String url = Paths.get(templateFile.getAbsolutePath()).toUri().toURL().toString();
             HtmlPage page = webClient.getPage(url);
             String xml = page.asXml();
-            String script = StringUtils.substringBetween(xml, "<script>", "</script>");
-            xml = xml.replace(script, "");
-            xml = xml.replace("<script></script>", "");
+            xml = removeScriptTag(xml);
+            xml = clearLeadingAndTrailingSpaceForPreTag(xml);
             return xml;
         } catch (IOException e) {
             log.debug("There was problem while reading while converting template, : {}", e.getMessage());
@@ -65,6 +64,22 @@ public class HtmlToPdfUtil {
             log.debug("There was problem while parsing html file : {}", e.getMessage());
             throw new WitcurveException("There was problem while parsing html file : " + e.getMessage());
         }
+    }
+
+    private String removeScriptTag(String xml) {
+        String script = StringUtils.substringBetween(xml, "<script>", "</script>");
+        xml = xml.replace(script, "");
+        xml = xml.replace("<script></script>", "");
+        return xml;
+    }
+
+    private String clearLeadingAndTrailingSpaceForPreTag(String xml) {
+        String preBody = StringUtils.substringBetween(xml, "<pre", "</pre>");
+        if (StringUtils.isNotBlank(preBody)) {
+            preBody = StringUtils.substringAfter(preBody, ">");
+            xml = xml.replace(preBody, preBody.trim());
+        }
+        return xml;
     }
 
     public File getParsedReportCard(ReportCardVM reportCardVM, String templateUrl) {
