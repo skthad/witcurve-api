@@ -41,18 +41,6 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
     @Override
     public FeeDetailsDTO saveOrUpdateFeeDetails(FeeDetailsDTO feeDetailsDTO) throws WitcurveException {
         log.debug("Request to save or update FeeDetails: {}", feeDetailsDTO);
-
-        Optional<FeeDetails> existingFeeDetails = null;
-        if (feeDetailsDTO.getId() != null) {
-            existingFeeDetails = feeDetailsRepository.findById(feeDetailsDTO.getId());
-        }
-        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(feeDetailsDTO.getSchoolInfoId());
-        if (!schoolInfo.isPresent()) {
-            throw new WitcurveException("No SchoolInfo present with given id : {} " + feeDetailsDTO.getSchoolInfoId());
-        }
-        if (existingFeeDetails != null) {
-            feeDetailsDTO.setId(existingFeeDetails.get().getId());
-        }
         FeeDetails feeDetails = feeDetailsRepository.save(feeDetailsMapper.toEntity(feeDetailsDTO));
         return feeDetailsMapper.toDto(feeDetails);
     }
@@ -93,7 +81,7 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
         if (!feeDetail.isPresent()) {
             throw new WitcurveException("No record present with give feeDetailsId : {} " + feeDetailsId);
         }
-        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByFeeDetailsId(feeDetailsId);
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByFeeTypeAndFeeDescriptionId(feeDetailsId);
         if (!sessionFeeStructures.isEmpty()) {
             throw new WitcurveException("Can not delete record as StudentFeeStructure record exist with given feeDetailsId : {} " + feeDetailsId);
         }
