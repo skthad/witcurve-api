@@ -47,8 +47,8 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
             existingFeeDetails = feeDetailsRepository.findById(feeDetailsDTO.getId());
         }
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(feeDetailsDTO.getSchoolInfoId());
-        if (schoolInfo.get() == null) {
-            throw new WitcurveException("No SchoolInfo present with given id" + feeDetailsDTO.getSchoolInfoId());
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo present with given id : {} " + feeDetailsDTO.getSchoolInfoId());
         }
         if (existingFeeDetails != null) {
             feeDetailsDTO.setId(existingFeeDetails.get().getId());
@@ -63,8 +63,8 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
 
         List<FeeDetailsDTO> result;
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
-        if (schoolInfo.get() == null) {
-            throw new WitcurveException("No SchoolInfo present with given id" + schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo present with given id : {} " + schoolInfoId);
         }
         if (type == null) {
             result = feeDetailsMapper.toDto(feeDetailsRepository.findBySchoolInfoId(schoolInfoId));
@@ -79,8 +79,8 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
         log.debug("Request to get FeeDetails of feeDetailsId : {} ", feeDetailsId);
 
         Optional<FeeDetails> feeDetails = feeDetailsRepository.findById(feeDetailsId);
-        if (feeDetails == null) {
-            throw new WitcurveException("No FeeDetails present with given id" + feeDetailsId);
+        if (!feeDetails.isPresent()) {
+            throw new WitcurveException("No FeeDetails present with given id : {}" + feeDetailsId);
         }
         return feeDetailsMapper.toDto(feeDetails.get());
     }
@@ -89,9 +89,13 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
     public void deleteFeeDetails(Long feeDetailsId) {
         log.debug("Request to delete FeeDetails of feeDetailsId : {} ", feeDetailsId);
 
+        Optional<FeeDetails> feeDetail = feeDetailsRepository.findById(feeDetailsId);
+        if (!feeDetail.isPresent()) {
+            throw new WitcurveException("No record present with give feeDetailsId : {} " + feeDetailsId);
+        }
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByFeeDetailsId(feeDetailsId);
         if (!sessionFeeStructures.isEmpty()) {
-            throw new WitcurveException("Can not delete record as StudentFeeStructure record exist with given feeDetailsId" + feeDetailsId);
+            throw new WitcurveException("Can not delete record as StudentFeeStructure record exist with given feeDetailsId : {} " + feeDetailsId);
         }
         feeDetailsRepository.deleteById(feeDetailsId);
     }

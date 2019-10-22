@@ -1,9 +1,11 @@
 package com.witcurve.domain;
 
-import com.sun.istack.NotNull;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.service.util.LocalDateConverter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -19,16 +21,16 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
     private Long id;
 
     @NotNull
-    @JoinColumn(name = "fee_details_id", nullable = false)
+    @ManyToOne
     private FeeDetails feeType;
 
     @NotNull
-    @JoinColumn(name = "fee_details_id", nullable = false)
-    private FeeDetails FeeDescription;
+    @ManyToOne
+    private FeeDetails feeDescription;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "academic_session_id", nullable = false)
+    @JoinColumn(nullable = false)
     private AcademicSession session;
 
     @NotNull
@@ -41,6 +43,7 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
     private Double amount;
 
     @Column
+    @Convert(converter = LocalDateConverter.class)
     private LocalDate dueDate;
 
     @Column
@@ -63,11 +66,11 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
     }
 
     public FeeDetails getFeeDescription() {
-        return FeeDescription;
+        return feeDescription;
     }
 
     public void setFeeDescription(FeeDetails feeDescription) {
-        FeeDescription = feeDescription;
+        this.feeDescription = feeDescription;
     }
 
     public AcademicSession getSession() {

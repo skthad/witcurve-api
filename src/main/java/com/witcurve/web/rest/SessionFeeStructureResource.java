@@ -85,6 +85,5 @@ public class SessionFeeStructureResource {
         sessionFeeStructureService.deleteById(sessionFeeStructureId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(" SessionFeeStructure is deleted with identifier " + sessionFeeStructureId,
             sessionFeeStructureId.toString())).build();
-
     }
 }
