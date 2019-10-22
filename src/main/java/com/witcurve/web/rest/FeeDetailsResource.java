@@ -5,6 +5,7 @@ import com.witcurve.domain.enumeration.FeeDetailsType;
 import com.witcurve.service.FeeDetailsService;
 import com.witcurve.service.dto.FeeDetailsDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +49,9 @@ public class FeeDetailsResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/fee-details/school-Info/{schoolInfoId}")
+    @GetMapping("/fee-details/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<FeeDetailsDTO>> getFeeDetailsBySchoolInfoId(@PathVariable Long schoolInfoId, @RequestParam(required = false) FeeDetailsType type) throws WitcurveException {
+    public ResponseEntity<List<FeeDetailsDTO>> getFeeDetailsBySchoolInfoId(@PathVariable Long schoolInfoId, @RequestParam(value = "type" , required = false) FeeDetailsType type) throws WitcurveException {
         log.debug("Request to get FeeDetails for school info with id : {} of feeDetailsType : {} ", schoolInfoId, type);
         List<FeeDetailsDTO> result = feeDetailsService.getFeeDetailsBySchoolInfoId(schoolInfoId, type);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -82,5 +83,7 @@ public class FeeDetailsResource {
     public ResponseEntity<Void> deleteFeeDetails(@PathVariable Long feeDetailsId) throws WitcurveException {
         log.debug("REST request to delete FeeDetails: {}", feeDetailsId);
         feeDetailsService.deleteFeeDetails(feeDetailsId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(" FeeDetail is deleted with identifier " + feeDetailsId,
+            feeDetailsId.toString())).build();
     }
 }

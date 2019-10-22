@@ -1,6 +1,6 @@
 package com.witcurve.service.dto;
 
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import com.witcurve.domain.enumeration.Grade;
 
 import java.io.Serializable;
