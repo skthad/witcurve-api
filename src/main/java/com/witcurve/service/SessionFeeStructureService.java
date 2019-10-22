@@ -16,5 +16,7 @@ public interface SessionFeeStructureService {
 
     void deleteById(Long sessionFeeStructureId);
 
+    List<SessionFeeStructureDTO> getBySessionIdAndGrade(Long sessionId, Grade grade);
+
 
 }

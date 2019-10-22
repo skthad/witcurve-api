@@ -1,8 +1,6 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.AcademicSession;
 import com.witcurve.domain.FeeDetails;
-import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.SessionFeeStructure;
 import com.witcurve.domain.enumeration.FeeDetailsType;
 import com.witcurve.domain.enumeration.Grade;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,14 +86,16 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     public List<SessionFeeStructureDTO> getBySchoolInfoIdAndGrade(Long schoolInfoId, Grade grade) {
         log.debug("Request to get SessionFeeStructure with given schoolInfoId : {} and grade : {} ");
 
-        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
-        if (!schoolInfo.isPresent()) {
-            throw new WitcurveException("No SchoolInfo is present with given id : {} " + schoolInfoId);
-        }
-        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSchoolInfoId(grade,schoolInfoId);
-        if (sessionFeeStructures.isEmpty()) {
-            throw new WitcurveException("No SessionFeeStructure is present with given schoolInfoId and grade");
-        }
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSchoolInfoId(grade, schoolInfoId);
+        return sessionFeeStructureMapper.toDto(sessionFeeStructures);
+    }
+
+
+    @Override
+    public List<SessionFeeStructureDTO> getBySessionIdAndGrade(Long sessionId, Grade grade) {
+        log.debug("Request to get SessionFeeStructure with given sessionId : {} and grade : {} ");
+
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSessionId(grade, sessionId);
         return sessionFeeStructureMapper.toDto(sessionFeeStructures);
     }
 
