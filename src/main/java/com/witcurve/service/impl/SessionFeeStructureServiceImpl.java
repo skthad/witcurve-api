@@ -49,18 +49,6 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     public SessionFeeStructureDTO saveOrUpdate(SessionFeeStructureDTO sessionFeeStructureDTO) throws WitcurveException {
         log.debug("Request to save or update SessionFeeStructure : {}", sessionFeeStructureDTO);
 
-        Optional<SessionFeeStructure> existingSessionFeeStructure = null;
-
-        if (sessionFeeStructureDTO.getId() != null) {
-            existingSessionFeeStructure = sessionFeeStructureRepository.findById(sessionFeeStructureDTO.getId());
-        }
-
-        Optional<AcademicSession> academicSession = academicSessionRepository.findById(sessionFeeStructureDTO.getSessionId());
-
-        if (!academicSession.isPresent()) {
-            throw new WitcurveException("No AcademicSession present with given id :" + sessionFeeStructureDTO.getSessionId());
-        }
-
         if (sessionFeeStructureDTO.getPenalty() != null) {
             if (sessionFeeStructureDTO.getDueDate() == null) {
                 throw new WitcurveException("Due date is require if penalty is not null");
@@ -80,9 +68,6 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
 
         if (!feeDetailsOfDescriptionType.get().getType().equals(FeeDetailsType.FEE_DESCRIPTION)) {
             throw new WitcurveException("Given FeeDetailsId is not of feeDescriptionType");
-        }
-        if (existingSessionFeeStructure != null) {
-            sessionFeeStructureDTO.setId(existingSessionFeeStructure.get().getId());
         }
         SessionFeeStructure sessionFeeStructure = sessionFeeStructureRepository.save(sessionFeeStructureMapper.toEntity(sessionFeeStructureDTO));
         return sessionFeeStructureMapper.toDto(sessionFeeStructure);
@@ -108,8 +93,7 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo is present with given id : {} " + schoolInfoId);
         }
-        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, LocalDate.now());
-        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSessionId(grade, academicSession.getId());
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSchoolInfoId(grade,schoolInfoId);
         if (sessionFeeStructures.isEmpty()) {
             throw new WitcurveException("No SessionFeeStructure is present with given schoolInfoId and grade");
         }

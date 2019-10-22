@@ -27,7 +27,7 @@ public class FeeDetailsResource {
     FeeDetailsService feeDetailsService;
 
     /**
-     * creates and updates feeDetails
+     * creates feeDetails
      *
      * @param feeDetailsDTO
      * @return
@@ -38,12 +38,36 @@ public class FeeDetailsResource {
     @Timed
     public ResponseEntity<FeeDetailsDTO> createFeeDetails(@RequestBody @Valid FeeDetailsDTO feeDetailsDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to save FeeDetails {}", feeDetailsDTO);
+
+        if (feeDetailsDTO.getId() != null) {
+            throw new WitcurveException("New FeeDetail can not have id already");
+        }
         FeeDetailsDTO result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     /**
-     * get feeDetails for schholInfoId
+     * update the given feeDetail
+     *
+     * @param feeDetailsDTO
+     * @return
+     * @throws WitcurveException
+     */
+    @PutMapping("/fee-details")
+    @Timed
+    public ResponseEntity<FeeDetailsDTO> updateFeeDetails(@RequestBody @Valid FeeDetailsDTO feeDetailsDTO) {
+        log.debug("Request to update FeeDetails {}", feeDetailsDTO);
+
+        if (feeDetailsDTO.getId() == null) {
+            throw new WitcurveException("Id is required for update request");
+        }
+        FeeDetailsDTO result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTO);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * get feeDetails for schoolInfoId
+     *
      * @param schoolInfoId
      * @return
      * @throws WitcurveException
@@ -51,7 +75,7 @@ public class FeeDetailsResource {
 
     @GetMapping("/fee-details/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<FeeDetailsDTO>> getFeeDetailsBySchoolInfoId(@PathVariable Long schoolInfoId, @RequestParam(value = "type" , required = false) FeeDetailsType type) throws WitcurveException {
+    public ResponseEntity<List<FeeDetailsDTO>> getFeeDetailsBySchoolInfoId(@PathVariable Long schoolInfoId, @RequestParam(value = "type", required = false) FeeDetailsType type) throws WitcurveException {
         log.debug("Request to get FeeDetails for school info with id : {} of feeDetailsType : {} ", schoolInfoId, type);
         List<FeeDetailsDTO> result = feeDetailsService.getFeeDetailsBySchoolInfoId(schoolInfoId, type);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -59,6 +83,7 @@ public class FeeDetailsResource {
 
     /**
      * get feeDetails by id
+     *
      * @param feeDetailsId
      * @return
      * @throws WitcurveException
@@ -74,6 +99,7 @@ public class FeeDetailsResource {
 
     /**
      * delete the feeDetails
+     *
      * @param feeDetailsId
      * @return
      * @throws WitcurveException

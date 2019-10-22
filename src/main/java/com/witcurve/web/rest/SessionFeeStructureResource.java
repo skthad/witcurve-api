@@ -38,9 +38,33 @@ public class SessionFeeStructureResource {
     @Timed
     public ResponseEntity<SessionFeeStructureDTO> createSessionFeeStructure(@RequestBody @Valid SessionFeeStructureDTO sessionFeeStructureDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to save sessionFeeStructure {}", sessionFeeStructureDTO);
+
+        if(sessionFeeStructureDTO.getId() !=null){
+            throw new WitcurveException("New SessionFeeStructure can not have id already");
+        }
         SessionFeeStructureDTO result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTO);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    /**
+     * update the given sessionFeeStructure
+     *
+     * @param sessionFeeStructureDTO
+     * @return
+     * @throws WitcurveException
+     */
+    @PutMapping("/session-fee-structure")
+    @Timed
+    public ResponseEntity<SessionFeeStructureDTO> updateSessionFeeStructure(@RequestBody @Valid SessionFeeStructureDTO sessionFeeStructureDTO){
+        log.debug("Request to update  sessionFeeStructure {}", sessionFeeStructureDTO);
+
+        if(sessionFeeStructureDTO.getId() ==null){
+            throw new WitcurveException("Id is require to update SessionFeeStructure");
+        }
+        SessionFeeStructureDTO result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
     /**
      * get sessionFeeStructure
