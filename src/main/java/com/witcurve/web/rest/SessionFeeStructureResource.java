@@ -100,6 +100,23 @@ public class SessionFeeStructureResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    /**
+     * get list of sessionFeeStructure
+     *
+     * @param grade
+     * @param sessionId
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+
+    @GetMapping("/session-fee-structure/academic-session/{sessionId}/grade/{grade}")
+    @Timed
+    public ResponseEntity<List<SessionFeeStructureDTO>> getBySessionIdAndGrade(@PathVariable Long sessionId, @PathVariable Grade grade) throws WitcurveException {
+        log.debug("Request to get sessionFeeStructure by sessionId :{} and grade :{}", sessionId, grade);
+        List<SessionFeeStructureDTO> result = sessionFeeStructureService.getBySessionIdAndGrade(sessionId,grade);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     @DeleteMapping("/session-fee-structure/{sessionFeeStructureId}")
     @Timed

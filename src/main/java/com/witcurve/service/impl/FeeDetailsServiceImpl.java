@@ -1,7 +1,6 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.FeeDetails;
-import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.SessionFeeStructure;
 import com.witcurve.domain.enumeration.FeeDetailsType;
 import com.witcurve.repository.FeeDetailsRepository;
@@ -50,10 +49,6 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
         log.debug("Request to get FeeDetails of schoolInfoId : {} ", schoolInfoId);
 
         List<FeeDetailsDTO> result;
-        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
-        if (!schoolInfo.isPresent()) {
-            throw new WitcurveException("No SchoolInfo present with given id : {} " + schoolInfoId);
-        }
         if (type == null) {
             result = feeDetailsMapper.toDto(feeDetailsRepository.findBySchoolInfoId(schoolInfoId));
         } else {
