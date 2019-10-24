@@ -1,10 +1,7 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.ConfigType;
-import com.witcurve.domain.enumeration.CourseType;
-import com.witcurve.domain.enumeration.Grade;
-import com.witcurve.domain.enumeration.ReportFieldType;
+import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
 import com.witcurve.service.CourseService;
 import com.witcurve.service.EventService;
@@ -29,7 +26,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -194,20 +190,80 @@ public class ReportCardServiceImpl implements ReportCardService {
         }
         for(StudentStandard studentStandard : studentStandardList) {
             ReportCardVM reportCardVM = new ReportCardVM();
-            reportCardVM.setDateOfBirth(studentStandard.getStudent().getDateOfBirth().format(DateTimeFormatter.ofPattern(WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT)));
+            reportCardVM.setPageTop(WitcurveUtil.formatDouble(reportCard.get().getPageTop()));
+            reportCardVM.setPageBottom(WitcurveUtil.formatDouble(reportCard.get().getPageBottom()));
+            reportCardVM.setPageLeft(WitcurveUtil.formatDouble(reportCard.get().getPageLeft()));
+            reportCardVM.setPageRight(WitcurveUtil.formatDouble(reportCard.get().getPageRight()));
+            reportCardVM.setTableGap(WitcurveUtil.formatDouble(reportCard.get().getTableGap()));
             reportCardVM.setShowHeader(showHeader);
             reportCardVM.setLogoLink(headerUrl);
             reportCardVM.setNote(reportCard.get().getNote());
             reportCardVM.setTitle(reportCard.get().getTitle());
             reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
-            reportCardVM.setAdmissionId(studentStandard.getStudent().getAdmissionId());
-            if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
-                reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
-            } else {
-                reportCardVM.setStudentName(studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName());
+
+            if(reportCard.get().getStudentDetails() != null && reportCard.get().getStudentDetails().size() !=0) {
+                List<Map<String, String>> studentDetailsList = new ArrayList<>();
+
+                for(StudentDetails studentDetails : reportCard.get().getStudentDetails()) {
+                    Map<String, String> studentDetailsMap = new HashMap<>();
+                    switch (studentDetails) {
+                        case DATE:
+                            studentDetailsMap.put(StudentDetails.DATE.getName(), LocalDate.now().toString());
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case PLACE:
+                            studentDetailsMap.put(StudentDetails.PLACE.getName(), reportCard.get().getExam().getSchoolInfo().getSchool().getCity());
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case ROLL_NO:
+                            studentDetailsMap.put(StudentDetails.ROLL_NO.getName(), studentStandard.getRollNo());
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case STANDARD:
+                            studentDetailsMap.put(StudentDetails.STANDARD.getName(), standard.get().getGrade().toString()+"-"+standard.get().getSection());
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case ATTENDANCE:
+                            studentDetailsMap.put(StudentDetails.ATTENDANCE.getName(), getAttendance(reportCard.get(), studentStandard.getStudent()));
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case FATHER_NAME:
+                            if(studentStandard.getStudent().getFatherName() != null) {
+                                studentDetailsMap.put(StudentDetails.FATHER_NAME.getName(), studentStandard.getStudent().getFatherName());
+                            } else {
+                                studentDetailsMap.put(StudentDetails.FATHER_NAME.getName(), " ");
+                            }
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case MOTHER_NAME:
+                            if(studentStandard.getStudent().getMotherName() != null) {
+                                studentDetailsMap.put(StudentDetails.MOTHER_NAME.getName(), studentStandard.getStudent().getMotherName());
+                            } else {
+                                studentDetailsMap.put(StudentDetails.MOTHER_NAME.getName(), " ");
+                            }
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case ADMISSION_ID:
+                            studentDetailsMap.put(StudentDetails.ADMISSION_ID.getName(), studentStandard.getStudent().getAdmissionId());
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case STUDENT_NAME:
+                            if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
+                                studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
+                            } else {
+                                studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName());
+                            }
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                        case DATE_OF_BIRTH:
+                            studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getDateOfBirth().toString());
+                            studentDetailsList.add(studentDetailsMap);
+                            break;
+                    }
+                }
+                reportCardVM.setStudentDetails(studentDetailsList);
             }
-            reportCardVM.setStandard(standard.get().getGrade().toString()+"-"+standard.get().getSection());
-            setAttendance(reportCard.get(), reportCardVM, studentStandard.getStudent());
+
             setScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
             setNonScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
             setAttributeDetails(reportCard.get(), reportCardVM, studentStandard);
@@ -221,7 +277,14 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
             }
             log.info("\n\n\n report card vn : {} \n\n\n", reportCardVM);
-            String nameOfFile = showHeader ? reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId() : reportCardVM.getStudentName()+"_"+reportCardVM.getAdmissionId()+"_without_header";
+            String studentName = null;
+            if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
+                studentName = studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName();
+            } else {
+                studentName = studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName();
+            }
+            String fileName = studentName+"_"+studentStandard.getStudent().getAdmissionId();
+            String nameOfFile = showHeader ? fileName : fileName + "_without_header";
             if(type.equalsIgnoreCase("pdf")) {
                 result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
             } else {
@@ -231,8 +294,7 @@ public class ReportCardServiceImpl implements ReportCardService {
         return new PageImpl<>(result, pageable, studentStandards.getTotalElements());
     }
 
-    private void setAttendance(ReportCard reportCard, ReportCardVM reportCardVM, Student student) {
-        if(reportCard.getShowAttendance()) {
+    private String getAttendance(ReportCard reportCard, Student student) {
             LocalDate startDate = reportCard.getExam().getStartDate();
             AcademicSession nearestAcademicSession = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), startDate);
             if(nearestAcademicSession == null) {
@@ -251,8 +313,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
             }
             Long totalWorkingDays = totalCalendarDays-noOfHolidays-noOfSundays;
-            reportCardVM.setAttendance(count.toString()+"/"+totalWorkingDays.toString());
-        }
+            return count.toString()+"/"+totalWorkingDays.toString();
     }
 
     private void setScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard,  List<ConfigSettings> configSettings) {

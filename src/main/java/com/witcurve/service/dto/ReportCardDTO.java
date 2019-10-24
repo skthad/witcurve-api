@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.StudentDetails;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -29,6 +30,8 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     private List<NonScholasticReportDetailsDTO> nonScholasticDetails;
 
+    private List<StudentDetails> studentDetails;
+
     @NotNull
     private Boolean showAttributes = false;
 
@@ -43,6 +46,21 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private Boolean showAttendance=false;
+
+    @NotNull
+    private Double pageTop = 1.00;
+
+    @NotNull
+    private Double pageBottom = 1.00;
+
+    @NotNull
+    private Double pageLeft = 1.50;
+
+    @NotNull
+    private Double pageRight = 1.50;
+
+    @NotNull
+    private Double tableGap = 0.50;
 
     private String note;
 
@@ -110,6 +128,14 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
         this.nonScholasticDetails = nonScholasticDetails;
     }
 
+    public List<StudentDetails> getStudentDetails() {
+        return studentDetails;
+    }
+
+    public void setStudentDetails(List<StudentDetails> studentDetails) {
+        this.studentDetails = studentDetails;
+    }
+
     public Boolean getShowAttributes() {
         return showAttributes;
     }
@@ -148,6 +174,46 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setShowAttendance(Boolean showAttendance) {
         this.showAttendance = showAttendance;
+    }
+
+    public Double getPageTop() {
+        return pageTop;
+    }
+
+    public void setPageTop(Double pageTop) {
+        this.pageTop = pageTop;
+    }
+
+    public Double getPageBottom() {
+        return pageBottom;
+    }
+
+    public void setPageBottom(Double pageBottom) {
+        this.pageBottom = pageBottom;
+    }
+
+    public Double getPageLeft() {
+        return pageLeft;
+    }
+
+    public void setPageLeft(Double pageLeft) {
+        this.pageLeft = pageLeft;
+    }
+
+    public Double getPageRight() {
+        return pageRight;
+    }
+
+    public void setPageRight(Double pageRight) {
+        this.pageRight = pageRight;
+    }
+
+    public Double getTableGap() {
+        return tableGap;
+    }
+
+    public void setTableGap(Double tableGap) {
+        this.tableGap = tableGap;
     }
 
     public String getNote() {
