@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1571924795365-1">
+        <createTable tableName="report_card_student_details">
+            <column name="report_card_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_details" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-2">
+        <addColumn tableName="report_card">
+            <column defaultValueNumeric="1.00" name="page_bottom" type="Decimal(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-3">
+        <addColumn tableName="report_card">
+            <column defaultValueNumeric="1.50" name="page_left" type="Decimal(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-4">
+        <addColumn tableName="report_card">
+            <column defaultValueNumeric="1.50" name="page_right" type="Decimal(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-5">
+        <addColumn tableName="report_card">
+            <column defaultValueNumeric="1.00" name="page_top" type="Decimal(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-6">
+        <addColumn tableName="report_card">
+            <column defaultValueNumeric="0.50" name="table_gap" type="Decimal(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-7">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="report_card_student_details"
+                                 constraintName="FKa9r4x67j6h8lrxmu6avtbv1qs" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+</databaseChangeLog>

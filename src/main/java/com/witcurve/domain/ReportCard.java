@@ -2,6 +2,7 @@ package com.witcurve.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.domain.enumeration.StudentDetails;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -69,6 +70,12 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     @OrderBy("scholastic_order asc")
     private List<ScholasticReportDetails> scholasticDetails;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "student_details")
+    @CollectionTable(name = "report_card_student_details", joinColumns=@JoinColumn(name="report_card_id"))
+    private List<StudentDetails> studentDetails;
+
     @NotNull
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean showAttributes = false;
@@ -88,6 +95,26 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean showAttendance=false;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "Decimal(10,2) default '1.00'")
+    private Double pageTop = 1.00;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "Decimal(10,2) default '1.00'")
+    private Double pageBottom = 1.00;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "Decimal(10,2) default '1.50'")
+    private Double pageLeft = 1.50;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "Decimal(10,2) default '1.50'")
+    private Double pageRight = 1.50;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "Decimal(10,2) default '0.50'")
+    private Double tableGap = 0.50;
 
     @Column
     private String note;
@@ -157,6 +184,14 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         this.scholasticDetails = scholasticDetails;
     }
 
+    public List<StudentDetails> getStudentDetails() {
+        return studentDetails;
+    }
+
+    public void setStudentDetails(List<StudentDetails> studentDetails) {
+        this.studentDetails = studentDetails;
+    }
+
     public Boolean getShowAttributes() {
         return showAttributes;
     }
@@ -195,6 +230,46 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
 
     public void setShowAttendance(Boolean showAttendance) {
         this.showAttendance = showAttendance;
+    }
+
+    public Double getPageTop() {
+        return pageTop;
+    }
+
+    public void setPageTop(Double pageTop) {
+        this.pageTop = pageTop;
+    }
+
+    public Double getPageBottom() {
+        return pageBottom;
+    }
+
+    public void setPageBottom(Double pageBottom) {
+        this.pageBottom = pageBottom;
+    }
+
+    public Double getPageLeft() {
+        return pageLeft;
+    }
+
+    public void setPageLeft(Double pageLeft) {
+        this.pageLeft = pageLeft;
+    }
+
+    public Double getPageRight() {
+        return pageRight;
+    }
+
+    public void setPageRight(Double pageRight) {
+        this.pageRight = pageRight;
+    }
+
+    public Double getTableGap() {
+        return tableGap;
+    }
+
+    public void setTableGap(Double tableGap) {
+        this.tableGap = tableGap;
     }
 
     public String getNote() {

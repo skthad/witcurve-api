@@ -3,38 +3,54 @@
 <head>
     <meta http-equiv=Content-Type content="text/html; charset=utf-8">
     <title> Report Card</title>
+    <style>
+        /* latin */
+        @font-face {
+            font-family: 'Cambria';
+            font-style: italic;
+            font-weight: 400;
+            font-display: swap;
+            src: local('Cambria Italic'), local('Cambria-Italic'), url(https://fonts.gstatic.com/l/font?kit=GFDoWAB9jnWLT-HIK7c7rJJdGg4xUQ&skey=6830e38320d5ad43&v=v10) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Cambria';
+            font-style: italic;
+            font-weight: 700;
+            font-display: swap;
+            src: local('Cambria Bold Italic'), local('Cambria-BoldItalic'), url(https://fonts.gstatic.com/l/font?kit=GFDtWAB9jnWLT-HIK7czF7dINyw8e2IDbg&skey=5d78cb5d3a5cdf77&v=v10) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Cambria';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: local('Cambria'), url(https://fonts.gstatic.com/l/font?kit=GFDqWAB9jnWLT-HIK7ILrphaOAw&skey=d4699178559bc4b0&v=v10) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
+        }
+        /* latin */
+        @font-face {
+            font-family: 'Cambria';
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: local('Cambria Bold'), local('Cambria-Bold'), url(https://fonts.gstatic.com/l/font?kit=GFDvWAB9jnWLT-HIIwkuu7V4NSY7WWA&skey=5202a3b6f5388b49&v=v10) format('woff2');
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
+        }
+    </style>
 </head>
-<body style="font-family: 'Cambria', sans-serif; width: 18cm; font-size: 11px">
+<body style="font-family: 'Cambria', sans-serif; width: 18cm; font-size: 11px" >
 <div id="forSchoolNameAndLogo" class="header">
     <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
 <div>
     <h2 id="Heading">ACADEMIC SESSION : 2019-20</h2>
 </div>
-<table style="width: 18cm; margin-bottom: 0px">
-<!--    <thead>-->
-<!--        <th style="width: 20%"></th>-->
-<!--        <th style="width: 40%"></th>-->
-<!--        <th style="width: 20%"></th>-->
-<!--        <th style="width: 20%"></th>-->
-<!--    </thead>-->
+<table style="width: 18cm; margin-bottom: 0px" id="student-table">
     <tbody>
-    <tr>
-        <td><b>Name:</b></td>
-        <td><span id="nameOfStudent">Chota Bheem</span></td>
-        <td><b>Class & Section:</b></td>
-        <td><span id="Class">X-A</span></td>
-    </tr>
-    <tr>
-        <td><b>DOB:</b></td>
-        <td><span id="DOB">00/00/0000</span></td>
-        <td><b>Admission ID:</b></td>
-        <td><span id="admission-Id">A10134</span></td>
-    </tr>
-    <tr id="attendance-row">
-        <td><b>Attendance:</b></td>
-        <td><span id="attendance">25/30</span></td>
-    </tr>
     </tbody>
 </table>
 <div class="term-table">
@@ -46,21 +62,21 @@
 </div>
 <div class="valuesTable">
     <table id="valuesTable" class="valuesTable"
-            style="width: 18cm;margin-top: 20px;text-align: center;border: 1px solid black; border-collapse: collapse;">
+           style="width: 18cm;text-align: center;border: 1px solid black; border-collapse: collapse;">
         <tbody>
         </tbody>
     </table>
 </div>
 <div id="ForAttributesTable"> </div>
 <div id="remarks-block"
-     style="width: 18cm ;display: block; border: 1px solid black; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; margin-bottom: 10px;margin-top: 10px;">
+     style="width: 18cm ;display: block; border: 1px solid black; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; padding: 0px; ">
     <h4 id="remark-header"
         style=" margin-top: 0px; margin-bottom: 0px; text-align: center; border-bottom: 1px solid black">
         CLASS TEACHER'S REMARK
     </h4>
     <p id="remarks" style="margin-top: 0px; padding-left: 3px;"><br></p>
 </div>
-<div style="margin-top: 70px;margin-bottom: 0px;">
+<div style="margin-top: 70px;" id="signature">
     <table style="width: 18cm; ">
         <tbody>
         <tr>
@@ -93,7 +109,177 @@
     <pre style="font-weight: bold;font-family: 'Cambria', sans-serif;font-size: 11px;white-space: pre-wrap;word-wrap: break-word"></pre>
 </div>
 <script>
-    var report ={{report}};
+    var report = {{report}};
+
+    (function studentDetails(){
+        var count = 0;
+        var a;
+        function creatingRow(){
+            var newTr= document.createElement("tr");
+            var addRow = document.getElementById("student-table").getElementsByTagName("tbody")[0];
+            a = addRow.appendChild(newTr);
+            return a;
+        }
+
+        for(var i=0; i<report.studentDetails.length; i++){
+            var field = Object.keys(report.studentDetails[i]);
+            switch(field[0]){
+                case "studentName":
+                    if(report.studentDetails[i].studentName){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Name:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].studentName.toUpperCase() ;
+                        count++;
+
+                    }
+                    break;
+                case "standard":
+                    if(report.studentDetails[i].standard){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Class & Section:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].standard;
+                        count++;
+                    }
+                    break;
+                case "admissionId":
+                    if(report.studentDetails[i].admissionId){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Admission Id:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].admissionId;
+                        count++;
+                    }
+                    break;
+                case "attendance":
+                    if(report.studentDetails[i].attendance){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Attendance:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].attendance;
+                        count++;
+                    }
+                    break;
+                case "dateOfBirth":
+                    if(report.studentDetails[i].dateOfBirth){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Date of Birth:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].dateOfBirth;
+                        count++;
+                    }
+                    break;
+                case "rollNo":
+                    if(report.studentDetails[i].rollNo){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Roll No:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].rollNo;
+                        count++;
+                    }
+                    break;
+                case "motherName":
+                    if(report.studentDetails[i].motherName){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Mother Name:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].motherName;
+                        count++;
+                    }
+                    break;
+                case "fatherName":
+                    if(report.studentDetails[i].fatherName){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Father Name:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].fatherName;
+                        count++;
+                    }
+                    break;
+                case "place":
+                    if(report.studentDetails[i].place){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Place:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].place;
+                        count++;
+                    }
+                    break;
+                case "date":
+                    if(report.studentDetails[i].date){
+                        if(count%2 === 0){
+                            creatingRow();
+                        }
+                        var newTh = document.createElement("th");
+                        a.appendChild(newTh);
+                        newTh.textContent = "Date:";
+                        newTh.style.cssFloat = "Left";
+                        var newTd = document.createElement("td");
+                        a.appendChild(newTd);
+                        newTd.textContent = report.studentDetails[i].date;
+                        count++;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    })();
 
     if(report.showHeader===true){
         document.getElementById("logo").setAttribute("src", report.logoLink);
@@ -104,21 +290,11 @@
     }
     document.getElementById("Heading").innerHTML = report.title;
     document.getElementById("Heading").style.textAlign = "center";
-    document.getElementById("nameOfStudent").textContent = report.studentName.toUpperCase();
-    document.getElementById("Class").textContent = report.standard ;
-    if(report.attendance){
-        document.getElementById("attendance").textContent = report.attendance;
-    }
-    else{
-        document.getElementById("attendance").textContent = report.attendance;
-        document.getElementById("attendance-row").style.display = 'none';
-    }
-    document.getElementById("admission-Id").textContent= report.admissionId;
-    document.getElementById("DOB").textContent = report.dateOfBirth;
 
 
     (function creatingScholasticTable() {
         if(report.scholastic){
+            document.getElementById("markstable").style.marginBottom = report.tableGap + "cm";
             // Creating and Adding Header
             var showExamNames= false;
             for(var i=0; i<report.scholastic.scholasticDetails.examDetails.length; i++){
@@ -405,12 +581,14 @@
         else{
             document.getElementById("markstable").style.display = "none";
         }
+
     })();
 
     // creating Non Scholastic table
 
     (function forNonScholastic(){
         if(report.nonScholastic){
+            document.getElementById("valuesTable").style.marginBottom = report.tableGap + "cm";
             var nsTable = Object.keys(report.nonScholastic);
             var newTr = document.createElement("tr");
             var connectingRow = document.getElementsByClassName("valuesTable")[1].getElementsByTagName("tbody")[0];
@@ -484,7 +662,7 @@
                 newTable.style.border = "1px solid black";
                 newTable.style.borderCollapse = "collapse";
                 newTable.style.textAlign = "center";
-                newTable.style.marginTop = "18px";
+                newTable.style.marginBottom = report.tableGap + "cm";
                 var newTableBody = document.createElement("tbody");
                 newTable.appendChild(newTableBody);
                 var newTr = document.createElement("tr");
@@ -593,6 +771,8 @@
     else{
         document.getElementById("remarks-block").style.display = "none";
     }
+    // Adding margin bottom for signature Area
+    document.getElementById("signature").style.marginBottom = report.tableGap + "cm";
 
     // grade table
 
@@ -621,6 +801,7 @@
         else{
             document.getElementById("GradingScaleTable").style.display = "none";
         }
+        document.getElementById("GradingScaleTable").style.marginBottom= report.tableGap + "cm";
     })();
 
 
@@ -631,50 +812,14 @@
     else{
         document.getElementById("abbrevations").style.display = "none";
     }
+
+
+    (function pageSettings () {
+        var style = document.getElementsByTagName("STYLE")[0];
+        var pageRule = '\n@page { size: A4; margin-top: '+ report.pageTop +'cm; margin-bottom:'+ report.pageBottom + 'cm; margin-right:'+ report.pageTop + 'cm; margin-left:'+ report.pageLeft + 'cm; }' ;
+        console.log(style);
+        style.innerHTML += pageRule;
+    })();
 </script>
 </body>
-<style>
-    @page {
-        margin-top: 1cm;
-        margin-bottom: 1cm;
-        margin-right: 1.5cm;
-        margin-left: 1.5cm;
-    }
-    /* latin */
-    @font-face {
-        font-family: 'Cambria';
-        font-style: italic;
-        font-weight: 400;
-        font-display: swap;
-        src: local('Cambria Italic'), local('Cambria-Italic'), url(https://fonts.gstatic.com/l/font?kit=GFDoWAB9jnWLT-HIK7c7rJJdGg4xUQ&skey=6830e38320d5ad43&v=v10) format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
-    }
-    /* latin */
-    @font-face {
-        font-family: 'Cambria';
-        font-style: italic;
-        font-weight: 700;
-        font-display: swap;
-        src: local('Cambria Bold Italic'), local('Cambria-BoldItalic'), url(https://fonts.gstatic.com/l/font?kit=GFDtWAB9jnWLT-HIK7czF7dINyw8e2IDbg&skey=5d78cb5d3a5cdf77&v=v10) format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
-    }
-    /* latin */
-    @font-face {
-        font-family: 'Cambria';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: local('Cambria'), url(https://fonts.gstatic.com/l/font?kit=GFDqWAB9jnWLT-HIK7ILrphaOAw&skey=d4699178559bc4b0&v=v10) format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
-    }
-    /* latin */
-    @font-face {
-        font-family: 'Cambria';
-        font-style: normal;
-        font-weight: 700;
-        font-display: swap;
-        src: local('Cambria Bold'), local('Cambria-Bold'), url(https://fonts.gstatic.com/l/font?kit=GFDvWAB9jnWLT-HIIwkuu7V4NSY7WWA&skey=5202a3b6f5388b49&v=v10) format('woff2');
-        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD, U+2713;
-    }
-</style>
 </html>

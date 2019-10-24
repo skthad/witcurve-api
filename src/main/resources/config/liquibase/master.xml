@@ -55,4 +55,5 @@
     <include file="config/liquibase/changelog/20191006141314_refactor_unique_constraints.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191007223326_added_StudentReport_and_StandardReport.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191022053305_added_FeeDetails_and_SessionFeeStructure.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191024134619_added_new_fields_to_ReportCard.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

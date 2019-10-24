@@ -17,19 +17,6 @@ public class ReportCardVM  implements Serializable {
 //    private AttributeDetailVM attributeDetailVM = new AttributeDetailVM();
 //    private AttributeVM attributeVM = new AttributeVM();
 
-    @NotNull
-    private String studentName;
-
-    @NotNull
-    private String standard;
-
-    @NotNull
-    private String admissionId;
-
-    private String attendance;
-
-    @NotNull
-    private String dateOfBirth = "00/00/0000";
 
     @NotNull
     private Boolean showHeader = true;
@@ -39,6 +26,23 @@ public class ReportCardVM  implements Serializable {
 
     @NotNull
     private String schoolPrimaryColor = "#000000";
+
+    private List<Map<String, String>> studentDetails;
+
+    @NotNull
+    private String pageTop = "1.00";
+
+    @NotNull
+    private String pageBottom = "1.00";
+
+    @NotNull
+    private String pageLeft = "1.50";
+
+    @NotNull
+    private String pageRight = "1.50";
+
+    @NotNull
+    private String tableGap = "0.50";
 
     private String remarks;
 
@@ -57,36 +61,52 @@ public class ReportCardVM  implements Serializable {
 
     private NonScholasticVM nonScholastic;
 
-    public String getStudentName() {
-        return studentName;
+    public List<Map<String, String>> getStudentDetails() {
+        return studentDetails;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public void setStudentDetails(List<Map<String, String>> studentDetails) {
+        this.studentDetails = studentDetails;
     }
 
-    public String getStandard() {
-        return standard;
+    public String getPageTop() {
+        return pageTop;
     }
 
-    public void setStandard(String standard) {
-        this.standard = standard;
+    public void setPageTop(String pageTop) {
+        this.pageTop = pageTop;
     }
 
-    public String getAdmissionId() {
-        return admissionId;
+    public String getPageBottom() {
+        return pageBottom;
     }
 
-    public void setAdmissionId(String admissionId) {
-        this.admissionId = admissionId;
+    public void setPageBottom(String pageBottom) {
+        this.pageBottom = pageBottom;
     }
 
-    public String getAttendance() {
-        return attendance;
+    public String getPageLeft() {
+        return pageLeft;
     }
 
-    public void setAttendance(String attendance) {
-        this.attendance = attendance;
+    public void setPageLeft(String pageLeft) {
+        this.pageLeft = pageLeft;
+    }
+
+    public String getPageRight() {
+        return pageRight;
+    }
+
+    public void setPageRight(String pageRight) {
+        this.pageRight = pageRight;
+    }
+
+    public String getTableGap() {
+        return tableGap;
+    }
+
+    public void setTableGap(String tableGap) {
+        this.tableGap = tableGap;
     }
 
     public Boolean getShowHeader() {
@@ -182,14 +202,6 @@ public class ReportCardVM  implements Serializable {
 
     public void setNonScholastic(NonScholasticVM nonScholastic) {
         this.nonScholastic = nonScholastic;
-    }
-
-    public String getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
     }
 
     public static class ScholasticVM  implements Serializable {
@@ -603,18 +615,20 @@ public class ReportCardVM  implements Serializable {
     @Override
     public String toString() {
         return "ReportCardVM{" +
-            "studentName='" + studentName + '\'' +
-            ", standard='" + standard + '\'' +
-            ", admissionId='" + admissionId + '\'' +
-            ", attendance='" + attendance + '\'' +
-            ", showHeader=" + showHeader +
+            "showHeader=" + showHeader +
             ", logoLink='" + logoLink + '\'' +
             ", schoolPrimaryColor='" + schoolPrimaryColor + '\'' +
+            ", studentDetails=" + studentDetails +
+            ", pageTop=" + pageTop +
+            ", pageBottom=" + pageBottom +
+            ", pageLeft=" + pageLeft +
+            ", pageRight=" + pageRight +
+            ", tableGap=" + tableGap +
             ", remarks='" + remarks + '\'' +
             ", attributes=" + attributes +
             ", colorForGrades=" + colorForGrades +
             ", definingGrade=" + definingGrade +
-            ", note=" + note +
+            ", note='" + note + '\'' +
             ", title='" + title + '\'' +
             ", scholastic=" + scholastic +
             ", nonScholastic=" + nonScholastic +
