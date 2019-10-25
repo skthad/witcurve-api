@@ -27,41 +27,21 @@ public class SessionFeeStructureResource {
     SessionFeeStructureService sessionFeeStructureService;
 
     /**
-     * creates and updates sessionFeeStructure
+     * creates and updates sessionFeeStructures
      *
-     * @param sessionFeeStructureDTO
+     * @param sessionFeeStructureDTOs
+     * @param grade
+     * @param sessionId
+     *
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/session-fee-structure")
     @Timed
-    public ResponseEntity<SessionFeeStructureDTO> createSessionFeeStructure(@RequestBody @Valid SessionFeeStructureDTO sessionFeeStructureDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request to save sessionFeeStructure {}", sessionFeeStructureDTO);
-
-        if(sessionFeeStructureDTO.getId() !=null){
-            throw new WitcurveException("New SessionFeeStructure can not have id already");
-        }
-        SessionFeeStructureDTO result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * update the given sessionFeeStructure
-     *
-     * @param sessionFeeStructureDTO
-     * @return
-     * @throws WitcurveException
-     */
-    @PutMapping("/session-fee-structure")
-    @Timed
-    public ResponseEntity<SessionFeeStructureDTO> updateSessionFeeStructure(@RequestBody @Valid SessionFeeStructureDTO sessionFeeStructureDTO){
-        log.debug("Request to update  sessionFeeStructure {}", sessionFeeStructureDTO);
-
-        if(sessionFeeStructureDTO.getId() ==null){
-            throw new WitcurveException("Id is require to update SessionFeeStructure");
-        }
-        SessionFeeStructureDTO result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTO);
+    public ResponseEntity<List<SessionFeeStructureDTO>> createSessionFeeStructure(@RequestBody @Valid List<SessionFeeStructureDTO> sessionFeeStructureDTOs, @RequestParam Grade grade, @RequestParam Long sessionId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to save or update sessionFeeStructureList : {} for grade : {} and session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
+        List<SessionFeeStructureDTO> result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTOs, grade, sessionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

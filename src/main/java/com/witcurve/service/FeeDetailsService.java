@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FeeDetailsService {
 
-    FeeDetailsDTO saveOrUpdateFeeDetails(FeeDetailsDTO feeDetailsDTO) throws WitcurveException;
+    List<FeeDetailsDTO> saveOrUpdateFeeDetails(List<FeeDetailsDTO> feeDetailsDTOs, Long schoolInfoId) throws WitcurveException;
 
     List<FeeDetailsDTO> getFeeDetailsBySchoolInfoId(Long schoolInfoId, FeeDetailsType type) throws WitcurveException;
 

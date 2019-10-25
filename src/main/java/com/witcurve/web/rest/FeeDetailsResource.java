@@ -27,42 +27,20 @@ public class FeeDetailsResource {
     FeeDetailsService feeDetailsService;
 
     /**
-     * creates feeDetails
+     * creates or updates feeDetails
      *
-     * @param feeDetailsDTO
+     * @param feeDetailsDTOs
+     * @param schoolInfoId
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/fee-details")
     @Timed
-    public ResponseEntity<FeeDetailsDTO> createFeeDetails(@RequestBody @Valid FeeDetailsDTO feeDetailsDTO) throws WitcurveException, URISyntaxException {
-        log.debug("Request to save FeeDetails {}", feeDetailsDTO);
-
-        if (feeDetailsDTO.getId() != null) {
-            throw new WitcurveException("New FeeDetail can not have id already");
-        }
-        FeeDetailsDTO result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTO);
+    public ResponseEntity<List<FeeDetailsDTO>> createOrUpdateFeeDetails(@RequestBody @Valid List<FeeDetailsDTO> feeDetailsDTOs, @RequestParam Long schoolInfoId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to save FeeDetailsList : {} for school info with id : {}", feeDetailsDTOs, schoolInfoId);
+        List<FeeDetailsDTO> result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTOs, schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    /**
-     * update the given feeDetail
-     *
-     * @param feeDetailsDTO
-     * @return
-     * @throws WitcurveException
-     */
-    @PutMapping("/fee-details")
-    @Timed
-    public ResponseEntity<FeeDetailsDTO> updateFeeDetails(@RequestBody @Valid FeeDetailsDTO feeDetailsDTO) {
-        log.debug("Request to update FeeDetails {}", feeDetailsDTO);
-
-        if (feeDetailsDTO.getId() == null) {
-            throw new WitcurveException("Id is required for update request");
-        }
-        FeeDetailsDTO result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTO);
-        return ResponseEntity.ok(result);
     }
 
     /**

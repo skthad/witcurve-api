@@ -17,10 +17,8 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
     @NotNull
     private Long feeTypeId;
 
-    @NotNull
     private Long feeDescriptionId;
 
-    @NotNull
     private Grade grade;
 
     @NotNull

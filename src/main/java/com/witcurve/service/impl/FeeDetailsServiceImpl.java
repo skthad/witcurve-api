@@ -38,10 +38,13 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
     SessionFeeStructureRepository sessionFeeStructureRepository;
 
     @Override
-    public FeeDetailsDTO saveOrUpdateFeeDetails(FeeDetailsDTO feeDetailsDTO) throws WitcurveException {
-        log.debug("Request to save or update FeeDetails: {}", feeDetailsDTO);
-        FeeDetails feeDetails = feeDetailsRepository.save(feeDetailsMapper.toEntity(feeDetailsDTO));
-        return feeDetailsMapper.toDto(feeDetails);
+    public List<FeeDetailsDTO> saveOrUpdateFeeDetails(List<FeeDetailsDTO> feeDetailsDTOs, Long schoolInfoId) throws WitcurveException {
+        log.debug("Request to save or update feeDetailsList : {} for school info with id : {}", feeDetailsDTOs, schoolInfoId);
+        for(FeeDetailsDTO feeDetailsDTO : feeDetailsDTOs) {
+            feeDetailsDTO.setSchoolInfoId(schoolInfoId);
+        }
+        List<FeeDetails> feeDetailsList = feeDetailsRepository.saveAll(feeDetailsMapper.toEntity(feeDetailsDTOs));
+        return feeDetailsMapper.toDto(feeDetailsList);
     }
 
     @Override
