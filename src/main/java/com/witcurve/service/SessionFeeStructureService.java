@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface SessionFeeStructureService {
 
-    SessionFeeStructureDTO saveOrUpdate(SessionFeeStructureDTO sessionFeeStructureDTO) throws WitcurveException;
+    List<SessionFeeStructureDTO> saveOrUpdate(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) throws WitcurveException;
 
     SessionFeeStructureDTO getById(Long sessionFeeStructureId);
 

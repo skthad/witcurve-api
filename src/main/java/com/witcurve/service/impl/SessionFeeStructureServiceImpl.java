@@ -43,31 +43,34 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     SchoolInfoRepository schoolInfoRepository;
 
     @Override
-    public SessionFeeStructureDTO saveOrUpdate(SessionFeeStructureDTO sessionFeeStructureDTO) throws WitcurveException {
-        log.debug("Request to save or update SessionFeeStructure : {}", sessionFeeStructureDTO);
-
-        if (sessionFeeStructureDTO.getPenalty() != null) {
-            if (sessionFeeStructureDTO.getDueDate() == null) {
-                throw new WitcurveException("Due date is require if penalty is not null");
+    public List<SessionFeeStructureDTO> saveOrUpdate(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) throws WitcurveException {
+        log.debug("Request to save or update SessionFeeStructures : {} for grade : {} and for session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
+        for(SessionFeeStructureDTO sessionFeeStructureDTO : sessionFeeStructureDTOs) {
+            if (sessionFeeStructureDTO.getPenalty() != null) {
+                if (sessionFeeStructureDTO.getDueDate() == null) {
+                    throw new WitcurveException("Due date is require if penalty is not null");
+                }
             }
-        }
-        Optional<FeeDetails> feeDetailsOfFeeType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeTypeId());
-        if (!feeDetailsOfFeeType.isPresent()) {
-            throw new WitcurveException("No FeeDetails present with given feeTypeId : {}" + sessionFeeStructureDTO.getFeeTypeId());
-        }
-        if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
-            throw new WitcurveException("Given FeeDetailsId is not of feeType");
-        }
-        Optional<FeeDetails> feeDetailsOfDescriptionType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeDescriptionId());
-        if (feeDetailsOfDescriptionType == null) {
-            throw new WitcurveException("No FeeDetails present with given descriptionTypeId : {} " + sessionFeeStructureDTO.getFeeDescriptionId());
-        }
+            Optional<FeeDetails> feeDetailsOfFeeType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeTypeId());
+            if (!feeDetailsOfFeeType.isPresent()) {
+                throw new WitcurveException("No FeeDetails present with given feeTypeId : {}" + sessionFeeStructureDTO.getFeeTypeId());
+            }
+            if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
+                throw new WitcurveException("Given feeTypeId is not of type Fee Type");
+            }
+            Optional<FeeDetails> feeDetailsOfDescriptionType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeDescriptionId());
+            if (feeDetailsOfDescriptionType == null) {
+                throw new WitcurveException("No FeeDetails present with given descriptionTypeId : {} " + sessionFeeStructureDTO.getFeeDescriptionId());
+            }
 
-        if (!feeDetailsOfDescriptionType.get().getType().equals(FeeDetailsType.FEE_DESCRIPTION)) {
-            throw new WitcurveException("Given FeeDetailsId is not of feeDescriptionType");
+            if (!feeDetailsOfDescriptionType.get().getType().equals(FeeDetailsType.FEE_DESCRIPTION)) {
+                throw new WitcurveException("Given feeDescriptionId is not of type Fee Description");
+            }
+            sessionFeeStructureDTO.setGrade(grade);
+            sessionFeeStructureDTO.setSessionId(sessionId);
         }
-        SessionFeeStructure sessionFeeStructure = sessionFeeStructureRepository.save(sessionFeeStructureMapper.toEntity(sessionFeeStructureDTO));
-        return sessionFeeStructureMapper.toDto(sessionFeeStructure);
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.saveAll(sessionFeeStructureMapper.toEntity(sessionFeeStructureDTOs));
+        return sessionFeeStructureMapper.toDto(sessionFeeStructures);
 
     }
 

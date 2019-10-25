@@ -10,7 +10,6 @@ public class FeeDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
     private Long schoolInfoId;
 
     @NotNull
