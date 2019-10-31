@@ -195,6 +195,7 @@ public class ReportCardServiceImpl implements ReportCardService {
             reportCardVM.setPageLeft(WitcurveUtil.formatDouble(reportCard.get().getPageLeft()));
             reportCardVM.setPageRight(WitcurveUtil.formatDouble(reportCard.get().getPageRight()));
             reportCardVM.setTableGap(WitcurveUtil.formatDouble(reportCard.get().getTableGap()));
+            reportCardVM.setFontSize(reportCard.get().getFontSize().toString());
             reportCardVM.setShowHeader(showHeader);
             reportCardVM.setLogoLink(headerUrl);
             reportCardVM.setNote(reportCard.get().getNote());

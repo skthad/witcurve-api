@@ -42,7 +42,7 @@
         }
     </style>
 </head>
-<body style="font-family: 'Cambria', sans-serif; width: 18cm; font-size: 11px" >
+<body style="font-family: 'Cambria', sans-serif; width: 18cm; " >
 <div id="forSchoolNameAndLogo" class="header">
     <img id="logo" alt="School logo" style="width: 18cm;height: auto;"/>
 </div>
@@ -110,6 +110,10 @@
 </div>
 <script>
     var report = {{report}};
+
+    if(report.fontSize){
+        document.getElementsByTagName("body")[0].style.fontSize = report.fontSize + "px";
+    }
 
     (function studentDetails(){
         var count = 0;

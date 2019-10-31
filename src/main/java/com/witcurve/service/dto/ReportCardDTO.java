@@ -62,6 +62,9 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Double tableGap = 0.50;
 
+    @NotNull
+    private Integer fontSize = 11;
+
     private String note;
 
     public Long getId() {
@@ -214,6 +217,14 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setTableGap(Double tableGap) {
         this.tableGap = tableGap;
+    }
+
+    public Integer getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(Integer fontSize) {
+        this.fontSize = fontSize;
     }
 
     public String getNote() {

@@ -116,6 +116,10 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false, columnDefinition = "Decimal(10,2) default '0.50'")
     private Double tableGap = 0.50;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "Integer default 11")
+    private Integer fontSize = 11;
+
     @Column
     private String note;
 
@@ -272,6 +276,14 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         this.tableGap = tableGap;
     }
 
+    public Integer getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(Integer fontSize) {
+        this.fontSize = fontSize;
+    }
+
     public String getNote() {
         return note;
     }
@@ -279,6 +291,8 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
     public void setNote(String note) {
         this.note = note;
     }
+
+
 
     @Override
     public String toString() {

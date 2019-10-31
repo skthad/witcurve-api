@@ -52,4 +52,11 @@
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="report_card"/>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1571924795365-8">
+        <addColumn tableName="report_card">
+            <column defaultValueNumeric="11" name="font_size" type="Integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
