@@ -44,6 +44,9 @@ public class ReportCardVM  implements Serializable {
     @NotNull
     private String tableGap = "0.50";
 
+    @NotNull
+    private String fontSize = "11";
+
     private String remarks;
 
     private List<AttributeVM> attributes;
@@ -107,6 +110,14 @@ public class ReportCardVM  implements Serializable {
 
     public void setTableGap(String tableGap) {
         this.tableGap = tableGap;
+    }
+
+    public String getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(String fontSize) {
+        this.fontSize = fontSize;
     }
 
     public Boolean getShowHeader() {
