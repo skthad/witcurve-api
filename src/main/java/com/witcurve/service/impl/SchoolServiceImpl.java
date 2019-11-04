@@ -30,9 +30,11 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public SchoolDTO saveOrUpdate(SchoolDTO schoolDTO) {
         log.debug("Request to save or update school");
+
         if (schoolDTO.getPrimaryBranch()) {
             deactivateOtherPrimaryBranch(schoolDTO.getInstitute().getId());
         }
+
         School school = schoolMapper.toEntity(schoolDTO);
         school = schoolRepository.save(school);
         return schoolMapper.toDto(school);
@@ -69,11 +71,12 @@ public class SchoolServiceImpl implements SchoolService {
     public SchoolDTO convertToPrimaryBranch(Long schoolId) {
         log.debug("Request to make School as primary branch with id {}", schoolId);
         Optional<School> school = schoolRepository.findById(schoolId);
+
         if (!school.isPresent()) {
             throw new WitcurveException("No School present with given id {} : " + schoolId);
         }
-        school.get().setPrimaryBranch(true);
         deactivateOtherPrimaryBranch(school.get().getInstitute().getId());
+        school.get().setPrimaryBranch(true);
         return schoolMapper.toDto(school.get());
     }
 

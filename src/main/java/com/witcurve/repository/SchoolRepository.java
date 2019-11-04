@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface SchoolRepository extends JpaRepository<School, Long> {
 
-    @Query("select s from School s where s.institute.id = ?1 order by s.name")
+    @Query("select s from School s where s.institute.id = ?1 order by  s.primaryBranch desc, s.name")
     List<School> findByInstituteId(Long instituteId);
 
     @Modifying
