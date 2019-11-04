@@ -44,6 +44,9 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     @Override
     public SchoolInfoDTO saveOrUpdate(SchoolInfoDTO schoolInfoDTO) {
         log.debug("Request to create schoolInfo");
+        if (schoolInfoDTO.getPrimaryBoard()) {
+            deactivateOtherPrimaryBoard(schoolInfoDTO.getSchool().getId());
+        }
         SchoolInfo schoolInfo = schoolInfoMapper.toEntity(schoolInfoDTO);
         schoolInfo = schoolInfoRepository.save(schoolInfo);
         return schoolInfoMapper.toDto(schoolInfo);
@@ -80,9 +83,9 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     public Long getSchoolInfoIdByUserId(Long userId) {
         Long schoolInfoId = null;
         Student student = studentRepository.getStudentByUserId(userId);
-        if(student == null) {
+        if (student == null) {
             Staff staff = staffRepository.getStaffByUserId(userId);
-            if(staff != null) {
+            if (staff != null) {
                 schoolInfoId = staff.getSchoolInfo().getId();
             }
         } else {
@@ -91,4 +94,19 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
         return schoolInfoId;
     }
 
+    @Override
+    public SchoolInfoDTO convertToPrimaryBoard(Long schoolInfoId) {
+        log.debug("Request to convert SchoolInfo as primary board with id {}", schoolInfoId);
+        Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
+        if (!schoolInfo.isPresent()) {
+            throw new WitcurveException("No SchoolInfo present with given id");
+        }
+        schoolInfo.get().setPrimaryBoard(true);
+        deactivateOtherPrimaryBoard(schoolInfo.get().getSchool().getId());
+        return schoolInfoMapper.toDto(schoolInfo.get());
+    }
+
+    private void deactivateOtherPrimaryBoard(Long schoolId) {
+        schoolInfoRepository.deactivatePrimaryBoard(schoolId);
+    }
 }

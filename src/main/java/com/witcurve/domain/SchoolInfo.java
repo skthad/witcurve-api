@@ -31,6 +31,10 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
     @Column(length = 50, nullable = false)
     private String medium;
 
+    @NotNull
+    @Column(name = "primary_board", nullable = false, columnDefinition = "boolean default false")
+    private Boolean primaryBoard = false;
+
     public Long getId() {
         return id;
     }
@@ -62,6 +66,10 @@ public class SchoolInfo extends AbstractAuditingEntity implements Serializable {
     public void setMedium(String medium) {
         this.medium = medium;
     }
+
+    public Boolean getPrimaryBoard() { return primaryBoard; }
+
+    public void setPrimaryBoard(Boolean primaryBoard) { this.primaryBoard = primaryBoard; }
 
     @Override
     public boolean equals(Object o) {

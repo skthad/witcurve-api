@@ -30,6 +30,9 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public SchoolDTO saveOrUpdate(SchoolDTO schoolDTO) {
         log.debug("Request to save or update school");
+        if (schoolDTO.getPrimaryBranch()) {
+            deactivateOtherPrimaryBranch(schoolDTO.getInstitute().getId());
+        }
         School school = schoolMapper.toEntity(schoolDTO);
         school = schoolRepository.save(school);
         return schoolMapper.toDto(school);
@@ -39,7 +42,7 @@ public class SchoolServiceImpl implements SchoolService {
     public SchoolDTO getSchoolById(Long schoolId) throws WitcurveException {
         log.debug("Request to get school with id: {}", schoolId);
         Optional<School> school = schoolRepository.findById(schoolId);
-        if (!school.isPresent()){
+        if (!school.isPresent()) {
             throw new WitcurveException("No school with given Id " + school);
         }
         return schoolMapper.toDto(school.get());
@@ -56,10 +59,25 @@ public class SchoolServiceImpl implements SchoolService {
     public void deleteSchool(Long schoolId) throws WitcurveException {
         log.debug("Request to delete school with id {}", schoolId);
         Optional<School> school = schoolRepository.findById(schoolId);
-        if (!school.isPresent()){
+        if (!school.isPresent()) {
             throw new WitcurveException("No school with given Id " + school);
         }
         schoolRepository.delete(school.get());
     }
 
+    @Override
+    public SchoolDTO convertToPrimaryBranch(Long schoolId) {
+        log.debug("Request to make School as primary branch with id {}", schoolId);
+        Optional<School> school = schoolRepository.findById(schoolId);
+        if (!school.isPresent()) {
+            throw new WitcurveException("No School present with given id {} : " + schoolId);
+        }
+        school.get().setPrimaryBranch(true);
+        deactivateOtherPrimaryBranch(school.get().getInstitute().getId());
+        return schoolMapper.toDto(school.get());
+    }
+
+    private void deactivateOtherPrimaryBranch(Long instituteId) {
+        schoolRepository.deactivateSchoolPrimaryBranch(instituteId);
+    }
 }
