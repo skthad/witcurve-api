@@ -101,8 +101,8 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo present with given id");
         }
-        schoolInfo.get().setPrimaryBoard(true);
         deactivateOtherPrimaryBoard(schoolInfo.get().getSchool().getId());
+        schoolInfo.get().setPrimaryBoard(true);
         return schoolInfoMapper.toDto(schoolInfo.get());
     }
 

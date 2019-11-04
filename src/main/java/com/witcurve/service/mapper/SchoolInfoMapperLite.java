@@ -11,6 +11,7 @@ public interface SchoolInfoMapperLite extends EntityMapper<SchoolInfoDTO, School
         schoolInfoDTO.setId(schoolInfo.getId());
         schoolInfoDTO.setBoard(schoolInfo.getBoard());
         schoolInfoDTO.setMedium(schoolInfo.getMedium());
+        schoolInfoDTO.setPrimaryBoard(schoolInfo.getPrimaryBoard());
         return schoolInfoDTO;
     }
 }
