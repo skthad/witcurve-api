@@ -50,6 +50,9 @@ public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
 
     private Set<SchoolInfoDTO> schoolInfos;
 
+    @NotNull
+    private Boolean primaryBranch = false;
+
     public SchoolDTO() {
     }
 
@@ -188,6 +191,10 @@ public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
     public void setSchoolInfos(Set<SchoolInfoDTO> schoolInfos) {
         this.schoolInfos = schoolInfos;
     }
+
+    public Boolean getPrimaryBranch() { return primaryBranch; }
+
+    public void setPrimaryBranch(Boolean primaryBranch) { this.primaryBranch = primaryBranch; }
 
     public Set<SchoolInfoDTO> addSchoolInfo(SchoolInfoDTO schoolInfo) {
         if (schoolInfos == null) {

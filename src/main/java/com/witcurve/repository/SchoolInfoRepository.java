@@ -2,6 +2,7 @@ package com.witcurve.repository;
 
 import com.witcurve.domain.SchoolInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +22,8 @@ public interface SchoolInfoRepository extends JpaRepository<SchoolInfo, Long> {
 
     @Query("select si from SchoolInfo si where si.school.id = ?1 order by si.board")
     List<SchoolInfo> findBySchoolId(Long schoolId);
+
+    @Modifying
+    @Query("update SchoolInfo set primaryBoard = false where school.id = ?1")
+    void deactivatePrimaryBoard(Long schoolId);
 }

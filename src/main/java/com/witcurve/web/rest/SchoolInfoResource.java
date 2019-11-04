@@ -31,6 +31,7 @@ public class SchoolInfoResource {
 
     /**
      * creates a schoolInfo
+     *
      * @param schoolInfoDTO
      * @return
      * @throws WitcurveException
@@ -62,6 +63,7 @@ public class SchoolInfoResource {
 
     /**
      * update the given schoolInfo
+     *
      * @param schoolInfoDTO
      * @return
      * @throws WitcurveException
@@ -96,6 +98,7 @@ public class SchoolInfoResource {
 
     /**
      * get schoolInfo by id
+     *
      * @param schoolInfoId
      * @return
      * @throws WitcurveException
@@ -112,6 +115,7 @@ public class SchoolInfoResource {
 
     /**
      * get schoolInfo list by school id
+     *
      * @param schoolId
      * @return
      * @throws WitcurveException
@@ -127,6 +131,7 @@ public class SchoolInfoResource {
 
     /**
      * delete the schoolInfo
+     *
      * @param schoolInfoId
      * @return
      * @throws WitcurveException
@@ -149,4 +154,20 @@ public class SchoolInfoResource {
 
     }
 
+    /**
+     * convert to primaryBoard
+     *
+     * @param schoolInfoId
+     * @return
+     * @throws WitcurveException
+     */
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
+    @PatchMapping("/school-info/{schoolInfoId}")
+    @Timed
+    public ResponseEntity<SchoolInfoDTO> convertToPrimaryBranch(@PathVariable("schoolInfoId") Long schoolInfoId) {
+        log.debug("REST request to update schoolInfo: {}", schoolInfoId);
+        SchoolInfoDTO result = schoolInfoService.convertToPrimaryBoard(schoolInfoId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }
