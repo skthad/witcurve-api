@@ -165,9 +165,9 @@ public class SchoolInfoResource {
         "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
     @PatchMapping("/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<SchoolInfoDTO> changeToPrimaryBranch(@PathVariable("schoolInfoId") Long schoolInfoId) {
+    public ResponseEntity<SchoolInfoDTO> changeToPrimaryBoard(@PathVariable("schoolInfoId") Long schoolInfoId) {
         log.debug("REST request to update schoolInfo: {}", schoolInfoId);
-        SchoolInfoDTO result = schoolInfoService.changeToPrimaryBranch(schoolInfoId);
+        SchoolInfoDTO result = schoolInfoService.changeToPrimaryBoard(schoolInfoId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
