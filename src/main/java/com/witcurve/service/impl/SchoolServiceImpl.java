@@ -68,7 +68,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public SchoolDTO convertToPrimaryBranch(Long schoolId) {
+    public SchoolDTO changeToPrimaryBranch(Long schoolId) {
         log.debug("Request to make School as primary branch with id {}", schoolId);
         Optional<School> school = schoolRepository.findById(schoolId);
 
@@ -81,6 +81,6 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     private void deactivateOtherPrimaryBranch(Long instituteId) {
-        schoolRepository.deactivateSchoolPrimaryBranch(instituteId);
+        schoolRepository.deactivatePrimaryBranchByInstituteId(instituteId);
     }
 }

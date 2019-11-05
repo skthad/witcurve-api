@@ -95,7 +95,7 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     }
 
     @Override
-    public SchoolInfoDTO convertToPrimaryBoard(Long schoolInfoId) {
+    public SchoolInfoDTO changeToPrimaryBranch(Long schoolInfoId) {
         log.debug("Request to convert SchoolInfo as primary board with id {}", schoolInfoId);
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
         if (!schoolInfo.isPresent()) {
@@ -107,6 +107,6 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     }
 
     private void deactivateOtherPrimaryBoard(Long schoolId) {
-        schoolInfoRepository.deactivatePrimaryBoard(schoolId);
+        schoolInfoRepository.deactivatePrimaryBoardBySchoolId(schoolId);
     }
 }

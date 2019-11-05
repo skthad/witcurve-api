@@ -17,6 +17,6 @@ public interface SchoolInfoService {
 
     Long getSchoolInfoIdByUserId(Long userId);
 
-    SchoolInfoDTO convertToPrimaryBoard(Long schoolInfoId);
+    SchoolInfoDTO changeToPrimaryBranch(Long schoolInfoId);
 
 }

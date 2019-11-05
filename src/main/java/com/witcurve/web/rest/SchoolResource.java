@@ -165,11 +165,11 @@ public class SchoolResource {
      */
     @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
         "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
-    @PatchMapping("/school/{schoolId}")
+    @PatchMapping("/schools/{schoolId}")
     @Timed
-    public ResponseEntity<SchoolDTO> convertToPrimaryBranch(@PathVariable("schoolId") Long schoolId) {
+    public ResponseEntity<SchoolDTO> changeToPrimaryBranch(@PathVariable("schoolId") Long schoolId) {
         log.debug("REST request to update school: {}", schoolId);
-        SchoolDTO result = schoolService.convertToPrimaryBranch(schoolId);
+        SchoolDTO result = schoolService.changeToPrimaryBranch(schoolId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
