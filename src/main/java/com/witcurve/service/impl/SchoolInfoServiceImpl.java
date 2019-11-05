@@ -95,7 +95,7 @@ public class SchoolInfoServiceImpl implements SchoolInfoService {
     }
 
     @Override
-    public SchoolInfoDTO changeToPrimaryBranch(Long schoolInfoId) {
+    public SchoolInfoDTO changeToPrimaryBoard(Long schoolInfoId) {
         log.debug("Request to convert SchoolInfo as primary board with id {}", schoolInfoId);
         Optional<SchoolInfo> schoolInfo = schoolInfoRepository.findById(schoolInfoId);
         if (!schoolInfo.isPresent()) {
