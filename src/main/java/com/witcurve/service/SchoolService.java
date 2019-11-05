@@ -15,5 +15,5 @@ public interface SchoolService {
 
     List<SchoolDTO> getSchoolByInstituteId(Long instituteId);
 
-    SchoolDTO convertToPrimaryBranch(Long schoolId);
+    SchoolDTO changeToPrimaryBranch(Long schoolId);
 }

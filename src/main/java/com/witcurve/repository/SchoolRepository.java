@@ -16,5 +16,5 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
 
     @Modifying
     @Query("update School set primaryBranch = false where institute.id = ?1")
-    void deactivateSchoolPrimaryBranch(Long instituteId);
+    void deactivatePrimaryBranchByInstituteId(Long instituteId);
 }
