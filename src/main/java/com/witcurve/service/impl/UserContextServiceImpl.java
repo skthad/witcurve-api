@@ -131,7 +131,8 @@ public class UserContextServiceImpl implements UserContextService {
         } else if (schoolInfoId == null) {
             if (UserType.SUPER_USER.equals(contextDTO.getCurrentUser().getType())) {
 
-                List<SchoolInfo> allSchoolInfos = schoolInfoRepository.findAll();
+                //List<SchoolInfo> allSchoolInfos = schoolInfoRepository.findAll();
+                List<SchoolInfo> allSchoolInfos = schoolInfoRepository.findAllForSuperUser();
                 setInstituteMapInUserContext(contextDTO, allSchoolInfos);
                 return contextDTO;
 
@@ -144,7 +145,7 @@ public class UserContextServiceImpl implements UserContextService {
             throw new WitcurveException("No schoolInfoId could be found for the current user");
         } else {
             if (UserType.INSTITUTE_MANAGER.equals(contextDTO.getCurrentUser().getType())) {
-                setInstituteMapInUserContext(contextDTO, schoolInfoRepository.findAllForInstutiteManager(schoolInfoId));
+                setInstituteMapInUserContext(contextDTO, schoolInfoRepository.findAllForInstituteManager(schoolInfoId));
             } else if (UserType.SCHOOL_MANAGER.equals(contextDTO.getCurrentUser().getType())) {
                 setInstituteMapInUserContext(contextDTO, schoolInfoRepository.findAllForSchoolAdmin(schoolInfoId));
             } else {
@@ -283,13 +284,13 @@ public class UserContextServiceImpl implements UserContextService {
             Long schoolId = schoolInfo.getSchool().getId();
 
             if (contextDTO.getInstituteMap() == null) {
-                contextDTO.setInstituteMap(new HashMap<>());
+                contextDTO.setInstituteMap(new LinkedHashMap<>());
             }
             if (contextDTO.getInstituteMap().get(instituteId) == null) {
                 contextDTO.getInstituteMap().put(instituteId, instituteMapper.toDto(schoolInfo.getSchool().getInstitute()));
             }
             if (contextDTO.getInstituteMap().get(instituteId).getSchoolMap() == null) {
-                contextDTO.getInstituteMap().get(instituteId).setSchoolMap(new HashMap<>());
+                contextDTO.getInstituteMap().get(instituteId).setSchoolMap(new LinkedHashMap<>());
             }
             if (contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId) == null) {
                 contextDTO.getInstituteMap().get(instituteId).getSchoolMap().put(schoolId, schoolMapperLite.toDto(schoolInfo.getSchool()));
@@ -300,7 +301,6 @@ public class UserContextServiceImpl implements UserContextService {
                 schoolInfoDTO.setMainSchoolInfoUserId(users.get(0).getId());
             }
             contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId).addSchoolInfo(schoolInfoDTO);
-
         }
     }
 }

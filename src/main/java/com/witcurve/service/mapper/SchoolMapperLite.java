@@ -11,6 +11,7 @@ public interface SchoolMapperLite extends EntityMapper<SchoolDTO, School> {
         SchoolDTO schoolDTO = new SchoolDTO();
         schoolDTO.setId(school.getId());
         schoolDTO.setName(school.getName());
+        schoolDTO.setPrimaryBranch(school.getPrimaryBranch());
         return schoolDTO;
     }
 

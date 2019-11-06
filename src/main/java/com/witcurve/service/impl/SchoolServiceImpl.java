@@ -32,7 +32,7 @@ public class SchoolServiceImpl implements SchoolService {
         log.debug("Request to save or update school");
 
         if (schoolDTO.getPrimaryBranch()) {
-            deactivateOtherPrimaryBranch(schoolDTO.getInstitute().getId());
+            schoolRepository.deactivatePrimaryBranchByInstituteId(schoolDTO.getInstitute().getId());
         }
 
         School school = schoolMapper.toEntity(schoolDTO);
@@ -75,12 +75,8 @@ public class SchoolServiceImpl implements SchoolService {
         if (!school.isPresent()) {
             throw new WitcurveException("No School present with given id {} : " + schoolId);
         }
-        deactivateOtherPrimaryBranch(school.get().getInstitute().getId());
+        schoolRepository.deactivatePrimaryBranchByInstituteId(school.get().getInstitute().getId());
         school.get().setPrimaryBranch(true);
         return schoolMapper.toDto(school.get());
-    }
-
-    private void deactivateOtherPrimaryBranch(Long instituteId) {
-        schoolRepository.deactivatePrimaryBranchByInstituteId(instituteId);
     }
 }
