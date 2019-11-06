@@ -173,7 +173,7 @@ public class InstituteServiceImpl implements InstituteService {
         if(institute == null) {
             throw new WitcurveException("There is no institute registered with sub domain "+ subDomainName);
         }
-        Map<Long, SchoolDTO> schoolDTOMap = new HashMap<>();
+        Map<Long, SchoolDTO> schoolDTOMap = new LinkedHashMap<>();
         InstituteDTO instituteDTO = instituteMapper.toDto(institute);
         List<School> schools = schoolRepository.findByInstituteId(institute.getId());
         for(School school : schools) {
