@@ -131,7 +131,7 @@ public class UserContextServiceImpl implements UserContextService {
         } else if (schoolInfoId == null) {
             if (UserType.SUPER_USER.equals(contextDTO.getCurrentUser().getType())) {
 
-                List<SchoolInfo> allSchoolInfos = schoolInfoRepository.findAllForSuperUser();
+                List<SchoolInfo> allSchoolInfos = schoolInfoRepository.findAllWithOrder();
                 setInstituteMapInUserContext(contextDTO, allSchoolInfos);
                 return contextDTO;
 
