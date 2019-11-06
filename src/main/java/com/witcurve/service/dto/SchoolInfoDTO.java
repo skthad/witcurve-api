@@ -21,6 +21,9 @@ public class SchoolInfoDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long mainSchoolInfoUserId;
 
+    @NotNull
+    private Boolean primaryBoard = false;
+
     public SchoolInfoDTO() {
     }
 
@@ -63,6 +66,10 @@ public class SchoolInfoDTO extends AbstractAuditingDTO implements Serializable {
     public void setMainSchoolInfoUserId(Long mainSchoolInfoUserId) {
         this.mainSchoolInfoUserId = mainSchoolInfoUserId;
     }
+
+    public Boolean getPrimaryBoard() { return primaryBoard; }
+
+    public void setPrimaryBoard(Boolean primaryBoard) { this.primaryBoard = primaryBoard; }
 
     @Override
     public boolean equals(Object o) {

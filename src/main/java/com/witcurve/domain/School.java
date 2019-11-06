@@ -67,6 +67,10 @@ public class School extends AbstractAuditingEntity implements Serializable {
     @Column(name="fax", length = 50)
     private String fax;
 
+    @NotNull
+    @Column(name = "primary_branch", nullable = false, columnDefinition = "boolean default false")
+    private Boolean primaryBranch = false;
+
     public Long getId() {
         return id;
     }
@@ -194,6 +198,10 @@ public class School extends AbstractAuditingEntity implements Serializable {
     public void setFax(String fax) {
         this.fax = fax;
     }
+
+    public Boolean getPrimaryBranch() { return primaryBranch; }
+
+    public void setPrimaryBranch(Boolean primaryBranch) { this.primaryBranch = primaryBranch; }
 
     @Override
     public boolean equals(Object o) {

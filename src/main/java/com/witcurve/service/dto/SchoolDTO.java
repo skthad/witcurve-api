@@ -2,9 +2,11 @@ package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+
 
 public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -48,7 +50,10 @@ public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
 
     private String fax;
 
-    private Set<SchoolInfoDTO> schoolInfos;
+    private List<SchoolInfoDTO> schoolInfos;
+
+    @NotNull
+    private Boolean primaryBranch = false;
 
     public SchoolDTO() {
     }
@@ -181,17 +186,21 @@ public class SchoolDTO extends AbstractAuditingDTO implements Serializable {
         this.fax = fax;
     }
 
-    public Set<SchoolInfoDTO> getSchoolInfos() {
+    public List<SchoolInfoDTO> getSchoolInfos() {
         return schoolInfos;
     }
 
-    public void setSchoolInfos(Set<SchoolInfoDTO> schoolInfos) {
+    public void setSchoolInfos(List<SchoolInfoDTO> schoolInfos) {
         this.schoolInfos = schoolInfos;
     }
 
-    public Set<SchoolInfoDTO> addSchoolInfo(SchoolInfoDTO schoolInfo) {
+    public Boolean getPrimaryBranch() { return primaryBranch; }
+
+    public void setPrimaryBranch(Boolean primaryBranch) { this.primaryBranch = primaryBranch; }
+
+    public List<SchoolInfoDTO> addSchoolInfo(SchoolInfoDTO schoolInfo) {
         if (schoolInfos == null) {
-            schoolInfos = new HashSet<>();
+            schoolInfos = new ArrayList<>();
         }
         schoolInfos.add(schoolInfo);
         return schoolInfos;

@@ -31,6 +31,7 @@ public class SchoolResource {
 
     /**
      * creates a school
+     *
      * @param schoolDTO
      * @return
      * @throws WitcurveException
@@ -45,23 +46,24 @@ public class SchoolResource {
             throw new WitcurveException("New School can't already have an id");
         }
 
-            try {
+        try {
 
-                SchoolDTO result = schoolService.saveOrUpdate(schoolDTO);
-                return ResponseEntity.created(new URI("/api/schools/" + result.getId()))
-                    .headers(HeaderUtil.createEntityCreationAlert("school", result.getId().toString()))
-                    .body(result);
-            } catch (DataIntegrityViolationException e) {
-                if (e.getMessage().contains("UC_SCHOOLAFFILIATION_ID_COL")) {
-                    throw new WitcurveException("Unique constraint (affiliation_id) violated");
-                } else {
-                    throw new WitcurveException("DataIntegrityViolationException occurred.");
-                }
+            SchoolDTO result = schoolService.saveOrUpdate(schoolDTO);
+            return ResponseEntity.created(new URI("/api/schools/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("school", result.getId().toString()))
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("UC_SCHOOLAFFILIATION_ID_COL")) {
+                throw new WitcurveException("Unique constraint (affiliation_id) violated");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
+        }
     }
 
     /**
      * update the given school
+     *
      * @param schoolDTO
      * @return
      * @throws WitcurveException
@@ -96,6 +98,7 @@ public class SchoolResource {
 
     /**
      * get school by id
+     *
      * @param schoolId
      * @return
      * @throws WitcurveException
@@ -112,6 +115,7 @@ public class SchoolResource {
 
     /**
      * get school by instituteId
+     *
      * @param instituteId
      * @return
      * @throws WitcurveException
@@ -129,6 +133,7 @@ public class SchoolResource {
 
     /**
      * delete the school
+     *
      * @param schoolId
      * @return
      * @throws WitcurveException
@@ -151,4 +156,20 @@ public class SchoolResource {
         }
     }
 
+    /**
+     * convert to primaryBranch
+     *
+     * @param schoolId
+     * @return
+     * @throws WitcurveException
+     */
+    @PreAuthorize("hasAuthority('" + PermissionsConstants.SUPER_ACCESS +
+        "') or hasAuthority('" + PermissionsConstants.INSTITUTE_FULL_ACCESS + "')")
+    @PatchMapping("/schools/{schoolId}")
+    @Timed
+    public ResponseEntity<SchoolDTO> changeToPrimaryBranch(@PathVariable("schoolId") Long schoolId) {
+        log.debug("REST request to update school: {}", schoolId);
+        SchoolDTO result = schoolService.changeToPrimaryBranch(schoolId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

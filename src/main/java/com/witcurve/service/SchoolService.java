@@ -14,4 +14,6 @@ public interface SchoolService {
     void deleteSchool(Long schoolId) throws WitcurveException;
 
     List<SchoolDTO> getSchoolByInstituteId(Long instituteId);
+
+    SchoolDTO changeToPrimaryBranch(Long schoolId);
 }
