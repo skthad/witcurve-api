@@ -41,6 +41,12 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
     @Column
     private Integer maxRatingValue;
 
+    @Column
+    private Integer interval;
+
+    @Column
+    private Boolean otherField = false;
+
     @NotNull
     @Column(nullable = false)
     private Integer order;
@@ -132,6 +138,22 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
 
     public void setSection(SurveySection section) {
         this.section = section;
+    }
+
+    public Integer getInterval() {
+        return interval;
+    }
+
+    public void setInterval(Integer interval) {
+        this.interval = interval;
+    }
+
+    public Boolean getOtherField() {
+        return otherField;
+    }
+
+    public void setOtherField(Boolean otherField) {
+        this.otherField = otherField;
     }
 
     @Override

@@ -33,6 +33,10 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
 
     private Long sectionId;
 
+    private Boolean otherField = false;
+
+    private Integer interval;
+
     public Long getId() {
         return id;
     }
@@ -112,6 +116,14 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
     public void setSectionId(Long sectionId) {
         this.sectionId = sectionId;
     }
+
+    public Boolean getOtherField() { return otherField; }
+
+    public void setOtherField(Boolean otherField) { this.otherField = otherField; }
+
+    public Integer getInterval() { return interval; }
+
+    public void setInterval(Integer interval) { this.interval = interval; }
 
     @Override
     public boolean equals(Object o) {
