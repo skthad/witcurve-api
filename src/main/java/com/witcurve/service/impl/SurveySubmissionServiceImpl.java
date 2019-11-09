@@ -46,9 +46,8 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
     public SurveySubmissionDTO save(SurveySubmissionDTO surveySubmissionDTO) {
         //check all d required questions are answered then only submit is possible
         log.debug("Request to save or update SurveySubmission {} :", surveySubmissionDTO);
-        List<Long> questionIds = surveyQuestionRepository.getMandatoryQuestionsByFormId(surveySubmissionDTO.getFormId());
-        List<SurveyAnswer> surveyAnswerDTOS = surveyAnswerRepository.getByQuestionIdAndUserId(questionIds, surveySubmissionDTO.getUserId());
-        if (questionIds.size() != surveyAnswerDTOS.size()) {
+        List<SurveyAnswer> surveyAnswers = surveyAnswerRepository.getMandatoryUnansweredRecordByUserIdAndFormId(surveySubmissionDTO.getUserId(),surveySubmissionDTO.getFormId());
+        if (surveyAnswers.size()>0) {
             throw new WitcurveException("All mandatory questions should be answered before submitting form");
         }
         SurveySubmission surveySubmission = surveySubmissionRepository.save(surveySubmissionMapper.toEntity(surveySubmissionDTO));
@@ -73,7 +72,7 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
         if (!user.isPresent()) {
             throw new WitcurveException("No User is present with given id : {} " + userId);
         }
-        List<SurveySubmission> surveySubmissions = surveySubmissionRepository.findByUserId(userId);
+        List<SurveySubmission> surveySubmissions = surveySubmissionRepository.getByUserId(userId);
         return surveySubmissionMapper.toDto(surveySubmissions);
     }
 }

@@ -36,6 +36,7 @@ public class SurveyFormResource {
 
     /**
      * creates a surveyForm
+     *
      * @param surveyFormDTO
      * @return
      * @throws WitcurveException
@@ -64,6 +65,7 @@ public class SurveyFormResource {
 
     /**
      * creates a surveySection
+     *
      * @param surveySectionDTO
      * @return
      * @throws WitcurveException
@@ -92,6 +94,7 @@ public class SurveyFormResource {
 
     /**
      * update the given surveyForm
+     *
      * @param surveyFormDTO
      * @return
      * @throws WitcurveException
@@ -118,7 +121,23 @@ public class SurveyFormResource {
     }
 
     /**
+     * update surveyForm status by id with status
+     *
+     * @param surveyFormId
+     * @return
+     * @throws WitcurveException
+     */
+    @PatchMapping("/survey-forms/{surveyFormId}")
+    @Timed
+    public ResponseEntity<SurveyFormDTO> updateSurveyFormStatus(@PathVariable("surveyFormId") Long surveyFormId, @RequestParam SurveyFormStatus status) {
+        log.debug("Request to change status of surveyForm");
+        SurveyFormDTO result = surveyFormService.updateSurveyFormStatus(surveyFormId, status);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
      * update a surveySection
+     *
      * @param surveySectionDTO
      * @return
      * @throws WitcurveException
@@ -147,6 +166,7 @@ public class SurveyFormResource {
 
     /**
      * get surveyForm by id
+     *
      * @param surveyFormId
      * @return
      * @throws WitcurveException
@@ -161,6 +181,7 @@ public class SurveyFormResource {
 
     /**
      * get surveyForms by schoolInfoId
+     *
      * @param schoolInfoId
      * @param creator,
      * @param statusList
@@ -170,8 +191,8 @@ public class SurveyFormResource {
     @GetMapping("/survey-forms/school-info/{schoolInfoId}")
     @Timed
     public ResponseEntity<List<SurveyFormDTO>> getSurveyFormBySchoolInfo(@PathVariable("schoolInfoId") Long schoolInfoId,
-                                                                  @RequestParam SurveyFormCreator creator,
-                                                                  @RequestParam(required = false) List<SurveyFormStatus> statusList) throws WitcurveException {
+                                                                         @RequestParam SurveyFormCreator creator,
+                                                                         @RequestParam(required = false) List<SurveyFormStatus> statusList) throws WitcurveException {
         log.debug("Request to get SurveyForm with schoolInfo with id : {}, by creator : {} and of statuses : {}", schoolInfoId, creator, statusList);
         List<SurveyFormDTO> result = surveyFormService.findAll(schoolInfoId, creator, statusList);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -179,6 +200,7 @@ public class SurveyFormResource {
 
     /**
      * get surveyForms by studentId
+     *
      * @param studentId
      * @return
      * @throws WitcurveException
@@ -193,6 +215,7 @@ public class SurveyFormResource {
 
     /**
      * get surveyForms by staffId
+     *
      * @param staffId
      * @return
      * @throws WitcurveException
@@ -207,6 +230,7 @@ public class SurveyFormResource {
 
     /**
      * delete the surveyForm
+     *
      * @param surveyFormId
      * @return
      * @throws WitcurveException
@@ -221,6 +245,7 @@ public class SurveyFormResource {
 
     /**
      * delete the surveySection
+     *
      * @param surveySectionId
      * @return
      * @throws WitcurveException

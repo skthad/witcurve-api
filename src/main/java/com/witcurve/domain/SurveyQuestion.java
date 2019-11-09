@@ -41,19 +41,19 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
     @Column
     private Integer maxRatingValue;
 
-    @Column
+    @Column(name = "rating_interval")
     private Integer interval;
 
     @Column
     private Boolean otherField = false;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false,name ="question_order")
     private Integer order;
 
     @Column
     @Convert(converter = MapToStringConverter.class)
-    private Map<Integer, String> options;
+    private Map<Long, String> options;
 
     @NotNull
     @ManyToOne
@@ -124,13 +124,9 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
         this.order = order;
     }
 
-    public Map<Integer, String> getOptions() {
-        return options;
-    }
+    public Map<Long, String> getOptions() { return options; }
 
-    public void setOptions(Map<Integer, String> options) {
-        this.options = options;
-    }
+    public void setOptions(Map<Long, String> options) { this.options = options; }
 
     public SurveySection getSection() {
         return section;

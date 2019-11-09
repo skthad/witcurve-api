@@ -36,7 +36,7 @@ public class SurveyAnswerResource {
      */
     @PostMapping("/survey-answers")
     @Timed
-    public ResponseEntity<SurveyAnswerDTO> createSurveyAnswer(@RequestBody @Valid SurveyAnswerDTO surveyAnswerDTO) throws URISyntaxException {
+    public ResponseEntity<SurveyAnswerDTO> saveSurveyAnswer(@RequestBody @Valid SurveyAnswerDTO surveyAnswerDTO) throws URISyntaxException {
         log.debug("Request Save surveyAnswer : {} ", surveyAnswerDTO);
         if (surveyAnswerDTO.getId() != null) {
             throw new WitcurveException("New SurveyAnswer can't already have an id");

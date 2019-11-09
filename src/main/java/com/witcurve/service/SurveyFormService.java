@@ -19,5 +19,7 @@ public interface SurveyFormService {
 
     List<SurveyFormDTO> findSurveyFormsForStaffId(Long staffId);
 
+    SurveyFormDTO updateSurveyFormStatus(Long surveyFormId, SurveyFormStatus status);
+
     void deleteOne(Long surveyFormId);
 }

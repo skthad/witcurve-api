@@ -23,6 +23,10 @@ public class SurveySection extends AbstractAuditingEntity implements Serializabl
     private String description;
 
     @NotNull
+    @Column(nullable = false, name = "section_order")
+    private Integer order;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
     private SurveyForm form;
@@ -58,6 +62,10 @@ public class SurveySection extends AbstractAuditingEntity implements Serializabl
     public void setForm(SurveyForm form) {
         this.form = form;
     }
+
+    public Integer getOrder() { return order; }
+
+    public void setOrder(Integer order) { this.order = order; }
 
     @Override
     public boolean equals(Object o) {
