@@ -54,7 +54,7 @@ public class SurveyQuestionResource {
     @PutMapping("/survey-questions")
     @Timed
     public ResponseEntity<SurveyQuestionDTO> updateSurveyQuestion(@RequestBody @Valid SurveyQuestionDTO
-                                                                      surveyQuestionDTO) {
+                                                                      surveyQuestionDTO)  throws URISyntaxException {
         log.debug("Request to update surveyQuestion : {} ", surveyQuestionDTO);
         if (surveyQuestionDTO.getId() == null) {
             throw new WitcurveException("Id is require to update SurveyQuestion");
