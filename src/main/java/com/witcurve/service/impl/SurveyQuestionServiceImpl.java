@@ -45,8 +45,7 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         isValid(surveyQuestionDTO);
         SurveyQuestion surveyQuestion = surveyQuestionMapper.toEntity(surveyQuestionDTO);
         surveyQuestion = surveyQuestionRepository.save(surveyQuestion);
-        SurveyQuestionDTO sd =surveyQuestionMapper.toDto(surveyQuestion);
-        return sd;
+        return surveyQuestionMapper.toDto(surveyQuestion);
     }
 
     @Override
