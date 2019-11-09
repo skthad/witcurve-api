@@ -10,12 +10,10 @@ import java.util.List;
 @Repository
 public interface SurveyQuestionRepository extends JpaRepository<SurveyQuestion, Long> {
 
-    @Query("Select sq from SurveyQuestion sq where sq.section.form.id = ?1")
+    @Query("Select sq from SurveyQuestion sq where sq.section.form.id = ?1 order by sq.section.id , sq.id")
     List<SurveyQuestion> getByFormId(Long formId);
 
-    @Query("Select sq from SurveyQuestion sq where sq.section.id = ?1")
+    @Query("Select sq from SurveyQuestion sq where sq.section.id = ?1 order by sq.id")
     List<SurveyQuestion> getBySectionId(Long sectionId);
 
-    @Query("Select sq from SurveyQuestion sq where sq.section.form.id = ?1 and sq.required = true")
-    List<Long> getMandatoryQuestionsByFormId(Long formId);
 }

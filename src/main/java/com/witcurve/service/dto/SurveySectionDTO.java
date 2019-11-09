@@ -13,7 +13,11 @@ public class SurveySectionDTO extends AbstractAuditingDTO implements Serializabl
 
     private String description;
 
+    @NotNull
     private Long formId;
+
+    @NotNull
+    private Integer order;
 
     public Long getId() {
         return id;
@@ -46,6 +50,10 @@ public class SurveySectionDTO extends AbstractAuditingDTO implements Serializabl
     public void setFormId(Long formId) {
         this.formId = formId;
     }
+
+    public Integer getOrder() { return order; }
+
+    public void setOrder(Integer order) { this.order = order; }
 
     @Override
     public boolean equals(Object o) {

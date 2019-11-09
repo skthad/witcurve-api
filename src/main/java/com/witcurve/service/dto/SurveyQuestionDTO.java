@@ -31,6 +31,7 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
 
     private Map<Long, String> options;
 
+    @NotNull
     private Long sectionId;
 
     private Boolean otherField = false;
@@ -109,9 +110,7 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
         this.options = options;
     }
 
-    public Long getSectionId() {
-        return sectionId;
-    }
+    public Long getSectionId() { return sectionId; }
 
     public void setSectionId(Long sectionId) {
         this.sectionId = sectionId;

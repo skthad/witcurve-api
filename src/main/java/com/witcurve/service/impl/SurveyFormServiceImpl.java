@@ -3,6 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.SurveyForm;
+import com.witcurve.domain.SurveySubmission;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
@@ -26,7 +27,7 @@ import java.util.*;
 @Transactional
 public class SurveyFormServiceImpl implements SurveyFormService {
 
-    private final Logger log  = LoggerFactory.getLogger(SurveyFormServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(SurveyFormServiceImpl.class);
 
     @Autowired
     SurveyFormMapper surveyFormMapper;
@@ -45,7 +46,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
 
     @Override
     public SurveyFormDTO saveOrUpdate(SurveyFormDTO surveyFormDTO) throws WitcurveException {
-        log.debug("Request to save or update surveyForm : {}",surveyFormDTO);
+        log.debug("Request to save or update surveyForm : {}", surveyFormDTO);
         SurveyForm surveyForm = surveyFormMapper.toEntity(surveyFormDTO);
         surveyForm = surveyFormRepository.save(surveyForm);
         return surveyFormMapper.toDto(surveyForm);
@@ -55,21 +56,23 @@ public class SurveyFormServiceImpl implements SurveyFormService {
     public SurveyFormDTO getOne(Long surveyFormId) throws WitcurveException {
         log.debug("Request to get surveyForm with id : {}", surveyFormId);
         Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveyFormId);
-        if(!surveyForm.isPresent()) {
-            throw new WitcurveException("No survey formFound with id : "+surveyFormId);
+        if (!surveyForm.isPresent()) {
+            throw new WitcurveException("No survey formFound with id : " + surveyFormId);
         }
         return surveyFormMapper.toDto(surveyForm.get());
     }
 
+    @Override
     public List<SurveyFormDTO> findAll(Long schoolInfoId, SurveyFormCreator creator, List<SurveyFormStatus> statusList) {
         log.debug("Request to get surveyForms for schoolInfo with id : {} of creator : {} of statuses : {}", schoolInfoId, creator, statusList);
-        if(statusList == null) {
+        if (statusList == null) {
             statusList = new ArrayList<>(EnumSet.allOf(SurveyFormStatus.class));
         }
         List<SurveyForm> result = surveyFormRepository.findBySchoolInfoIdAndCreatorAndStatusList(schoolInfoId, creator, statusList);
         return surveyFormMapper.toDto(result);
     }
 
+    @Override
     public List<SurveyFormDTO> findSurveyFormsForStudentId(Long studentId) throws WitcurveException {
         log.debug("Request to get surveyForms for student with id : {}", studentId);
         Optional<Student> student = studentRepository.findById(studentId);
@@ -83,6 +86,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         return result;
     }
 
+    @Override
     public List<SurveyFormDTO> findSurveyFormsForStaffId(Long staffId) throws WitcurveException {
         log.debug("Request to get surveyForms for staff with id : {}", staffId);
         Optional<Staff> staff = staffRepository.findById(staffId);
@@ -96,25 +100,35 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         return result;
     }
 
+    @Override
     public void deleteOne(Long surveyFormId) throws WitcurveException {
         log.debug("Request to delete surveyForm with id : {}", surveyFormId);
         Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveyFormId);
-        if(!surveyForm.isPresent()) {
-            throw new WitcurveException("No surveyForm found with id : "+surveyFormId);
+        if (!surveyForm.isPresent()) {
+            throw new WitcurveException("No surveyForm found with id : " + surveyFormId);
         }
         surveyFormRepository.delete(surveyForm.get());
     }
 
+    @Override
+    public SurveyFormDTO updateSurveyFormStatus(Long surveyFormId, SurveyFormStatus status) {
+        log.debug("Request to update surveyForm  status with id : {}", surveyFormId);
+        Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveyFormId);
+        if (!surveyForm.isPresent()) {
+            throw new WitcurveException("No surveyForm found with id : " + surveyFormId);
+        }
+        surveyForm.get().setStatus(status);
+        return surveyFormMapper.toDto(surveyForm.get());
+    }
+
     private void updateSubmitStatus(List<SurveyFormDTO> surveyForms, Long userId) {
-        for(SurveyFormDTO surveyForm : surveyForms) {
-            List<Long> formIds = surveySubmissionRepository.findByUserId(userId);
-            if(!formIds.contains(surveyForm.getId())) {
-                surveyForm.setUserSubmitted(false);
-            } else {
+        for (SurveyFormDTO surveyForm : surveyForms) {
+            SurveySubmission surveySubmission = surveySubmissionRepository.findByFormIdAndUserId(surveyForm.getId(), userId);
+            if (surveySubmission != null) {
                 surveyForm.setUserSubmitted(true);
+            } else {
+                surveyForm.setUserSubmitted(false);
             }
         }
     }
-
-
 }

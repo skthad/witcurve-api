@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1573205406058-1">
+        <createTable tableName="survey_answer_answers">
+            <column name="survey_answer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="answers" type="LONGTEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-2">
+        <addColumn tableName="survey_question">
+            <column name="interval" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-3">
+        <addColumn tableName="survey_question">
+            <column name="other_field" type="bit"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-4">
+        <addColumn tableName="survey_question">
+            <column name="question_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-5">
+        <addColumn tableName="survey_section">
+            <column name="section_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-6">
+        <addForeignKeyConstraint baseColumnNames="survey_answer_id" baseTableName="survey_answer_answers"
+                                 constraintName="FK4l3fti85jn9e3v9i9heuuj9xa" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="survey_answer"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-7">
+        <dropColumn columnName="options" tableName="survey_answer"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573205406058-8">
+        <dropColumn columnName="order" tableName="survey_question"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573209018556-9">
+        <addColumn tableName="survey_question">
+            <column name="rating_interval" type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573209018556-10">
+        <dropColumn columnName="interval" tableName="survey_question"/>
+    </changeSet>
+</databaseChangeLog>
