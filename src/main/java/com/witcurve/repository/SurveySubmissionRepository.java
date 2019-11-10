@@ -10,13 +10,16 @@ import java.util.List;
 @Repository
 public interface SurveySubmissionRepository extends JpaRepository<SurveySubmission, Long> {
 
-    @Query("Select ss from SurveySubmission ss where ss.form.id = ?1")
+    @Query("Select ss.form.id from SurveySubmission ss where ss.user.id=?1")
+    List<Long> findByUserId(Long userId);
+
+    @Query("Select ss from SurveySubmission ss where ss.form.id = ?1 order by ss.createdDate desc")
     List<SurveySubmission> findByFormId(Long formId);
 
     @Query("Select ss from SurveySubmission ss where ss.form.id = ?1 and ss.user.id = ?2")
     SurveySubmission findByFormIdAndUserId(Long formId, Long userId);
 
-    @Query("Select ss from SurveySubmission ss where ss.user.id = ?1 order by ss.form.id")
+    @Query("Select ss from SurveySubmission ss where ss.user.id = ?1 order by ss.createdDate desc")
     List<SurveySubmission> getByUserId(Long userId);
 
 }

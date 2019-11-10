@@ -1,6 +1,5 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.SurveyForm;
 import com.witcurve.domain.SurveyQuestion;
 import com.witcurve.domain.SurveySection;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,10 +51,6 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     @Override
     public List<SurveyQuestionDTO> getByFormId(Long formId) {
         log.debug("Request to get SurveyQuestion by formId : {} :" + formId);
-        Optional<SurveyForm> surveyForm = surveyFormRepository.findById(formId);
-        if (!surveyForm.isPresent()) {
-            throw new WitcurveException("No surveyForm found with id : " + formId);
-        }
         List<SurveyQuestion> result = surveyQuestionRepository.getByFormId(formId);
         return surveyQuestionMapper.toDto(result);
     }
@@ -62,10 +58,6 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     @Override
     public List<SurveyQuestionDTO> getBySectionId(Long sectionId) {
         log.debug("Request to get SurveyQuestion by sectionId : {} " + sectionId);
-        Optional<SurveySection> surveySection = surveySectionRepository.findById(sectionId);
-        if (!surveySection.isPresent()) {
-            throw new WitcurveException("No surveySection found with id : " + sectionId);
-        }
         List<SurveyQuestion> result = surveyQuestionRepository.getBySectionId(sectionId);
         return surveyQuestionMapper.toDto(result);
     }
@@ -75,10 +67,12 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         log.debug("Request to delete SurveyQuestion by id : {} " + questionId);
         Optional<SurveyQuestion> question = surveyQuestionRepository.findById(questionId);
         if (!question.isPresent()) {
-            throw new WitcurveException("No surveySection found with questionId : " + questionId);
+            throw new WitcurveException("No surveySection found with id : " + questionId);
         }
         if (question.get().getSection().getForm().getStatus().equals(SurveyFormStatus.DRAFT)) {
             surveyQuestionRepository.delete(question.get());
+        } else {
+            throw new WitcurveException("Question can not be deleted if form is in Published or Closed status");
         }
     }
 
@@ -93,47 +87,35 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         switch (surveyQuestionDTO.getType()) {
             case RATING:
                 if (surveyQuestionDTO.getMaxRatingValue() == null || surveyQuestionDTO.getMinRatingValue() == null) {
-                    throw new WitcurveException("Require min and max rating value for QuestionType :" + surveyQuestionDTO.getType());
+                    throw new WitcurveException("Require min and max rating value for Rating question type");
                 }
                 if (surveyQuestionDTO.getMinRatingValue() > surveyQuestionDTO.getMaxRatingValue()) {
                     throw new WitcurveException("Min rating value can not be more than max rating value");
-                }
-                if (surveyQuestionDTO.getOtherField()) {
-                    throw new WitcurveException("Other field should not be selected for QuestionType :" + surveyQuestionDTO.getType());
                 }
                 int interval = 1;
                 if (surveyQuestionDTO.getInterval() != null) {
                     interval = surveyQuestionDTO.getInterval();
                 }
                 if (surveyQuestionDTO.getOptions() != null) {
+                    List<Integer> expectedKeys = new ArrayList<>();
+                    int value = surveyQuestionDTO.getMinRatingValue();
+                    expectedKeys.add(value);
+                    while (value + interval <= surveyQuestionDTO.getMaxRatingValue()) {
+                        value = value + interval;
+                        expectedKeys.add(value);
+                    }
                     List<Integer> keys = surveyQuestionDTO.getOptions().keySet().stream().collect(Collectors.toList());
-                    for (int i = 1; i < keys.size(); i++) {
-                        if (keys.get(i) != keys.get(i - 1) + interval) {
-                            throw new WitcurveException("Options are not according to given interval for Rating_Type question");
+                    for (Integer key : keys) {
+                        if (!expectedKeys.contains(key)) {
+                            throw new WitcurveException("Given options are not according to interval");
                         }
                     }
                 }
                 break;
-            case LONG_ANSWER:
-            case SHORT_ANSWER:
-            case DICHOTOMOUS:
-                if (surveyQuestionDTO.getMaxRatingValue() != null || surveyQuestionDTO.getMinRatingValue() != null || surveyQuestionDTO.getInterval() != null) {
-                    throw new WitcurveException("Max,min rating and interval value should be null for QuestionType :" + surveyQuestionDTO.getType());
-                }
-                if (surveyQuestionDTO.getOptions() != null) {
-                    throw new WitcurveException("Options value should be null for QuestionType :" + surveyQuestionDTO.getType());
-                }
-                if (surveyQuestionDTO.getOtherField()) {
-                    throw new WitcurveException("Other field should not be selected for QuestionType :" + surveyQuestionDTO.getType());
-                }
-                break;
             case MULTIPLE_CHOICE:
             case SINGLE_CHOICE:
-                if (surveyQuestionDTO.getMaxRatingValue() != null || surveyQuestionDTO.getMinRatingValue() != null || surveyQuestionDTO.getInterval() != null) {
-                    throw new WitcurveException("Max,min rating and interval value should be null for QuestionType :" + surveyQuestionDTO.getType());
-                }
                 if (surveyQuestionDTO.getOptions().isEmpty() || surveyQuestionDTO.getOptions() == null) {
-                    throw new WitcurveException("Options can not be null or empty for QuestionType :" + surveyQuestionDTO.getType());
+                    throw new WitcurveException("Options can not be null or empty");
                 }
                 break;
         }
