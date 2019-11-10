@@ -106,7 +106,7 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
                     interval = surveyQuestionDTO.getInterval();
                 }
                 if (surveyQuestionDTO.getOptions() != null) {
-                    List<Long> keys = surveyQuestionDTO.getOptions().keySet().stream().collect(Collectors.toList());
+                    List<Integer> keys = surveyQuestionDTO.getOptions().keySet().stream().collect(Collectors.toList());
                     for (int i = 1; i < keys.size(); i++) {
                         if (keys.get(i) != keys.get(i - 1) + interval) {
                             throw new WitcurveException("Options are not according to given interval for Rating_Type question");
