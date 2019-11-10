@@ -51,8 +51,10 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
     @Column(nullable = false,name ="question_order")
     private Integer order;
 
-    @Column
-    @Convert(converter = MapToStringConverter.class)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "options")
+    @MapKeyColumn(name = "option_key")
+    @CollectionTable(name = "survey_question_options", joinColumns=@JoinColumn(name="survey_question_id"))
     private Map<Integer, String> options;
 
     @NotNull
