@@ -55,4 +55,27 @@
     <changeSet author="Sai (generated)" id="1573209018556-10">
         <dropColumn columnName="interval" tableName="survey_question"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1573383618143-11">
+        <createTable tableName="survey_question_options">
+            <column name="survey_question_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="options" type="VARCHAR(255)"/>
+            <column name="option_key" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573383618143-12">
+        <addPrimaryKey columnNames="survey_question_id, option_key" tableName="survey_question_options"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573383618143-13">
+        <addForeignKeyConstraint baseColumnNames="survey_question_id" baseTableName="survey_question_options"
+                                 constraintName="FKh0085lh3hapaomp1ab7e7ya86" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="survey_question"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1573383618143-14">
+        <dropColumn columnName="options" tableName="survey_question"/>
+    </changeSet>
 </databaseChangeLog>
