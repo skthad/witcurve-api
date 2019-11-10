@@ -97,32 +97,32 @@ public class SurveyAnswerServiceImpl implements SurveyAnswerService {
             case SHORT_ANSWER:
             case LONG_ANSWER:
                 if (surveyAnswerDTO.getAnswers().size() > 1 || surveyAnswerDTO.getAnswers().size() == 0) {
-                    throw new WitcurveException("Answer is either empty or having more than one value for Short_Answer_Type Question");
+                    throw new WitcurveException("Answer is either empty or having more than one value for Short answer type question");
                 }
                 if (surveyQuestion.get().getType().equals(QuestionType.SHORT_ANSWER)) {
                     if (surveyAnswerDTO.getAnswers().get(0).length() > 80) {
-                        throw new WitcurveException("Size of answer can not be more than 80 for Short_Answer_Type Question");
+                        throw new WitcurveException("Size of answer can not be more than 80 for Short answer type question");
                     }
                 }
                 if (surveyQuestion.get().getType().equals(QuestionType.LONG_ANSWER)) {
                     if (surveyAnswerDTO.getAnswers().get(0).length() > 500) {
-                        throw new WitcurveException("Size of answer can not be more than one 500 for Long_Answer_Type Question");
+                        throw new WitcurveException("Size of answer can not be more than one 500 for Long answer type question");
                     }
                 }
                 break;
             case DICHOTOMOUS:
                 if (surveyAnswerDTO.getAnswers().size() > 1 || surveyAnswerDTO.getAnswers().size() == 0) {
-                    throw new WitcurveException("Size of list can not be more than one for Dichotomous_Type Question");
+                    throw new WitcurveException("Answer can not be more than one for Dichotomous type question");
                 }
                 answer = surveyAnswerDTO.getAnswers().get(0).toUpperCase();
                 if (!("TRUE".equals(answer) || "FALSE".equals(answer))) {
-                    throw new WitcurveException("Answer should be in true or false for Dichotomous_Type Question");
+                    throw new WitcurveException("Answer should be in true or false for Dichotomous type question");
                 }
                 surveyAnswerDTO.setAnswers(Arrays.asList(answer));
                 break;
             case SINGLE_CHOICE:
                 if (surveyAnswerDTO.getAnswers().size() > 1 || surveyAnswerDTO.getAnswers().size() == 0) {
-                    throw new WitcurveException("Size of list can not be more than one for Single_Choice_Type Question");
+                    throw new WitcurveException("Answer can not be more than one for Single choice type question");
                 }
                 answer = surveyAnswerDTO.getAnswers().get(0);
                 options = surveyQuestion.get().getOptions().values();
@@ -149,7 +149,7 @@ public class SurveyAnswerServiceImpl implements SurveyAnswerService {
                     }
                 } else {//when otherField value is true
                     if (selectedAnswers.size() > options.size() + 1) {
-                        throw new WitcurveException("Multiple_choice_Type question can not have two other values");
+                        throw new WitcurveException("Multiple choice type question can not have two other values");
                     }
                     int count = 0;
                     for (String selectedAnswer : selectedAnswers) {
@@ -164,9 +164,21 @@ public class SurveyAnswerServiceImpl implements SurveyAnswerService {
                 break;
             case RATING:
                 answer = surveyAnswerDTO.getAnswers().get(0);
-                Set<Integer> keys = surveyQuestion.get().getOptions().keySet();
-                if (!keys.contains(answer)) {
-                    throw new WitcurveException("Selected answer is not in question's option list");
+                List<Integer> expectedKeys = new ArrayList<>();
+
+                int value = surveyQuestion.get().getMinRatingValue();
+                expectedKeys.add(value);
+
+                int interval = 1;
+                if (surveyQuestion.get().getInterval() != null) {
+                    interval = surveyQuestion.get().getInterval();
+                }
+                while (value + interval <= surveyQuestion.get().getMaxRatingValue()) {
+                    value = value + interval;
+                    expectedKeys.add(value);
+                }
+                if (!expectedKeys.contains(Integer.parseInt(answer))) {
+                    throw new WitcurveException("Selected answer does not match the given options");
                 }
         }
     }

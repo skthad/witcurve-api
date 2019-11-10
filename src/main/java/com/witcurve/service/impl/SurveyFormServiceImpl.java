@@ -3,7 +3,6 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.Student;
 import com.witcurve.domain.SurveyForm;
-import com.witcurve.domain.SurveySubmission;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
@@ -122,13 +121,16 @@ public class SurveyFormServiceImpl implements SurveyFormService {
     }
 
     private void updateSubmitStatus(List<SurveyFormDTO> surveyForms, Long userId) {
+        List<Long> formIds = surveySubmissionRepository.findByUserId(userId);
         for (SurveyFormDTO surveyForm : surveyForms) {
-            SurveySubmission surveySubmission = surveySubmissionRepository.findByFormIdAndUserId(surveyForm.getId(), userId);
-            if (surveySubmission != null) {
-                surveyForm.setUserSubmitted(true);
-            } else {
+            if (!formIds.contains(surveyForm.getId())) {
                 surveyForm.setUserSubmitted(false);
+            } else {
+                surveyForm.setUserSubmitted(true);
             }
         }
     }
 }
+
+
+
