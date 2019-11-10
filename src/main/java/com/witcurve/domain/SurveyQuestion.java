@@ -53,7 +53,7 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
 
     @Column
     @Convert(converter = MapToStringConverter.class)
-    private Map<Long, String> options;
+    private Map<Integer, String> options;
 
     @NotNull
     @ManyToOne
@@ -124,9 +124,9 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
         this.order = order;
     }
 
-    public Map<Long, String> getOptions() { return options; }
+    public Map<Integer, String> getOptions() { return options; }
 
-    public void setOptions(Map<Long, String> options) { this.options = options; }
+    public void setOptions(Map<Integer, String> options) { this.options = options; }
 
     public SurveySection getSection() {
         return section;

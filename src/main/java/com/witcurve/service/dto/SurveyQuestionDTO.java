@@ -29,7 +29,7 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
 
     private Integer maxRatingValue;
 
-    private Map<Long, String> options;
+    private Map<Integer, String> options;
 
     @NotNull
     private Long sectionId;
@@ -102,13 +102,9 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
         this.maxRatingValue = maxRatingValue;
     }
 
-    public Map<Long, String> getOptions() {
-        return options;
-    }
+    public Map<Integer, String> getOptions() { return options; }
 
-    public void setOptions(Map<Long, String> options) {
-        this.options = options;
-    }
+    public void setOptions(Map<Integer, String> options) { this.options = options; }
 
     public Long getSectionId() { return sectionId; }
 

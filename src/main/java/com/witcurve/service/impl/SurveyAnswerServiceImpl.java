@@ -164,7 +164,7 @@ public class SurveyAnswerServiceImpl implements SurveyAnswerService {
                 break;
             case RATING:
                 answer = surveyAnswerDTO.getAnswers().get(0);
-                Set<Long> keys = surveyQuestion.get().getOptions().keySet();
+                Set<Integer> keys = surveyQuestion.get().getOptions().keySet();
                 if (!keys.contains(answer)) {
                     throw new WitcurveException("Selected answer is not in question's option list");
                 }
