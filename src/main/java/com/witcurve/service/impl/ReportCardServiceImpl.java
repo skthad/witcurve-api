@@ -203,30 +203,24 @@ public class ReportCardServiceImpl implements ReportCardService {
             reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
 
             if(reportCard.get().getStudentDetails() != null && reportCard.get().getStudentDetails().size() !=0) {
-                List<Map<String, String>> studentDetailsList = new ArrayList<>();
+                Map<String, String> studentDetailsMap = new LinkedHashMap<>();
 
                 for(StudentDetails studentDetails : reportCard.get().getStudentDetails()) {
-                    Map<String, String> studentDetailsMap = new HashMap<>();
                     switch (studentDetails) {
                         case DATE:
                             studentDetailsMap.put(StudentDetails.DATE.getName(), LocalDate.now().toString());
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case PLACE:
                             studentDetailsMap.put(StudentDetails.PLACE.getName(), reportCard.get().getExam().getSchoolInfo().getSchool().getCity());
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case ROLL_NO:
                             studentDetailsMap.put(StudentDetails.ROLL_NO.getName(), studentStandard.getRollNo());
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case STANDARD:
                             studentDetailsMap.put(StudentDetails.STANDARD.getName(), standard.get().getGrade().toString()+"-"+standard.get().getSection());
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case ATTENDANCE:
                             studentDetailsMap.put(StudentDetails.ATTENDANCE.getName(), getAttendance(reportCard.get(), studentStandard.getStudent()));
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case FATHER_NAME:
                             if(studentStandard.getStudent().getFatherName() != null) {
@@ -234,7 +228,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                             } else {
                                 studentDetailsMap.put(StudentDetails.FATHER_NAME.getName(), " ");
                             }
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case MOTHER_NAME:
                             if(studentStandard.getStudent().getMotherName() != null) {
@@ -242,11 +235,9 @@ public class ReportCardServiceImpl implements ReportCardService {
                             } else {
                                 studentDetailsMap.put(StudentDetails.MOTHER_NAME.getName(), " ");
                             }
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case ADMISSION_ID:
                             studentDetailsMap.put(StudentDetails.ADMISSION_ID.getName(), studentStandard.getStudent().getAdmissionId());
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case STUDENT_NAME:
                             if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
@@ -254,15 +245,13 @@ public class ReportCardServiceImpl implements ReportCardService {
                             } else {
                                 studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName());
                             }
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                         case DATE_OF_BIRTH:
                             studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getDateOfBirth().toString());
-                            studentDetailsList.add(studentDetailsMap);
                             break;
                     }
                 }
-                reportCardVM.setStudentDetails(studentDetailsList);
+                reportCardVM.setStudentDetails(studentDetailsMap);
             }
 
             setScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
