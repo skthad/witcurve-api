@@ -35,7 +35,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class ReportCardResource {
+public class    ReportCardResource {
 
     private final Logger log = LoggerFactory.getLogger(ReportCardResource.class);
 

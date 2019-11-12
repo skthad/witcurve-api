@@ -27,7 +27,7 @@ public class ReportCardVM  implements Serializable {
     @NotNull
     private String schoolPrimaryColor = "#000000";
 
-    private List<Map<String, String>> studentDetails;
+    private Map<String, String> studentDetails;
 
     @NotNull
     private String pageTop = "1.00";
@@ -64,11 +64,11 @@ public class ReportCardVM  implements Serializable {
 
     private NonScholasticVM nonScholastic;
 
-    public List<Map<String, String>> getStudentDetails() {
+    public Map<String, String> getStudentDetails() {
         return studentDetails;
     }
 
-    public void setStudentDetails(List<Map<String, String>> studentDetails) {
+    public void setStudentDetails(Map<String, String> studentDetails) {
         this.studentDetails = studentDetails;
     }
 

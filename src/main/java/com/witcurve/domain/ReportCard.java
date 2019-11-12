@@ -72,7 +72,7 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Column(name = "student_details")
+    @Column(name = "student_details", length = 500)
     @CollectionTable(name = "report_card_student_details", joinColumns=@JoinColumn(name="report_card_id"))
     private List<StudentDetails> studentDetails;
 

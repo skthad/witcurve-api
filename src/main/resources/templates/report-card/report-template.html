@@ -125,11 +125,11 @@
             return a;
         }
 
-        for(var i=0; i<report.studentDetails.length; i++){
-            var field = Object.keys(report.studentDetails[i]);
-            switch(field[0]){
+        var field = Object.keys(report.studentDetails);
+        for(var i=0; i<field.length; i++){
+            switch(field[i]){
                 case "studentName":
-                    if(report.studentDetails[i].studentName){
+                    if(report.studentDetails.studentName){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -139,13 +139,13 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].studentName.toUpperCase() ;
+                        newTd.textContent = report.studentDetails.studentName.toUpperCase() ;
                         count++;
 
                     }
                     break;
                 case "standard":
-                    if(report.studentDetails[i].standard){
+                    if(report.studentDetails.standard){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -155,12 +155,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].standard;
+                        newTd.textContent = report.studentDetails.standard;
                         count++;
                     }
                     break;
                 case "admissionId":
-                    if(report.studentDetails[i].admissionId){
+                    if(report.studentDetails.admissionId){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -170,12 +170,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].admissionId;
+                        newTd.textContent = report.studentDetails.admissionId;
                         count++;
                     }
                     break;
                 case "attendance":
-                    if(report.studentDetails[i].attendance){
+                    if(report.studentDetails.attendance){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -185,12 +185,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].attendance;
+                        newTd.textContent = report.studentDetails.attendance;
                         count++;
                     }
                     break;
                 case "dateOfBirth":
-                    if(report.studentDetails[i].dateOfBirth){
+                    if(report.studentDetails.dateOfBirth){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -200,12 +200,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].dateOfBirth;
+                        newTd.textContent = report.studentDetails.dateOfBirth;
                         count++;
                     }
                     break;
                 case "rollNo":
-                    if(report.studentDetails[i].rollNo){
+                    if(report.studentDetails.rollNo){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -215,12 +215,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].rollNo;
+                        newTd.textContent = report.studentDetails.rollNo;
                         count++;
                     }
                     break;
                 case "motherName":
-                    if(report.studentDetails[i].motherName){
+                    if(report.studentDetails.motherName){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -230,12 +230,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].motherName;
+                        newTd.textContent = report.studentDetails.motherName;
                         count++;
                     }
                     break;
                 case "fatherName":
-                    if(report.studentDetails[i].fatherName){
+                    if(report.studentDetails.fatherName){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -245,12 +245,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].fatherName;
+                        newTd.textContent = report.studentDetails.fatherName;
                         count++;
                     }
                     break;
                 case "place":
-                    if(report.studentDetails[i].place){
+                    if(report.studentDetails.place){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -260,12 +260,12 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].place;
+                        newTd.textContent = report.studentDetails.place;
                         count++;
                     }
                     break;
                 case "date":
-                    if(report.studentDetails[i].date){
+                    if(report.studentDetails.date){
                         if(count%2 === 0){
                             creatingRow();
                         }
@@ -275,7 +275,7 @@
                         newTh.style.cssFloat = "Left";
                         var newTd = document.createElement("td");
                         a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails[i].date;
+                        newTd.textContent = report.studentDetails.date;
                         count++;
                     }
                     break;
@@ -821,7 +821,6 @@
     (function pageSettings () {
         var style = document.getElementsByTagName("STYLE")[0];
         var pageRule = '\n@page { size: A4; margin-top: '+ report.pageTop +'cm; margin-bottom:'+ report.pageBottom + 'cm; margin-right:'+ report.pageTop + 'cm; margin-left:'+ report.pageLeft + 'cm; }' ;
-        console.log(style);
         style.innerHTML += pageRule;
     })();
 </script>
