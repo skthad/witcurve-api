@@ -16,15 +16,19 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
     private Long id;
 
     @NotNull
+    @JoinColumn(nullable = false)
     private FeeDetails feeDescription;
 
     @NotNull
+    @Column(nullable = false)
     private Double amount;
 
     @NotNull
+    @Column(nullable = false)
     private Double adjustment;
 
     @NotNull
+    @Column(nullable = false)
     private Double oneTimeDiscount;
 
     public Long getId() {
