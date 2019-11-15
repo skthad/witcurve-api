@@ -23,7 +23,6 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
     @NotNull
     private Grade grade;
 
-    @NotNull
     private Map<FeeDetails,Double> feeDescriptionDoubleMap;
 
     public Long getId() {

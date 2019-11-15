@@ -35,7 +35,6 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    @NotNull
     private Map<FeeDetails,Double> feeDescriptionDoubleMap;
 
     public Long getId() {
