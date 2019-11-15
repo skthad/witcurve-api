@@ -10,13 +10,11 @@ public interface SessionFeeStructureMapper extends EntityMapper<SessionFeeStruct
 
     @Mapping(source = "sessionId", target = "session.id")
     @Mapping(source = "feeTypeId", target = "feeType.id")
-    @Mapping(source = "feeDescriptionId", target = "feeDescription.id")
     SessionFeeStructure toEntity(SessionFeeStructureDTO sessionFeeStructureDTO);
 
 
     @Mapping(target = "sessionId", source = "session.id")
     @Mapping(target = "feeTypeId", source = "feeType.id")
-    @Mapping(target = "feeDescriptionId", source = "feeDescription.id")
     SessionFeeStructureDTO toDto(SessionFeeStructure sessionFeeStructure);
 
     default SessionFeeStructure fromId(Long id) {
