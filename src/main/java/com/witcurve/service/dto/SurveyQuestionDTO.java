@@ -29,9 +29,14 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
 
     private Integer maxRatingValue;
 
-    private Map<Long, String> options;
+    private Map<Integer, String> options;
 
+    @NotNull
     private Long sectionId;
+
+    private Boolean otherField = false;
+
+    private Integer interval;
 
     public Long getId() {
         return id;
@@ -97,21 +102,23 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
         this.maxRatingValue = maxRatingValue;
     }
 
-    public Map<Long, String> getOptions() {
-        return options;
-    }
+    public Map<Integer, String> getOptions() { return options; }
 
-    public void setOptions(Map<Long, String> options) {
-        this.options = options;
-    }
+    public void setOptions(Map<Integer, String> options) { this.options = options; }
 
-    public Long getSectionId() {
-        return sectionId;
-    }
+    public Long getSectionId() { return sectionId; }
 
     public void setSectionId(Long sectionId) {
         this.sectionId = sectionId;
     }
+
+    public Boolean getOtherField() { return otherField; }
+
+    public void setOtherField(Boolean otherField) { this.otherField = otherField; }
+
+    public Integer getInterval() { return interval; }
+
+    public void setInterval(Integer interval) { this.interval = interval; }
 
     @Override
     public boolean equals(Object o) {

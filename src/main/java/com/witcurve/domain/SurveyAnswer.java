@@ -21,9 +21,10 @@ public class SurveyAnswer extends AbstractAuditingEntity implements Serializable
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
-    @Convert(converter = ListToStringConverter.class)
-    private List<String> options;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "answers", length = 500)
+    @CollectionTable(name = "survey_answer_answers", joinColumns=@JoinColumn(name="survey_answer_id"))
+    private List<String> answers;
 
     @NotNull
     @ManyToOne
@@ -43,13 +44,9 @@ public class SurveyAnswer extends AbstractAuditingEntity implements Serializable
         this.id = id;
     }
 
-    public List<String> getOptions() {
-        return options;
-    }
+    public List<String> getAnswers() { return answers; }
 
-    public void setOptions(List<String> options) {
-        this.options = options;
-    }
+    public void setAnswers(List<String> answers) { this.answers = answers; }
 
     public SurveyQuestion getQuestion() {
         return question;

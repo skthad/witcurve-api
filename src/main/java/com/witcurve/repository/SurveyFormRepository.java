@@ -18,4 +18,5 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
 
     @Query("Select sf from SurveyForm  sf where sf.schoolInfo.id=?1 and sf.type in ?2 and sf.status in ?3")
     List<SurveyForm> findBySchoolInfoIdAndTypesAndStatusList(Long schoolInfoId, List<SurveyUserType> types, List<SurveyFormStatus> statuses);
+
 }

@@ -41,12 +41,20 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
     @Column
     private Integer maxRatingValue;
 
-    @NotNull
-    @Column(nullable = false)
-    private Integer order;
+    @Column(name = "rating_interval")
+    private Integer interval;
 
     @Column
-    @Convert(converter = MapToStringConverter.class)
+    private Boolean otherField = false;
+
+    @NotNull
+    @Column(nullable = false,name ="question_order")
+    private Integer order;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "options")
+    @MapKeyColumn(name = "option_key")
+    @CollectionTable(name = "survey_question_options", joinColumns=@JoinColumn(name="survey_question_id"))
     private Map<Integer, String> options;
 
     @NotNull
@@ -118,13 +126,9 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
         this.order = order;
     }
 
-    public Map<Integer, String> getOptions() {
-        return options;
-    }
+    public Map<Integer, String> getOptions() { return options; }
 
-    public void setOptions(Map<Integer, String> options) {
-        this.options = options;
-    }
+    public void setOptions(Map<Integer, String> options) { this.options = options; }
 
     public SurveySection getSection() {
         return section;
@@ -132,6 +136,22 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
 
     public void setSection(SurveySection section) {
         this.section = section;
+    }
+
+    public Integer getInterval() {
+        return interval;
+    }
+
+    public void setInterval(Integer interval) {
+        this.interval = interval;
+    }
+
+    public Boolean getOtherField() {
+        return otherField;
+    }
+
+    public void setOtherField(Boolean otherField) {
+        this.otherField = otherField;
     }
 
     @Override
