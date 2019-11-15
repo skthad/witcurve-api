@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -26,10 +27,6 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
 
     @NotNull
     @ManyToOne
-    private FeeDetails feeDescription;
-
-    @NotNull
-    @ManyToOne
     @JoinColumn(nullable = false)
     private AcademicSession session;
 
@@ -39,15 +36,7 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
     private Grade grade;
 
     @NotNull
-    @Column(nullable = false)
-    private Double amount;
-
-    @Column
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate dueDate;
-
-    @Column
-    private Double penalty;
+    private Map<FeeDetails,Double> feeDescriptionDoubleMap;
 
     public Long getId() {
         return id;
@@ -63,14 +52,6 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
 
     public void setFeeType(FeeDetails feeType) {
         this.feeType = feeType;
-    }
-
-    public FeeDetails getFeeDescription() {
-        return feeDescription;
-    }
-
-    public void setFeeDescription(FeeDetails feeDescription) {
-        this.feeDescription = feeDescription;
     }
 
     public AcademicSession getSession() {
@@ -89,29 +70,9 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
         this.grade = grade;
     }
 
-    public Double getAmount() {
-        return amount;
-    }
+    public Map<FeeDetails, Double> getFeeDescriptionDoubleMap() { return feeDescriptionDoubleMap; }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public Double getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(Double penalty) {
-        this.penalty = penalty;
-    }
+    public void setFeeDescriptionDoubleMap(Map<FeeDetails, Double> feeDescriptionDoubleMap) { this.feeDescriptionDoubleMap = feeDescriptionDoubleMap; }
 
     @Override
     public boolean equals(Object o) {

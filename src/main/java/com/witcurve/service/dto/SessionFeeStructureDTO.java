@@ -1,10 +1,13 @@
 package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
+
+import com.witcurve.domain.FeeDetails;
 import com.witcurve.domain.enumeration.Grade;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 
 public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Serializable {
@@ -17,16 +20,11 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
     @NotNull
     private Long feeTypeId;
 
-    private Long feeDescriptionId;
-
+    @NotNull
     private Grade grade;
 
     @NotNull
-    private Double amount;
-
-    private LocalDate dueDate;
-
-    private Double penalty;
+    private Map<FeeDetails,Double> feeDescriptionDoubleMap;
 
     public Long getId() {
         return id;
@@ -52,14 +50,6 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
         this.feeTypeId = feeTypeId;
     }
 
-    public Long getFeeDescriptionId() {
-        return feeDescriptionId;
-    }
-
-    public void setFeeDescriptionId(Long feeDescriptionId) {
-        this.feeDescriptionId = feeDescriptionId;
-    }
-
     public Grade getGrade() {
         return grade;
     }
@@ -68,30 +58,9 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
         this.grade = grade;
     }
 
-    public Double getAmount() {
-        return amount;
-    }
+    public Map<FeeDetails, Double> getFeeDescriptionDoubleMap() { return feeDescriptionDoubleMap; }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public Double getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(Double penalty) {
-        this.penalty = penalty;
-    }
-
+    public void setFeeDescriptionDoubleMap(Map<FeeDetails, Double> feeDescriptionDoubleMap) { this.feeDescriptionDoubleMap = feeDescriptionDoubleMap; }
 
     @Override
     public boolean equals(Object o) {
