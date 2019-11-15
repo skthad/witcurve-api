@@ -18,14 +18,17 @@ public class StudentFeeStructure extends AbstractAuditingEntity implements Seria
 
     @NotNull
     @ManyToOne
+    @JoinColumn(nullable = false)
     private AcademicSession session;
 
     @NotNull
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Student student;
 
     @NotNull
     @ManyToOne
+    @JoinColumn(nullable = false)
     private AcademicSession selectedSession;
 
     @OneToMany(cascade = CascadeType.ALL)

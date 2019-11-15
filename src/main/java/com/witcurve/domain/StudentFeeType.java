@@ -20,8 +20,10 @@ public class StudentFeeType extends AbstractAuditingEntity implements Serializab
     private Long id;
 
     @NotNull
+    @Column(name = "fee_type")
     private FeeDetails feeType;
 
+    @Column
     private Double penalty;
 
     @Column
