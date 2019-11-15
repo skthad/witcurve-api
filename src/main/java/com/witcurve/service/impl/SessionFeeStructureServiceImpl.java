@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -45,12 +46,8 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     @Override
     public List<SessionFeeStructureDTO> saveOrUpdate(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) throws WitcurveException {
         log.debug("Request to save or update SessionFeeStructures : {} for grade : {} and for session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
-        for(SessionFeeStructureDTO sessionFeeStructureDTO : sessionFeeStructureDTOs) {
-            if (sessionFeeStructureDTO.getPenalty() != null) {
-                if (sessionFeeStructureDTO.getDueDate() == null) {
-                    throw new WitcurveException("Due date is require if penalty is not null");
-                }
-            }
+        for (SessionFeeStructureDTO sessionFeeStructureDTO : sessionFeeStructureDTOs) {
+
             Optional<FeeDetails> feeDetailsOfFeeType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeTypeId());
             if (!feeDetailsOfFeeType.isPresent()) {
                 throw new WitcurveException("No FeeDetails present with given feeTypeId : {}" + sessionFeeStructureDTO.getFeeTypeId());
@@ -58,13 +55,15 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
             if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
                 throw new WitcurveException("Given feeTypeId is not of type Fee Type");
             }
-            Optional<FeeDetails> feeDetailsOfDescriptionType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeDescriptionId());
-            if (feeDetailsOfDescriptionType == null) {
-                throw new WitcurveException("No FeeDetails present with given descriptionTypeId : {} " + sessionFeeStructureDTO.getFeeDescriptionId());
-            }
-
-            if (!feeDetailsOfDescriptionType.get().getType().equals(FeeDetailsType.FEE_DESCRIPTION)) {
-                throw new WitcurveException("Given feeDescriptionId is not of type Fee Description");
+            Set<FeeDetails> feeDescriptions = sessionFeeStructureDTO.getFeeDescriptionDoubleMap().keySet();
+            for (FeeDetails feeDescription : feeDescriptions) {
+                Optional<FeeDetails> feeDetailsOfDescriptionType = feeDetailsRepository.findById(feeDescription.getId());
+                if (feeDetailsOfDescriptionType == null) {
+                    throw new WitcurveException("No FeeDetails present with given id : {} " + feeDescription.getId());
+                }
+                if (!feeDetailsOfDescriptionType.get().getType().equals(FeeDetailsType.FEE_DESCRIPTION)) {
+                    throw new WitcurveException("Given Fee Detail id is not of type Fee Description ");
+                }
             }
             sessionFeeStructureDTO.setGrade(grade);
             sessionFeeStructureDTO.setSessionId(sessionId);
@@ -88,7 +87,6 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     @Override
     public List<SessionFeeStructureDTO> getBySchoolInfoIdAndGrade(Long schoolInfoId, Grade grade) {
         log.debug("Request to get SessionFeeStructure with given schoolInfoId : {} and grade : {} ");
-
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSchoolInfoId(grade, schoolInfoId);
         return sessionFeeStructureMapper.toDto(sessionFeeStructures);
     }
@@ -97,7 +95,6 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     @Override
     public List<SessionFeeStructureDTO> getBySessionIdAndGrade(Long sessionId, Grade grade) {
         log.debug("Request to get SessionFeeStructure with given sessionId : {} and grade : {} ");
-
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSessionId(grade, sessionId);
         return sessionFeeStructureMapper.toDto(sessionFeeStructures);
     }
