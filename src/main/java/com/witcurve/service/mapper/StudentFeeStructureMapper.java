@@ -1,8 +1,6 @@
 package com.witcurve.service.mapper;
 
-import com.witcurve.domain.SessionFeeStructure;
 import com.witcurve.domain.StudentFeeStructure;
-import com.witcurve.service.dto.SessionFeeStructureDTO;
 import com.witcurve.service.dto.StudentFeeStructureDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,14 +10,14 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
 
     @Mapping(source = "sessionId", target = "session.id")
     @Mapping(source = "studentId", target = "student.id")
-    @Mapping(source = "selectedSessionId", target = "selectedSession.id")
-    SessionFeeStructure toEntity(SessionFeeStructureDTO sessionFeeStructureDTO);
+    @Mapping(source = "selectedSessionId", target = "selectedSession")
+    StudentFeeStructure toEntity(StudentFeeStructureDTO studentFeeStructureDTO);
 
 
     @Mapping(target = "sessionId", source = "session.id")
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "selectedSessionId", source = "selectedSession.id")
-    SessionFeeStructureDTO toDto(SessionFeeStructure sessionFeeStructure);
+    StudentFeeStructureDTO toDto(StudentFeeStructure studentFeeStructure);
 
     default StudentFeeStructure fromId(Long id) {
         if (id == null) {
