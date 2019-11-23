@@ -66,7 +66,7 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
 
         Optional<FeeDetails> feeDetails = feeDetailsRepository.findById(feeDetailsId);
         if (!feeDetails.isPresent()) {
-            throw new WitcurveException("No FeeDetails present with given id : {}" + feeDetailsId);
+            throw new WitcurveException("No fee details record present with given id : {}" + feeDetailsId);
         }
         return feeDetailsMapper.toDto(feeDetails.get());
     }
@@ -81,7 +81,7 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
         }
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByFeeTypeAndFeeDescriptionId(feeDetailsId);
         if (!sessionFeeStructures.isEmpty()) {
-            throw new WitcurveException("Can not delete record as SessionFeeStructure record exist with given id : {} " + feeDetailsId);
+            throw new WitcurveException("Can not delete record as session fee structure record exist with given id : {} " + feeDetailsId);
         }
         feeDetailsRepository.deleteById(feeDetailsId);
     }
