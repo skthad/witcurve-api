@@ -5,7 +5,7 @@ import com.witcurve.service.dto.StudentFeeStructureDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {AcademicSessionMapper.class, StudentMapper.class})
+@Mapper(componentModel = "spring", uses = {AcademicSessionMapper.class, StudentMapper.class,StudentFeeTypeMapper.class})
 public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStructureDTO, StudentFeeStructure> {
 
     @Mapping(source = "sessionId", target = "session.id")

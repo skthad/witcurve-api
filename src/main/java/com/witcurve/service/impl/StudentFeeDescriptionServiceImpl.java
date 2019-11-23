@@ -35,7 +35,7 @@ public class StudentFeeDescriptionServiceImpl implements StudentFeeDescriptionSe
     @Override
     public StudentFeeDescriptionDTO saveOrUpdate(StudentFeeDescriptionDTO studentFeeDescriptionDTO) {
         log.debug("Request to save or update StudentFeeDescription : {} ", studentFeeDescriptionDTO);
-        Optional<FeeDetails> feeDetail = feeDetailsRepository.findById(studentFeeDescriptionDTO.getId());
+        Optional<FeeDetails> feeDetail = feeDetailsRepository.findById(studentFeeDescriptionDTO.getFeeDescriptionId());
         if(!feeDetail.isPresent()){
             throw new WitcurveException("No FeeDetail is present with given id : {} "+studentFeeDescriptionDTO.getId());
         }

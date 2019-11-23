@@ -1,12 +1,10 @@
 package com.witcurve.service.dto;
 
-import javax.validation.constraints.NotNull;
-
-import com.witcurve.domain.FeeDetails;
 import com.witcurve.domain.enumeration.Grade;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,7 +21,8 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
     @NotNull
     private Grade grade;
 
-    private Map<FeeDetails,Double> feeDescriptionDoubleMap;
+    @NotNull
+    private List<SessionFeeDescriptionDTO> sessionFeeDescriptions;
 
     public Long getId() {
         return id;
@@ -57,9 +56,9 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
         this.grade = grade;
     }
 
-    public Map<FeeDetails, Double> getFeeDescriptionDoubleMap() { return feeDescriptionDoubleMap; }
+    public List<SessionFeeDescriptionDTO> getSessionFeeDescriptions() { return sessionFeeDescriptions; }
 
-    public void setFeeDescriptionDoubleMap(Map<FeeDetails, Double> feeDescriptionDoubleMap) { this.feeDescriptionDoubleMap = feeDescriptionDoubleMap; }
+    public void setSessionFeeDescriptions(List<SessionFeeDescriptionDTO> sessionFeeDescriptions) { this.sessionFeeDescriptions = sessionFeeDescriptions; }
 
     @Override
     public boolean equals(Object o) {

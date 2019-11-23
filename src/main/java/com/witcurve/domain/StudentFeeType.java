@@ -20,7 +20,8 @@ public class StudentFeeType extends AbstractAuditingEntity implements Serializab
     private Long id;
 
     @NotNull
-    @Column(name = "fee_type")
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private FeeDetails feeType;
 
     @Column
@@ -70,9 +71,7 @@ public class StudentFeeType extends AbstractAuditingEntity implements Serializab
         return studentFeeDescriptions;
     }
 
-    public void setStudentFeeDescriptions(List<StudentFeeDescription> studentFeeDescriptions) {
-        this.studentFeeDescriptions = studentFeeDescriptions;
-    }
+    public void setStudentFeeDescriptions(List<StudentFeeDescription> studentFeeDescriptions) { this.studentFeeDescriptions = studentFeeDescriptions; }
 
     @Override
     public boolean equals(Object o) {

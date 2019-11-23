@@ -1,6 +1,7 @@
 package com.witcurve.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -17,19 +18,21 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
 
     @NotNull
     @JoinColumn(nullable = false)
+    @ManyToOne
     private FeeDetails feeDescription;
 
     @NotNull
     @Column(nullable = false)
+    @Min(value = 0L, message = "amount must be positive")
     private Double amount;
 
     @NotNull
     @Column(nullable = false)
-    private Double adjustment;
+    private Double adjustment = 0.0;
 
     @NotNull
     @Column(nullable = false)
-    private Double oneTimeDiscount;
+    private Double oneTimeDiscount = 0.0;
 
     public Long getId() {
         return id;
