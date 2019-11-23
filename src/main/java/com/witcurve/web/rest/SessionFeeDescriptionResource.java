@@ -31,7 +31,7 @@ public class SessionFeeDescriptionResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/session_fee_descriptions")
+    @PostMapping("/session-fee-descriptions")
     @Timed
     public ResponseEntity<SessionFeeDescriptionDTO> createSessionFeeDescription(@RequestBody @Valid SessionFeeDescriptionDTO sessionFeeDescriptionDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to save sessionFeeDescription : {} ", sessionFeeDescriptionDTO);
@@ -50,7 +50,7 @@ public class SessionFeeDescriptionResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PutMapping("/session_fee_descriptions")
+    @PutMapping("/session-fee-descriptions")
     @Timed
     public ResponseEntity<SessionFeeDescriptionDTO> updateSessionFeeDescription(@RequestBody @Valid SessionFeeDescriptionDTO sessionFeeDescriptionDTO) throws WitcurveException, URISyntaxException {
         log.debug("Request to update sessionFeeDescription : {} ", sessionFeeDescriptionDTO);

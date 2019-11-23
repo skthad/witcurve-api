@@ -37,7 +37,7 @@ public class SessionFeeStructureResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @PostMapping("/session_fee_structure")
+    @PostMapping("/session-fee-structure")
     @Timed
     public ResponseEntity<List<SessionFeeStructureDTO>> createSessionFeeStructure(@RequestBody @Valid List<SessionFeeStructureDTO> sessionFeeStructureDTOs, @RequestParam Grade grade, @RequestParam Long sessionId) throws WitcurveException, URISyntaxException {
         log.debug("Request to save or update sessionFeeStructureList : {} for grade : {} and session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
@@ -55,7 +55,7 @@ public class SessionFeeStructureResource {
      * @throws URISyntaxException
      */
 
-    @GetMapping("/session_fee_structure/{sessionFeeStructureId}")
+    @GetMapping("/session-fee-structure/{sessionFeeStructureId}")
     @Timed
     public ResponseEntity<SessionFeeStructureDTO> getById(@PathVariable Long sessionFeeStructureId) throws WitcurveException {
         log.debug("Request to get sessionFeeStructure by id {}", sessionFeeStructureId);
@@ -72,7 +72,7 @@ public class SessionFeeStructureResource {
      * @throws WitcurveException
      * @throws URISyntaxException
      */
-    @GetMapping("/session_fee_structure/school_info/{schoolInfoId}/grade/{grade}")
+    @GetMapping("/session-fee-structure/school-info/{schoolInfoId}/grade/{grade}")
     @Timed
     public ResponseEntity<List<SessionFeeStructureDTO>> getBySchoolInfoAndGrade(@PathVariable Long schoolInfoId, @PathVariable Grade grade) throws WitcurveException {
         log.debug("Request to get sessionFeeStructure by schoolInfoId :{} and grade :{}", schoolInfoId, grade);
@@ -90,7 +90,7 @@ public class SessionFeeStructureResource {
      * @throws URISyntaxException
      */
 
-    @GetMapping("/session_fee_structure/academic_session/{sessionId}/grade/{grade}")
+    @GetMapping("/session-fee-structure/academic-session/{sessionId}/grade/{grade}")
     @Timed
     public ResponseEntity<List<SessionFeeStructureDTO>> getBySessionIdAndGrade(@PathVariable Long sessionId, @PathVariable Grade grade) throws WitcurveException {
         log.debug("Request to get sessionFeeStructure by sessionId :{} and grade :{}", sessionId, grade);
@@ -98,7 +98,7 @@ public class SessionFeeStructureResource {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping("/session_fee_structure/{sessionFeeStructureId}")
+    @DeleteMapping("/session-fee-structure/{sessionFeeStructureId}")
     @Timed
     public ResponseEntity<Void> deleteSessionFieldStructure(@PathVariable Long sessionFeeStructureId) throws WitcurveException {
         log.debug("Request to get sessionFeeStructure by id {}", sessionFeeStructureId);

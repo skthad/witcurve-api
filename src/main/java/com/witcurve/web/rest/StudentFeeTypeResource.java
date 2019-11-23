@@ -30,7 +30,7 @@ public class StudentFeeTypeResource {
      * @throws WitcurveException
      */
 
-    @PostMapping("/student_fee_type")
+    @PostMapping("/student-fee-type")
     @Timed
     public ResponseEntity<StudentFeeTypeDTO> saveStudentFeeType(@Valid @RequestBody StudentFeeTypeDTO studentFeeTypeDTO) throws WitcurveException {
         log.debug("Request to create StudentFeeType : {}", studentFeeTypeDTO);
@@ -48,7 +48,7 @@ public class StudentFeeTypeResource {
      * @throws WitcurveException
      */
 
-    @PutMapping("/student_fee_type")
+    @PutMapping("/student-fee-type")
     @Timed
     public ResponseEntity<StudentFeeTypeDTO> updateStudentFeeType(@Valid @RequestBody StudentFeeTypeDTO studentFeeTypeDTO) throws WitcurveException {
         log.debug("Request to create StudentFeeType : {}", studentFeeTypeDTO);
