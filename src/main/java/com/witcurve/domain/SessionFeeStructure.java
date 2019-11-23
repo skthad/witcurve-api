@@ -8,6 +8,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -35,7 +37,9 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    private Map<FeeDetails,Double> feeDescriptionDoubleMap;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "session_fee_structure_id")
+    private List<SessionFeeDescription> sessionFeeDescriptions;
 
     public Long getId() {
         return id;
@@ -69,9 +73,9 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
         this.grade = grade;
     }
 
-    public Map<FeeDetails, Double> getFeeDescriptionDoubleMap() { return feeDescriptionDoubleMap; }
+    public List<SessionFeeDescription> getSessionFeeDescriptions() { return sessionFeeDescriptions; }
 
-    public void setFeeDescriptionDoubleMap(Map<FeeDetails, Double> feeDescriptionDoubleMap) { this.feeDescriptionDoubleMap = feeDescriptionDoubleMap; }
+    public void setSessionFeeDescriptions(List<SessionFeeDescription> sessionFeeDescriptions) { this.sessionFeeDescriptions = sessionFeeDescriptions; }
 
     @Override
     public boolean equals(Object o) {

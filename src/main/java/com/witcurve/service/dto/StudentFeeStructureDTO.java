@@ -20,6 +20,7 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
     @NotNull
     private Long selectedSessionId;
 
+    @NotNull
     private List<StudentFeeTypeDTO> studentFeeTypes;
 
     public Long getId() {
@@ -54,13 +55,9 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
         this.selectedSessionId = selectedSessionId;
     }
 
-    public List<StudentFeeTypeDTO> getStudentFeeTypes() {
-        return studentFeeTypes;
-    }
+    public List<StudentFeeTypeDTO> getStudentFeeTypes() { return studentFeeTypes; }
 
-    public void setStudentFeeTypes(List<StudentFeeTypeDTO> studentFeeTypes) {
-        this.studentFeeTypes = studentFeeTypes;
-    }
+    public void setStudentFeeTypes(List<StudentFeeTypeDTO> studentFeeTypes) { this.studentFeeTypes = studentFeeTypes; }
 
     @Override
     public boolean equals(Object o) {

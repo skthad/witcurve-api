@@ -77,11 +77,11 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
 
         Optional<FeeDetails> feeDetail = feeDetailsRepository.findById(feeDetailsId);
         if (!feeDetail.isPresent()) {
-            throw new WitcurveException("No record present with give feeDetailsId : {} " + feeDetailsId);
+            throw new WitcurveException("No record present with give feeDetailsId : {}  " + feeDetailsId);
         }
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByFeeTypeAndFeeDescriptionId(feeDetailsId);
         if (!sessionFeeStructures.isEmpty()) {
-            throw new WitcurveException("Can not delete record as StudentFeeStructure record exist with given feeDetailsId : {} " + feeDetailsId);
+            throw new WitcurveException("Can not delete record as SessionFeeStructure record exist with given id : {} " + feeDetailsId);
         }
         feeDetailsRepository.deleteById(feeDetailsId);
     }

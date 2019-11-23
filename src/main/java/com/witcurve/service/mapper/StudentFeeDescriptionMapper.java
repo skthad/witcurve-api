@@ -2,8 +2,10 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.StudentFeeDescription;
 import com.witcurve.service.dto.StudentFeeDescriptionDTO;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+@Mapper(componentModel = "spring", uses = {FeeDetailsMapper.class})
 public interface StudentFeeDescriptionMapper extends EntityMapper<StudentFeeDescriptionDTO, StudentFeeDescription> {
 
     @Mapping(source = "feeDescriptionId", target = "feeDescription.id")

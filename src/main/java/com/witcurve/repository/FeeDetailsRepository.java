@@ -17,5 +17,4 @@ public interface FeeDetailsRepository extends JpaRepository<FeeDetails, Long> {
     @Query("Select fd from FeeDetails fd where fd.schoolInfo.id = ?1 and fd.type = ?2")
     List<FeeDetails> findBySchoolInfoIdAndType(Long schoolInfoId, FeeDetailsType type);
 
-
 }
