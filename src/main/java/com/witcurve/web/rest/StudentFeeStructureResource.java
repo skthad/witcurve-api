@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -51,10 +52,44 @@ public class StudentFeeStructureResource {
     @Timed
     public ResponseEntity<StudentFeeStructureDTO> updateStudentFeeStructure(@Valid @RequestBody StudentFeeStructureDTO studentFeeStructureDTO) throws WitcurveException {
         log.debug("Request to update StudentFeeStructure : {}", studentFeeStructureDTO);
-        if(studentFeeStructureDTO.getId() == null){
+        if (studentFeeStructureDTO.getId() == null) {
             throw new WitcurveException("Id is require to update record");
         }
         StudentFeeStructureDTO result = studentFeeStructureService.saveOrUpdate(studentFeeStructureDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get studentFeeStructure
+     *
+     * @param studentId
+     * @param sessionId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/student-fee-structure/student/{studentId}/academic-session/{sessionId}")
+    @Timed
+    public ResponseEntity<StudentFeeStructureDTO> getByStudentAndSessionId(@PathVariable Long studentId, @PathVariable Long sessionId) throws WitcurveException {
+        log.debug("Request to get StudentFeeStructure by studentId and sessionId : {}", studentId, sessionId);
+        StudentFeeStructureDTO result = studentFeeStructureService.getByStudentIdAndSessionId(studentId, sessionId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /**
+     * get studentFeeStructure
+     *
+     * @param standardId
+     * @param sessionId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/student-fee-structure/standard/{standardId}/academic-session/{sessionId}")
+    @Timed
+    public ResponseEntity<List<StudentFeeStructureDTO>> getByStandardAndSessionId(@PathVariable Long standardId, @PathVariable Long sessionId) throws WitcurveException {
+        log.debug("Request to get StudentFeeStructure by standardId and sessionId : {}", standardId, sessionId);
+        List<StudentFeeStructureDTO> result = studentFeeStructureService.getByStandardIdAndSessionId(standardId, sessionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

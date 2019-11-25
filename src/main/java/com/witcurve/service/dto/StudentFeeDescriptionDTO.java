@@ -1,5 +1,6 @@
 package com.witcurve.service.dto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,12 +15,14 @@ public class StudentFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     private Long feeDescriptionId;
 
     @NotNull
+    @Min(value = 0L)
     private Double amount;
 
     @NotNull
     private Double adjustment = 0.0;
 
     @NotNull
+    @Min(value = 0L)
     private Double oneTimeDiscount = 0.0;
 
     public Long getId() {

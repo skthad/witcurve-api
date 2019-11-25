@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -55,16 +55,11 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
             if (studentFeeDescriptions.size() == 0) {
                 throw new WitcurveException("Minimum one record of student fee description is require");
             }
-            List<Long> feeDescriptionIds = new ArrayList<>();
-            for (StudentFeeDescriptionDTO studentFeeDescription : studentFeeDescriptions) {
-                feeDescriptionIds.add(studentFeeDescription.getFeeDescriptionId());
-            }
-            List<FeeDetails> feeDescriptions = feeDetailsRepository.findBySchoolInfoIdAndType(feeDetailOfFeeType.get().getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
+            List<Long> feeDescriptionIds = studentFeeDescriptions.stream().map(StudentFeeDescriptionDTO::getFeeDescriptionId).collect(Collectors.toList());
 
-            List<Long> allFeeDescriptionIds = new ArrayList<>();
-            for (FeeDetails feeDescription : feeDescriptions) {
-                allFeeDescriptionIds.add(feeDescription.getId());
-            }
+            List<FeeDetails> feeDescriptions = feeDetailsRepository.findBySchoolInfoIdAndType(feeDetailOfFeeType.get().getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
+            List<Long> allFeeDescriptionIds = feeDescriptions.stream().map(FeeDetails::getId).collect(Collectors.toList());
+
             if (!allFeeDescriptionIds.containsAll(feeDescriptionIds)) {
                 throw new WitcurveException("Given id is not of fee description type");
             }
@@ -72,6 +67,21 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         StudentFeeStructure sfs = studentFeeStructureMapper.toEntity(studentFeeStructureDTO);
         StudentFeeStructure studentFeeStructure = studentfeeStructureRepository.save(sfs);
         return studentFeeStructureMapper.toDto(studentFeeStructure);
+    }
+
+    @Override
+    public StudentFeeStructureDTO getByStudentIdAndSessionId(Long studentId, Long sessionId) {
+        log.debug("Request to get studentFeeStructure");
+        StudentFeeStructure studentFeeStructure = studentfeeStructureRepository.getByStudentIdAndSessionId(studentId, sessionId);
+        return studentFeeStructureMapper.toDto(studentFeeStructure);
+    }
+
+
+    @Override
+    public List<StudentFeeStructureDTO> getByStandardIdAndSessionId(Long standardId, Long sessionId) {
+        log.debug("Request to get studentFeeStructure");
+        List<StudentFeeStructure> studentFeeStructures = studentfeeStructureRepository.getByStandardIdAndSessionId(standardId, sessionId);
+        return studentFeeStructureMapper.toDto(studentFeeStructures);
     }
 }
 
