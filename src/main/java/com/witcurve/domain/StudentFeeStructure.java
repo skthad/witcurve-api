@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "student_fee_structure")
+@Table(name = "student_fee_structure", uniqueConstraints = {
+    @UniqueConstraint(name = "student_session_id_UK",
+        columnNames = {"student_id", "session_id"})
+})
 public class StudentFeeStructure extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
