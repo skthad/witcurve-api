@@ -47,31 +47,7 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     @Override
     public List<SessionFeeStructureDTO> saveOrUpdate(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) throws WitcurveException {
         log.debug("Request to save or update SessionFeeStructures : {} for grade : {} and for session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
-        for (SessionFeeStructureDTO sessionFeeStructureDTO : sessionFeeStructureDTOs) {
-
-            Optional<FeeDetails> feeDetailsOfFeeType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeTypeId());
-            if (!feeDetailsOfFeeType.isPresent()) {
-                throw new WitcurveException("No fee details present with given feeTypeId : {}" + sessionFeeStructureDTO.getFeeTypeId());
-            }
-            if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
-                throw new WitcurveException("Given id is not of fee type");
-            }
-            List<SessionFeeDescriptionDTO> sessionFeeDescriptions = sessionFeeStructureDTO.getSessionFeeDescriptions();
-            if (sessionFeeDescriptions.size() == 0) {
-                throw new WitcurveException("Minimum one record of session fee description is require");
-            }
-            List<Long> feeDescriptionIds = sessionFeeDescriptions.stream().map(SessionFeeDescriptionDTO::getFeeDescriptionId).collect(Collectors.toList());
-
-            List<FeeDetails> feeDescriptions = feeDetailsRepository.findBySchoolInfoIdAndType(feeDetailsOfFeeType.get().getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
-
-            List<Long> allFeeDescriptionIds = feeDescriptions.stream().map(FeeDetails::getId).collect(Collectors.toList());
-
-            if (!allFeeDescriptionIds.containsAll(feeDescriptionIds)) {
-                throw new WitcurveException("Given id is not of fee description type");
-            }
-            sessionFeeStructureDTO.setGrade(grade);
-            sessionFeeStructureDTO.setSessionId(sessionId);
-        }
+        isValid(sessionFeeStructureDTOs, grade, sessionId);
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.saveAll(sessionFeeStructureMapper.toEntity(sessionFeeStructureDTOs));
         return sessionFeeStructureMapper.toDto(sessionFeeStructures);
     }
@@ -110,5 +86,33 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
             throw new WitcurveException("No SessionFeeStructure is present with given id : {}" + sessionFeeStructureId);
         }
         sessionFeeStructureRepository.deleteById(sessionFeeStructureId);
+    }
+
+    private void isValid(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) {
+        for (SessionFeeStructureDTO sessionFeeStructureDTO : sessionFeeStructureDTOs) {
+
+            Optional<FeeDetails> feeDetailsOfFeeType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeTypeId());
+            if (!feeDetailsOfFeeType.isPresent()) {
+                throw new WitcurveException("No fee details present with given feeTypeId : {}" + sessionFeeStructureDTO.getFeeTypeId());
+            }
+            if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
+                throw new WitcurveException("Given id is not of fee type");
+            }
+            List<SessionFeeDescriptionDTO> sessionFeeDescriptions = sessionFeeStructureDTO.getSessionFeeDescriptions();
+            if (sessionFeeDescriptions.size() == 0) {
+                throw new WitcurveException("Minimum one record of session fee description is require");
+            }
+            List<Long> feeDescriptionIds = sessionFeeDescriptions.stream().map(SessionFeeDescriptionDTO::getFeeDescriptionId).collect(Collectors.toList());
+
+            List<FeeDetails> feeDescriptions = feeDetailsRepository.findBySchoolInfoIdAndType(feeDetailsOfFeeType.get().getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
+
+            List<Long> allFeeDescriptionIds = feeDescriptions.stream().map(FeeDetails::getId).collect(Collectors.toList());
+
+            if (!allFeeDescriptionIds.containsAll(feeDescriptionIds)) {
+                throw new WitcurveException("Given id is not of fee description type");
+            }
+            sessionFeeStructureDTO.setGrade(grade);
+            sessionFeeStructureDTO.setSessionId(sessionId);
+        }
     }
 }

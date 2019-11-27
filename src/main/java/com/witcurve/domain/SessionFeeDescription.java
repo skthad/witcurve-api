@@ -25,6 +25,10 @@ public class SessionFeeDescription  extends AbstractAuditingEntity implements Se
     @Min(value = 0L, message = "amount must be positive")
     private Double amount;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean required = false;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -36,6 +40,10 @@ public class SessionFeeDescription  extends AbstractAuditingEntity implements Se
     public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public Boolean getRequired() { return required; }
+
+    public void setRequired(Boolean required) { this.required = required; }
 
     @Override
     public boolean equals(Object o) {

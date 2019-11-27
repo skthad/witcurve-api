@@ -1,5 +1,6 @@
 package com.witcurve.repository;
 
+import com.witcurve.domain.SessionFeeDescription;
 import com.witcurve.domain.SessionFeeStructure;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,7 @@ public interface SessionFeeStructureRepository extends JpaRepository<SessionFeeS
 
     @Query("select sfs from SessionFeeStructure sfs where sfs.grade = ?1 and sfs.session.schoolInfo.id = ?2")
     List<SessionFeeStructure> findByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId);
+
+  //  @Query("select sfsfd.feeDescription.id from SessionFeeStructure sfs join sfs.sessionFeeDescriptions sfsfd where sfs.feeType.id = ?1 and sfs.grade = ?2 and sfs.session.id = ?3 and sfsfd.required = true")
+  //  List<Long> getAllRequiredFeeDescription(Long feeTypeId, Grade grade, Long sessionId);
 }

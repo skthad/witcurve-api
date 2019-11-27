@@ -164,4 +164,19 @@
     <changeSet author="Sai (generated)" id="1574422873787-18">
         <dropColumn columnName="penalty" tableName="session_fee_structure"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1574673127632-19">
+        <addUniqueConstraint columnNames="student_id, session_id" constraintName="student_session_id_UK"
+                             tableName="student_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574684614919-20">
+        <addColumn tableName="session_fee_description">
+            <column name="required" type="bit">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574684614919-21">
+        <addUniqueConstraint columnNames="fee_type_id, grade, session_id" constraintName="grade_fee_type_session_id_UK"
+                             tableName="session_fee_structure"/>
+    </changeSet>
 </databaseChangeLog>
