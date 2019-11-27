@@ -16,13 +16,12 @@ public class SessionFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     @Min(value = 0L)
     private Double amount;
 
-    public Long getId() {
-        return id;
-    }
+    @NotNull
+    private Boolean required = false;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public Long getFeeDescriptionId() { return feeDescriptionId; }
 
@@ -37,6 +36,10 @@ public class SessionFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     public void setAmount(Double amount) {
         this.amount = amount;
     }
+
+    public Boolean getRequired() { return required; }
+
+    public void setRequired(Boolean required) { this.required = required; }
 
     @Override
     public boolean equals(Object o) {

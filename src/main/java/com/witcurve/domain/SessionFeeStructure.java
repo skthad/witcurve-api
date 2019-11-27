@@ -14,7 +14,10 @@ import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Table(name = "session_fee_structure")
+@Table(name = "session_fee_structure",  uniqueConstraints = {
+    @UniqueConstraint(name = "grade_fee_type_session_id_UK",
+        columnNames = {"fee_type_id", "grade", "session_id"})
+})
 public class SessionFeeStructure extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
