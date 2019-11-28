@@ -3,6 +3,7 @@ package com.witcurve.domain;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ public class StudentFeeType extends AbstractAuditingEntity implements Serializab
     private FeeDetails feeType;
 
     @Column
+    @Min(value = 0L, message = "penalty amount must be positive")
     private Double penalty;
 
     @Column

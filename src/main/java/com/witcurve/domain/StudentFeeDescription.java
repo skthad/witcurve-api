@@ -23,7 +23,6 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
 
     @NotNull
     @Column(nullable = false)
-    @Min(value = 0L, message = "amount must be positive")
     private Double amount;
 
     @NotNull
@@ -32,7 +31,6 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
 
     @NotNull
     @Column(nullable = false)
-    @Min(value = 0L, message = "discount must be positive")
     private Double oneTimeDiscount = 0.0;
 
     public Long getId() {

@@ -68,7 +68,7 @@ public class StudentFeeStructureResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/student-fee-structure/student/{studentId}/academic-session/{sessionId}")
+    @GetMapping("/student-fee-structure/students/{studentId}/academic-session/{sessionId}")
     @Timed
     public ResponseEntity<StudentFeeStructureDTO> getByStudentAndSessionId(@PathVariable Long studentId, @PathVariable Long sessionId) throws WitcurveException {
         log.debug("Request to get StudentFeeStructure by studentId and sessionId : {}", studentId, sessionId);
@@ -85,7 +85,7 @@ public class StudentFeeStructureResource {
      * @throws WitcurveException
      */
 
-    @GetMapping("/student-fee-structure/standard/{standardId}/academic-session/{sessionId}")
+    @GetMapping("/student-fee-structure/standards/{standardId}/academic-session/{sessionId}")
     @Timed
     public ResponseEntity<List<StudentFeeStructureDTO>> getByStandardAndSessionId(@PathVariable Long standardId, @PathVariable Long sessionId) throws WitcurveException {
         log.debug("Request to get StudentFeeStructure by standardId and sessionId : {}", standardId, sessionId);

@@ -13,7 +13,6 @@ public class SessionFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     private Long feeDescriptionId;
 
     @NotNull
-    @Min(value = 0L)
     private Double amount;
 
     @NotNull

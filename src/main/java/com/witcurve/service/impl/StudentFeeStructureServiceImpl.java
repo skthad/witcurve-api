@@ -114,6 +114,10 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
                 throw new WitcurveException("Given fee description id is not present in session fee type");
             }
             for (StudentFeeDescriptionDTO studentFeeDescription : studentFeeType.getStudentFeeDescriptions()) {
+
+                if (studentFeeDescription.getAmount() < 0 || studentFeeDescription.getOneTimeDiscount() < 0) {
+                    throw new WitcurveException("amount and discount must be positive");
+                }
                 if (studentFeeDescription.getAmount() > studentFeeDescription.getAdjustment() - (studentFeeDescription.getOneTimeDiscount())) {
                     throw new WitcurveException("Values are improper according to given amount");
                 }
