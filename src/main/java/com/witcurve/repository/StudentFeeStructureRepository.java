@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StudentFeeStructureRepository extends JpaRepository<StudentFeeStructure,Long> {
+public interface StudentFeeStructureRepository extends JpaRepository<StudentFeeStructure, Long> {
 
     @Query("select sfs from StudentFeeStructure sfs where sfs.student.id = ?1 and sfs.session.id = ?2")
     StudentFeeStructure getByStudentIdAndSessionId(Long studentId, Long sessionId);

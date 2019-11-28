@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1574851760116-1">
+        <createTable tableName="fee_payment_detail">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="fee_payment_detailPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fee_description_id" type="BIGINT"/>
+            <column name="fee_type_id" type="BIGINT"/>
+            <column name="fee_payment_record_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574851760116-2">
+        <createTable tableName="fee_payment_record">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="fee_payment_recordPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="order_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="paytm_id" type="VARCHAR(255)"/>
+            <column name="penalty_amount" type="DOUBLE"/>
+            <column name="total_amount" type="DOUBLE"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_fee_structure_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574851760116-3">
+        <addUniqueConstraint columnNames="order_id" constraintName="orderId_UK" tableName="fee_payment_record"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574851760116-4">
+        <addForeignKeyConstraint baseColumnNames="student_fee_structure_id" baseTableName="fee_payment_record"
+                                 constraintName="FK2b1872ol0lp4yuqwra662yw5n" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="student_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574851760116-5">
+        <addForeignKeyConstraint baseColumnNames="fee_type_id" baseTableName="fee_payment_detail"
+                                 constraintName="FK90uvus8qcr5i1x7lmdb57on12" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_details"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574851760116-6">
+        <addForeignKeyConstraint baseColumnNames="fee_description_id" baseTableName="fee_payment_detail"
+                                 constraintName="FKab985ar16cksk058ooskhxgow" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_details"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574851760116-7">
+        <addForeignKeyConstraint baseColumnNames="fee_payment_record_id" baseTableName="fee_payment_detail"
+                                 constraintName="FKeu8ienbq6q29ddbhqenopgmub" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_payment_record"/>
+    </changeSet>
+</databaseChangeLog>
