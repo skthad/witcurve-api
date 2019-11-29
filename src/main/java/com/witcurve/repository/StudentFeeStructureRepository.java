@@ -13,6 +13,6 @@ public interface StudentFeeStructureRepository extends JpaRepository<StudentFeeS
     @Query("select sfs from StudentFeeStructure sfs where sfs.student.id = ?1 and sfs.session.id = ?2")
     StudentFeeStructure getByStudentIdAndSessionId(Long studentId, Long sessionId);
 
-    @Query("select sfs from StudentFeeStructure sfs join StudentStandard ss on ss.student.id = sfs.student.id where ss.standard.id = ?1 and sfs.session.id = ?2 order by ss.rollNo")
+    @Query("select sfs from StudentFeeStructure sfs join StudentStandard ss on ss.student.id = sfs.student.id where ss.standard.id = ?1 and ss.active = true and sfs.session.id = ?2 order by ss.rollNo")
     List<StudentFeeStructure> getByStandardIdAndSessionId(Long standardId, Long sessionId);
 }
