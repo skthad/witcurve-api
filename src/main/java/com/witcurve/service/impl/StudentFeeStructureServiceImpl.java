@@ -74,7 +74,6 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         if (studentFeeStructureDTO.getStudentFeeTypes().size() == 0) {
             throw new WitcurveException("Minimum one record of student fee type is require to save ");
         }
-      //  List<StudentStandard> studentStandards =studentStandardRepository.getByStudentId(studentFeeStructureDTO.getStudentId());
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByStudentIdAndSessionId(studentFeeStructureDTO.getStudentId(),studentFeeStructureDTO.getSelectedSessionId());
 
         Map<Long, List<Long>> mapOfFeeTypeAndRequiredFeeDescriptionIds = new HashMap<>();

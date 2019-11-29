@@ -37,7 +37,6 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
 
     @NotNull
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @OneToMany(cascade = CascadeType.ALL)
