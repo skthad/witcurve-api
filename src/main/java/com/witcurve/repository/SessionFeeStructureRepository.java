@@ -21,6 +21,6 @@ public interface SessionFeeStructureRepository extends JpaRepository<SessionFeeS
     @Query("select sfs from SessionFeeStructure sfs where sfs.grade = ?1 and sfs.session.schoolInfo.id = ?2")
     List<SessionFeeStructure> findByGradeAndSchoolInfoId(Grade grade, Long schoolInfoId);
 
-  //  @Query("select sfsfd.feeDescription.id from SessionFeeStructure sfs join sfs.sessionFeeDescriptions sfsfd where sfs.feeType.id = ?1 and sfs.grade = ?2 and sfs.session.id = ?3 and sfsfd.required = true")
-  //  List<Long> getAllRequiredFeeDescription(Long feeTypeId, Grade grade, Long sessionId);
+    /*@Query("Select sfs from SessionFeeStructure sfs where sfs.grade in (select ss.standard.grade from StudentStandard ss where ss.student.id = ?1 and ss.active = true) and sfs.session.id = ?2")
+    List<SessionFeeStructure> findByStudentIdAndSessionId(Long studentId, Long sessionId);*/
 }
