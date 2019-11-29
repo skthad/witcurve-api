@@ -74,11 +74,11 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         if (studentFeeStructureDTO.getStudentFeeTypes().size() == 0) {
             throw new WitcurveException("Minimum one record of student fee type is require to save ");
         }
-        List<StudentStandard> studentStandard = studentStandardRepository.getByStudentId(studentFeeStructureDTO.getStudentId());
-        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSessionId(studentStandard.get(0).getStandard().getGrade(), studentFeeStructureDTO.getSelectedSessionId());
+        List<StudentStandard> studentStandards =studentStandardRepository.getByStudentId(studentFeeStructureDTO.getStudentId());
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSessionId(studentStandards.get(0).getStandard().getGrade(),studentFeeStructureDTO.getSelectedSessionId());
 
         Map<Long, List<Long>> mapOfFeeTypeAndRequiredFeeDescriptionIds = new HashMap<>();
-        Map<Long, List<Long>> mapOfAllFeeTypeAndFeeDescriptionIds = new HashMap<>();
+        Map<Long, List<Long>> mapOfFeeTypeAndAllFeeDescriptionIds = new HashMap<>();
         for (SessionFeeStructure sessionFeeStructure : sessionFeeStructures) {
             Long feeTypeId = sessionFeeStructure.getFeeType().getId();
             List<Long> requireFeeDescriptionIds = new ArrayList<>();
@@ -91,13 +91,13 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
                 }
             }
             mapOfFeeTypeAndRequiredFeeDescriptionIds.put(feeTypeId, requireFeeDescriptionIds);
-            mapOfAllFeeTypeAndFeeDescriptionIds.put(feeTypeId, allFeeDescriptionIds);
+            mapOfFeeTypeAndAllFeeDescriptionIds.put(feeTypeId, allFeeDescriptionIds);
         }
         List<Long> studentFeeTypeIds = studentFeeStructureDTO.getStudentFeeTypes().stream().map(StudentFeeTypeDTO::getFeeTypeId).collect(Collectors.toList());
         List<Long> sessionFeeTypeIds = mapOfFeeTypeAndRequiredFeeDescriptionIds.keySet().stream().collect(Collectors.toList());
 
         if (!sessionFeeTypeIds.containsAll(studentFeeTypeIds)) {
-            throw new WitcurveException("Given fee type is not present in session fee type");
+            throw new WitcurveException("Given fee type id is not present in session fee type");
         }
         for (StudentFeeTypeDTO studentFeeType : studentFeeStructureDTO.getStudentFeeTypes()) {
 
@@ -106,9 +106,10 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
             }
             List<Long> studentFeeDescriptionIds = studentFeeType.getStudentFeeDescriptions().stream().map(StudentFeeDescriptionDTO::getFeeDescriptionId).collect(Collectors.toList());
             List<Long> allRequiredFeeDescriptionIds = mapOfFeeTypeAndRequiredFeeDescriptionIds.get(studentFeeType.getFeeTypeId());
-            List<Long> allSessionFeeDescriptionIds = mapOfAllFeeTypeAndFeeDescriptionIds.get(studentFeeType.getFeeTypeId());
+            List<Long> allSessionFeeDescriptionIds = mapOfFeeTypeAndAllFeeDescriptionIds.get(studentFeeType.getFeeTypeId());
+
             if (!studentFeeDescriptionIds.containsAll(allRequiredFeeDescriptionIds)) {
-                throw new WitcurveException("All required fee description are not present");
+                throw new WitcurveException("All required fee description are not present in student fee structure");
             }
             if (!allSessionFeeDescriptionIds.containsAll(studentFeeDescriptionIds)) {
                 throw new WitcurveException("Given fee description id is not present in session fee type");
