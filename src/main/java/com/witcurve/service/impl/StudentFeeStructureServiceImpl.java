@@ -74,8 +74,8 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         if (studentFeeStructureDTO.getStudentFeeTypes().size() == 0) {
             throw new WitcurveException("Minimum one record of student fee type is require to save ");
         }
-        List<StudentStandard> studentStandards =studentStandardRepository.getByStudentId(studentFeeStructureDTO.getStudentId());
-        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByGradeAndSessionId(studentStandards.get(0).getStandard().getGrade(),studentFeeStructureDTO.getSelectedSessionId());
+      //  List<StudentStandard> studentStandards =studentStandardRepository.getByStudentId(studentFeeStructureDTO.getStudentId());
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByStudentIdAndSessionId(studentFeeStructureDTO.getStudentId(),studentFeeStructureDTO.getSelectedSessionId());
 
         Map<Long, List<Long>> mapOfFeeTypeAndRequiredFeeDescriptionIds = new HashMap<>();
         Map<Long, List<Long>> mapOfFeeTypeAndAllFeeDescriptionIds = new HashMap<>();
@@ -117,10 +117,10 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
             for (StudentFeeDescriptionDTO studentFeeDescription : studentFeeType.getStudentFeeDescriptions()) {
 
                 if (studentFeeDescription.getAmount() < 0 || studentFeeDescription.getOneTimeDiscount() < 0) {
-                    throw new WitcurveException("amount and discount must be positive");
+                    throw new WitcurveException("Amount and discount must be positive");
                 }
-                if (studentFeeDescription.getAmount() > studentFeeDescription.getAdjustment() - (studentFeeDescription.getOneTimeDiscount())) {
-                    throw new WitcurveException("Values are improper according to given amount");
+                if (studentFeeDescription.getAmount() + studentFeeDescription.getAdjustment() - (studentFeeDescription.getOneTimeDiscount()) >= 0) {
+                    throw new WitcurveException("Total amount for one or more fee descriptions is negative. Please make sure the total amount for each description is not negative");
                 }
             }
         }

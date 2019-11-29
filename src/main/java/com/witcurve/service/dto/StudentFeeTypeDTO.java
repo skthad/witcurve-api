@@ -1,6 +1,5 @@
 package com.witcurve.service.dto;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -59,7 +58,9 @@ public class StudentFeeTypeDTO extends AbstractAuditingDTO implements Serializab
         return studentFeeDescriptions;
     }
 
-    public void setStudentFeeDescriptions(List<StudentFeeDescriptionDTO> studentFeeDescriptions) { this.studentFeeDescriptions = studentFeeDescriptions; }
+    public void setStudentFeeDescriptions(List<StudentFeeDescriptionDTO> studentFeeDescriptions) {
+        this.studentFeeDescriptions = studentFeeDescriptions;
+    }
 
     @Override
     public boolean equals(Object o) {
