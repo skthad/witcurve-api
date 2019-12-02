@@ -118,7 +118,7 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
                 if (studentFeeDescription.getAmount() < 0 || studentFeeDescription.getOneTimeDiscount() < 0) {
                     throw new WitcurveException("Amount and discount must be positive");
                 }
-                if (studentFeeDescription.getAmount() + studentFeeDescription.getAdjustment() - (studentFeeDescription.getOneTimeDiscount()) >= 0) {
+                if (studentFeeDescription.getAmount() + studentFeeDescription.getAdjustment() - (studentFeeDescription.getOneTimeDiscount()) < 0) {
                     throw new WitcurveException("Total amount for one or more fee descriptions is negative. Please make sure the total amount for each description is not negative");
                 }
             }

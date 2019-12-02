@@ -7,6 +7,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,18 @@ public class StudentFeeStructureResource {
         if (studentFeeStructureDTO.getId() != null) {
             throw new WitcurveException("New record can not have id already");
         }
-        StudentFeeStructureDTO result = studentFeeStructureService.saveOrUpdate(studentFeeStructureDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            StudentFeeStructureDTO result = studentFeeStructureService.saveOrUpdate(studentFeeStructureDTO);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("student_session_id_UK")) {
+                throw new WitcurveException("Unique constraint (student_id, session_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**
@@ -55,8 +66,18 @@ public class StudentFeeStructureResource {
         if (studentFeeStructureDTO.getId() == null) {
             throw new WitcurveException("Id is require to update record");
         }
-        StudentFeeStructureDTO result = studentFeeStructureService.saveOrUpdate(studentFeeStructureDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            StudentFeeStructureDTO result = studentFeeStructureService.saveOrUpdate(studentFeeStructureDTO);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("student_session_id_UK")) {
+                throw new WitcurveException("Unique constraint (student_id, session_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**

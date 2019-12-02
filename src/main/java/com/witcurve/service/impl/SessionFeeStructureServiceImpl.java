@@ -47,7 +47,7 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
     @Override
     public List<SessionFeeStructureDTO> saveOrUpdate(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) throws WitcurveException {
         log.debug("Request to save or update SessionFeeStructures : {} for grade : {} and for session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
-        isValid(sessionFeeStructureDTOs, grade, sessionId);
+        formatAndValid(sessionFeeStructureDTOs, grade, sessionId);
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.saveAll(sessionFeeStructureMapper.toEntity(sessionFeeStructureDTOs));
         return sessionFeeStructureMapper.toDto(sessionFeeStructures);
     }
@@ -88,7 +88,7 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
         sessionFeeStructureRepository.deleteById(sessionFeeStructureId);
     }
 
-    private void isValid(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) {
+    private void formatAndValid(List<SessionFeeStructureDTO> sessionFeeStructureDTOs, Grade grade, Long sessionId) {
         for (SessionFeeStructureDTO sessionFeeStructureDTO : sessionFeeStructureDTOs) {
 
             Optional<FeeDetails> feeDetailsOfFeeType = feeDetailsRepository.findById(sessionFeeStructureDTO.getFeeTypeId());

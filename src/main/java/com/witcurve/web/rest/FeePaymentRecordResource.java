@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -43,16 +42,16 @@ public class FeePaymentRecordResource {
         }
         try {
             FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO);
-            return ResponseEntity.created(new URI("/api/fee-payment-record/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("feePaymentRecord", result.getId().toString()))
-                .body(result);
-        } catch (
-            DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("orderId_UK")) {
+                throw new WitcurveException("Unique constraint (orderId) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
+
         }
     }
 
@@ -73,15 +72,16 @@ public class FeePaymentRecordResource {
         }
         try {
             FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO);
-            return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("feePaymentRecord", feePaymentRecordDTO.getId().toString()))
-                .body(result);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
+            if (e.getMessage().contains("orderId_UK")) {
+                throw new WitcurveException("Unique constraint (orderId) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }
+
         }
     }
 

@@ -9,6 +9,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,6 @@ public class SessionFeeStructureResource {
      * @param sessionFeeStructureDTOs
      * @param grade
      * @param sessionId
-     *
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
@@ -41,8 +41,18 @@ public class SessionFeeStructureResource {
     @Timed
     public ResponseEntity<List<SessionFeeStructureDTO>> createSessionFeeStructure(@RequestBody @Valid List<SessionFeeStructureDTO> sessionFeeStructureDTOs, @RequestParam Grade grade, @RequestParam Long sessionId) throws WitcurveException, URISyntaxException {
         log.debug("Request to save or update sessionFeeStructureList : {} for grade : {} and session with id : {}", sessionFeeStructureDTOs, grade, sessionId);
-        List<SessionFeeStructureDTO> result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTOs, grade, sessionId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            List<SessionFeeStructureDTO> result = sessionFeeStructureService.saveOrUpdate(sessionFeeStructureDTOs, grade, sessionId);
+            return ResponseEntity.ok(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("grade_fee_type_session_id_UK")) {
+                throw new WitcurveException("Unique constraint (fee_type_id, grade, session_id) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
 
@@ -94,7 +104,7 @@ public class SessionFeeStructureResource {
     @Timed
     public ResponseEntity<List<SessionFeeStructureDTO>> getBySessionIdAndGrade(@PathVariable Long sessionId, @PathVariable Grade grade) throws WitcurveException {
         log.debug("Request to get sessionFeeStructure by sessionId :{} and grade :{}", sessionId, grade);
-        List<SessionFeeStructureDTO> result = sessionFeeStructureService.getBySessionIdAndGrade(sessionId,grade);
+        List<SessionFeeStructureDTO> result = sessionFeeStructureService.getBySessionIdAndGrade(sessionId, grade);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

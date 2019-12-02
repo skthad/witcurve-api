@@ -22,6 +22,8 @@ public class StudentFeeTypeDTO extends AbstractAuditingDTO implements Serializab
     @NotNull
     private List<StudentFeeDescriptionDTO> studentFeeDescriptions;
 
+    private Double amount;
+
     public Long getId() {
         return id;
     }
@@ -58,9 +60,11 @@ public class StudentFeeTypeDTO extends AbstractAuditingDTO implements Serializab
         return studentFeeDescriptions;
     }
 
-    public void setStudentFeeDescriptions(List<StudentFeeDescriptionDTO> studentFeeDescriptions) {
-        this.studentFeeDescriptions = studentFeeDescriptions;
-    }
+    public void setStudentFeeDescriptions(List<StudentFeeDescriptionDTO> studentFeeDescriptions) { this.studentFeeDescriptions = studentFeeDescriptions; }
+
+    public Double getAmount() { return amount; }
+
+    public void setAmount(Double amount) { this.amount = amount; }
 
     @Override
     public boolean equals(Object o) {
