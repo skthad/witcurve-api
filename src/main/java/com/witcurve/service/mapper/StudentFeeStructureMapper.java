@@ -22,6 +22,7 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "selectedSessionId", source = "selectedSession.id")
     @Mapping(target = "amount", expression = "java(getTotalFeeTypeAmount(studentFeeStructure.getStudentFeeTypes()))")
+    @Mapping(target = "totalDiscount", expression = "java(getTotalDiscount(studentFeeStructure.getStudentFeeTypes()))")
     StudentFeeStructureDTO toDto(StudentFeeStructure studentFeeStructure);
 
     default StudentFeeStructure fromId(Long id) {
@@ -42,7 +43,7 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
             Double totalFeeDescription = 0.0;
             if (feeType.getStudentFeeDescriptions() != null || feeType.getStudentFeeDescriptions().size() > 0) {
                 for (StudentFeeDescription feeDescription : feeType.getStudentFeeDescriptions()) {
-                    Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment() - feeDescription.getOneTimeDiscount();
+                    Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment();
                     totalFeeDescription = totalFeeDescription + feeDescriptionAmt;
                 }
                 totalAmount = totalAmount + totalFeeDescription;
@@ -50,5 +51,23 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
         }
 
         return totalAmount;
+    }
+
+    default Double getTotalDiscount(List<StudentFeeType> feeTypes){
+        if (feeTypes == null || feeTypes.size() == 0) {
+            return 0.0;
+        }
+        Double totalDiscount = 0.0;
+        for (StudentFeeType feeType : feeTypes) {
+            Double totalFeeDescriptionDiscount = 0.0;
+            if (feeType.getStudentFeeDescriptions() != null || feeType.getStudentFeeDescriptions().size() > 0) {
+                for (StudentFeeDescription feeDescription : feeType.getStudentFeeDescriptions()) {
+                    totalFeeDescriptionDiscount = totalFeeDescriptionDiscount + feeDescription.getOneTimeDiscount();
+                }
+                totalDiscount = totalDiscount + totalFeeDescriptionDiscount;
+            }
+        }
+
+        return totalDiscount;
     }
 }

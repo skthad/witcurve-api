@@ -1,9 +1,12 @@
 package com.witcurve.domain;
 
+import com.witcurve.service.util.LocalDateConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +31,11 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     @Column(nullable = false)
     private Double amount;
 
+    @NotNull
+    @Column(name = "transaction_date", nullable = false)
+    @Convert(converter = LocalDateConverter.class)
+    private LocalDate transactionDate;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -43,6 +51,10 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public LocalDate getTransactionDate() { return transactionDate; }
+
+    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
 
     @Override
     public boolean equals(Object o) {

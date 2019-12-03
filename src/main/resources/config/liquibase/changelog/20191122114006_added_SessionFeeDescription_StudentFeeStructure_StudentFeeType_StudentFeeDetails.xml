@@ -184,4 +184,7 @@
             newDataType="int"
             tableName="session_fee_structure"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1575369528971-23">
+        <addNotNullConstraint columnDataType="int" columnName="grade" tableName="session_fee_structure"/>
+    </changeSet>
 </databaseChangeLog>
