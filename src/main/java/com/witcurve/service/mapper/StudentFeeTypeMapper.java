@@ -1,6 +1,5 @@
 package com.witcurve.service.mapper;
 
-import com.witcurve.domain.SessionFeeDescription;
 import com.witcurve.domain.StudentFeeDescription;
 import com.witcurve.domain.StudentFeeType;
 import com.witcurve.service.dto.StudentFeeTypeDTO;
@@ -9,7 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {FeeDetailsMapper.class,StudentFeeDescriptionMapper.class})
+@Mapper(componentModel = "spring", uses = {FeeDetailsMapper.class, StudentFeeDescriptionMapper.class})
 public interface StudentFeeTypeMapper extends EntityMapper<StudentFeeTypeDTO, StudentFeeType> {
 
     @Mapping(source = "feeTypeId", target = "feeType.id")
@@ -17,7 +16,7 @@ public interface StudentFeeTypeMapper extends EntityMapper<StudentFeeTypeDTO, St
 
 
     @Mapping(target = "feeTypeId", source = "feeType.id")
-    @Mapping(target = "amount",expression = "java(getTotalFeeDescriptionAmount(studentFeeType.getStudentFeeDescriptions()))")
+    @Mapping(target = "amount", expression = "java(getTotalFeeDescriptionAmount(studentFeeType.getStudentFeeDescriptions()))")
     StudentFeeTypeDTO toDto(StudentFeeType studentFeeType);
 
     default StudentFeeType fromId(Long id) {
@@ -29,13 +28,14 @@ public interface StudentFeeTypeMapper extends EntityMapper<StudentFeeTypeDTO, St
         return studentFeeType;
     }
 
-    default Double getTotalFeeDescriptionAmount(List<StudentFeeDescription> feeDescriptions){
+    default Double getTotalFeeDescriptionAmount(List<StudentFeeDescription> feeDescriptions) {
         if (feeDescriptions == null || feeDescriptions.size() == 0) {
             return 0.0;
         }
         Double amount = 0.0;
-        for (StudentFeeDescription feeDescription :feeDescriptions){
-            amount = amount + feeDescription.getAmount();
+        for (StudentFeeDescription feeDescription : feeDescriptions) {
+            Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment() - feeDescription.getOneTimeDiscount();
+            amount = amount + feeDescriptionAmt;
         }
         return amount;
     }

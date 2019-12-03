@@ -42,7 +42,8 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
             Double totalFeeDescription = 0.0;
             if (feeType.getStudentFeeDescriptions() != null || feeType.getStudentFeeDescriptions().size() > 0) {
                 for (StudentFeeDescription feeDescription : feeType.getStudentFeeDescriptions()) {
-                    totalFeeDescription = totalFeeDescription + feeDescription.getAmount();
+                    Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment() - feeDescription.getOneTimeDiscount();
+                    totalFeeDescription = totalFeeDescription + feeDescriptionAmt;
                 }
                 totalAmount = totalAmount + totalFeeDescription;
             }
