@@ -1,12 +1,16 @@
 package com.witcurve.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.witcurve.domain.enumeration.PaymentRecordType;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+
+import static com.witcurve.service.util.WitCurveConstants.DEFAULT_DATE_FORMAT;
 
 public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -32,6 +36,10 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     @NotNull
     private List<FeePaymentDetailDTO> feePaymentDetails;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private LocalDate transactionDate;
 
     public Long getId() { return id; }
 
@@ -64,6 +72,10 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     public List<FeePaymentDetailDTO> getFeePaymentDetails() { return feePaymentDetails; }
 
     public void setFeePaymentDetails(List<FeePaymentDetailDTO> feePaymentDetails) { this.feePaymentDetails = feePaymentDetails; }
+
+    public LocalDate getTransactionDate() { return transactionDate; }
+
+    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
 
     @Override
     public boolean equals(Object o) {
