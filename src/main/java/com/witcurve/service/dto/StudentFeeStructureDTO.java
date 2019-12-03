@@ -25,6 +25,8 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
 
     private Double amount;
 
+    private Double totalDiscount;
+
     public Long getId() {
         return id;
     }
@@ -64,6 +66,10 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
     public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public Double getTotalDiscount() { return totalDiscount; }
+
+    public void setTotalDiscount(Double totalDiscount) { this.totalDiscount = totalDiscount; }
 
     @Override
     public boolean equals(Object o) {

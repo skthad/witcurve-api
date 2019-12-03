@@ -78,7 +78,9 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
             if (!feePaymentRecord.isPresent()) {
                 throw new WitcurveException("No fee payment record is present with given id :{} " + feePaymentRecordDTO.getId());
             }
-            feePaymentRecordDTO.setOrderId(feePaymentRecord.get().getOrderId());
+            if (feePaymentRecordDTO.getOrderId() == null || !feePaymentRecord.get().getOrderId().equals(feePaymentRecordDTO.getOrderId())) {
+                throw new WitcurveException("While updating record order id is require and if given should not be different");
+            }
         } else {
             feePaymentRecordDTO.setOrderId(RandomStringUtils.randomAlphanumeric(8));
         }

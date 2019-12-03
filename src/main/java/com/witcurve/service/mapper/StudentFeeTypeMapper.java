@@ -34,7 +34,7 @@ public interface StudentFeeTypeMapper extends EntityMapper<StudentFeeTypeDTO, St
         }
         Double amount = 0.0;
         for (StudentFeeDescription feeDescription : feeDescriptions) {
-            Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment() - feeDescription.getOneTimeDiscount();
+            Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment();
             amount = amount + feeDescriptionAmt;
         }
         return amount;
