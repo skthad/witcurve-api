@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1574422873787-1">
+        <createTable tableName="session_fee_description">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="session_fee_descriptionPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fee_description_id" type="BIGINT"/>
+            <column name="session_fee_structure_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-2">
+        <createTable tableName="student_fee_description">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_fee_descriptionPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="adjustment" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="one_time_discount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fee_description_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_fee_type_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-3">
+        <createTable tableName="student_fee_structure">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_fee_structurePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="selected_session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-4">
+        <createTable tableName="student_fee_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="student_fee_typePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="due_date" type="date"/>
+            <column name="penalty" type="DOUBLE"/>
+            <column name="fee_type_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="student_fee_structure_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-5">
+        <addForeignKeyConstraint baseColumnNames="session_fee_structure_id" baseTableName="session_fee_description"
+                                 constraintName="FK812315xf5qba5f26h53a1dkx3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-6">
+        <addForeignKeyConstraint baseColumnNames="student_fee_type_id" baseTableName="student_fee_description"
+                                 constraintName="FKao1vajm1acv0p4kqbogb26f4x" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="student_fee_type"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-7">
+        <addForeignKeyConstraint baseColumnNames="selected_session_id" baseTableName="student_fee_structure"
+                                 constraintName="FKaroyisyksggr5g7c3epd2sp85" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-8">
+        <addForeignKeyConstraint baseColumnNames="fee_description_id" baseTableName="student_fee_description"
+                                 constraintName="FKf651ivietw7u426i7uq1q2n4l" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_details"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-9">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_fee_structure"
+                                 constraintName="FKi5oyxwfrqoln6f79ya9uu7cs" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-10">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableName="student_fee_structure"
+                                 constraintName="FKlsyd2owo2p6t78ibjjl15j3h7" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="academic_session"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-11">
+        <addForeignKeyConstraint baseColumnNames="student_fee_structure_id" baseTableName="student_fee_type"
+                                 constraintName="FKlyp57roycl9k9630mukjf6qp7" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="student_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-12">
+        <addForeignKeyConstraint baseColumnNames="fee_description_id" baseTableName="session_fee_description"
+                                 constraintName="FKpiqea1w6w3xhcp0p57ra121uw" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_details"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-13">
+        <addForeignKeyConstraint baseColumnNames="fee_type_id" baseTableName="student_fee_type"
+                                 constraintName="FKqumw1il3k0mm8ddaaglb87jhe" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_details"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-14">
+        <dropForeignKeyConstraint baseTableName="session_fee_structure" constraintName="FKocrkf3b0jotct1nskpt4o07d0"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-15">
+        <dropColumn columnName="amount" tableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-16">
+        <dropColumn columnName="due_date" tableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-17">
+        <dropColumn columnName="fee_description_id" tableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574422873787-18">
+        <dropColumn columnName="penalty" tableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574673127632-19">
+        <addUniqueConstraint columnNames="student_id, session_id" constraintName="student_session_id_UK"
+                             tableName="student_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574684614919-20">
+        <addColumn tableName="session_fee_description">
+            <column name="required" type="bit">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574684614919-21">
+        <addUniqueConstraint columnNames="fee_type_id, grade, session_id" constraintName="grade_fee_type_session_id_UK"
+                             tableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1574684614919-22">
+        <modifyDataType
+            columnName="grade"
+            newDataType="int"
+            tableName="session_fee_structure"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1575369528971-23">
+        <addNotNullConstraint columnDataType="int" columnName="grade" tableName="session_fee_structure"/>
+    </changeSet>
+</databaseChangeLog>

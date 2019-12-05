@@ -1,28 +1,26 @@
 package com.witcurve.service.dto;
 
-import com.witcurve.domain.enumeration.Grade;
-
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Serializable {
+public class StudentFeeTypeDTO extends AbstractAuditingDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
     @NotNull
-    private Long sessionId;
-
-    @NotNull
     private Long feeTypeId;
 
-    @NotNull
-    private Grade grade;
+    private Double penalty;
+
+    private LocalDate dueDate;
 
     @NotNull
-    private List<SessionFeeDescriptionDTO> sessionFeeDescriptions;
+    private List<StudentFeeDescriptionDTO> studentFeeDescriptions;
 
     private Double amount;
 
@@ -34,14 +32,6 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
         this.id = id;
     }
 
-    public Long getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(Long sessionId) {
-        this.sessionId = sessionId;
-    }
-
     public Long getFeeTypeId() {
         return feeTypeId;
     }
@@ -50,17 +40,27 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
         this.feeTypeId = feeTypeId;
     }
 
-    public Grade getGrade() {
-        return grade;
+    public Double getPenalty() {
+        return penalty;
     }
 
-    public void setGrade(Grade grade) {
-        this.grade = grade;
+    public void setPenalty(Double penalty) {
+        this.penalty = penalty;
     }
 
-    public List<SessionFeeDescriptionDTO> getSessionFeeDescriptions() { return sessionFeeDescriptions; }
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
 
-    public void setSessionFeeDescriptions(List<SessionFeeDescriptionDTO> sessionFeeDescriptions) { this.sessionFeeDescriptions = sessionFeeDescriptions; }
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public List<StudentFeeDescriptionDTO> getStudentFeeDescriptions() {
+        return studentFeeDescriptions;
+    }
+
+    public void setStudentFeeDescriptions(List<StudentFeeDescriptionDTO> studentFeeDescriptions) { this.studentFeeDescriptions = studentFeeDescriptions; }
 
     public Double getAmount() { return amount; }
 
@@ -70,7 +70,7 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SessionFeeStructureDTO that = (SessionFeeStructureDTO) o;
+        StudentFeeTypeDTO that = (StudentFeeTypeDTO) o;
         return Objects.equals(id, that.id);
     }
 
@@ -81,7 +81,7 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
 
     @Override
     public String toString() {
-        return "SessionFeeStructureDTO{" +
+        return "StudentFeeTypeDTO{" +
             "id=" + id +
             '}';
     }

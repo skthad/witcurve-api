@@ -8,10 +8,16 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
-@Table(name = "session_fee_structure")
+@Table(name = "session_fee_structure",  uniqueConstraints = {
+    @UniqueConstraint(name = "grade_fee_type_session_id_UK",
+        columnNames = {"fee_type_id", "grade", "session_id"})
+})
 public class SessionFeeStructure extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,28 +32,16 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
 
     @NotNull
     @ManyToOne
-    private FeeDetails feeDescription;
-
-    @NotNull
-    @ManyToOne
     @JoinColumn(nullable = false)
     private AcademicSession session;
 
     @NotNull
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    @NotNull
-    @Column(nullable = false)
-    private Double amount;
-
-    @Column
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate dueDate;
-
-    @Column
-    private Double penalty;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "session_fee_structure_id")
+    private List<SessionFeeDescription> sessionFeeDescriptions;
 
     public Long getId() {
         return id;
@@ -63,14 +57,6 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
 
     public void setFeeType(FeeDetails feeType) {
         this.feeType = feeType;
-    }
-
-    public FeeDetails getFeeDescription() {
-        return feeDescription;
-    }
-
-    public void setFeeDescription(FeeDetails feeDescription) {
-        this.feeDescription = feeDescription;
     }
 
     public AcademicSession getSession() {
@@ -89,29 +75,9 @@ public class SessionFeeStructure extends AbstractAuditingEntity implements Seria
         this.grade = grade;
     }
 
-    public Double getAmount() {
-        return amount;
-    }
+    public List<SessionFeeDescription> getSessionFeeDescriptions() { return sessionFeeDescriptions; }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public Double getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(Double penalty) {
-        this.penalty = penalty;
-    }
+    public void setSessionFeeDescriptions(List<SessionFeeDescription> sessionFeeDescriptions) { this.sessionFeeDescriptions = sessionFeeDescriptions; }
 
     @Override
     public boolean equals(Object o) {
