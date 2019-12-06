@@ -60,7 +60,7 @@ public class PaytmCallBackResource {
             studentDetail.setFatherName("Mr. Rakesh Kumar");
             studentDetail.setMotherName("Mrs Rekha");
             studentDetail.setNote("No dues");
-            studentDetail.setDateOfBirth("1990-04-01");
+            studentDetail.setDateOfBirth("01/01/1990");
             paytmVM.setStudentDetails(studentDetail);
             List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
             PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
@@ -97,7 +97,7 @@ public class PaytmCallBackResource {
             studentDetail.setRollNo("10");
             studentDetail.setMotherName("Mrs Priya");
             studentDetail.setFatherName("Mr Ramesh");
-            studentDetail.setDateOfBirth("1990-o2-01");
+            studentDetail.setDateOfBirth("02/04/1993");
             studentDetail.setNote("Due payment from first installment");
             paytmVM.setStudentDetails(studentDetail);
             List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
@@ -141,7 +141,7 @@ public class PaytmCallBackResource {
             studentDetail.setAdmissionId(enrollmentNo);
             studentDetail.setStandard("X A");
             studentDetail.setRollNo("1");
-            studentDetail.setDateOfBirth("1992-09-03");
+            studentDetail.setDateOfBirth("19/06/1995");
             studentDetail.setFatherName("Mr Prakash");
             studentDetail.setMotherName("Mrs Nisha");
             studentDetail.setNote("No dues");
