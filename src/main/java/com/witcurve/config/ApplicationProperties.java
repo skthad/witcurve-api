@@ -59,6 +59,8 @@ public class ApplicationProperties {
 
         private String transactionStatusApi;
 
+        private String communicationIps;
+
         public String getMerchantId() {
             return merchantId;
         }
@@ -98,6 +100,10 @@ public class ApplicationProperties {
         public void setCallbackUrl(String callbackUrl) {
             this.callbackUrl = callbackUrl;
         }
+
+        public String getCommunicationIps() { return communicationIps; }
+
+        public void setCommunicationIps(String communicationIps) { this.communicationIps = communicationIps; }
 
         public String getTransactionStatusApi() {
             return transactionStatusApi;
