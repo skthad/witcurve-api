@@ -39,12 +39,25 @@ public class PaytmVM implements Serializable {
     public class StudentDetail implements Serializable {
         @NotNull
         private String studentName;
+
         @NotNull
         private String rollNo;
+
+        @NotNull
+        private String fatherName;
+
+        @NotNull
+        private String motherName;
+
+        @NotNull
+        private String dateOfBirth;
+
         @NotNull
         private String admissionId;
+
         @NotNull
         private String note;
+
         @NotNull
         private String standard;
 
@@ -68,9 +81,7 @@ public class PaytmVM implements Serializable {
             return admissionId;
         }
 
-        public void setAdmissionId(String admissionId) {
-            this.admissionId = admissionId;
-        }
+        public void setAdmissionId(String admissionId) { this.admissionId = admissionId; }
 
         public String getNote() {
             return note;
@@ -80,12 +91,24 @@ public class PaytmVM implements Serializable {
             this.note = note;
         }
 
-        public String getStandard() {
-            return standard;
+        public String getStandard() { return standard; }
+
+        public void setStandard(String standard) { this.standard = standard; }
+
+        public String getFatherName() { return fatherName; }
+
+        public void setFatherName(String fatherName) { this.fatherName = fatherName; }
+
+        public String getMotherName() { return motherName; }
+
+        public void setMotherName(String motherName) { this.motherName = motherName; }
+
+        public String getDateOfBirth() {
+            return dateOfBirth;
         }
 
-        public void setStandard(String standard) {
-            this.standard = standard;
+        public void setDateOfBirth(String dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
         }
 
         @Override
@@ -93,6 +116,9 @@ public class PaytmVM implements Serializable {
             return "StudentDetail{" +
                 "studentName='" + studentName + '\'' +
                 ", rollNo='" + rollNo + '\'' +
+                ", fatherName='" + fatherName + '\'' +
+                ", motherName='" + motherName + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", admissionId='" + admissionId + '\'' +
                 ", note='" + note + '\'' +
                 ", standard='" + standard + '\'' +
