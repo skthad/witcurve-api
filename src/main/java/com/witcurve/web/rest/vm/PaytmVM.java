@@ -50,7 +50,7 @@ public class PaytmVM implements Serializable {
         private String motherName;
 
         @NotNull
-        private String DateOfBirth;
+        private String dateOfBirth;
 
         @NotNull
         private String admissionId;
@@ -103,9 +103,13 @@ public class PaytmVM implements Serializable {
 
         public void setMotherName(String motherName) { this.motherName = motherName; }
 
-        public String getDateOfBirth() { return DateOfBirth; }
+        public String getDateOfBirth() {
+            return dateOfBirth;
+        }
 
-        public void setDateOfBirth(String dateOfBirth) { DateOfBirth = dateOfBirth; }
+        public void setDateOfBirth(String dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
+        }
 
         @Override
         public String toString() {
@@ -114,7 +118,7 @@ public class PaytmVM implements Serializable {
                 ", rollNo='" + rollNo + '\'' +
                 ", fatherName='" + fatherName + '\'' +
                 ", motherName='" + motherName + '\'' +
-                ", DateOfBirth='" + DateOfBirth + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", admissionId='" + admissionId + '\'' +
                 ", note='" + note + '\'' +
                 ", standard='" + standard + '\'' +
