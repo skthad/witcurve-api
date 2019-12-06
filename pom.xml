@@ -874,6 +874,7 @@
                         <configuration>
                             <failOnMissingWebXml>false</failOnMissingWebXml>
                             <warSourceDirectory>target/www/</warSourceDirectory>
+                            <warName>witcurve</warName>
                             <webResources>
                                 <resource>
                                     <directory>src/main/webapp</directory>
@@ -1004,6 +1005,7 @@
                         <configuration>
                             <failOnMissingWebXml>false</failOnMissingWebXml>
                             <warSourceDirectory>target/www/</warSourceDirectory>
+                            <warName>witcurve</warName>
                             <webResources>
                                 <resource>
                                     <directory>src/main/webapp</directory>
