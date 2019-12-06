@@ -113,6 +113,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/request-reset-password").permitAll()
             .antMatchers("/api/account/reset-password").permitAll()
             .antMatchers("/api/user-mobile-end-points/user/**").permitAll()
+            .antMatchers("/api/paytm-fee/**").permitAll()
+
 
 
             //temp permitAll, need to be changes once user service is fixed
