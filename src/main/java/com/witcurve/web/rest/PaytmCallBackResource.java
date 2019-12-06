@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -58,6 +57,10 @@ public class PaytmCallBackResource {
             studentDetail.setAdmissionId(ADMISSION_IDS.get(1));
             studentDetail.setStandard("X A");
             studentDetail.setRollNo("1");
+            studentDetail.setFatherName("Mr. Rakesh Kumar");
+            studentDetail.setMotherName("Mrs Rekha");
+            studentDetail.setNote("No dues");
+            studentDetail.setDateOfBirth("1990-04-01");
             paytmVM.setStudentDetails(studentDetail);
             List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
             PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
@@ -92,6 +95,10 @@ public class PaytmCallBackResource {
             studentDetail.setAdmissionId(ADMISSION_IDS.get(2));
             studentDetail.setStandard("X A");
             studentDetail.setRollNo("10");
+            studentDetail.setMotherName("Mrs Priya");
+            studentDetail.setFatherName("Mr Ramesh");
+            studentDetail.setDateOfBirth("1990-o2-01");
+            studentDetail.setNote("Due payment from first installment");
             paytmVM.setStudentDetails(studentDetail);
             List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
             PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
@@ -134,6 +141,10 @@ public class PaytmCallBackResource {
             studentDetail.setAdmissionId(enrollmentNo);
             studentDetail.setStandard("X A");
             studentDetail.setRollNo("1");
+            studentDetail.setDateOfBirth("1992-09-03");
+            studentDetail.setFatherName("Mr Prakash");
+            studentDetail.setMotherName("Mrs Nisha");
+            studentDetail.setNote("No dues");
             paytmVM.setStudentDetails(studentDetail);
             List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
             PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
