@@ -23,15 +23,15 @@ public class PaytmCallBackResource {
     private final Logger log = LoggerFactory.getLogger(PaytmCallBackResource.class);
     @Autowired
     private ApplicationProperties applicationProperties;
-    
+
     @Autowired
     private HttpServletRequest request;
 
     private static final String NAME = "Radiant International School Of Excellence";
     private static final List<String> ADMISSION_IDS = new ArrayList<>(
         Arrays.asList("1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008", "1009", "1010"));
-    
-    
+
+
     @GetMapping("/paytm-fee/validation")
     @Timed
     public ResponseEntity<PaytmVM> getStudentFee(@RequestParam(required = false) String instituteName, @RequestParam(required = false) String admissionId, @RequestParam(required = false) String type) {
@@ -46,11 +46,13 @@ public class PaytmCallBackResource {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_TYPE.getValue());
         } else if (!ADMISSION_IDS.contains(admissionId)) {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_ENROLLMENT_NUMBERS.getValue());
-        } else if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
-            paytmVM.setErrorCode(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue());
+        } else if (paytmIps.length > 1) {
+            if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
+                paytmVM.setErrorCode(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue());
+            }
         } else if (admissionId.equals(ADMISSION_IDS.get(0)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(4)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
             paytmVM.setErrorCode(PaytmErrorCodes.NO_DUE.getValue());
-        } else if (admissionId.equals(ADMISSION_IDS.get(1)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(5)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())|| admissionId.equals(ADMISSION_IDS.get(9)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+        } else if (admissionId.equals(ADMISSION_IDS.get(1)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(5)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(9)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
             paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
             PaytmVM.StudentDetail studentDetail = new PaytmVM().new StudentDetail();
             studentDetail.setStudentName("Srujan Kumar");
@@ -88,7 +90,7 @@ public class PaytmCallBackResource {
             feeTypeDetail4.setRequired(false);
             feeTypeDetails.add(feeTypeDetail4);
             paytmVM.setFeeTypeDetails(feeTypeDetails);
-        } else if (admissionId.equals(ADMISSION_IDS.get(2)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(6)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())|| admissionId.equals(ADMISSION_IDS.get(8)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+        } else if (admissionId.equals(ADMISSION_IDS.get(2)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(6)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(8)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
             paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
             PaytmVM.StudentDetail studentDetail = new PaytmVM().new StudentDetail();
             studentDetail.setStudentName("Vamshi");
@@ -134,7 +136,7 @@ public class PaytmCallBackResource {
             paytmVM.setFeeTypeDetails(feeTypeDetails);
         } else if (admissionId.equals(ADMISSION_IDS.get(3)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(7)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
             paytmVM.setErrorCode(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue());
-        } else if (type.equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && ADMISSION_IDS.contains(admissionId) ) {
+        } else if (type.equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && ADMISSION_IDS.contains(admissionId)) {
             paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
             PaytmVM.StudentDetail studentDetail = new PaytmVM().new StudentDetail();
             studentDetail.setStudentName("Ravi Kumar");
@@ -207,8 +209,10 @@ public class PaytmCallBackResource {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_INSTITUTE_NAME.getValue()));
         } else if (!ADMISSION_IDS.contains(admissionId)) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_ENROLLMENT_NUMBERS.getValue()));
-        } else if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
-        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue()));
+        } else if (paytmIps.length > 1) {
+            if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
+                responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue()));
+            }
         } else if (admissionId.equals(ADMISSION_IDS.get(0)) || admissionId.equals(ADMISSION_IDS.get(7))) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
             responseMap.put("transactionStatus", "success");
@@ -225,7 +229,7 @@ public class PaytmCallBackResource {
         return ResponseEntity.ok(responseMap);
     }
 
-    private String  getClientIp(HttpServletRequest request) {
+    private String getClientIp(HttpServletRequest request) {
 
         String remoteAddr = "";
 
@@ -244,7 +248,7 @@ public class PaytmCallBackResource {
         } catch (Exception e) {
             //
         }
-        
+
         if (request != null) {
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
             if (remoteAddr == null || "".equals(remoteAddr)) {
