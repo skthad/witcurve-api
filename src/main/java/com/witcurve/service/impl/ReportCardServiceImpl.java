@@ -247,7 +247,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                             }
                             break;
                         case DATE_OF_BIRTH:
-                            studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getDateOfBirth().toString());
+                            studentDetailsMap.put(StudentDetails.DATE_OF_BIRTH.getName(), studentStandard.getStudent().getDateOfBirth().toString());
                             break;
                     }
                 }
