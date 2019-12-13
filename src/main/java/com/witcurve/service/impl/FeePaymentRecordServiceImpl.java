@@ -4,12 +4,17 @@ import com.witcurve.domain.FeePaymentRecord;
 import com.witcurve.domain.StudentFeeDescription;
 import com.witcurve.domain.StudentFeeStructure;
 import com.witcurve.domain.StudentFeeType;
+import com.witcurve.domain.enumeration.ModeOfTransaction;
 import com.witcurve.domain.enumeration.PaymentRecordType;
+import com.witcurve.domain.enumeration.RecordType;
+import com.witcurve.domain.enumeration.TransactionType;
 import com.witcurve.repository.FeePaymentRecordRepository;
 import com.witcurve.repository.StudentFeeStructureRepository;
 import com.witcurve.service.FeePaymentRecordService;
+import com.witcurve.service.TransactionRecordService;
 import com.witcurve.service.dto.FeePaymentDetailDTO;
 import com.witcurve.service.dto.FeePaymentRecordDTO;
+import com.witcurve.service.dto.TransactionRecordDTO;
 import com.witcurve.service.mapper.FeePaymentRecordMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,6 +41,9 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
 
     @Autowired
     StudentFeeStructureRepository studentFeeStructureRepository;
+
+    @Autowired
+    TransactionRecordService transactionRecordService;
 
     @Override
     public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO) {
@@ -121,6 +129,16 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount + feePaymentRecordDTO.getPenaltyAmount()) {
             throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
         }
+        TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
+        transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getPaytmId());
+        transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+        transactionRecordDTO.setType(RecordType.FEE);
+        transactionRecordDTO.setTransactionMode(ModeOfTransaction.ONLINE);
+        transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
+        transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId() + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
+        transactionRecordDTO.setTotalAmount(totalPaidAmount);
+        transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
+        feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
     }
 
 }

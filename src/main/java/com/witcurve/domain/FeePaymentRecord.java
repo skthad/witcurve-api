@@ -59,6 +59,9 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     @Convert(converter = LocalDateConverter.class)
     private LocalDate transactionDate;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private TransactionRecord transactionRecord;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -94,6 +97,10 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     public LocalDate getTransactionDate() { return transactionDate; }
 
     public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+
+    public TransactionRecord getTransactionRecord() { return transactionRecord; }
+
+    public void setTransactionRecord(TransactionRecord transactionRecord) { this.transactionRecord = transactionRecord; }
 
     @Override
     public boolean equals(Object o) {

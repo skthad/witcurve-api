@@ -65,6 +65,7 @@ public class Attachment extends AbstractAuditingEntity implements Serializable {
         this.filePath = filePath;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

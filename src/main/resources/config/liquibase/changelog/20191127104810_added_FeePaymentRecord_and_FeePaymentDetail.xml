@@ -82,4 +82,15 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1576237062316-9">
+        <addColumn tableName="fee_payment_record">
+            <column name="transaction_record_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576237062316-10">
+        <addForeignKeyConstraint baseColumnNames="transaction_record_id" baseTableName="fee_payment_record"
+                                 constraintName="FKr1on9ry9xfaapn4ofvg4wa58b" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="transaction_record"/>
+    </changeSet>
 </databaseChangeLog>
