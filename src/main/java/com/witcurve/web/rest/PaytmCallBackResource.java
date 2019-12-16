@@ -213,15 +213,15 @@ public class PaytmCallBackResource {
             if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
                 responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue()));
             }
-        } else if (admissionId.equals(ADMISSION_IDS.get(0)) || admissionId.equals(ADMISSION_IDS.get(7))) {
+        } else if (admissionId.equals(ADMISSION_IDS.get(1)) || admissionId.equals(ADMISSION_IDS.get(2))) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
             responseMap.put("transactionStatus", "success");
             Random rnd = new Random();
             int n = 100000 + rnd.nextInt(900000);
             responseMap.put("receiptId", String.valueOf(n));
-        } else if (admissionId.equals(ADMISSION_IDS.get(1)) || admissionId.equals(ADMISSION_IDS.get(4))) {
+        } else if (admissionId.equals(ADMISSION_IDS.get(0)) || admissionId.equals(ADMISSION_IDS.get(4))) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.RECORD_ALREADY_EXIST.getValue()));
-        } else if (admissionId.equals(ADMISSION_IDS.get(2)) || admissionId.equals(ADMISSION_IDS.get(5)) || admissionId.equals(ADMISSION_IDS.get(9))) {
+        } else if (admissionId.equals(ADMISSION_IDS.get(7)) || admissionId.equals(ADMISSION_IDS.get(5)) || admissionId.equals(ADMISSION_IDS.get(9))) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue()));
         } else if (admissionId.equals(ADMISSION_IDS.get(3)) || admissionId.equals(ADMISSION_IDS.get(6)) || admissionId.equals(ADMISSION_IDS.get(8))) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.GIVEN_FEETYPE_OR_FEEDESCRIPTION_NOT_PRESENT.getValue()));
