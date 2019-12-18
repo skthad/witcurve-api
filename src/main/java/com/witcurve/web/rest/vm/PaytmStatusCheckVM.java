@@ -1,17 +1,21 @@
 package com.witcurve.web.rest.vm;
 
+import com.witcurve.domain.enumeration.FeePaymentType;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class PaytmStatusCheckVM {
-    @NotNull
+    
     private String name;
-    @NotNull
-    private Double amount;
-    @NotNull
+    
+    private String amount;
+    
     private String itemId;
-    @NotNull
-    private LocalDate transactionDate;
+    
+    private String transactionDate;
+    
+    private String type;
 
     public String getName() {
         return name;
@@ -21,11 +25,11 @@ public class PaytmStatusCheckVM {
         this.name = name;
     }
 
-    public Double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -37,12 +41,20 @@ public class PaytmStatusCheckVM {
         this.itemId = itemId;
     }
 
-    public LocalDate getTransactionDate() {
+    public String getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override

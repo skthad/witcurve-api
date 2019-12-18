@@ -1,0 +1,39 @@
+{
+    "errorCode": 100,
+    "studentDetails": {
+        "studentName": "Srujan Kumar",
+        "rollNo": "1",
+        "fatherName": "Mr. Rakesh Kumar",
+        "motherName": "Mrs Rekha",
+        "dateOfBirth": "01/01/1990",
+        "admissionId": "1002",
+        "note": "Installment 1 Fee have to be paid",
+        "standard": "X A"
+    },
+    "feeTypeDetails": [
+        {
+            "name": "Tution Fee(Installment-1)",
+            "amount": 30000.0,
+            "editable": false,
+            "required": true
+        },
+        {
+            "name": "Hostel Fee(Installment-1)",
+            "amount": 30000.0,
+            "editable": false,
+            "required": true
+        },
+        {
+            "name": "Transport Fee(Installment-1)",
+            "amount": 5000.0,
+            "editable": false,
+            "required": false
+        },
+        {
+            "name": "Books and Stationary Fee(Installment-1)",
+            "amount": 10000.0,
+            "editable": false,
+            "required": false
+        }
+    ]
+}

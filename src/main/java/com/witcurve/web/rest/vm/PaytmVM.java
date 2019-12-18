@@ -5,11 +5,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PaytmVM implements Serializable {
-    @NotNull
+    
     private Integer errorCode;
-    @NotNull
+    
     private StudentDetail studentDetails;
-    @NotNull
+    
     private List<FeeTypeDetail> feeTypeDetails;
 
     public Integer getErrorCode() {
@@ -36,29 +36,29 @@ public class PaytmVM implements Serializable {
         this.feeTypeDetails = feeTypeDetails;
     }
 
-    public class StudentDetail implements Serializable {
-        @NotNull
+    public static class StudentDetail implements Serializable {
+        
         private String studentName;
 
-        @NotNull
+        
         private String rollNo;
 
-        @NotNull
+        
         private String fatherName;
 
-        @NotNull
+        
         private String motherName;
 
-        @NotNull
+        
         private String dateOfBirth;
 
-        @NotNull
+        
         private String admissionId;
 
-        @NotNull
+        
         private String note;
 
-        @NotNull
+        
         private String standard;
 
         public String getStudentName() {
@@ -126,14 +126,14 @@ public class PaytmVM implements Serializable {
         }
     }
 
-    public class FeeTypeDetail implements Serializable {
-        @NotNull
+    public static class FeeTypeDetail implements Serializable {
+        
         private String name;
-        @NotNull
+        
         private Double amount;
-        @NotNull
+        
         private Boolean editable;
-        @NotNull
+        
         private Boolean required;
 
         public String getName() {
