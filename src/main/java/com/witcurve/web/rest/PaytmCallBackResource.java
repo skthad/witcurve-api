@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.witcurve.config.ApplicationProperties;
 import com.witcurve.domain.enumeration.FeePaymentType;
 import com.witcurve.domain.enumeration.PaytmErrorCodes;
+import com.witcurve.service.util.WitCurveConstants;
+import com.witcurve.service.util.WitcurveUtil;
+import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.PaytmStatusCheckVM;
 import com.witcurve.web.rest.vm.PaytmVM;
 import org.slf4j.Logger;
@@ -15,6 +18,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @RestController
@@ -30,6 +39,14 @@ public class PaytmCallBackResource {
     private static final String NAME = "Radiant International School Of Excellence";
     private static final List<String> ADMISSION_IDS = new ArrayList<>(
         Arrays.asList("1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008", "1009", "1010"));
+    private static final Map<String, Double> FEE_DESCRIPTION_AMOUNT= Collections.unmodifiableMap(
+        new HashMap<String, Double>() {{
+            put("Tution Fee", 30000d);
+            put("Hostel Fee", 30000d);
+            put("Transport Fee", 5000d);
+            put("Books and Stationary Fee", 10000d);
+            put("Penalty", 500d);
+        }});
 
 
     @GetMapping("/paytm-fee/validation")
@@ -38,217 +55,167 @@ public class PaytmCallBackResource {
         log.debug("Request to get fee detail of given institute with admissionId and type : ", instituteName, admissionId, type);
         PaytmVM paytmVM = new PaytmVM();
         String[] paytmIps = applicationProperties.paytm.getCommunicationIps().split(",");
+        int index = ADMISSION_IDS.indexOf(admissionId);
         if (instituteName == null || admissionId == null || type == null) {
-            paytmVM.setErrorCode(PaytmErrorCodes.All_FIELDS_ARE_NOT_PRESENT.getValue());
+            paytmVM.setErrorCode(PaytmErrorCodes.MISSING_FIELDS.getValue());
         } else if (!instituteName.equals(NAME)) {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_INSTITUTE_NAME.getValue());
-        } else if (!type.equals("Outstanding Fee") && !type.equals("Full Year Payment")) {
+        } else if (!type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) && !type.equals(FeePaymentType.FULL_YEAR_PAYMENT.toString())) {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_TYPE.getValue());
-        } else if (!ADMISSION_IDS.contains(admissionId)) {
+        } else if (index == -1) {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_ENROLLMENT_NUMBERS.getValue());
         } else if (paytmIps.length > 1) {
             if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
                 paytmVM.setErrorCode(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue());
             }
-        } else if (admissionId.equals(ADMISSION_IDS.get(0)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(4)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+        } else if (index == 0) {
             paytmVM.setErrorCode(PaytmErrorCodes.NO_DUE.getValue());
-        } else if (admissionId.equals(ADMISSION_IDS.get(1)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(5)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(9)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
-            paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
-            PaytmVM.StudentDetail studentDetail = new PaytmVM().new StudentDetail();
-            studentDetail.setStudentName("Srujan Kumar");
-            studentDetail.setAdmissionId(ADMISSION_IDS.get(1));
-            studentDetail.setStandard("X A");
-            studentDetail.setRollNo("1");
-            studentDetail.setFatherName("Mr. Rakesh Kumar");
-            studentDetail.setMotherName("Mrs Rekha");
-            studentDetail.setNote("No dues");
-            studentDetail.setDateOfBirth("01/01/1990");
-            paytmVM.setStudentDetails(studentDetail);
-            List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
-            PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail1.setName("Tution Fee(Installment-1)");
-            feeTypeDetail1.setAmount(30000.0);
-            feeTypeDetail1.setEditable(false);
-            feeTypeDetail1.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail1);
-            PaytmVM.FeeTypeDetail feeTypeDetail2 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail2.setName("Hostel Fee(Installment-1)");
-            feeTypeDetail2.setAmount(30000.0);
-            feeTypeDetail2.setEditable(false);
-            feeTypeDetail2.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail2);
-            PaytmVM.FeeTypeDetail feeTypeDetail3 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail3.setName("Transport Fee(Installment-1)");
-            feeTypeDetail3.setAmount(5000.0);
-            feeTypeDetail3.setEditable(false);
-            feeTypeDetail3.setRequired(false);
-            feeTypeDetails.add(feeTypeDetail3);
-            PaytmVM.FeeTypeDetail feeTypeDetail4 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail4.setName("Books and Stationary Fee(Installment-1)");
-            feeTypeDetail4.setAmount(10000.0);
-            feeTypeDetail4.setEditable(false);
-            feeTypeDetail4.setRequired(false);
-            feeTypeDetails.add(feeTypeDetail4);
-            paytmVM.setFeeTypeDetails(feeTypeDetails);
-        } else if (admissionId.equals(ADMISSION_IDS.get(2)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(6)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(8)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
-            paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
-            PaytmVM.StudentDetail studentDetail = new PaytmVM().new StudentDetail();
-            studentDetail.setStudentName("Vamshi");
-            studentDetail.setAdmissionId(ADMISSION_IDS.get(2));
-            studentDetail.setStandard("X A");
-            studentDetail.setRollNo("10");
-            studentDetail.setMotherName("Mrs Priya");
-            studentDetail.setFatherName("Mr Ramesh");
-            studentDetail.setDateOfBirth("02/04/1993");
-            studentDetail.setNote("Due payment from first installment");
-            paytmVM.setStudentDetails(studentDetail);
-            List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
-            PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail1.setName("Transport Fee(Installment-1)");
-            feeTypeDetail1.setAmount(5000.0);
-            feeTypeDetail1.setEditable(false);
-            feeTypeDetail1.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail1);
-            PaytmVM.FeeTypeDetail feeTypeDetail2 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail2.setName("Tution Fee(Installment-2)");
-            feeTypeDetail2.setAmount(30000.0);
-            feeTypeDetail2.setEditable(false);
-            feeTypeDetail2.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail2);
-            PaytmVM.FeeTypeDetail feeTypeDetail3 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail3.setName("Hostel Fee(Installment-2)");
-            feeTypeDetail3.setAmount(30000.0);
-            feeTypeDetail3.setEditable(false);
-            feeTypeDetail3.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail3);
-            PaytmVM.FeeTypeDetail feeTypeDetail4 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail4.setName("Transport Fee(Installment-2)");
-            feeTypeDetail4.setAmount(5000.0);
-            feeTypeDetail4.setEditable(false);
-            feeTypeDetail4.setRequired(false);
-            feeTypeDetails.add(feeTypeDetail4);
-            PaytmVM.FeeTypeDetail feeTypeDetail5 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail5.setName("Penalty(Installment-1)");
-            feeTypeDetail5.setAmount(500.0);
-            feeTypeDetail5.setEditable(false);
-            feeTypeDetail5.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail5);
-            paytmVM.setFeeTypeDetails(feeTypeDetails);
-        } else if (admissionId.equals(ADMISSION_IDS.get(3)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString()) || admissionId.equals(ADMISSION_IDS.get(7)) && type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+        } else if (index == 1) {
             paytmVM.setErrorCode(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue());
-        } else if (type.equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && ADMISSION_IDS.contains(admissionId)) {
-            paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
-            PaytmVM.StudentDetail studentDetail = new PaytmVM().new StudentDetail();
-            studentDetail.setStudentName("Ravi Kumar");
+        } else if (index == 2 || index == 3 || index ==4 || index ==5) {
+            if(type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+                paytmVM = getSamplePaytmRequest("srujan_sample.json");
+            } else {
+                paytmVM = getSamplePaytmRequest("ravi_sample.json");
+            }
+            PaytmVM.StudentDetail studentDetail = paytmVM.getStudentDetails();
             studentDetail.setAdmissionId(admissionId);
-            studentDetail.setStandard("X A");
-            studentDetail.setRollNo("1");
-            studentDetail.setDateOfBirth("19/06/1995");
-            studentDetail.setFatherName("Mr Prakash");
-            studentDetail.setMotherName("Mrs Nisha");
-            studentDetail.setNote("No dues");
             paytmVM.setStudentDetails(studentDetail);
-            List<PaytmVM.FeeTypeDetail> feeTypeDetails = new ArrayList<>();
-            PaytmVM.FeeTypeDetail feeTypeDetail1 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail1.setName("Tution Fee(Installment-1)");
-            feeTypeDetail1.setAmount(30000.0);
-            feeTypeDetail1.setEditable(false);
-            feeTypeDetail1.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail1);
-            PaytmVM.FeeTypeDetail feeTypeDetail2 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail2.setName("Hostel Fee(Installment-1)");
-            feeTypeDetail2.setAmount(30000.0);
-            feeTypeDetail2.setEditable(false);
-            feeTypeDetail2.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail2);
-            PaytmVM.FeeTypeDetail feeTypeDetail3 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail3.setName("Transport Fee(Installment-1)");
-            feeTypeDetail3.setAmount(5000.0);
-            feeTypeDetail3.setEditable(false);
-            feeTypeDetail3.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail3);
-            PaytmVM.FeeTypeDetail feeTypeDetail4 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail4.setName("Books and Stationary Fee(Installment-1)");
-            feeTypeDetail4.setAmount(10000.0);
-            feeTypeDetail4.setEditable(false);
-            feeTypeDetail4.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail4);
-            PaytmVM.FeeTypeDetail feeTypeDetail5 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail5.setName("Tution Fee(Installment-2)");
-            feeTypeDetail5.setAmount(30000.0);
-            feeTypeDetail5.setEditable(false);
-            feeTypeDetail5.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail5);
-            PaytmVM.FeeTypeDetail feeTypeDetail6 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail6.setName("Hostel Fee(Installment-2)");
-            feeTypeDetail6.setAmount(30000.0);
-            feeTypeDetail6.setEditable(false);
-            feeTypeDetail6.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail6);
-            PaytmVM.FeeTypeDetail feeTypeDetail7 = new PaytmVM().new FeeTypeDetail();
-            feeTypeDetail7.setName("Transport Fee(Installment-2)");
-            feeTypeDetail7.setAmount(5000.0);
-            feeTypeDetail7.setEditable(false);
-            feeTypeDetail7.setRequired(true);
-            feeTypeDetails.add(feeTypeDetail7);
-            paytmVM.setFeeTypeDetails(feeTypeDetails);
+        } else {
+            if(type.equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+                paytmVM = getSamplePaytmRequest("vamsi_sample.json");
+            } else {
+                paytmVM = getSamplePaytmRequest("ravi_sample.json");
+            }
+            PaytmVM.StudentDetail studentDetail = paytmVM.getStudentDetails();
+            studentDetail.setAdmissionId(admissionId);
+            paytmVM.setStudentDetails(studentDetail);
         }
         return ResponseEntity.ok(paytmVM);
     }
 
     @PostMapping("/paytm-fee/post-payment")
     @Timed
-    public ResponseEntity<Map<String, String>> statusCheck(@RequestBody @Valid List<PaytmStatusCheckVM> paytmStatusCheckVMs, @RequestParam(required = false) String orderId, @RequestParam(required = false) String admissionId,
-                                                           @RequestParam(required = false) Double amount, @RequestParam(required = false) String instituteName) {
+    public ResponseEntity<Map<String, String>> statusCheck(@RequestBody @Valid PaytmStatusCheckVM paytmStatusCheckVM, @RequestParam(required = false) String orderId, @RequestParam(required = false) String admissionId, @RequestParam(required = false) String instituteName) {
+        log.debug("Request to check status with given  order Id, enrollment no, instituteName : ", orderId, admissionId, instituteName);
+        //todo - while integrating this api to fee modules - use a check method which returns error code.
+
+        //todo - missing cases, some cases are not covered, these should be checked when integrated with fee modules
+        //todo check if the fee type and fee description matches properly not just description alone
+        //todo since each item will have separate call, make the fee record properly to
+        // make sure apis with same order id are attached with same receipt number
+        //todo handle the case when one record is missing in full year payment
+        //todo handle the case when required fee has not be record because of some reason.
+
         Map<String, String> responseMap = new HashMap<>();
         String[] paytmIps = applicationProperties.paytm.getCommunicationIps().split(",");
-        log.debug("Request to check status with given  order Id, amount, enrollment no, instituteName : ", orderId, admissionId, amount, instituteName);
-        if (orderId == null || admissionId == null || amount == null || instituteName == null) {
-            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.All_FIELDS_ARE_NOT_PRESENT.getValue()));
+
+        String[] splitStrings = paytmStatusCheckVM.getName().split("\\(");
+        String feeDescription = splitStrings[0];
+        String feeType = splitStrings[1].substring(0, splitStrings[1].length()-1);
+
+        Double amount;
+        try {
+            amount = Double.parseDouble(paytmStatusCheckVM.getAmount());
+        } catch (NumberFormatException e) {
+            amount = null;
+        }
+
+        LocalDate transactionDate;
+        try {
+            transactionDate = WitcurveUtil.getLocalDate(paytmStatusCheckVM.getTransactionDate(), WitCurveConstants.DEFAULT_DATE_FORMAT);
+        } catch (DateTimeParseException e) {
+            transactionDate = null;
+        }
+
+        int index = ADMISSION_IDS.indexOf(admissionId);
+        if (orderId == null || admissionId == null || instituteName == null) {
+            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.MISSING_FIELDS.getValue()));
         } else if (!instituteName.equals(NAME)) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_INSTITUTE_NAME.getValue()));
-        } else if (!ADMISSION_IDS.contains(admissionId)) {
+        } else if (index == -1) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_ENROLLMENT_NUMBERS.getValue()));
         } else if (paytmIps.length > 1) {
             if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
                 responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_IP_ADDRESS_FOR_COMMUNICATION.getValue()));
             }
-        } else if (admissionId.equals(ADMISSION_IDS.get(1)) || admissionId.equals(ADMISSION_IDS.get(2))) {
-            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
-            responseMap.put("transactionStatus", "success");
-            Random rnd = new Random();
-            int n = 100000 + rnd.nextInt(900000);
-            responseMap.put("receiptId", String.valueOf(n));
-        } else if (admissionId.equals(ADMISSION_IDS.get(0)) || admissionId.equals(ADMISSION_IDS.get(4))) {
-            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.RECORD_ALREADY_EXIST.getValue()));
-        } else if (admissionId.equals(ADMISSION_IDS.get(7)) || admissionId.equals(ADMISSION_IDS.get(5)) || admissionId.equals(ADMISSION_IDS.get(9))) {
+        } else if (index == 0) {
+            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.NO_DUE.getValue()));
+        } else if (index == 1 || index == 2 || index == 6) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue()));
-        } else if (admissionId.equals(ADMISSION_IDS.get(3)) || admissionId.equals(ADMISSION_IDS.get(6)) || admissionId.equals(ADMISSION_IDS.get(8))) {
-            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.GIVEN_FEETYPE_OR_FEEDESCRIPTION_NOT_PRESENT.getValue()));
+        } else if (index == 3 || index ==7 ) {
+            responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.RECORD_ALREADY_EXIST.getValue()));
+        } else {
+            if(paytmStatusCheckVM.getName() == null || paytmStatusCheckVM.getItemId() == null
+                || paytmStatusCheckVM.getTransactionDate() == null || paytmStatusCheckVM.getAmount() == null
+                || paytmStatusCheckVM.getType() == null) {
+                responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.MISSING_FIELDS.getValue()));
+            } else if(transactionDate == null) {
+                responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_TRANSACTION_DATE.getValue()));
+            } else if (!paytmStatusCheckVM.getType().equals(FeePaymentType.OUTSTANDING_FEE.toString())
+                && !paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString())) {
+                responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_TYPE.getValue()));
+            } else if(amount == null){
+                responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_AMOUNT.getValue()));
+            } else if(!feeType.equals("Installment-1") && !feeType.equals("Installment-2")) {
+                responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+            } else if(paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString())) {
+                if(feeDescription.equals("Penalty")) {
+                    responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                } else if(!FEE_DESCRIPTION_AMOUNT.keySet().contains(feeDescription)) {
+                    responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                } else if(!FEE_DESCRIPTION_AMOUNT.get(feeDescription).equals(amount)) {
+                    responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_AMOUNT.getValue()));
+                } else {
+                    responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
+                    responseMap.put("transactionStatus", "success");
+                    Random rnd = new Random();
+                    int n = 100000 + rnd.nextInt(900000);
+                    responseMap.put("receiptId", String.valueOf(n));
+                }
+            } else if(paytmStatusCheckVM.getType().equals(FeePaymentType.OUTSTANDING_FEE.toString())) {
+                if((index == 4 || index ==5)) {
+                    if(feeType.equals("Installment-2")) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                    } else if(feeDescription.equals("Penalty")) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                    } else if(!FEE_DESCRIPTION_AMOUNT.keySet().contains(feeDescription)) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                    } else if(!FEE_DESCRIPTION_AMOUNT.get(feeDescription).equals(amount)) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_AMOUNT.getValue()));
+                    } else {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
+                        responseMap.put("transactionStatus", "success");
+                        Random rnd = new Random();
+                        int n = 100000 + rnd.nextInt(900000);
+                        responseMap.put("receiptId", String.valueOf(n));
+                    }
+                } else if((index == 8 || index ==9)) {
+                    if(feeType.equals("Installment-1") && !feeDescription.equals("Penalty") && !feeDescription.equals("Transport Fee")) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                    } else if(feeType.equals("Installment-2") && (feeDescription.equals("Penalty") || feeDescription.equals("Books and Stationary Fee"))) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                    } else if(!FEE_DESCRIPTION_AMOUNT.keySet().contains(feeDescription)) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
+                    } else if(!FEE_DESCRIPTION_AMOUNT.get(feeDescription).equals(amount)) {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_AMOUNT.getValue()));
+                    } else {
+                        responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
+                        responseMap.put("transactionStatus", "success");
+                        Random rnd = new Random();
+                        int n = 100000 + rnd.nextInt(900000);
+                        responseMap.put("receiptId", String.valueOf(n));
+                    }
+                }
+            }
         }
+
         return ResponseEntity.ok(responseMap);
     }
 
     private String getClientIp(HttpServletRequest request) {
-
         String remoteAddr = "";
-
         Map<String, String> map = new HashMap<String, String>();
-
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            String value = request.getHeader(key);
-            map.put(key, value);
-        }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            String objectJson = mapper.writeValueAsString(map);
-            log.info("Headers : {}", objectJson);
-        } catch (Exception e) {
-            //
-        }
-
         if (request != null) {
             remoteAddr = request.getHeader("X-FORWARDED-FOR");
             if (remoteAddr == null || "".equals(remoteAddr)) {
@@ -257,5 +224,17 @@ public class PaytmCallBackResource {
         }
         log.info("Client Ip address : {}", remoteAddr);
         return remoteAddr;
+    }
+
+    private PaytmVM getSamplePaytmRequest(String fileName) {
+        try {
+            File jsonFile = new File("src/main/resources/"+fileName);
+            String jsonString = new String(Files.readAllBytes(Paths.get(jsonFile.getAbsolutePath())));
+            ObjectMapper mapper = new ObjectMapper();
+            PaytmVM paytmVM = mapper.readValue(jsonString, PaytmVM.class);
+            return paytmVM;
+        } catch (IOException e) {
+            throw new WitcurveException("Error while reading resource files for sample");
+        }
     }
 }
