@@ -29,7 +29,7 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     private String orderId;
 
     @Column
-    private String paytmId;
+    private String transactionId;
 
     @NotNull
     @Column(nullable = false)
@@ -90,9 +90,9 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
 
     public void setStudentFeeStructure(StudentFeeStructure studentFeeStructure) { this.studentFeeStructure = studentFeeStructure; }
 
-    public String getPaytmId() { return paytmId; }
+    public String getTransactionId() { return transactionId; }
 
-    public void setPaytmId(String paytmId) { this.paytmId = paytmId; }
+    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
     public LocalDate getTransactionDate() { return transactionDate; }
 

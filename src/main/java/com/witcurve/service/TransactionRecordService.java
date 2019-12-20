@@ -2,6 +2,8 @@ package com.witcurve.service;
 
 import com.witcurve.domain.enumeration.AttachmentType;
 import com.witcurve.service.dto.TransactionRecordDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -11,7 +13,7 @@ public interface TransactionRecordService {
 
     TransactionRecordDTO saveOrUpdate(TransactionRecordDTO transactionRecordDTO);
 
-    List<TransactionRecordDTO> getBySchoolInfoIdAndDateRange(Long schoolInfoId, LocalDate fromDate, LocalDate endDate);
+    Page<TransactionRecordDTO> getBySchoolInfoIdAndDateRange(Pageable pageable, Long schoolInfoId, LocalDate fromDate, LocalDate endDate);
 
     TransactionRecordDTO getById(Long id);
 

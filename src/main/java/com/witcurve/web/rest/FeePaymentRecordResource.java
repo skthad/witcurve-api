@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ModeOfTransaction;
 import com.witcurve.service.FeePaymentRecordService;
 import com.witcurve.service.dto.FeePaymentRecordDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
@@ -35,13 +36,13 @@ public class FeePaymentRecordResource {
      */
     @PostMapping("/fee-payment-record")
     @Timed
-    public ResponseEntity<FeePaymentRecordDTO> createFeePaymentRecord(@RequestBody @Valid FeePaymentRecordDTO feePaymentRecordDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<FeePaymentRecordDTO> createFeePaymentRecord(@RequestBody @Valid FeePaymentRecordDTO feePaymentRecordDTO, @RequestParam ModeOfTransaction mode) throws WitcurveException, URISyntaxException {
         log.debug("Request to save FeePaymentRecord : {}", feePaymentRecordDTO);
         if (feePaymentRecordDTO.getId() != null) {
             throw new WitcurveException("New record can not have an id");
         }
         try {
-            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO);
+            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO,mode);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("orderId_UK")) {
@@ -65,13 +66,13 @@ public class FeePaymentRecordResource {
     @PutMapping("/fee-payment-record")
     @Timed
     public ResponseEntity<FeePaymentRecordDTO> updateFeePaymentRecord(@RequestBody @Valid FeePaymentRecordDTO
-                                                                          feePaymentRecordDTO) throws WitcurveException, URISyntaxException {
+                                                                          feePaymentRecordDTO, @RequestParam ModeOfTransaction mode) throws WitcurveException, URISyntaxException {
         log.debug("Request to update FeePaymentRecord : {}", feePaymentRecordDTO);
         if (feePaymentRecordDTO.getId() == null) {
             throw new WitcurveException("Id is require to update record");
         }
         try {
-            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO);
+            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO, mode);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("orderId_UK")) {

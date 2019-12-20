@@ -18,6 +18,8 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private Double amount;
 
+    private String itemId;
+
     public Long getFeeTypeId() { return feeTypeId; }
 
     public void setFeeTypeId(Long feeTypeId) { this.feeTypeId = feeTypeId; }
@@ -29,6 +31,10 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
     public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public String getItemId() { return itemId; }
+
+    public void setItemId(String itemId) { this.itemId = itemId; }
 
     @Override
     public boolean equals(Object o) {

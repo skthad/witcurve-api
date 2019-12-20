@@ -15,6 +15,8 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,10 +61,10 @@ public class TransactionRecordServiceImpl implements TransactionRecordService {
     }
 
     @Override
-    public List<TransactionRecordDTO> getBySchoolInfoIdAndDateRange(Long schoolInfoId, LocalDate fromDate, LocalDate endDate) {
+    public Page<TransactionRecordDTO> getBySchoolInfoIdAndDateRange(Pageable pageable, Long schoolInfoId, LocalDate fromDate, LocalDate endDate) {
         log.debug("Request to get TransactionRecord with given schoolInfoId and date range: {} ", schoolInfoId, fromDate, endDate);
-        List<TransactionRecord> transactionRecords = transactionRecordRepository.getBySchoolInfoAndTransactionDate(schoolInfoId, fromDate, endDate);
-        return transactionRecordMapper.toDto(transactionRecords);
+        Page<TransactionRecord> transactionRecords = transactionRecordRepository.getBySchoolInfoAndTransactionDate(schoolInfoId, fromDate, endDate, pageable);
+        transactionRecords.map(transactionRecordMapper::toDto);
     }
 
     @Override
@@ -95,9 +97,6 @@ public class TransactionRecordServiceImpl implements TransactionRecordService {
 
     private void isValid(TransactionRecordDTO transactionRecordDTO) {
         if (transactionRecordDTO.getType().equals(RecordType.FEE)) {
-            if (!transactionRecordDTO.getTransactionMode().equals(ModeOfTransaction.ONLINE)) {
-                throw new WitcurveException("Transaction mode should be online for fee payment");
-            }
             if (!transactionRecordDTO.getTransactionType().equals(TransactionType.CREDIT)) {
                 throw new WitcurveException("Fee can not be debited");
             }

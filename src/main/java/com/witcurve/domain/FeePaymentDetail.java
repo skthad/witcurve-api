@@ -27,6 +27,9 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     @Column(nullable = false)
     private Double amount;
 
+    @Column
+    private String itemId;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -42,6 +45,10 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public String getItemId() { return itemId; }
+
+    public void setItemId(String itemId) { this.itemId = itemId; }
 
     @Override
     public boolean equals(Object o) {

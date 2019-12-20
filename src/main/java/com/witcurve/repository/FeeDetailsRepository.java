@@ -11,10 +11,10 @@ import java.util.List;
 @Repository
 public interface FeeDetailsRepository extends JpaRepository<FeeDetails, Long> {
 
-    @Query("Select fd from FeeDetails fd where fd.schoolInfo.id = ?1")
+    @Query("Select fd from FeeDetails fd where fd.schoolInfo.id = ?1 order by fd.createdDate")
     List<FeeDetails> findBySchoolInfoId(Long schoolInfoId);
 
-    @Query("Select fd from FeeDetails fd where fd.schoolInfo.id = ?1 and fd.type = ?2")
+    @Query("Select fd from FeeDetails fd where fd.schoolInfo.id = ?1 and fd.type = ?2 order by fd.createdDate")
     List<FeeDetails> findBySchoolInfoIdAndType(Long schoolInfoId, FeeDetailsType type);
 
 }

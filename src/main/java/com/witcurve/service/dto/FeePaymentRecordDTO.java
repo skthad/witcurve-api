@@ -18,7 +18,7 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     private String orderId;
 
-    private String paytmId;
+    private String transactionId;
 
     @NotNull
     private PaymentRecordType type;
@@ -51,9 +51,9 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
-    public String getPaytmId() { return paytmId; }
+    public String getTransactionId() { return transactionId; }
 
-    public void setPaytmId(String paytmId) { this.paytmId = paytmId; }
+    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
     public PaymentRecordType getType() { return type; }
 

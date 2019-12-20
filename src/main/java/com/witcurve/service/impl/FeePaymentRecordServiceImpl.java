@@ -46,9 +46,9 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
     TransactionRecordService transactionRecordService;
 
     @Override
-    public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO) {
+    public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO, ModeOfTransaction mode) {
         log.debug("Request to save or update FeePaymentRecord");
-        formatAndValid(feePaymentRecordDTO);
+        formatAndValid(feePaymentRecordDTO, mode);
         FeePaymentRecord feePaymentRecord = feePaymentRecordRepository.save(feePaymentRecordMapper.toEntity(feePaymentRecordDTO));
         return feePaymentRecordMapper.toDto(feePaymentRecord);
     }
@@ -80,7 +80,7 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         feePaymentRecordRepository.delete(feePaymentRecord.get());
     }
 
-    private void formatAndValid(FeePaymentRecordDTO feePaymentRecordDTO) {
+    private void formatAndValid(FeePaymentRecordDTO feePaymentRecordDTO, ModeOfTransaction mode) {
         if (feePaymentRecordDTO.getId() != null) {
             Optional<FeePaymentRecord> feePaymentRecord = feePaymentRecordRepository.findById(feePaymentRecordDTO.getId());
             if (!feePaymentRecord.isPresent()) {
@@ -93,8 +93,8 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
             feePaymentRecordDTO.setOrderId(RandomStringUtils.randomAlphanumeric(8));
         }
         if (feePaymentRecordDTO.getType().equals(PaymentRecordType.PAYTM)) {
-            if (feePaymentRecordDTO.getPaytmId() == null) {
-                throw new WitcurveException("Paytm id is require for paytm transaction");
+            if (feePaymentRecordDTO.getTransactionId() == null) {
+                throw new WitcurveException("transaction id is require for paytm transaction");
             }
         }
         Optional<StudentFeeStructure> studentFeeStructure = studentFeeStructureRepository.findById(feePaymentRecordDTO.getStudentFeeStructureId());
@@ -130,16 +130,15 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
             throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
         }
         TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
-        transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getPaytmId());
+        transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
         transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
         transactionRecordDTO.setType(RecordType.FEE);
-        transactionRecordDTO.setTransactionMode(ModeOfTransaction.ONLINE);
+        transactionRecordDTO.setTransactionMode(mode);
         transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
         transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId() + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
         transactionRecordDTO.setTotalAmount(totalPaidAmount);
         transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
         feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
     }
-
 }
 
