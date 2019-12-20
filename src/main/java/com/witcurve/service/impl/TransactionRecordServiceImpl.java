@@ -64,7 +64,7 @@ public class TransactionRecordServiceImpl implements TransactionRecordService {
     public Page<TransactionRecordDTO> getBySchoolInfoIdAndDateRange(Pageable pageable, Long schoolInfoId, LocalDate fromDate, LocalDate endDate) {
         log.debug("Request to get TransactionRecord with given schoolInfoId and date range: {} ", schoolInfoId, fromDate, endDate);
         Page<TransactionRecord> transactionRecords = transactionRecordRepository.getBySchoolInfoAndTransactionDate(schoolInfoId, fromDate, endDate, pageable);
-        transactionRecords.map(transactionRecordMapper::toDto);
+        return transactionRecords.map(transactionRecordMapper::toDto);
     }
 
     @Override
