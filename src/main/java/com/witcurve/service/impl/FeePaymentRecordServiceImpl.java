@@ -92,9 +92,10 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         } else {
             feePaymentRecordDTO.setOrderId(RandomStringUtils.randomAlphanumeric(8));
         }
-        if (feePaymentRecordDTO.getType().equals(PaymentRecordType.PAYTM)) {
+        PaymentRecordType type = feePaymentRecordDTO.getType();
+        if (type.equals(PaymentRecordType.PAYTM)) {
             if (feePaymentRecordDTO.getTransactionId() == null) {
-                throw new WitcurveException("transaction id is require for paytm transaction");
+                throw new WitcurveException("Transaction id is require for paytm transaction");
             }
         }
         Optional<StudentFeeStructure> studentFeeStructure = studentFeeStructureRepository.findById(feePaymentRecordDTO.getStudentFeeStructureId());
@@ -114,6 +115,11 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         Double totalPaidAmount = 0.0;
         for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
 
+            if (type.equals(PaymentRecordType.PAYTM)) {
+                if (feePaymentDetail.getItemId() == null) {
+                    throw new WitcurveException("Item id is require for paytm transaction");
+                }
+            }
             if (feePaymentDetail.getAmount() < 0) {
                 throw new WitcurveException("Amount must be positive");
             }
