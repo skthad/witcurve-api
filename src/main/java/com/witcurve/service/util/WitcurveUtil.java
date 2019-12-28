@@ -17,6 +17,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -151,6 +153,15 @@ public class WitcurveUtil {
             (s, s2) -> s);
     }
 
+    public static String dateFormatter(String date, String givenFormat, String desiredFormat) {
+        try {
+            SimpleDateFormat sdf1 = new SimpleDateFormat(givenFormat);
+            SimpleDateFormat sdf2 = new SimpleDateFormat(desiredFormat);
+            return sdf2.format(sdf1.parse(date));
+        } catch (ParseException e) {
+            throw new WitcurveException("Error while parsing date", e);
+        }
+    }
 }
 
 
