@@ -18,6 +18,7 @@ public interface SessionFeeStructureMapper extends EntityMapper<SessionFeeStruct
 
     @Mapping(target = "sessionId", source = "session.id")
     @Mapping(target = "feeTypeId", source = "feeType.id")
+    @Mapping(target = "feeTypeName", source = "feeType.name")
     @Mapping(target = "amount", expression = "java(getTotalFeeDescriptionAmount(sessionFeeStructure.getSessionFeeDescriptions()))")
     SessionFeeStructureDTO toDto(SessionFeeStructure sessionFeeStructure);
 
