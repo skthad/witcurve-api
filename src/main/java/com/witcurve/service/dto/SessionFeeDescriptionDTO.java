@@ -18,6 +18,8 @@ public class SessionFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     @NotNull
     private Boolean required = false;
 
+    private String feeDescriptionName;
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
@@ -39,6 +41,10 @@ public class SessionFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     public Boolean getRequired() { return required; }
 
     public void setRequired(Boolean required) { this.required = required; }
+
+    public String getFeeDescriptionName() { return feeDescriptionName; }
+
+    public void setFeeDescriptionName(String feeDescriptionName) { this.feeDescriptionName = feeDescriptionName; }
 
     @Override
     public boolean equals(Object o) {

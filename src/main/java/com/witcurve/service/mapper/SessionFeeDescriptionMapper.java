@@ -13,6 +13,7 @@ public interface SessionFeeDescriptionMapper extends EntityMapper<SessionFeeDesc
 
 
     @Mapping(target = "feeDescriptionId", source = "feeDescription.id")
+    @Mapping(target = "feeDescriptionName", source = "feeDescription.name" )
     SessionFeeDescriptionDTO toDto(SessionFeeDescription sessionFeeDescription);
 
     default SessionFeeDescription fromId(Long id) {
