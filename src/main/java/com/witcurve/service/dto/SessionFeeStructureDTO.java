@@ -26,6 +26,8 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
 
     private Double amount;
 
+    private String feeTypeName;
+
     public Long getId() {
         return id;
     }
@@ -65,6 +67,10 @@ public class SessionFeeStructureDTO extends AbstractAuditingDTO implements Seria
     public Double getAmount() { return amount; }
 
     public void setAmount(Double amount) { this.amount = amount; }
+
+    public String getFeeTypeName() { return feeTypeName; }
+
+    public void setFeeTypeName(String feeTypeName) { this.feeTypeName = feeTypeName; }
 
     @Override
     public boolean equals(Object o) {
