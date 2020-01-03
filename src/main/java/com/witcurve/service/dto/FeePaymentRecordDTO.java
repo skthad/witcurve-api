@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.FeePaymentType;
 import com.witcurve.domain.enumeration.PaymentRecordType;
 
 import javax.validation.constraints.Min;
@@ -37,11 +38,16 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private List<FeePaymentDetailDTO> feePaymentDetails;
 
-    @NotNull
+   // @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate transactionDate;
+    private LocalDate penaltyTransactionDate;
+
+    @NotNull
+    private FeePaymentType feePaymentType;
 
     private TransactionRecordDTO transactionRecordDTO;
+
+    private LocalDate transactionDate;
 
     public Long getId() { return id; }
 
@@ -75,13 +81,21 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setFeePaymentDetails(List<FeePaymentDetailDTO> feePaymentDetails) { this.feePaymentDetails = feePaymentDetails; }
 
-    public LocalDate getTransactionDate() { return transactionDate; }
+    public LocalDate getPenaltyTransactionDate() { return penaltyTransactionDate; }
 
-    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+    public void setPenaltyTransactionDate(LocalDate penaltyTransactionDate) { this.penaltyTransactionDate = penaltyTransactionDate; }
 
     public TransactionRecordDTO getTransactionRecordDTO() { return transactionRecordDTO; }
 
     public void setTransactionRecordDTO(TransactionRecordDTO transactionRecordDTO) { this.transactionRecordDTO = transactionRecordDTO; }
+
+    public FeePaymentType getFeePaymentType() { return feePaymentType; }
+
+    public void setFeePaymentType(FeePaymentType feePaymentType) { this.feePaymentType = feePaymentType; }
+
+    public LocalDate getTransactionDate() { return transactionDate; }
+
+    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
 
     @Override
     public boolean equals(Object o) {

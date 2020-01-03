@@ -2,6 +2,7 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
+import com.witcurve.repository.AttachmentRepository;
 import com.witcurve.repository.FeeDetailsRepository;
 import com.witcurve.repository.FeePaymentRecordRepository;
 import com.witcurve.repository.StudentFeeStructureRepository;
@@ -52,6 +53,9 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
 
     @Autowired
     AttachmentService attachmentService;
+
+    @Autowired
+    AttachmentRepository attachmentRepository;
 
     @Override
     public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO, ModeOfTransaction mode) {
@@ -149,7 +153,9 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         }
         InvoiceVM invoiceVM = prepareObject(feePaymentRecordDTO, studentFeeStructure.get().getStudent());
         File file = invoiceUtil.generateInvoice(invoiceVM);
-        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getId();
+        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getOrderId();
+        //check with the file name if exist than delete  that attachment
+
         Attachment attachment = attachmentService.saveAttachmentWithFile(file, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
         TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
         transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
@@ -158,7 +164,8 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         transactionRecordDTO.setType(RecordType.FEE);
         transactionRecordDTO.setTransactionMode(mode);
         transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
-        transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId() + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
+        transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
+            + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
         transactionRecordDTO.setTotalAmount(totalPaidAmount);
         transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
         feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
@@ -170,13 +177,28 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         invoiceVM.setInvoiceNo(feePaymentRecordDTO.getOrderId());
         Map<String, Double> feeDescriptionMap = new HashMap<>();
 
+        //check this logic will create new Invoice with deleting older one and update fetch previous record and add in new one.
+        //delete the previous attachment
+        //here add Penalty as well
+
+        FeePaymentRecord feePaymentRecords = feePaymentRecordRepository.getByOrderId(feePaymentRecordDTO.getTransactionId());
+        List<FeePaymentDetailDTO> paidFeeDetails = new ArrayList<>();
+        for (FeePaymentDetail feePaymentDetail : feePaymentRecords.getFeePaymentDetails()) {
+            FeePaymentDetailDTO feePaymentDetailDTO = new FeePaymentDetailDTO();
+            feePaymentDetailDTO.setFeeTypeId(feePaymentDetail.getFeeType().getId());
+            feePaymentDetailDTO.setFeeDescriptionId(feePaymentDetail.getFeeDescription().getId());
+            feePaymentDetailDTO.setAmount(feePaymentDetail.getAmount());
+            paidFeeDetails.add(feePaymentDetailDTO);
+        }
+
+        feePaymentRecordDTO.getFeePaymentDetails().addAll(paidFeeDetails);
         List<Long> feeTypeIds = new ArrayList<>();
+
         for (FeePaymentDetailDTO feePaymentDetailDTO : feePaymentRecordDTO.getFeePaymentDetails()) {
             Optional<FeeDetails> feeDetail = feeDetailsRepository.findById(feePaymentDetailDTO.getFeeDescriptionId());
 
             if (feeTypeIds.size() > 0) {
                 if (feeTypeIds.contains(feePaymentDetailDTO.getFeeTypeId())) {
-
                     if (feeDescriptionMap.containsKey(feeDetail.get().getName())) {
                         Double amount = feeDescriptionMap.get(feeDetail.get().getName());
                         Double newAmount = amount + feePaymentDetailDTO.getAmount();

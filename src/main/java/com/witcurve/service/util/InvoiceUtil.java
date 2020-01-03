@@ -39,7 +39,6 @@ public class InvoiceUtil {
         student = studentRepository.findById(invoiceVM.getStudent().getId()).get();
         try {
 
-           // HeaderTable event = new HeaderTable();
             HeaderTable event = new HeaderTable();
             Document document = new Document(PageSize.A4, 36, 36, 20 + event.headerTableHeight, 20+event.footerTableHeight);
             File file = WitcurveUtil.createTempFile("studentInvoice-"+ invoiceVM.getInvoiceNo() + ".pdf");

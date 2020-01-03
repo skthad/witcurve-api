@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.FeePaymentType;
 import com.witcurve.domain.enumeration.PaymentRecordType;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -54,13 +55,18 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     @JoinColumn(name = "fee_payment_record_id")
     private List<FeePaymentDetail> feePaymentDetails;
 
-    @NotNull
-    @Column(name = "transaction_date", nullable = false)
+    //@NotNull
+    @Column(name = "penalty_transaction_date")
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate transactionDate;
+    private LocalDate penaltyTransactionDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     private TransactionRecord transactionRecord;
+
+    @NotNull
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FeePaymentType feePaymentType;
 
     public Long getId() { return id; }
 
@@ -94,13 +100,19 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
 
     public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
-    public LocalDate getTransactionDate() { return transactionDate; }
-
-    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+    public static long getSerialVersionUID() { return serialVersionUID; }
 
     public TransactionRecord getTransactionRecord() { return transactionRecord; }
 
     public void setTransactionRecord(TransactionRecord transactionRecord) { this.transactionRecord = transactionRecord; }
+
+    public FeePaymentType getFeePaymentType() { return feePaymentType; }
+
+    public void setFeePaymentType(FeePaymentType feePaymentType) { this.feePaymentType = feePaymentType; }
+
+    public LocalDate getPenaltyTransactionDate() { return penaltyTransactionDate; }
+
+    public void setPenaltyTransactionDate(LocalDate penaltyTransactionDate) { this.penaltyTransactionDate = penaltyTransactionDate; }
 
     @Override
     public boolean equals(Object o) {

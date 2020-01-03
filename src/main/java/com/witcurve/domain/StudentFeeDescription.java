@@ -33,6 +33,10 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
     @Column(nullable = false)
     private Double oneTimeDiscount = 0.0;
 
+    @NotNull
+    @Column(nullable = false)
+    private Boolean required = false;
+
     public Long getId() {
         return id;
     }
@@ -72,6 +76,10 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
     public void setOneTimeDiscount(Double oneTimeDiscount) {
         this.oneTimeDiscount = oneTimeDiscount;
     }
+
+    public Boolean getRequired() { return required; }
+
+    public void setRequired(Boolean required) { this.required = required; }
 
     @Override
     public boolean equals(Object o) {
