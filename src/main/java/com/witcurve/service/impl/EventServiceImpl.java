@@ -448,7 +448,6 @@ public class EventServiceImpl implements EventService {
         log.debug("Find events for holidays and school events between from date : {} to end date : {} for school info with id : {}", fromDate, endDate, schoolInfoId);
         WitcurveUtil.correctDateFormat(fromDate, endDate);
         List<Event> result = eventRepository.findHolidaysAndSchoolEventsBetweenFromDateAndToDate(fromDate, endDate, schoolInfoId);
-        Collections.sort(result, new EventDateAscComparator());
         return eventMapper.toDto(result);
 
     }
