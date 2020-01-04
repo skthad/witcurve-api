@@ -25,7 +25,7 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
 
     private String itemId;
 
-    // @NotNull
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate transactionDate;
 

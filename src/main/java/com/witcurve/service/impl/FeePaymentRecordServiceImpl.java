@@ -151,16 +151,16 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount + feePaymentRecordDTO.getPenaltyAmount()) {
             throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
         }
-        InvoiceVM invoiceVM = prepareObject(feePaymentRecordDTO, studentFeeStructure.get().getStudent());
-        File file = invoiceUtil.generateInvoice(invoiceVM);
-        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getOrderId();
+   //     InvoiceVM invoiceVM = prepareObject(feePaymentRecordDTO, studentFeeStructure.get().getStudent());
+    //    File file = invoiceUtil.generateInvoice(invoiceVM);
+  //      String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getOrderId();
         //check with the file name if exist than delete  that attachment
 
-        Attachment attachment = attachmentService.saveAttachmentWithFile(file, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
+     //   Attachment attachment = attachmentService.saveAttachmentWithFile(file, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
         TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
         transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
         transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
-        transactionRecordDTO.setAttachments(Arrays.asList(attachment));
+       // transactionRecordDTO.setAttachments(Arrays.asList(attachment));
         transactionRecordDTO.setType(RecordType.FEE);
         transactionRecordDTO.setTransactionMode(mode);
         transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
@@ -171,7 +171,7 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
     }
 
-    private InvoiceVM prepareObject(FeePaymentRecordDTO feePaymentRecordDTO, Student student) {
+   /* private InvoiceVM prepareObject(FeePaymentRecordDTO feePaymentRecordDTO, Student student) {
         InvoiceVM invoiceVM = new InvoiceVM();
         invoiceVM.setStudent(student);
         invoiceVM.setInvoiceNo(feePaymentRecordDTO.getOrderId());
@@ -211,6 +211,6 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         }
         invoiceVM.setFeeDescriptions(feeDescriptionMap);
         return invoiceVM;
-    }
+    }*/
 }
 

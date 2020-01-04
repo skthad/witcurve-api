@@ -60,7 +60,6 @@ public class InvoiceUtil {
         createTable(document, invoiceNo, student);
         addEmptyLine(document, 1);
         addFeeDescriptionTable(document, map);
-       // addEmptyLine(document, 12);
 
     }
 
@@ -124,11 +123,8 @@ public class InvoiceUtil {
 
             addEmptyCells(table, 3);
 
-            if (student.getMiddleName() == null) {
-                c1 = new PdfPCell(new Phrase("Name               : " + student.getFirstName() + " " + student.getLastName(), poppinsNormalFont));
-            } else {
-                c1 = new PdfPCell(new Phrase("Name               : " + student.getFirstName() + " " + student.getMiddleName() + " " + student.getLastName(), poppinsNormalFont));
-            }
+
+            c1 = new PdfPCell(new Phrase("Name               : " +WitcurveUtil.getStudentName(student.getFirstName(),student.getMiddleName(),student.getLastName()), poppinsNormalFont));
             c1.setHorizontalAlignment(Element.ALIGN_LEFT);
             c1.setPaddingTop(15f);
             c1.setBorder(Rectangle.NO_BORDER);
@@ -212,26 +208,6 @@ public class InvoiceUtil {
         }
     }
 
-  /*  private void addImage(Document document, Student student) {
-        String subDomainName = student.getSchoolInfo().getSchool().getInstitute().getSubDomainName();
-        Long id = student.getSchoolInfo().getSchool().getInstitute().getId();
-        String headerUrl = "https://" + subDomainName + ".witcurve-app.com/assets/images/header-logo/" + 1000 + "-header-logo.png";
-
-        Image img;
-        try {
-            img = Image.getInstance(headerUrl);
-            img.scaleToFit(140, 100);
-            img.setAbsolutePosition(420, 755);
-            document.add(img);
-        } catch (IOException e) {
-            throw new WitcurveException("No image found", e);
-        } catch (BadElementException e) {
-            throw new WitcurveException("File chosen has some error", e);
-        } catch (DocumentException e) {
-            throw new WitcurveException("Image can not be added to document", e);
-        }
-
-    }*/
 
     private void addFeeDescriptionTable(Document document, Map<String, Double> feeDescriptions) {
         try {
@@ -374,37 +350,6 @@ public class InvoiceUtil {
         return table;
     }
 
-   /* private void addParagraph(Document document) {
-        try {
-            BaseFont baseNormal = BaseFont.createFont("src/main/resources/font/Poppins-Regular.ttf", PdfEncodings.IDENTITY_H, true);
-            Font poppinsNormalFont = new Font(baseNormal, 10f, Font.NORMAL, WebColors.getRGBColor("#000000"));
-
-            float[] pointColumnWidths = {100F};
-            PdfPTable table = new PdfPTable(pointColumnWidths);
-            table.setWidthPercentage(100);
-
-            PdfPCell c1 = new PdfPCell(new Phrase("Note : This is system generated Receipt. For further detail please contact Administration", poppinsNormalFont));
-            c1.setFixedHeight(30f);
-            c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-            c1.setBorder(Rectangle.NO_BORDER);
-            c1.setPaddingTop(10f);
-            c1.setBackgroundColor(WebColors.getRGBColor("F0F6F6"));
-            table.addCell(c1);
-            document.add(table);
-        } catch (DocumentException e) {
-            throw new WitcurveException("Some problem occured while adding footer to document");
-        } catch (IOException e) {
-            throw new WitcurveException("Some problem occured while adding font");
-        }
-    }*/
-
-    /*public void addToDocument(Document document, Element element) {
-        try {
-            document.add(element);
-        } catch (DocumentException e) {
-            throw new WitcurveException("Some problem occured while adding element to document");
-        }
-    }*/
 
     class RoundedBorder implements PdfPCellEvent {
 
@@ -487,28 +432,6 @@ public class InvoiceUtil {
 
           }
       }
-   /* class HeaderFooterPageEvent extends PdfPageEventHelper {
-
-        public void onStartPage(PdfWriter writer, Document document) {
-            try {
-                PdfPTable table = new PdfPTable(1);
-                table.setTotalWidth(523);
-                table.getDefaultCell().setBorder(0);
-                table.setLockedWidth(true);
-                Image img = Image.getInstance(InvoiceUtil.this.getImageUrl());
-                img.scaleToFit(140, 100);
-                img.setAbsolutePosition(420, 755);
-                writer.getDirectContent().addImage(img, true);
-            } catch (IOException | DocumentException e) {
-                throw new WitcurveException("Image is unavailable");
-            }
-        }
-        public void onEndPage(PdfWriter writer, Document document) {
-
-            ColumnText.showTextAligned(writer.getDirectContent(), Element.ALIGN_CENTER, new Phrase("Note : This is system generated Receipt. For further details please contact Administration/"), 110, 30, 0);
-
-        }
-    }*/
 }
 
 

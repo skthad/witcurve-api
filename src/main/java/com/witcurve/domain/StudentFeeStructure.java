@@ -36,6 +36,7 @@ public class StudentFeeStructure extends AbstractAuditingEntity implements Seria
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_fee_structure_id")
+    @OrderBy("due_date asc")
     private List<StudentFeeType> studentFeeTypes;
 
     public Long getId() {
