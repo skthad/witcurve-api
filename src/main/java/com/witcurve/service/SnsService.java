@@ -299,9 +299,17 @@ public class SnsService {
                 case HOLIDAY:
                     variableMap = new HashMap<>();
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
-                    message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY);
-                    url = "?event=true&date=" + eventDTO.getDate();
-                    publishBulkMessage(message, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), null);
+                    if(eventDTO.getEndDate() == null) {
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY_ON_SINGLE_DAY);
+                        url = "?event=true&date=" + eventDTO.getDate();
+                        publishBulkMessage(message, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), null);
+                    } else {
+                        variableMap.put("endDate", WitcurveUtil.format(eventDTO.getEndDate()));
+                        message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY_ON_RANGE);
+                        url = "?event=true&date=" + eventDTO.getDate();
+                        publishBulkMessage(message, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), null);
+                    }
+
                     break;
                 case SCHOOL_EVENT:
                     variableMap = new HashMap<>();

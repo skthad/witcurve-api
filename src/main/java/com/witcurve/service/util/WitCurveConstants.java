@@ -26,7 +26,9 @@ public class WitCurveConstants {
 
     public static final String NOTICE_FOR_All = "A new notice has been posted";
 
-    public static final String HOLIDAY = " {{date}} has been declared as a Holiday";
+    public static final String HOLIDAY_ON_SINGLE_DAY = "{{date}} has been declared as a Holiday";
+
+    public static final String HOLIDAY_ON_RANGE = "{{date}} to {{endDate}} has been declared as Holidays";
 
     public static final String SCHOOL_EVENT_FOR_ALL = "School has a new event on {{date}}";
 
