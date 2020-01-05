@@ -46,9 +46,6 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
     TransactionRecordService transactionRecordService;
 
     @Autowired
-    InvoiceUtil invoiceUtil;
-
-    @Autowired
     FeeDetailsRepository feeDetailsRepository;
 
     @Autowired
