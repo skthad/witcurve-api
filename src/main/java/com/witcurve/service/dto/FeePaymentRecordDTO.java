@@ -29,18 +29,10 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     private Double totalAmount;
 
     @NotNull
-    @Min(value = 0L)
-    private Double penaltyAmount = 0.0;
-
-    @NotNull
     private Long studentFeeStructureId;
 
     @NotNull
     private List<FeePaymentDetailDTO> feePaymentDetails;
-
-   // @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
-    private LocalDate penaltyTransactionDate;
 
     @NotNull
     private FeePaymentType feePaymentType;
@@ -69,10 +61,6 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 
-    public Double getPenaltyAmount() { return penaltyAmount; }
-
-    public void setPenaltyAmount(Double penaltyAmount) { this.penaltyAmount = penaltyAmount; }
-
     public Long getStudentFeeStructureId() { return studentFeeStructureId; }
 
     public void setStudentFeeStructureId(Long studentFeeStructureId) { this.studentFeeStructureId = studentFeeStructureId; }
@@ -80,10 +68,6 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     public List<FeePaymentDetailDTO> getFeePaymentDetails() { return feePaymentDetails; }
 
     public void setFeePaymentDetails(List<FeePaymentDetailDTO> feePaymentDetails) { this.feePaymentDetails = feePaymentDetails; }
-
-    public LocalDate getPenaltyTransactionDate() { return penaltyTransactionDate; }
-
-    public void setPenaltyTransactionDate(LocalDate penaltyTransactionDate) { this.penaltyTransactionDate = penaltyTransactionDate; }
 
     public TransactionRecordDTO getTransactionRecordDTO() { return transactionRecordDTO; }
 

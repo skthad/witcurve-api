@@ -42,7 +42,6 @@ public class FeeDetailsServiceImpl implements FeeDetailsService {
         log.debug("Request to save or update feeDetailsList : {} for school info with id : {}", feeDetailsDTOs, schoolInfoId);
         for(FeeDetailsDTO feeDetailsDTO : feeDetailsDTOs) {
             feeDetailsDTO.setSchoolInfoId(schoolInfoId);
-            feeDetailsDTO.setName(feeDetailsDTO.getName().trim());
         }
         List<FeeDetails> feeDetailsList = feeDetailsRepository.saveAll(feeDetailsMapper.toEntity(feeDetailsDTOs));
         return feeDetailsMapper.toDto(feeDetailsList);

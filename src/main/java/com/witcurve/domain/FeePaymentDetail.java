@@ -18,11 +18,11 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+   // @NotNull
     @ManyToOne
     private FeeDetails feeType;
 
-    @NotNull
+  //  @NotNull
     @ManyToOne
     private FeeDetails feeDescription;
 
@@ -36,6 +36,9 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     @Column(name = "transaction_date")
     @Convert(converter = LocalDateConverter.class)
     private LocalDate transactionDate;
+
+    @NotNull
+    private Boolean isPenalty;
 
     public Long getId() { return id; }
 
@@ -60,6 +63,10 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     public LocalDate getTransactionDate() { return transactionDate; }
 
     public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+
+    public Boolean getPenalty() { return isPenalty; }
+
+    public void setPenalty(Boolean penalty) { isPenalty = penalty; }
 
     @Override
     public boolean equals(Object o) {

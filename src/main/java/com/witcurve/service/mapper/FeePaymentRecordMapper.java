@@ -35,9 +35,6 @@ public interface FeePaymentRecordMapper extends EntityMapper<FeePaymentRecordDTO
 
     default LocalDate getFirstTransactionDate(FeePaymentRecord feePaymentRecord) {
         List<LocalDate> dates = feePaymentRecord.getFeePaymentDetails().stream().map(FeePaymentDetail::getTransactionDate).collect(Collectors.toList());
-        if (feePaymentRecord.getPenaltyTransactionDate() != null) {
-            dates.add(feePaymentRecord.getPenaltyTransactionDate());
-        }
         return Collections.min(dates);
     }
 }

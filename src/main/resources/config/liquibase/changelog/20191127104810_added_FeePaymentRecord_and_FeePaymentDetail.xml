@@ -130,4 +130,15 @@
         <addUniqueConstraint columnNames="name, type, school_info_id" constraintName="name_type_schoolInfo_id_UK"
                              tableName="fee_details"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1578316254065-19">
+        <addColumn tableName="fee_payment_detail">
+            <column name="is_penalty" type="bit"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578316254065-20">
+        <dropColumn columnName="penalty_amount" tableName="fee_payment_record"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578316254065-21">
+        <dropColumn columnName="penalty_transaction_date" tableName="fee_payment_record"/>
+    </changeSet>
 </databaseChangeLog>

@@ -19,13 +19,15 @@ public interface FeePaymentRecordRepository extends JpaRepository<FeePaymentReco
     List<FeePaymentRecord> getByStandardAndSessionId(Long standardId, Long sessionId);
 
     //check do we need to check with studentId also as orderId is unique
-    @Query("select fpr from FeePaymentRecord fpr join fpr.feePaymentDetails fprfd where fpr.studentFeeStructure.student.id = ?1 and fpr.transactionId = ?2 and fpr.feePaymentType = ?5 and fprfd.feeType.id = ?3 and " +
-        "fprfd.feeDescription.id = ?4")
-    FeePaymentRecord getByStudentIdOrderIdAndFeeNameAndType(Long studentId, String orderId, Long feeTypeId, Long feeDescriptionId, FeePaymentType type);
+    @Query("select fpr from FeePaymentRecord fpr join fpr.feePaymentDetails fprfd where fpr.transactionId = ?1 and fpr.feePaymentType = ?3 and fprfd.itemId = ?3 ")
+    FeePaymentRecord getByOrderIdAndItemIdAndType(String orderId, String itemId, FeePaymentType type);
+
+    @Query("select fpr from FeePaymentRecord fpr where fpr.transactionId = ?1 and fpr.feePaymentType = ?2")
+    FeePaymentRecord getByOrderIdAndType(String orderId, FeePaymentType type);
 
     @Query("select fpr from FeePaymentRecord fpr where fpr.studentFeeStructure.student.id = ?1 and  fpr.studentFeeStructure.session.id = ?2 and fpr.feePaymentType = ?3 order by fpr.createdDate")
     List<FeePaymentRecord> getByStudentAndSessionIdAndType(Long studentId, Long sessionId, FeePaymentType type);
 
-    @Query("select fpr from FeePaymentRecord fpr where fpr.transactionId = ?1 and fpr.feePaymentType = ?2")
-    FeePaymentRecord getByTransactionId(String transactionId, FeePaymentType feePaymentType);
+    /*@Query("select fpr from FeePaymentRecord fpr where fpr.transactionId = ?1 and fpr.feePaymentType = ?2")
+    FeePaymentRecord getByTransactionId(String transactionId, FeePaymentType feePaymentType);*/
 }

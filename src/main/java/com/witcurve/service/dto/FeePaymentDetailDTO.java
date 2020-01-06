@@ -29,6 +29,9 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate transactionDate;
 
+    @NotNull
+    private Boolean isPenalty = false;
+
     public Long getFeeTypeId() { return feeTypeId; }
 
     public void setFeeTypeId(Long feeTypeId) { this.feeTypeId = feeTypeId; }
@@ -48,6 +51,10 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
     public LocalDate getTransactionDate() { return transactionDate; }
 
     public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+
+    public Boolean getPenalty() { return isPenalty; }
+
+    public void setPenalty(Boolean penalty) { isPenalty = penalty; }
 
     @Override
     public boolean equals(Object o) {

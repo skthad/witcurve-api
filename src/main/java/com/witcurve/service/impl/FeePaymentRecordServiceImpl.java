@@ -130,6 +130,7 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         }
         List<Long> allFeeTypeIds = mapOfFeeTypeAndDescriptionIds.keySet().stream().collect(Collectors.toList());
         Double totalPaidAmount = 0.0;
+        Double penaltyAmount = 0.0;
 
         if (feePaymentRecordDTO.getFeePaymentDetails() != null) {
             for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
@@ -151,7 +152,7 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
                 }
                 totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
             }
-            if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount + feePaymentRecordDTO.getPenaltyAmount()) {
+            if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount) {
                 throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
             }
         }

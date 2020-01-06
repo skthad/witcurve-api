@@ -43,22 +43,12 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     private Double totalAmount;
 
     @NotNull
-    @Column(name = "penalty_amount")
-    @Min(value = 0L, message = "penalty amount must be positive")
-    private Double penaltyAmount = 0.0;
-
-    @NotNull
     @ManyToOne
     private StudentFeeStructure studentFeeStructure;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "fee_payment_record_id")
     private List<FeePaymentDetail> feePaymentDetails;
-
-    //@NotNull
-    @Column(name = "penalty_transaction_date")
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate penaltyTransactionDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     private TransactionRecord transactionRecord;
@@ -84,10 +74,6 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
 
     public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 
-    public Double getPenaltyAmount() { return penaltyAmount; }
-
-    public void setPenaltyAmount(Double penaltyAmount) { this.penaltyAmount = penaltyAmount; }
-
     public List<FeePaymentDetail> getFeePaymentDetails() { return feePaymentDetails; }
 
     public void setFeePaymentDetails(List<FeePaymentDetail> feePaymentDetails) { this.feePaymentDetails = feePaymentDetails; }
@@ -109,10 +95,6 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     public FeePaymentType getFeePaymentType() { return feePaymentType; }
 
     public void setFeePaymentType(FeePaymentType feePaymentType) { this.feePaymentType = feePaymentType; }
-
-    public LocalDate getPenaltyTransactionDate() { return penaltyTransactionDate; }
-
-    public void setPenaltyTransactionDate(LocalDate penaltyTransactionDate) { this.penaltyTransactionDate = penaltyTransactionDate; }
 
     @Override
     public boolean equals(Object o) {

@@ -263,9 +263,8 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
                 String feeDescriptionName = splitStrings[0];
                 String feeTypeName = splitStrings[1].substring(0, splitStrings[1].length() - 1);
 
-                FeeDetails feeDescription = feeDetailsRepository.findByNameAndSchoolInfoAndType(feeDescriptionName, student.getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
                 FeeDetails feeType = feeDetailsRepository.findByNameAndSchoolInfoAndType(feeTypeName, student.getSchoolInfo().getId(), FeeDetailsType.FEE_TYPE);
-
+                FeeDetails feeDescription = feeDetailsRepository.findByNameAndSchoolInfoAndType(feeDescriptionName, student.getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
 
                 FeePaymentType feePaymentType;
                 if (paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()))
@@ -276,7 +275,13 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
 
 
                 StudentFeeStructure studentFeeStructure = studentFeeStructureRepository.getByStudentIdAndSessionId(student.getId(), session.getId());
-                FeePaymentRecord feePaymentRecordWithGivenOrderId = feePaymentRecordRepository.getByStudentIdOrderIdAndFeeNameAndType(student.getId(), orderId, feeType.getId(), feeDescription.getId(), feePaymentType);
+
+                FeePaymentRecord feePaymentRecordWithGivenOrderId;
+                if (feePaymentType.equals(FeePaymentType.FULL_YEAR_PAYMENT)) {
+                    feePaymentRecordWithGivenOrderId = feePaymentRecordRepository.getByOrderIdAndType(orderId, feePaymentType);
+                } else {
+                    feePaymentRecordWithGivenOrderId = feePaymentRecordRepository.getByOrderIdAndItemIdAndType(orderId, paytmStatusCheckVM.getItemId(), feePaymentType);
+                }
                 List<FeePaymentRecord> feePaymentRecords = feePaymentRecordRepository.getByStudentAndSessionIdAndType(student.getId(), session.getId(), feePaymentType);
 
                 Map<String, String> mapOfPaidFeeExcludingPenalties = new HashMap<>();
@@ -319,14 +324,14 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
                 } else if (!paytmStatusCheckVM.getAmount().equals(mapOfFeeIncludingPenalty.get(paytmStatusCheckVM.getName()))) {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_AMOUNT.getValue()));
-                } else if (paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && feeDescription.equals("Penalty")) {
+                } else if (paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && feeDescriptionName.equals("Penalty")) {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
                 } else if (paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && !paytmStatusCheckVM.getAmount().equals(fullYearPaymentAmount.toString())) {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
                 } else if (feePaymentRecordWithGivenOrderId != null) {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.RECORD_ALREADY_EXIST.getValue()));
                 } else {
-                    FeePaymentRecordDTO feePaymentRecordDTO = prepareFeePaymentObjAndSave(orderId, studentFeeStructure.getId(), paytmStatusCheckVM, feeType, feeDescription, feePaymentType);
+                    FeePaymentRecordDTO feePaymentRecordDTO = prepareFeePaymentObjAndSave(orderId, studentFeeStructure, paytmStatusCheckVM, feeType, feeDescription, feePaymentType);
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.SUCCESS.getValue()));
                     responseMap.put("transactionStatus", "success");
                     responseMap.put("receiptId", feePaymentRecordDTO.getOrderId());
@@ -350,27 +355,32 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
         return remoteAddr;
     }
 
-    private FeePaymentRecordDTO prepareFeePaymentObjAndSave(String orderId, Long
-        studentFeeStructureId, PaytmStatusCheckVM paytmStatusCheckVM, FeeDetails feeType, FeeDetails feeDescription, FeePaymentType type) {
+    private FeePaymentRecordDTO prepareFeePaymentObjAndSave(String orderId, StudentFeeStructure
+        studentFeeStructure, PaytmStatusCheckVM paytmStatusCheckVM, FeeDetails feeType, FeeDetails feeDescription, FeePaymentType type) {
 
         FeePaymentRecordDTO feePaymentRecordDTO = new FeePaymentRecordDTO();
 
-        FeePaymentRecord feePaymentRecord = feePaymentRecordRepository.getByTransactionId(orderId, type);
+        FeePaymentRecord feePaymentRecord = feePaymentRecordRepository.getByOrderIdAndType(orderId, type);
 
+        if (type.equals(FeePaymentType.OUTSTANDING_FEE)) {
 
-        if (feePaymentRecord != null) {
-            if (feeDescription.getName().trim().equals("Penalty")) {
-                Double penaltyAmount = feePaymentRecord.getPenaltyAmount() + (Double.valueOf(paytmStatusCheckVM.getAmount()));
-                feePaymentRecord.setPenaltyAmount(penaltyAmount);
-            } else {
+            if (feePaymentRecord != null) {
+
                 List<FeePaymentDetail> alreadyExistRecords = feePaymentRecord.getFeePaymentDetails();
 
                 FeePaymentDetailDTO feePaymentDetailDTO = new FeePaymentDetailDTO();
                 feePaymentDetailDTO.setAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
                 feePaymentDetailDTO.setItemId(paytmStatusCheckVM.getItemId());
                 feePaymentDetailDTO.setTransactionDate(LocalDate.parse(paytmStatusCheckVM.getTransactionDate()));
+
                 feePaymentDetailDTO.setFeeDescriptionId(feeDescription.getId());
                 feePaymentDetailDTO.setFeeTypeId(feeType.getId());
+
+                if (!feeDescription.getName().trim().equals("Penalty")) {
+                    feePaymentDetailDTO.setPenalty(false);
+                } else {
+                    feePaymentDetailDTO.setPenalty(true);
+                }
 
                 alreadyExistRecords.add(feePaymentDetailMapper.toEntity(feePaymentDetailDTO));
 
@@ -380,18 +390,16 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
                 } else {
                     feePaymentRecord.setTotalAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
                 }
-            }
-            feePaymentRecordDTO = feePaymentRecordMapper.toDto(feePaymentRecord);
-        } else {
-            feePaymentRecordDTO.setTransactionId(orderId);
-            feePaymentRecordDTO.setType(PaymentRecordType.PAYTM);
-            feePaymentRecordDTO.setOrderId(RandomStringUtils.randomAlphanumeric(8));
-            feePaymentRecordDTO.setStudentFeeStructureId(studentFeeStructureId);
-            feePaymentRecordDTO.setFeePaymentType(type);
 
-            if (feeDescription.getName().trim().equals("Penalty")) {
-                feePaymentRecordDTO.setPenaltyAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
+                feePaymentRecordDTO = feePaymentRecordMapper.toDto(feePaymentRecord);
             } else {
+                feePaymentRecordDTO.setTransactionId(orderId);
+                feePaymentRecordDTO.setType(PaymentRecordType.PAYTM);
+                feePaymentRecordDTO.setOrderId(RandomStringUtils.randomAlphanumeric(8));
+                feePaymentRecordDTO.setStudentFeeStructureId(studentFeeStructure.getId());
+                feePaymentRecordDTO.setFeePaymentType(type);
+
+
                 FeePaymentDetailDTO feePaymentDetailDTO = new FeePaymentDetailDTO();
                 feePaymentDetailDTO.setAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
                 feePaymentDetailDTO.setItemId(paytmStatusCheckVM.getItemId());
@@ -399,8 +407,36 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
                 feePaymentDetailDTO.setFeeDescriptionId(feeDescription.getId());
                 feePaymentDetailDTO.setFeeTypeId(feeType.getId());
                 feePaymentRecordDTO.setTotalAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
+                if (feeDescription.getName().trim().equals("Penalty")) {
+                    feePaymentDetailDTO.setPenalty(true);
+                } else {
+                    feePaymentDetailDTO.setPenalty(false);
+                }
                 feePaymentRecordDTO.setFeePaymentDetails(Arrays.asList(feePaymentDetailDTO));
+                feePaymentRecordDTO = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO, ModeOfTransaction.SYSTEM);
             }
+        } else if (type.equals(FeePaymentType.FULL_YEAR_PAYMENT)) {
+            feePaymentRecordDTO.setTransactionId(orderId);
+            feePaymentRecordDTO.setType(PaymentRecordType.PAYTM);
+            feePaymentRecordDTO.setOrderId(RandomStringUtils.randomAlphanumeric(8));
+            feePaymentRecordDTO.setStudentFeeStructureId(studentFeeStructure.getId());
+            feePaymentRecordDTO.setFeePaymentType(type);
+
+            List<FeePaymentDetailDTO> feePaymentDetailDTOS = new ArrayList<>();
+            for (StudentFeeType studentFeeType : studentFeeStructure.getStudentFeeTypes()) {
+                for (StudentFeeDescription studentFeeDescription : studentFeeType.getStudentFeeDescriptions()) {
+                    FeePaymentDetailDTO feePaymentDetailDTO = new FeePaymentDetailDTO();
+                    feePaymentDetailDTO.setAmount(studentFeeDescription.getAmount() + studentFeeDescription.getAdjustment() - studentFeeDescription.getOneTimeDiscount());
+                    feePaymentDetailDTO.setItemId(paytmStatusCheckVM.getItemId());
+                    feePaymentDetailDTO.setTransactionDate(LocalDate.parse(paytmStatusCheckVM.getTransactionDate()));
+                    feePaymentDetailDTO.setFeeDescriptionId(studentFeeDescription.getId());
+                    feePaymentDetailDTO.setFeeTypeId(studentFeeType.getId());
+                    feePaymentDetailDTO.setPenalty(false);
+                    feePaymentDetailDTOS.add(feePaymentDetailDTO);
+                }
+            }
+            feePaymentRecordDTO.setTotalAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
+            feePaymentRecordDTO.setFeePaymentDetails(feePaymentDetailDTOS);
             feePaymentRecordDTO = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO, ModeOfTransaction.SYSTEM);
         }
         return feePaymentRecordDTO;
