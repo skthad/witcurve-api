@@ -21,7 +21,7 @@ public interface FeePaymentRecordMapper extends EntityMapper<FeePaymentRecordDTO
 
     @Mapping(target = "studentFeeStructureId", source = "studentFeeStructure.id")
     @Mapping(target = "transactionRecordDTO", source = "transactionRecord")
-    @Mapping(target = "transactionDate", expression = "java(getFirstTransactionDate(FeePaymentRecord))")
+    @Mapping(target = "transactionDate", expression = "java(getFirstTransactionDate(feePaymentRecord))")
     FeePaymentRecordDTO toDto(FeePaymentRecord feePaymentRecord);
 
     default FeePaymentRecord fromId(Long id) {

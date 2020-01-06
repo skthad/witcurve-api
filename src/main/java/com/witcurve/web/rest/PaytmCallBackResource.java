@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Map;
 
@@ -22,13 +23,16 @@ public class PaytmCallBackResource {
     @Autowired
     PaytmCallBackService paytmCallBackService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @GetMapping("/paytm-fee/validation")
     @Timed
     public ResponseEntity<PaytmVM> getStudentFee(@RequestParam(required = false) String instituteName, @RequestParam(required = false) String admissionId, @RequestParam(required = false) String type) {
         log.debug("Request to get fee detail of given institute with admissionId and type : ", instituteName, admissionId, type);
         PaytmVM paytmVM;
         try {
-            paytmVM = paytmCallBackService.getStudentFee(instituteName, admissionId, type);
+            paytmVM = paytmCallBackService.getStudentFee(instituteName, admissionId, type, request);
         } catch (Exception e) {
             paytmVM = new PaytmVM();
             paytmVM.setErrorCode(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue());
@@ -45,7 +49,7 @@ public class PaytmCallBackResource {
         log.debug("Request to check status with given  order Id, enrollment no, instituteName : ", orderId, admissionId, instituteName);
         Map<String, String> responseMap = null;
         try {
-            responseMap = paytmCallBackService.save(paytmStatusCheckVM, orderId, admissionId, instituteName);
+            responseMap = paytmCallBackService.save(paytmStatusCheckVM, orderId, admissionId, instituteName, request);
         } catch (Exception e) {
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue()));
         }

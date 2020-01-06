@@ -106,4 +106,28 @@
     <changeSet author="Sai (generated)" id="1576826176931-3">
         <dropColumn columnName="paytm_id" tableName="fee_payment_record"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1578215281079-4">
+        <addColumn tableName="fee_payment_record">
+            <column name="fee_payment_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578215281079-15">
+        <addColumn tableName="fee_payment_record">
+            <column name="penalty_transaction_date" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578215281079-16">
+        <addColumn tableName="fee_payment_detail">
+            <column name="transaction_date" type="date"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578215281079-17">
+        <dropColumn columnName="transaction_date" tableName="fee_payment_record"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578299382010-18">
+        <addUniqueConstraint columnNames="name, type, school_info_id" constraintName="name_type_schoolInfo_id_UK"
+                             tableName="fee_details"/>
+    </changeSet>
 </databaseChangeLog>

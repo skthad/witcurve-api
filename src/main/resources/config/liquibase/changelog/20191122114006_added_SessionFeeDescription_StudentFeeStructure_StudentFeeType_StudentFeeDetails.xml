@@ -187,4 +187,11 @@
     <changeSet author="Sai (generated)" id="1575369528971-23">
         <addNotNullConstraint columnDataType="int" columnName="grade" tableName="session_fee_structure"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1578215281079-24">
+        <addColumn tableName="student_fee_description">
+            <column name="required" type="bit">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

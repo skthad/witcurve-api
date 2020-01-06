@@ -1,7 +1,13 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.*;
-import com.witcurve.domain.enumeration.*;
+import com.witcurve.domain.FeePaymentRecord;
+import com.witcurve.domain.StudentFeeDescription;
+import com.witcurve.domain.StudentFeeStructure;
+import com.witcurve.domain.StudentFeeType;
+import com.witcurve.domain.enumeration.ModeOfTransaction;
+import com.witcurve.domain.enumeration.PaymentRecordType;
+import com.witcurve.domain.enumeration.RecordType;
+import com.witcurve.domain.enumeration.TransactionType;
 import com.witcurve.repository.AttachmentRepository;
 import com.witcurve.repository.FeeDetailsRepository;
 import com.witcurve.repository.FeePaymentRecordRepository;
@@ -13,9 +19,7 @@ import com.witcurve.service.dto.FeePaymentDetailDTO;
 import com.witcurve.service.dto.FeePaymentRecordDTO;
 import com.witcurve.service.dto.TransactionRecordDTO;
 import com.witcurve.service.mapper.FeePaymentRecordMapper;
-import com.witcurve.service.util.InvoiceUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
-import com.witcurve.web.rest.vm.InvoiceVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -126,38 +130,41 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         }
         List<Long> allFeeTypeIds = mapOfFeeTypeAndDescriptionIds.keySet().stream().collect(Collectors.toList());
         Double totalPaidAmount = 0.0;
-        for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
 
-            if (type.equals(PaymentRecordType.PAYTM)) {
-                if (feePaymentDetail.getItemId() == null) {
-                    throw new WitcurveException("Item id is required for paytm transaction");
+        if (feePaymentRecordDTO.getFeePaymentDetails() != null) {
+            for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
+
+                if (type.equals(PaymentRecordType.PAYTM)) {
+                    if (feePaymentDetail.getItemId() == null) {
+                        throw new WitcurveException("Item id is required for paytm transaction");
+                    }
                 }
+                if (feePaymentDetail.getAmount() < 0) {
+                    throw new WitcurveException("Amount must be positive");
+                }
+                if (!allFeeTypeIds.contains(feePaymentDetail.getFeeTypeId())) {
+                    throw new WitcurveException("Given fee type id is not in student fee structure");
+                }
+                List<Long> allFeeDescriptionIds = mapOfFeeTypeAndDescriptionIds.get(feePaymentDetail.getFeeTypeId());
+                if (!allFeeDescriptionIds.contains(feePaymentDetail.getFeeDescriptionId())) {
+                    throw new WitcurveException("Given fee description id is not present in student fee type");
+                }
+                totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
             }
-            if (feePaymentDetail.getAmount() < 0) {
-                throw new WitcurveException("Amount must be positive");
+            if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount + feePaymentRecordDTO.getPenaltyAmount()) {
+                throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
             }
-            if (!allFeeTypeIds.contains(feePaymentDetail.getFeeTypeId())) {
-                throw new WitcurveException("Given fee type id is not in student fee structure");
-            }
-            List<Long> allFeeDescriptionIds = mapOfFeeTypeAndDescriptionIds.get(feePaymentDetail.getFeeTypeId());
-            if (!allFeeDescriptionIds.contains(feePaymentDetail.getFeeDescriptionId())) {
-                throw new WitcurveException("Given fee description id is not present in student fee type");
-            }
-            totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
         }
-        if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount + feePaymentRecordDTO.getPenaltyAmount()) {
-            throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
-        }
-   //     InvoiceVM invoiceVM = prepareObject(feePaymentRecordDTO, studentFeeStructure.get().getStudent());
-    //    File file = invoiceUtil.generateInvoice(invoiceVM);
-  //      String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getOrderId();
+        //     InvoiceVM invoiceVM = prepareObject(feePaymentRecordDTO, studentFeeStructure.get().getStudent());
+        //    File file = invoiceUtil.generateInvoice(invoiceVM);
+        //      String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getOrderId();
         //check with the file name if exist than delete  that attachment
+        //   Attachment attachment = attachmentService.saveAttachmentWithFile(file, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
 
-     //   Attachment attachment = attachmentService.saveAttachmentWithFile(file, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
         TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
         transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
-        transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
-       // transactionRecordDTO.setAttachments(Arrays.asList(attachment));
+        transactionRecordDTO.setTransactionDate(LocalDate.now());
+        // transactionRecordDTO.setAttachments(Arrays.asList(attachment));
         transactionRecordDTO.setType(RecordType.FEE);
         transactionRecordDTO.setTransactionMode(mode);
         transactionRecordDTO.setTransactionType(TransactionType.CREDIT);

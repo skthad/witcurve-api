@@ -11,7 +11,6 @@ import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.InvoiceVM;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+
 public class InvoiceUtil {
 
     @Autowired

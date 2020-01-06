@@ -150,7 +150,7 @@ application:
         industryTypeId: PrivateEducation
         callbackUrl: https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw.paytm.in/order/status
-        communicationIps: n/a
+        communicationIps:
     witcurve:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
         domainUrl: witcurve-app.com
