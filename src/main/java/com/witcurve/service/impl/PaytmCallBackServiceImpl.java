@@ -171,7 +171,6 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
 
                         }
                         if (studentFeeType.getDueDate().compareTo(LocalDate.now()) < 0) {
-                            //due date is passed
                             if (feeTypeDetailsForSingleFeeType.size() > 0) {
                                 PaytmVM.FeeTypeDetail feeTypeDetail = new PaytmVM.FeeTypeDetail();
                                 feeTypeDetail.setRequired(true);
