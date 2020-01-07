@@ -31,7 +31,7 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private Long studentFeeStructureId;
 
-    @NotNull
+   // @NotNull
     private List<FeePaymentDetailDTO> feePaymentDetails;
 
     @NotNull

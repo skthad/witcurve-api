@@ -4,10 +4,7 @@ import com.witcurve.domain.FeePaymentRecord;
 import com.witcurve.domain.StudentFeeDescription;
 import com.witcurve.domain.StudentFeeStructure;
 import com.witcurve.domain.StudentFeeType;
-import com.witcurve.domain.enumeration.ModeOfTransaction;
-import com.witcurve.domain.enumeration.PaymentRecordType;
-import com.witcurve.domain.enumeration.RecordType;
-import com.witcurve.domain.enumeration.TransactionType;
+import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.AttachmentRepository;
 import com.witcurve.repository.FeeDetailsRepository;
 import com.witcurve.repository.FeePaymentRecordRepository;
@@ -130,14 +127,14 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         }
         List<Long> allFeeTypeIds = mapOfFeeTypeAndDescriptionIds.keySet().stream().collect(Collectors.toList());
         Double totalPaidAmount = 0.0;
-        Double penaltyAmount = 0.0;
+
 
         if (feePaymentRecordDTO.getFeePaymentDetails() != null) {
             for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
 
                 if (type.equals(PaymentRecordType.PAYTM)) {
-                    if (feePaymentDetail.getItemId() == null) {
-                        throw new WitcurveException("Item id is required for paytm transaction");
+                    if (feePaymentRecordDTO.getFeePaymentType().equals(FeePaymentType.OUTSTANDING_FEE) && feePaymentDetail.getItemId() == null) {
+                        throw new WitcurveException("Item id is required for paytm transaction of full year fee");
                     }
                 }
                 if (feePaymentDetail.getAmount() < 0) {
@@ -147,12 +144,15 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
                     throw new WitcurveException("Given fee type id is not in student fee structure");
                 }
                 List<Long> allFeeDescriptionIds = mapOfFeeTypeAndDescriptionIds.get(feePaymentDetail.getFeeTypeId());
-                if (!allFeeDescriptionIds.contains(feePaymentDetail.getFeeDescriptionId())) {
-                    throw new WitcurveException("Given fee description id is not present in student fee type");
+
+                if (feePaymentDetail.getFeeDescriptionId() != null) {
+                    if (!allFeeDescriptionIds.contains(feePaymentDetail.getFeeDescriptionId())) {
+                        throw new WitcurveException("Given fee description id is not present in student fee type");
+                    }
                 }
                 totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
             }
-            if (feePaymentRecordDTO.getTotalAmount() != totalPaidAmount) {
+            if (!feePaymentRecordDTO.getTotalAmount().equals(totalPaidAmount)) {
                 throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
             }
         }

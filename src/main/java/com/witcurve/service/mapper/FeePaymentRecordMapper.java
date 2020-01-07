@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public interface FeePaymentRecordMapper extends EntityMapper<FeePaymentRecordDTO, FeePaymentRecord> {
 
 
-    @Mapping(source = "studentFeeStructureId", target = "studentFeeStructure.id")
+    @Mapping(source = "studentFeeStructureId", target = "studentFeeStructure")
     @Mapping(source = "transactionRecordDTO", target = "transactionRecord")
     FeePaymentRecord toEntity(FeePaymentRecordDTO feePaymentRecordDTO);
 

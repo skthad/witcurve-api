@@ -17,7 +17,7 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private Long feeTypeId;
 
-    @NotNull
+    //@NotNull
     private Long feeDescriptionId;
 
     @NotNull
@@ -31,6 +31,10 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
 
     @NotNull
     private Boolean isPenalty = false;
+
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public Long getFeeTypeId() { return feeTypeId; }
 

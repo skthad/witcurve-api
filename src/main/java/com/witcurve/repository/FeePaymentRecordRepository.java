@@ -19,7 +19,7 @@ public interface FeePaymentRecordRepository extends JpaRepository<FeePaymentReco
     List<FeePaymentRecord> getByStandardAndSessionId(Long standardId, Long sessionId);
 
     //check do we need to check with studentId also as orderId is unique
-    @Query("select fpr from FeePaymentRecord fpr join fpr.feePaymentDetails fprfd where fpr.transactionId = ?1 and fpr.feePaymentType = ?3 and fprfd.itemId = ?3 ")
+    @Query("select fpr from FeePaymentRecord fpr join fpr.feePaymentDetails fprfd where fpr.transactionId = ?1 and fpr.feePaymentType = ?3 and fprfd.itemId = ?2 ")
     FeePaymentRecord getByOrderIdAndItemIdAndType(String orderId, String itemId, FeePaymentType type);
 
     @Query("select fpr from FeePaymentRecord fpr where fpr.transactionId = ?1 and fpr.feePaymentType = ?2")

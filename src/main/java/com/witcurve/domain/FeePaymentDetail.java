@@ -18,11 +18,10 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-   // @NotNull
+    @NotNull
     @ManyToOne
     private FeeDetails feeType;
 
-  //  @NotNull
     @ManyToOne
     private FeeDetails feeDescription;
 
