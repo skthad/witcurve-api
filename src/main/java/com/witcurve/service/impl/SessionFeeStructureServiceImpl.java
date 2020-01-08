@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -98,11 +99,19 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
             if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
                 throw new WitcurveException("Given id is not of fee type");
             }
-            List<SessionFeeDescriptionDTO> sessionFeeDescriptions = sessionFeeStructureDTO.getSessionFeeDescriptions();
-            if (sessionFeeDescriptions.size() == 0) {
+
+            if (sessionFeeStructureDTO.getSessionFeeDescriptions().size() == 0) {
                 throw new WitcurveException("Minimum one record of session fee description is require");
             }
-            List<Long> feeDescriptionIds = sessionFeeDescriptions.stream().map(SessionFeeDescriptionDTO::getFeeDescriptionId).collect(Collectors.toList());
+            List<Long> feeDescriptionIds = new ArrayList<>();
+            for (SessionFeeDescriptionDTO sessionFeeDescriptionDTO : sessionFeeStructureDTO.getSessionFeeDescriptions()) {
+                if (feeDescriptionIds.size() > 0) {
+                    if (feeDescriptionIds.contains(sessionFeeDescriptionDTO.getFeeDescriptionId())) {
+                        throw new WitcurveException("Fee description id should be unique for a fee type");
+                    }
+                }
+                feeDescriptionIds.add(sessionFeeDescriptionDTO.getFeeDescriptionId());
+            }
 
             List<FeeDetails> feeDescriptions = feeDetailsRepository.findBySchoolInfoIdAndType(feeDetailsOfFeeType.get().getSchoolInfo().getId(), FeeDetailsType.FEE_DESCRIPTION);
 
