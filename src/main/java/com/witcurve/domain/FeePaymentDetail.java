@@ -3,6 +3,7 @@ package com.witcurve.domain;
 import com.witcurve.service.util.LocalDateConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class FeePaymentDetail extends AbstractAuditingEntity implements Serializ
 
     @NotNull
     @Column(nullable = false)
+    @Min(value = 0L, message = "amount must be positive")
     private Double amount;
 
     @Column

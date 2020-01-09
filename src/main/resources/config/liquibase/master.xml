@@ -59,6 +59,6 @@
     <include file="config/liquibase/changelog/20191104061832_added_primaryBranch_and_primaryBoard_to_School_SchoolInfo_respectively.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191108092902_added_otherField_and_interval_to_SurveyQuestion.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191122114006_added_SessionFeeDescription_StudentFeeStructure_StudentFeeType_StudentFeeDetails.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20191127104810_added_FeePaymentRecord_and_FeePaymentDetail.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191212140006_TransactionRecord_added.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20191127104810_added_FeePaymentRecord_and_FeePaymentDetail.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

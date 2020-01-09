@@ -47,6 +47,8 @@ public class SessionFeeStructureResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("grade_fee_type_session_id_UK")) {
                 throw new WitcurveException("Unique constraint (fee_type_id, grade, session_id) violated");
+            } else if (e.getMessage().contains("fee_description_id_session_fee_structure_id_UK")) {
+                throw new WitcurveException("Fee description id should be unique for a fee type");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {

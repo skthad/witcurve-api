@@ -25,13 +25,8 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     private PaymentRecordType type;
 
     @NotNull
-    @Min(value = 0L)
-    private Double totalAmount;
-
-    @NotNull
     private Long studentFeeStructureId;
 
-   // @NotNull
     private List<FeePaymentDetailDTO> feePaymentDetails;
 
     @NotNull
@@ -40,6 +35,8 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     private TransactionRecordDTO transactionRecordDTO;
 
     private LocalDate transactionDate;
+
+    private Double totalAmount;
 
     public Long getId() { return id; }
 

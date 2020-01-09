@@ -141,4 +141,7 @@
     <changeSet author="Sai (generated)" id="1578316254065-21">
         <dropColumn columnName="penalty_transaction_date" tableName="fee_payment_record"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1578556234761-22">
+        <dropColumn columnName="total_amount" tableName="fee_payment_record"/>
+    </changeSet>
 </databaseChangeLog>

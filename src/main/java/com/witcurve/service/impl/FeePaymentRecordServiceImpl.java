@@ -1,14 +1,8 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.FeePaymentRecord;
-import com.witcurve.domain.StudentFeeDescription;
-import com.witcurve.domain.StudentFeeStructure;
-import com.witcurve.domain.StudentFeeType;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
-import com.witcurve.repository.AttachmentRepository;
-import com.witcurve.repository.FeeDetailsRepository;
-import com.witcurve.repository.FeePaymentRecordRepository;
-import com.witcurve.repository.StudentFeeStructureRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.AttachmentService;
 import com.witcurve.service.FeePaymentRecordService;
 import com.witcurve.service.TransactionRecordService;
@@ -16,7 +10,9 @@ import com.witcurve.service.dto.FeePaymentDetailDTO;
 import com.witcurve.service.dto.FeePaymentRecordDTO;
 import com.witcurve.service.dto.TransactionRecordDTO;
 import com.witcurve.service.mapper.FeePaymentRecordMapper;
+import com.witcurve.service.util.InvoiceUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.vm.InvoiceVM;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +51,12 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
 
     @Autowired
     AttachmentRepository attachmentRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
+    @Autowired
+    InvoiceUtil invoiceUtil;
 
     @Override
     public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO, ModeOfTransaction mode) {
@@ -107,7 +110,6 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
             if (feePaymentRecordDTO.getTransactionId() == null) {
                 throw new WitcurveException("Transaction id is required for paytm transaction");
             }
-            //check it is require or not
             if (!mode.equals(ModeOfTransaction.SYSTEM)) {
                 throw new WitcurveException("For payment through paytm mode should be system");
             }
@@ -116,51 +118,53 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         if (!studentFeeStructure.isPresent()) {
             throw new WitcurveException("No student fee structure is present with given id : {} " + feePaymentRecordDTO.getStudentFeeStructureId());
         }
-        Map<Long, List<Long>> mapOfFeeTypeAndDescriptionIds = new HashMap<>();
+        Map<Long, Map<Long, Double>> mapOfFeeTypeAndDescriptionIds = new HashMap<>();
+        Map<Long, Double> mapOfPenalties = new HashMap<>();
         for (StudentFeeType studentFeeType : studentFeeStructure.get().getStudentFeeTypes()) {
             Long feeTypeId = studentFeeType.getFeeType().getId();
-            List<Long> feeDescriptionIds = new ArrayList<>();
+            Map<Long, Double> feeDescriptionIdAmountMap = new HashMap<>();
             for (StudentFeeDescription studentFeeDescription : studentFeeType.getStudentFeeDescriptions()) {
-                feeDescriptionIds.add(studentFeeDescription.getFeeDescription().getId());
+                Double amount;
+                if (feePaymentRecordDTO.getFeePaymentType().equals(FeePaymentType.FULL_YEAR_PAYMENT)) {
+                    amount = studentFeeDescription.getAmount() + studentFeeDescription.getAdjustment() - studentFeeDescription.getOneTimeDiscount();
+                } else {
+                    amount = studentFeeDescription.getAmount() + studentFeeDescription.getAdjustment();
+                }
+                feeDescriptionIdAmountMap.put(studentFeeDescription.getFeeDescription().getId(), amount);
             }
-            mapOfFeeTypeAndDescriptionIds.put(feeTypeId, feeDescriptionIds);
+            mapOfFeeTypeAndDescriptionIds.put(feeTypeId, feeDescriptionIdAmountMap);
+            mapOfPenalties.put(studentFeeType.getFeeType().getId(), studentFeeType.getPenalty());
         }
         List<Long> allFeeTypeIds = mapOfFeeTypeAndDescriptionIds.keySet().stream().collect(Collectors.toList());
+
         Double totalPaidAmount = 0.0;
 
+        for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
 
-        if (feePaymentRecordDTO.getFeePaymentDetails() != null) {
-            for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
-
-                if (type.equals(PaymentRecordType.PAYTM)) {
-                    if (feePaymentRecordDTO.getFeePaymentType().equals(FeePaymentType.OUTSTANDING_FEE) && feePaymentDetail.getItemId() == null) {
-                        throw new WitcurveException("Item id is required for paytm transaction of full year fee");
-                    }
+            if (type.equals(PaymentRecordType.PAYTM)) {
+                if (feePaymentRecordDTO.getFeePaymentType().equals(FeePaymentType.OUTSTANDING_FEE) && feePaymentDetail.getItemId() == null) {
+                    throw new WitcurveException("Item id is required for paytm transaction of Outstanding Fee");
                 }
-                if (feePaymentDetail.getAmount() < 0) {
-                    throw new WitcurveException("Amount must be positive");
-                }
-                if (!allFeeTypeIds.contains(feePaymentDetail.getFeeTypeId())) {
-                    throw new WitcurveException("Given fee type id is not in student fee structure");
-                }
-                List<Long> allFeeDescriptionIds = mapOfFeeTypeAndDescriptionIds.get(feePaymentDetail.getFeeTypeId());
-
-                if (feePaymentDetail.getFeeDescriptionId() != null) {
-                    if (!allFeeDescriptionIds.contains(feePaymentDetail.getFeeDescriptionId())) {
-                        throw new WitcurveException("Given fee description id is not present in student fee type");
-                    }
-                }
-                totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
             }
-            if (!feePaymentRecordDTO.getTotalAmount().equals(totalPaidAmount)) {
-                throw new WitcurveException("Total amount is not according to penalty amount and each fee description amount");
+            if (!allFeeTypeIds.contains(feePaymentDetail.getFeeTypeId())) {
+                throw new WitcurveException("Given fee type id is not in student fee structure");
             }
+            if (feePaymentDetail.getFeeDescriptionId() != null) {
+                Set<Long> allFeeDescriptionIds = mapOfFeeTypeAndDescriptionIds.get(feePaymentDetail.getFeeTypeId()).keySet();
+                if (!allFeeDescriptionIds.contains(feePaymentDetail.getFeeDescriptionId())) {
+                    throw new WitcurveException("Given fee description id is not present in student fee type");
+                }
+                Double amountInStudentFeeDescription = mapOfFeeTypeAndDescriptionIds.get(feePaymentDetail.getFeeTypeId()).get(feePaymentDetail.getFeeDescriptionId());
+                if (!amountInStudentFeeDescription.equals(feePaymentDetail.getAmount())) {
+                    throw new WitcurveException("Amount to be paid is not equal to amount given in student fee Description");
+                }
+            } else {
+                if (!feePaymentDetail.getAmount().equals(mapOfPenalties.get(feePaymentDetail.getFeeTypeId()))) {
+                    throw new WitcurveException("Amount to be paid for penalty is not equal to amount given in student fee type");
+                }
+            }
+            totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
         }
-        //     InvoiceVM invoiceVM = prepareObject(feePaymentRecordDTO, studentFeeStructure.get().getStudent());
-        //    File file = invoiceUtil.generateInvoice(invoiceVM);
-        //      String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecordDTO.getOrderId();
-        //check with the file name if exist than delete  that attachment
-        //   Attachment attachment = attachmentService.saveAttachmentWithFile(file, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
 
         TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
         transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
@@ -176,46 +180,31 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
     }
 
-   /* private InvoiceVM prepareObject(FeePaymentRecordDTO feePaymentRecordDTO, Student student) {
+    @Override
+    public File generateInvoice(Long feePaymentRecordId) {
+
+        Optional<FeePaymentRecord> feePaymentRecord = feePaymentRecordRepository.findById(feePaymentRecordId);
+        if (!feePaymentRecord.isPresent()) {
+            throw new WitcurveException("No fee payment record is present with given id : {}" + feePaymentRecordId);
+        }
         InvoiceVM invoiceVM = new InvoiceVM();
-        invoiceVM.setStudent(student);
-        invoiceVM.setInvoiceNo(feePaymentRecordDTO.getOrderId());
+        invoiceVM.setStudent(feePaymentRecord.get().getStudentFeeStructure().getStudent());
+        invoiceVM.setInvoiceNo(feePaymentRecord.get().getOrderId());
+
         Map<String, Double> feeDescriptionMap = new HashMap<>();
 
-        //check this logic will create new Invoice with deleting older one and update fetch previous record and add in new one.
-        //delete the previous attachment
-        //here add Penalty as well
-
-        FeePaymentRecord feePaymentRecords = feePaymentRecordRepository.getByOrderId(feePaymentRecordDTO.getTransactionId());
-        List<FeePaymentDetailDTO> paidFeeDetails = new ArrayList<>();
-        for (FeePaymentDetail feePaymentDetail : feePaymentRecords.getFeePaymentDetails()) {
-            FeePaymentDetailDTO feePaymentDetailDTO = new FeePaymentDetailDTO();
-            feePaymentDetailDTO.setFeeTypeId(feePaymentDetail.getFeeType().getId());
-            feePaymentDetailDTO.setFeeDescriptionId(feePaymentDetail.getFeeDescription().getId());
-            feePaymentDetailDTO.setAmount(feePaymentDetail.getAmount());
-            paidFeeDetails.add(feePaymentDetailDTO);
-        }
-
-        feePaymentRecordDTO.getFeePaymentDetails().addAll(paidFeeDetails);
-        List<Long> feeTypeIds = new ArrayList<>();
-
-        for (FeePaymentDetailDTO feePaymentDetailDTO : feePaymentRecordDTO.getFeePaymentDetails()) {
-            Optional<FeeDetails> feeDetail = feeDetailsRepository.findById(feePaymentDetailDTO.getFeeDescriptionId());
-
-            if (feeTypeIds.size() > 0) {
-                if (feeTypeIds.contains(feePaymentDetailDTO.getFeeTypeId())) {
-                    if (feeDescriptionMap.containsKey(feeDetail.get().getName())) {
-                        Double amount = feeDescriptionMap.get(feeDetail.get().getName());
-                        Double newAmount = amount + feePaymentDetailDTO.getAmount();
-                        feeDescriptionMap.put(feeDetail.get().getName(), newAmount);
-                    }
-                }
+        for (FeePaymentDetail feePaymentDetail : feePaymentRecord.get().getFeePaymentDetails()) {
+            String name = feePaymentDetail.getFeeDescription().getName();
+            if (feeDescriptionMap.containsKey(name)) {
+                Double amt = feeDescriptionMap.get(name) + feePaymentDetail.getAmount();
+                feeDescriptionMap.put(name, amt);
+            } else {
+                feeDescriptionMap.put(name, feePaymentDetail.getAmount());
             }
-            feeTypeIds.add(feePaymentDetailDTO.getFeeTypeId());
-            feeDescriptionMap.put(feeDetail.get().getName(), feePaymentDetailDTO.getAmount());
         }
         invoiceVM.setFeeDescriptions(feeDescriptionMap);
-        return invoiceVM;
-    }*/
+        File invoice = invoiceUtil.generateInvoice(invoiceVM);
+        return invoice;
+    }
 }
 

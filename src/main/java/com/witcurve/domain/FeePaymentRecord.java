@@ -38,11 +38,6 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     private PaymentRecordType type;
 
     @NotNull
-    @Column(name = "total_amount")
-    @Min(value = 0L, message = "total amount must be positive")
-    private Double totalAmount;
-
-    @NotNull
     @ManyToOne
     private StudentFeeStructure studentFeeStructure;
 
@@ -69,10 +64,6 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     public PaymentRecordType getType() { return type; }
 
     public void setType(PaymentRecordType type) { this.type = type; }
-
-    public Double getTotalAmount() { return totalAmount; }
-
-    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 
     public List<FeePaymentDetail> getFeePaymentDetails() { return feePaymentDetails; }
 

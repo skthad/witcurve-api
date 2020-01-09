@@ -81,7 +81,8 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
         }
         Institute institute = instituteRepository.findInstituteByName(instituteName);
         if (institute != null) {
-            student = studentRepository.getByInstituteIdAndAdmissionId(institute.getId(), admissionId);
+            List<Student> students = studentRepository.getByInstituteIdAndAdmissionId(institute.getId(), admissionId);
+            student = students.get(0);
         }
         if (student != null) {
             studentStandards = studentStandardRepository.getByStudentId(student.getId());
@@ -89,7 +90,7 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
             session = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), LocalDate.now());
         }
         //check if record exists with full year payment
-        List<FeePaymentRecord> feePaymentRecordOfFullYearType = feePaymentRecordRepository.getByStudentAndSessionIdAndType(student.getId(), session.getId(), FeePaymentType.FULL_YEAR_PAYMENT);
+        // List<FeePaymentRecord> feePaymentRecordOfFullYearType = feePaymentRecordRepository.getByStudentAndSessionIdAndType(student.getId(), session.getId(), FeePaymentType.FULL_YEAR_PAYMENT);
 
         if (paytmIps != null) {
             if (!Arrays.stream(paytmIps).anyMatch(i -> i.equals(getClientIp(request)))) {
@@ -103,8 +104,6 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_TYPE.getValue());
         } else if (student == null) {
             paytmVM.setErrorCode(PaytmErrorCodes.INVALID_ENROLLMENT_NUMBERS.getValue());
-        } else if (feePaymentRecordOfFullYearType.size() > 0) {
-            paytmVM.setErrorCode(PaytmErrorCodes.NO_DUE.getValue());
         } else {
             StudentFeeStructure studentFeeStructure = studentFeeStructureRepository.getByStudentIdAndSessionId(student.getId(), session.getId());
 
@@ -114,7 +113,8 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
             else {
                 feePaymentType = FeePaymentType.OUTSTANDING_FEE;
             }
-            List<FeePaymentRecord> feePaymentRecords = feePaymentRecordRepository.getByStudentAndSessionIdAndType(student.getId(), session.getId(), feePaymentType);
+
+            //List<FeePaymentRecord> feePaymentRecords = feePaymentRecordRepository.getByStudentAndSessionIdAndType(student.getId(), session.getId(), feePaymentType);
 
             PaytmVM.StudentDetail studentDetail = new PaytmVM.StudentDetail();
             studentDetail.setFatherName(student.getFatherName());
@@ -129,23 +129,26 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
             switch (feePaymentType) {
                 case FULL_YEAR_PAYMENT:
 
+                    List<FeePaymentRecord> feePaymentRecordOfFullYearType = feePaymentRecordRepository.getByStudentAndSessionIdAndType(student.getId(), session.getId(), FeePaymentType.FULL_YEAR_PAYMENT);
+
                     Double totalAmount = 0.0;
                     for (StudentFeeType studentFeeType : studentFeeStructure.getStudentFeeTypes()) {
                         for (StudentFeeDescription feeDescription : studentFeeType.getStudentFeeDescriptions()) {
-                            totalAmount = totalAmount + feeDescription.getAmount() + (feeDescription.getAdjustment() - (feeDescription.getOneTimeDiscount()));
+                            totalAmount = totalAmount + feeDescription.getAmount() + feeDescription.getAdjustment() - feeDescription.getOneTimeDiscount();
 
                         }
                     }
-                    if (feePaymentRecords.size() == 1) {
+                    if (feePaymentRecordOfFullYearType.size() == 1) {
                         paytmVM.setErrorCode(PaytmErrorCodes.NO_DUE.getValue());
                     } else {
                         paytmVM.setErrorCode(PaytmErrorCodes.SUCCESS.getValue());
                         paytmVM.setTotalAmount(totalAmount);
                         paytmVM.setStudentDetails(studentDetail);
-                        paytmVM.setFeeTypeDetails(new ArrayList<>());
                     }
                     break;
                 case OUTSTANDING_FEE:
+
+                    List<FeePaymentRecord> feePaymentRecords = feePaymentRecordRepository.getByStudentAndSessionId(student.getId(), session.getId());
 
                     List<String> paidFee = new ArrayList<>();
                     for (FeePaymentRecord feePaymentRecord : feePaymentRecords) {
@@ -184,14 +187,14 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
                                 feeTypeDetail.setEditable(false);
                                 feeTypeDetailsForSingleFeeType.add(feeTypeDetail);
                                 feeTypeDetails.addAll(feeTypeDetailsForSingleFeeType);
-
                             }
                         } else {
                             if (feeTypeDetailsForSingleFeeType.size() > 0) {
-                                feeTypeDetails.addAll(feeTypeDetailsForSingleFeeType);
+                                 feeTypeDetails.addAll(feeTypeDetailsForSingleFeeType);
                                 break;
                             }
                         }
+                       // feeTypeDetails.addAll(feeTypeDetailsForSingleFeeType);
                     }
                     if (feeTypeDetails.size() == 0) {
                         paytmVM.setErrorCode(PaytmErrorCodes.NO_DUE.getValue());
@@ -222,7 +225,8 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
 
         Institute institute = instituteRepository.findInstituteByName(instituteName);
         if (institute != null) {
-            student = studentRepository.getByInstituteIdAndAdmissionId(institute.getId(), admissionId);
+            List<Student> students = studentRepository.getByInstituteIdAndAdmissionId(institute.getId(), admissionId);
+            student = students.get(0);
         }
         if (student != null) {
             session = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), LocalDate.now());
@@ -324,8 +328,6 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
                 } else if (feePaymentType.equals(FeePaymentType.FULL_YEAR_PAYMENT) && feePaymentRecordWithGivenOrderId != null) {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.NO_DUE.getValue()));
-                } else if (feePaymentType.equals(FeePaymentType.FULL_YEAR_PAYMENT) && !paytmStatusCheckVM.getName().equals("Full Year Payment")) {
-                    responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_FEE_NAME.getValue()));
                 } else if (feePaymentType.equals(FeePaymentType.OUTSTANDING_FEE) && !Double.valueOf(paytmStatusCheckVM.getAmount()).equals(Double.valueOf(mapOfFeeIncludingPenalty.get(paytmStatusCheckVM.getName())))) {
                     responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INVALID_AMOUNT.getValue()));
                 } else if (paytmStatusCheckVM.getType().equals(FeePaymentType.FULL_YEAR_PAYMENT.toString()) && !Double.valueOf(paytmStatusCheckVM.getAmount()).equals(fullYearPaymentAmount)) {
@@ -394,14 +396,6 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
 
                 }
                 alreadyExistRecords.add(feePaymentDetailMapper.toEntity(feePaymentDetailDTO));
-
-                if (feePaymentRecord.getTotalAmount() != null) {
-                    Double amount = feePaymentRecord.getTotalAmount();
-                    feePaymentRecord.setTotalAmount(amount + (Double.valueOf(paytmStatusCheckVM.getAmount())));
-                } else {
-                    feePaymentRecord.setTotalAmount(Double.valueOf(paytmStatusCheckVM.getAmount()));
-                }
-
                 feePaymentRecordDTO = feePaymentRecordMapper.toDto(feePaymentRecord);
             } else {
                 feePaymentRecordDTO.setTransactionId(orderId);

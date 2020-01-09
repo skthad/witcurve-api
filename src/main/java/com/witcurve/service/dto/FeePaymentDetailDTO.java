@@ -2,6 +2,8 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.Column;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,7 +19,6 @@ public class FeePaymentDetailDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private Long feeTypeId;
 
-    //@NotNull
     private Long feeDescriptionId;
 
     @NotNull

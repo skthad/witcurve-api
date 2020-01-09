@@ -11,6 +11,7 @@ import com.witcurve.repository.StudentStandardRepository;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.vm.InvoiceVM;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Component
 public class InvoiceUtil {
 
     @Autowired
@@ -34,8 +35,7 @@ public class InvoiceUtil {
 
 
     public File generateInvoice(InvoiceVM invoiceVM) {
-        //student = invoiceVM.getStudent();
-        student = studentRepository.findById(invoiceVM.getStudent().getId()).get();
+        student = invoiceVM.getStudent();
         try {
 
             HeaderTable event = new HeaderTable();
@@ -86,10 +86,10 @@ public class InvoiceUtil {
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase("Invoice No  : " + invoiceNo, poppinsSmallBold));
+            c1 = new PdfPCell(new Phrase("Invoice No : "+ invoiceNo, poppinsSmallBold));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            //c1.setPaddingRight(47f);
-            c1.setPaddingLeft(12f);
+            c1.setPaddingRight(9f);
+            c1.setPaddingLeft(8f);
             c1.setPaddingTop(5f);
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
