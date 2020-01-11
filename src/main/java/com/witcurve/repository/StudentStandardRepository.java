@@ -2,6 +2,7 @@ package com.witcurve.repository;
 
 import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.web.rest.vm.StudentPerformanceDashboardVM;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -84,5 +85,8 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select ss.id from StudentStandard ss where ss.session.id= ?1 and ss.active=true and ss.standard.grade= ?2 and ss.active=true")
     List<Long> getBySessionIdAndGrade(Long sessionId,Grade grade);
+
+    @Query("select new com.witcurve.web.rest.vm.StudentPerformanceDashboardVM(ss.standard.id, ss.student.gender, count(ss.id)) from StudentStandard ss where ss.active=true and ss.student.schoolInfo.id=?1 group by ss.standard.id, ss.student.gender order by ss.standard.grade asc, ss.standard.section asc")
+    List<StudentPerformanceDashboardVM> findStudentDashBoardDetailsBySchoolInfoId(Long schoolInfoId);
 
 }
