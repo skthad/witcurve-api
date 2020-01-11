@@ -14,6 +14,7 @@ import com.witcurve.service.dto.SubjectPerformanceDTO;
 import com.witcurve.service.util.CourseComparator;
 import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.vm.StudentPerformanceDashboardVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -178,6 +178,13 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         }
 
         return studentPerformanceDTO;
+    }
+
+    @Override
+    public List<StudentPerformanceDashboardVM> getStudentDashboardDetailsBySchoolInfoId(Long schoolInfoId) {
+        log.debug("Request to get student analytics dashboard details for school info with id : {}", schoolInfoId);
+        List<StudentPerformanceDashboardVM> result = studentStandardRepository.findStudentDashBoardDetailsBySchoolInfoId(schoolInfoId);
+        return result;
     }
 
     private Double findStudentMarks(StudentStandard studentStandard, Course course, List<ReportCardDesign> reportCardDesigns) {
