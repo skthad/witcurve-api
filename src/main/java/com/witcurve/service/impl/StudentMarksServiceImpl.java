@@ -28,7 +28,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     private final Logger log  = LoggerFactory.getLogger(StandardServiceImpl.class);
 
     private final List<EventType> ALLOWED_EVENT_TYPES = Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST);
-    private final List<ReportFieldType> ALLOWED_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.NON_SCHOLASTIC, ReportFieldType.MANUAL_ENTRY);
+    private final List<ReportFieldType> ALLOWED_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.MANUAL_ENTRY);
     private final List<ReportFieldType> SCHOLASTIC_CHILD_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.PERIODIC_TEST, ReportFieldType.MANUAL_ENTRY);
 
     @Autowired
@@ -223,7 +223,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                 throw new WitcurveException("There is no report card design with given id");
             }
             if(!ALLOWED_FIELD_TYPES.contains(reportCardDesign.get().getFieldType()) ) {
-                throw new WitcurveException("Invalid report card design, make sure it is of manual entry or main or non_scholastic field");
+                throw new WitcurveException("Invalid report card design, make sure it is of manual entry or main field");
             }
             Optional<Course> course = courseRepository.findById(courseId);
             if(!course.isPresent() || !course.get().getActive() ) {
