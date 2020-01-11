@@ -76,6 +76,10 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         }
         List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByStudentIdAndSessionId(studentFeeStructureDTO.getStudentId(),studentFeeStructureDTO.getSelectedSessionId());
 
+        if(sessionFeeStructures.size() < 1){
+            throw new WitcurveException("No session fee structure is found with respect to given session and student");
+        }
+
         Map<Long, List<Long>> mapOfFeeTypeAndRequiredFeeDescriptionIds = new HashMap<>();
         Map<Long, List<Long>> mapOfFeeTypeAndAllFeeDescriptionIds = new HashMap<>();
         for (SessionFeeStructure sessionFeeStructure : sessionFeeStructures) {

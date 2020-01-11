@@ -17,6 +17,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -80,7 +82,7 @@ public class WitcurveUtil {
         try {
             return new InputStreamResource(new FileInputStream(file));
         } catch (IOException e) {
-            log.debug("Error while reading contents : {}",e.getMessage());
+            log.debug("Error while reading contents : {}", e.getMessage());
             throw new WitcurveException("There was a problem generating resource");
         }
 
@@ -105,12 +107,11 @@ public class WitcurveUtil {
     }
 
     public static String formatDouble(double d) {
-        if(d == (long) d)
-            return String.format("%d",(long)d);
+        if (d == (long) d)
+            return String.format("%d", (long) d);
         else
-            return String.format("%s",d);
+            return String.format("%s", d);
     }
-
 
 
     public static List<Long> convertBigIntToLong(List<BigInteger> list) {
@@ -122,7 +123,7 @@ public class WitcurveUtil {
     }
 
     public static Double roundToTwoDecimal(Double value) {
-        if(value == null){
+        if (value == null) {
             return null;
         }
         return (double) Math.round(value * 100) / 100;
@@ -151,6 +152,25 @@ public class WitcurveUtil {
             (s, s2) -> s);
     }
 
+    public static String dateFormatter(String date, String givenFormat, String desiredFormat) {
+        try {
+            SimpleDateFormat sdf1 = new SimpleDateFormat(givenFormat);
+            SimpleDateFormat sdf2 = new SimpleDateFormat(desiredFormat);
+            return sdf2.format(sdf1.parse(date));
+        } catch (ParseException e) {
+            throw new WitcurveException("Error while parsing date", e);
+        }
+    }
+
+    public static String getStudentName(String firstName, String middleName, String lastName) {
+        String name;
+        if (middleName == null) {
+            name = firstName + " " + lastName;
+        } else {
+            name = firstName + " " + middleName + " " + lastName;
+        }
+        return name;
+    }
 }
 
 

@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface InstituteRepository extends JpaRepository<Institute, Long> {
 
     Institute findInstituteBySubDomainName(String subDomainName);
+
+    Institute findInstituteByName(String name);
 }

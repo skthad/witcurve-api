@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1576159240304-1">
+        <createTable tableName="transaction_record">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="transaction_recordPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="total_amount" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_id" type="VARCHAR(255)"/>
+            <column name="transaction_mode" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fee_payment_record_id" type="BIGINT"/>
+            <column name="school_info_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576159240304-2">
+        <createTable tableName="transaction_record_attachments">
+            <column name="transaction_record_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attachment_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576159240304-3">
+        <addUniqueConstraint columnNames="attachment_id" constraintName="UK_l0lfkm8xnyd6sdk6q9pey9umu"
+                             tableName="transaction_record_attachments"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576159240304-4">
+        <addForeignKeyConstraint baseColumnNames="school_info_id" baseTableName="transaction_record"
+                                 constraintName="FK8ax0c3nrusnde9k8n35iisfer" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="school_info"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576159240304-5">
+        <addForeignKeyConstraint baseColumnNames="fee_payment_record_id" baseTableName="transaction_record"
+                                 constraintName="FK9aw62pgbj7xnaa9sepmjigx9u" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="fee_payment_record"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576159240304-6">
+        <addForeignKeyConstraint baseColumnNames="transaction_record_id" baseTableName="transaction_record_attachments"
+                                 constraintName="FKb3ili3ek4kftsef814wwcoijc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="transaction_record"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576159240304-7">
+        <addForeignKeyConstraint baseColumnNames="attachment_id" baseTableName="transaction_record_attachments"
+                                 constraintName="FKcpmweci4069th9eth6ojios8s" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attachment"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576237062316-8">
+        <dropForeignKeyConstraint baseTableName="transaction_record" constraintName="FK9aw62pgbj7xnaa9sepmjigx9u"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1576237062316-9">
+        <dropColumn columnName="fee_payment_record_id" tableName="transaction_record"/>
+    </changeSet>
+</databaseChangeLog>

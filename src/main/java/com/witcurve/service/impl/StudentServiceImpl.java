@@ -27,7 +27,7 @@ import java.util.*;
 @Transactional
 public class StudentServiceImpl implements StudentService {
 
-    private final Logger log  = LoggerFactory.getLogger(StudentServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     StudentRepository studentRepository;
@@ -68,6 +68,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
         log.debug("Request to create student : {}", studentDTO);
+        List<Student> students = studentRepository.getByAdmissionIdAndSchoolInfoWithInstituteId(studentDTO.getSchoolInfo().getId(), studentDTO.getAdmissionId());
+        if (students.size() > 0) {
+            throw new WitcurveException("There is already a student exists in institute with given admission id");
+        }
         UserDTO userDTO = new UserDTO();
         userDTO.setEmail(studentDTO.getEmail());
         userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId().toLowerCase());
@@ -87,8 +91,11 @@ public class StudentServiceImpl implements StudentService {
     public StudentDTO update(StudentDTO studentDTO) throws WitcurveException {
         log.debug("Request to update student : {}", studentDTO);
         Optional<User> optionalUser = userRepository.findById(studentDTO.getUserId());
-        if(!optionalUser.isPresent()) {
-            throw new WitcurveException("There is no user with given id : "+studentDTO.getUserId());
+        if (!optionalUser.isPresent()) {
+            throw new WitcurveException("There is no user with given id : " + studentDTO.getUserId());
+        }
+        if (!optionalUser.get().getStudent().getAdmissionId().equals(studentDTO.getAdmissionId())) {
+            throw new WitcurveException("While updating student admission id should not be changed");
         }
         UserDTO userDTO = userMapper.userToUserDTO(optionalUser.get());
         userDTO.setLogin(studentDTO.getSchoolInfo().getId() + "-" + studentDTO.getAdmissionId().toLowerCase());
@@ -138,8 +145,9 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentDTO> getStudentsByStandardIdAndCourseId(Long standardId, Long courseId) throws WitcurveException {
         log.debug("Request to get students with standard id : {} and course with id : {}", standardId, courseId);
         List<Student> students;
-        if(courseId == null) {
-            students = studentRepository.getStudentsByStandardId(standardId);;
+        if (courseId == null) {
+            students = studentRepository.getStudentsByStandardId(standardId);
+            ;
         } else {
             students = studentRepository.getStudentsByStandardIdAndCourseId(standardId, courseId);
         }
@@ -164,7 +172,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentDTO getStudentByUsername(String username) throws WitcurveException {
         log.info("Request to get student with username: {}", username);
         int index = username.indexOf("-");
-        if(index > 0) {
+        if (index > 0) {
             Long schoolInfoId;
             try {
                 schoolInfoId = Long.parseLong(username.substring(0, index));
@@ -174,9 +182,9 @@ public class StudentServiceImpl implements StudentService {
             }
             String admissionId = username.substring(index + 1);
             Student student = studentRepository.findBySchoolInfoIdAndAdmissionId(schoolInfoId, admissionId.toLowerCase());
-            if (student == null){
+            if (student == null) {
                 log.error("No student with given admission id : {} in the give school info id : {}", admissionId, schoolInfoId);
-                throw  new WitcurveException("No student exists with given username ");
+                throw new WitcurveException("No student exists with given username ");
             }
 
             StudentDTO result = studentMapper.toDto(student);
@@ -226,8 +234,8 @@ public class StudentServiceImpl implements StudentService {
         }
         List<Course> courses = courseRepository.findNonElectivesBySchoolInfo(standard.get().getSchoolInfo().getId());
         List<StudentCourse> coursesToMap = null;
-        for (StudentStandard studentStandard: studentStandards) {
-            for (Course course: courses) {
+        for (StudentStandard studentStandard : studentStandards) {
+            for (Course course : courses) {
                 if (coursesToMap == null) {
                     coursesToMap = new ArrayList<>();
                 }
@@ -267,14 +275,14 @@ public class StudentServiceImpl implements StudentService {
         List<StudentStandard> studentStandards = studentStandardRepository.getBySchoolInfoId(schoolInfoId);
         List<Course> courses = courseRepository.findNonElectivesBySchoolInfo(schoolInfoId);
         Map<Grade, List<Course>> gradeCourseMap = new HashMap<>();
-        for (Course course: courses) {
+        for (Course course : courses) {
             if (gradeCourseMap.get(course.getGrade()) == null) {
                 gradeCourseMap.put(course.getGrade(), new ArrayList<>());
             }
             gradeCourseMap.get(course.getGrade()).add(course);
         }
         List<StudentCourse> studentCourses = null;
-        for (StudentStandard ss: studentStandards) {
+        for (StudentStandard ss : studentStandards) {
             if (studentCourses == null) {
                 studentCourses = new ArrayList<>();
             }
@@ -282,7 +290,7 @@ public class StudentServiceImpl implements StudentService {
             if (coursesToMap == null) {
                 continue;
             }
-            for (Course courseToMap: coursesToMap) {
+            for (Course courseToMap : coursesToMap) {
                 StudentCourse sc = new StudentCourse();
                 sc.setStudentStandard(ss);
                 sc.setCourse(courseToMap);

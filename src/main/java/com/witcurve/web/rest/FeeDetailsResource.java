@@ -9,6 +9,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,18 @@ public class FeeDetailsResource {
     @Timed
     public ResponseEntity<List<FeeDetailsDTO>> createOrUpdateFeeDetails(@RequestBody @Valid List<FeeDetailsDTO> feeDetailsDTOs, @RequestParam Long schoolInfoId) throws WitcurveException, URISyntaxException {
         log.debug("Request to save FeeDetailsList : {} for school info with id : {}", feeDetailsDTOs, schoolInfoId);
-        List<FeeDetailsDTO> result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTOs, schoolInfoId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            List<FeeDetailsDTO> result = feeDetailsService.saveOrUpdateFeeDetails(feeDetailsDTOs, schoolInfoId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("name_type_schoolInfo_id_UK")) {
+                throw new WitcurveException("Unique constraint (name, type, school_info_id ) violated");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**
@@ -53,7 +64,8 @@ public class FeeDetailsResource {
 
     @GetMapping("/fee-details/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<List<FeeDetailsDTO>> getFeeDetailsBySchoolInfoId(@PathVariable Long schoolInfoId, @RequestParam(value = "type", required = false) FeeDetailsType type) throws WitcurveException {
+    public ResponseEntity<List<FeeDetailsDTO>> getFeeDetailsBySchoolInfoId(@PathVariable Long
+                                                                               schoolInfoId, @RequestParam(value = "type", required = false) FeeDetailsType type) throws WitcurveException {
         log.debug("Request to get FeeDetails for school info with id : {} of feeDetailsType : {} ", schoolInfoId, type);
         List<FeeDetailsDTO> result = feeDetailsService.getFeeDetailsBySchoolInfoId(schoolInfoId, type);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -69,7 +81,8 @@ public class FeeDetailsResource {
 
     @GetMapping("/fee-details/{feeDetailsId}")
     @Timed
-    public ResponseEntity<FeeDetailsDTO> getFeeDetailsById(@PathVariable Long feeDetailsId) throws WitcurveException {
+    public ResponseEntity<FeeDetailsDTO> getFeeDetailsById(@PathVariable Long feeDetailsId) throws
+        WitcurveException {
         log.debug("Request to get FeeDetails for Id {}", feeDetailsId);
         FeeDetailsDTO result = feeDetailsService.getFeeDetailsById(feeDetailsId);
         return new ResponseEntity<>(result, HttpStatus.OK);

@@ -7,7 +7,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "student_fee_description")
+@Table(name = "student_fee_description", uniqueConstraints = {
+    @UniqueConstraint(name = "student_fee_type_id_fee_description_id_UK",
+        columnNames = {"student_fee_type_id", "fee_description_id"})
+})
 public class StudentFeeDescription extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,6 +35,10 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
     @NotNull
     @Column(nullable = false)
     private Double oneTimeDiscount = 0.0;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean required = false;
 
     public Long getId() {
         return id;
@@ -72,6 +79,10 @@ public class StudentFeeDescription extends AbstractAuditingEntity implements Ser
     public void setOneTimeDiscount(Double oneTimeDiscount) {
         this.oneTimeDiscount = oneTimeDiscount;
     }
+
+    public Boolean getRequired() { return required; }
+
+    public void setRequired(Boolean required) { this.required = required; }
 
     @Override
     public boolean equals(Object o) {

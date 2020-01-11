@@ -32,7 +32,7 @@ public class S3FileManager {
     @Autowired
     AmazonS3 amazonS3;
 
-    private final Logger log  = LoggerFactory.getLogger(AttachmentServiceImpl.class);
+    private final Logger log  = LoggerFactory.getLogger(S3FileManager.class);
 
     public Map<String, String> uploadFromInputStream(String bucket, String fileName, MultipartFile stream, Map<String, String> attributes, boolean setMd5) throws WitcurveException {
         try {

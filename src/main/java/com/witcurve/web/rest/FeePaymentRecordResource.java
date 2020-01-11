@@ -1,10 +1,13 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.witcurve.domain.enumeration.ModeOfTransaction;
 import com.witcurve.service.FeePaymentRecordService;
 import com.witcurve.service.dto.FeePaymentRecordDTO;
+import com.witcurve.service.util.WitcurveUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
+import com.witcurve.web.rest.vm.ReportCardVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.Resource;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -35,13 +40,13 @@ public class FeePaymentRecordResource {
      */
     @PostMapping("/fee-payment-record")
     @Timed
-    public ResponseEntity<FeePaymentRecordDTO> createFeePaymentRecord(@RequestBody @Valid FeePaymentRecordDTO feePaymentRecordDTO) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<FeePaymentRecordDTO> createFeePaymentRecord(@RequestBody @Valid FeePaymentRecordDTO feePaymentRecordDTO, @RequestParam ModeOfTransaction mode) throws WitcurveException, URISyntaxException {
         log.debug("Request to save FeePaymentRecord : {}", feePaymentRecordDTO);
         if (feePaymentRecordDTO.getId() != null) {
             throw new WitcurveException("New record can not have an id");
         }
         try {
-            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO);
+            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO,mode);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("orderId_UK")) {
@@ -65,13 +70,13 @@ public class FeePaymentRecordResource {
     @PutMapping("/fee-payment-record")
     @Timed
     public ResponseEntity<FeePaymentRecordDTO> updateFeePaymentRecord(@RequestBody @Valid FeePaymentRecordDTO
-                                                                          feePaymentRecordDTO) throws WitcurveException, URISyntaxException {
+                                                                          feePaymentRecordDTO, @RequestParam ModeOfTransaction mode) throws WitcurveException, URISyntaxException {
         log.debug("Request to update FeePaymentRecord : {}", feePaymentRecordDTO);
         if (feePaymentRecordDTO.getId() == null) {
             throw new WitcurveException("Id is require to update record");
         }
         try {
-            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO);
+            FeePaymentRecordDTO result = feePaymentRecordService.saveOrUpdate(feePaymentRecordDTO, mode);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("orderId_UK")) {
@@ -138,4 +143,16 @@ public class FeePaymentRecordResource {
 
 
     }
+
+    @PostMapping("/generate-invoice/fee-payment-record/{feePaymentRecordId}")
+    public ResponseEntity<Resource> getInvoice(@PathVariable Long feePaymentRecordId) {
+        log.debug("Request to get invoice pdf of admissionId : {}", feePaymentRecordId);
+        File result = feePaymentRecordService.generateInvoice(feePaymentRecordId);
+        Resource resource = WitcurveUtil.getResourceFromFile(result);
+        return ResponseEntity.ok(resource);
+
+
+    }
+
+
 }

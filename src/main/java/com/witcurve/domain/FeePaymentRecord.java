@@ -1,5 +1,6 @@
 package com.witcurve.domain;
 
+import com.witcurve.domain.enumeration.FeePaymentType;
 import com.witcurve.domain.enumeration.PaymentRecordType;
 import com.witcurve.service.util.LocalDateConverter;
 
@@ -29,22 +30,12 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     private String orderId;
 
     @Column
-    private String paytmId;
+    private String transactionId;
 
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentRecordType type;
-
-    @NotNull
-    @Column(name = "total_amount")
-    @Min(value = 0L, message = "total amount must be positive")
-    private Double totalAmount;
-
-    @NotNull
-    @Column(name = "penalty_amount")
-    @Min(value = 0L, message = "penalty amount must be positive")
-    private Double penaltyAmount = 0.0;
 
     @NotNull
     @ManyToOne
@@ -54,10 +45,13 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
     @JoinColumn(name = "fee_payment_record_id")
     private List<FeePaymentDetail> feePaymentDetails;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private TransactionRecord transactionRecord;
+
     @NotNull
-    @Column(name = "transaction_date", nullable = false)
-    @Convert(converter = LocalDateConverter.class)
-    private LocalDate transactionDate;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private FeePaymentType feePaymentType;
 
     public Long getId() { return id; }
 
@@ -71,14 +65,6 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
 
     public void setType(PaymentRecordType type) { this.type = type; }
 
-    public Double getTotalAmount() { return totalAmount; }
-
-    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
-
-    public Double getPenaltyAmount() { return penaltyAmount; }
-
-    public void setPenaltyAmount(Double penaltyAmount) { this.penaltyAmount = penaltyAmount; }
-
     public List<FeePaymentDetail> getFeePaymentDetails() { return feePaymentDetails; }
 
     public void setFeePaymentDetails(List<FeePaymentDetail> feePaymentDetails) { this.feePaymentDetails = feePaymentDetails; }
@@ -87,13 +73,19 @@ public class FeePaymentRecord extends AbstractAuditingEntity implements Serializ
 
     public void setStudentFeeStructure(StudentFeeStructure studentFeeStructure) { this.studentFeeStructure = studentFeeStructure; }
 
-    public String getPaytmId() { return paytmId; }
+    public String getTransactionId() { return transactionId; }
 
-    public void setPaytmId(String paytmId) { this.paytmId = paytmId; }
+    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
-    public LocalDate getTransactionDate() { return transactionDate; }
+    public static long getSerialVersionUID() { return serialVersionUID; }
 
-    public void setTransactionDate(LocalDate transactionDate) { this.transactionDate = transactionDate; }
+    public TransactionRecord getTransactionRecord() { return transactionRecord; }
+
+    public void setTransactionRecord(TransactionRecord transactionRecord) { this.transactionRecord = transactionRecord; }
+
+    public FeePaymentType getFeePaymentType() { return feePaymentType; }
+
+    public void setFeePaymentType(FeePaymentType feePaymentType) { this.feePaymentType = feePaymentType; }
 
     @Override
     public boolean equals(Object o) {

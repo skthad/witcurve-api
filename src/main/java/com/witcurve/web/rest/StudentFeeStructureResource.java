@@ -43,7 +43,11 @@ public class StudentFeeStructureResource {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("student_session_id_UK")) {
-                throw new WitcurveException("Unique constraint (student_id, session_id) violated");
+                throw new WitcurveException("There can be one student fee structure record for student in a session");
+            } else if (e.getMessage().contains("student_fee_structure_id_fee_type_id_UK")) {
+                throw new WitcurveException("Fee type id should be unique for a student fee structure");
+            } else if (e.getMessage().contains("student_fee_type_id_fee_description_id_UK")) {
+                throw new WitcurveException("Fee description id should be unique for a student fee type");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -71,7 +75,11 @@ public class StudentFeeStructureResource {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("student_session_id_UK")) {
-                throw new WitcurveException("Unique constraint (student_id, session_id) violated");
+                throw new WitcurveException("There can be one student fee structure record for student in a session");
+            } else if (e.getMessage().contains("student_fee_structure_id_fee_type_id_UK")) {
+                throw new WitcurveException("Fee type id should be unique for a student fee structure");
+            } else if (e.getMessage().contains("student_fee_type_id_fee_description_id_UK")) {
+                throw new WitcurveException("Fee description id should be unique for a student fee type");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {

@@ -27,6 +27,9 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
 
     private Double totalOneTimeDiscount;
 
+    @NotNull
+    private Boolean required = false;
+
     public Long getId() {
         return id;
     }
@@ -70,6 +73,10 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
     public Double getTotalOneTimeDiscount() { return totalOneTimeDiscount; }
 
     public void setTotalOneTimeDiscount(Double totalOneTimeDiscount) { this.totalOneTimeDiscount = totalOneTimeDiscount; }
+
+    public Boolean getRequired() { return required; }
+
+    public void setRequired(Boolean required) { this.required = required; }
 
     @Override
     public boolean equals(Object o) {

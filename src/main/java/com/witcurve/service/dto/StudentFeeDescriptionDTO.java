@@ -22,6 +22,9 @@ public class StudentFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     @NotNull
     private Double oneTimeDiscount = 0.0;
 
+    @NotNull
+    private Boolean required = false;
+
     public Long getId() {
         return id;
     }
@@ -61,6 +64,10 @@ public class StudentFeeDescriptionDTO extends AbstractAuditingDTO implements Ser
     public void setOneTimeDiscount(Double oneTimeDiscount) {
         this.oneTimeDiscount = oneTimeDiscount;
     }
+
+    public Boolean getRequired() { return required; }
+
+    public void setRequired(Boolean required) { this.required = required; }
 
     @Override
     public boolean equals(Object o) {

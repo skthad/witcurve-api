@@ -12,6 +12,8 @@ public class PaytmVM implements Serializable {
     
     private List<FeeTypeDetail> feeTypeDetails;
 
+    private Double totalAmount;
+
     public Integer getErrorCode() {
         return errorCode;
     }
@@ -36,29 +38,26 @@ public class PaytmVM implements Serializable {
         this.feeTypeDetails = feeTypeDetails;
     }
 
+    public Double getTotalAmount() { return totalAmount; }
+
+    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
+
     public static class StudentDetail implements Serializable {
         
         private String studentName;
 
-        
         private String rollNo;
 
-        
         private String fatherName;
 
-        
         private String motherName;
 
-        
         private String dateOfBirth;
 
-        
         private String admissionId;
 
-        
         private String note;
 
-        
         private String standard;
 
         public String getStudentName() {
@@ -177,5 +176,15 @@ public class PaytmVM implements Serializable {
                 ", required=" + required +
                 '}';
         }
+    }
+
+    @Override
+    public String toString() {
+        return "PaytmVM{" +
+            "errorCode=" + errorCode +
+            ", studentDetails=" + studentDetails +
+            ", feeTypeDetails=" + feeTypeDetails +
+            ", totalAmount=" + totalAmount +
+            '}';
     }
 }

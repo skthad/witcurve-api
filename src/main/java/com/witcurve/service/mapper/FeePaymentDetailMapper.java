@@ -9,8 +9,8 @@ import org.mapstruct.Mapping;
 public interface FeePaymentDetailMapper extends EntityMapper<FeePaymentDetailDTO, FeePaymentDetail> {
 
 
-    @Mapping(source = "feeTypeId", target = "feeType.id")
-    @Mapping(source = "feeDescriptionId", target = "feeDescription.id")
+    @Mapping(source = "feeTypeId", target = "feeType")
+    @Mapping(source = "feeDescriptionId", target = "feeDescription")
     FeePaymentDetail toEntity(FeePaymentDetailDTO feePaymentDetailDTO);
 
     @Mapping(target = "feeTypeId", source = "feeType.id")

@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.enumeration.FeePaymentType;
 import com.witcurve.domain.enumeration.PaymentRecordType;
 
 import javax.validation.constraints.Min;
@@ -18,28 +19,24 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     private String orderId;
 
-    private String paytmId;
+    private String transactionId;
 
     @NotNull
     private PaymentRecordType type;
 
     @NotNull
-    @Min(value = 0L)
-    private Double totalAmount;
-
-    @NotNull
-    @Min(value = 0L)
-    private Double penaltyAmount = 0.0;
-
-    @NotNull
     private Long studentFeeStructureId;
 
-    @NotNull
     private List<FeePaymentDetailDTO> feePaymentDetails;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
+    private FeePaymentType feePaymentType;
+
+    private TransactionRecordDTO transactionRecordDTO;
+
     private LocalDate transactionDate;
+
+    private Double totalAmount;
 
     public Long getId() { return id; }
 
@@ -49,9 +46,9 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setOrderId(String orderId) { this.orderId = orderId; }
 
-    public String getPaytmId() { return paytmId; }
+    public String getTransactionId() { return transactionId; }
 
-    public void setPaytmId(String paytmId) { this.paytmId = paytmId; }
+    public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
 
     public PaymentRecordType getType() { return type; }
 
@@ -61,10 +58,6 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
 
     public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 
-    public Double getPenaltyAmount() { return penaltyAmount; }
-
-    public void setPenaltyAmount(Double penaltyAmount) { this.penaltyAmount = penaltyAmount; }
-
     public Long getStudentFeeStructureId() { return studentFeeStructureId; }
 
     public void setStudentFeeStructureId(Long studentFeeStructureId) { this.studentFeeStructureId = studentFeeStructureId; }
@@ -72,6 +65,14 @@ public class FeePaymentRecordDTO extends AbstractAuditingDTO implements Serializ
     public List<FeePaymentDetailDTO> getFeePaymentDetails() { return feePaymentDetails; }
 
     public void setFeePaymentDetails(List<FeePaymentDetailDTO> feePaymentDetails) { this.feePaymentDetails = feePaymentDetails; }
+
+    public TransactionRecordDTO getTransactionRecordDTO() { return transactionRecordDTO; }
+
+    public void setTransactionRecordDTO(TransactionRecordDTO transactionRecordDTO) { this.transactionRecordDTO = transactionRecordDTO; }
+
+    public FeePaymentType getFeePaymentType() { return feePaymentType; }
+
+    public void setFeePaymentType(FeePaymentType feePaymentType) { this.feePaymentType = feePaymentType; }
 
     public LocalDate getTransactionDate() { return transactionDate; }
 

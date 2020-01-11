@@ -182,7 +182,7 @@ public class ReportCardServiceImpl implements ReportCardService {
         List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.GRADING_SCALE});
         String subDomainName = standard.get().getSchoolInfo().getSchool().getInstitute().getSubDomainName();
         Long id = standard.get().getSchoolInfo().getSchool().getInstitute().getId();
-        String headerUrl = "http://"+subDomainName+".witcurve-app.com/assets/images/header-logo/"+id+"-header-logo.png";
+        String headerUrl = "https://"+subDomainName+".witcurve-app.com/assets/images/header-logo/"+id+"-header-logo.png";
         List<ConfigSettings> schoolPrimaryColorSettings  = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.SCHOOL_PRIMARY_COLOR});
         String schoolPrimaryColor = "#00000";
         if(!configSettings.isEmpty()) {
