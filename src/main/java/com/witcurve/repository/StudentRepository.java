@@ -50,5 +50,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> getByInstituteIdAndAdmissionId(Long instituteId, String admissionId);
 
     @Query("select student from Student student where student.schoolInfo.school.institute.id = (select si.school.institute.id from SchoolInfo si where si.id = ?1) and student.admissionId = ?2 ")
-    List<Student> getBySchoolInfoIdAndAdmissionId(Long schoolInfoId, String admissionId);
+    List<Student> getByAdmissionIdAndSchoolInfoWithInstituteId(Long schoolInfoId, String admissionId);
 }

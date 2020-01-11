@@ -97,7 +97,7 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
                 throw new WitcurveException("No fee details present with given feeTypeId : {}" + sessionFeeStructureDTO.getFeeTypeId());
             }
             if (!feeDetailsOfFeeType.get().getType().equals(FeeDetailsType.FEE_TYPE)) {
-                throw new WitcurveException("Given id is not of fee type");
+                throw new WitcurveException("One of the given fee types ids is not of fee type");
             }
 
             if (sessionFeeStructureDTO.getSessionFeeDescriptions().size() == 0) {
@@ -108,7 +108,7 @@ public class SessionFeeStructureServiceImpl implements SessionFeeStructureServic
             Long count = feeDetailsRepository.findCountByTypeAndFeeDescriptionIds(sessionId, FeeDetailsType.FEE_DESCRIPTION, feeDescriptionIds);
 
             if (count != feeDescriptionIds.size()) {
-                throw new WitcurveException("Given id is not of fee description type");
+                throw new WitcurveException("One of the given fee description ids is not of fee description type");
             }
             sessionFeeStructureDTO.setGrade(grade);
             sessionFeeStructureDTO.setSessionId(sessionId);

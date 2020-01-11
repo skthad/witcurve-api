@@ -7,10 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {StudentFeeStructureMapper.class, FeePaymentDetailMapper.class, TransactionRecordMapper.class})
 public interface FeePaymentRecordMapper extends EntityMapper<FeePaymentRecordDTO, FeePaymentRecord> {
@@ -36,17 +32,17 @@ public interface FeePaymentRecordMapper extends EntityMapper<FeePaymentRecordDTO
     }
 
     default LocalDate getFirstTransactionDate(FeePaymentRecord feePaymentRecord) {
-        LocalDate [] minDate = new LocalDate[1];
+        LocalDate minDate = null;
         for (FeePaymentDetail feePaymentDetail : feePaymentRecord.getFeePaymentDetails()) {
-            if (minDate[0] == null) {
-                minDate[0] = feePaymentDetail.getTransactionDate();
+            if (minDate == null) {
+                minDate = feePaymentDetail.getTransactionDate();
             } else {
-                if (feePaymentDetail.getTransactionDate().compareTo(minDate[0]) < 0) {
-                    minDate[0] = feePaymentDetail.getTransactionDate();
+                if (feePaymentDetail.getTransactionDate().compareTo(minDate) < 0) {
+                    minDate = feePaymentDetail.getTransactionDate();
                 }
             }
         }
-        return minDate[0];
+        return minDate;
     }
 
     default Double getTotalAmount(FeePaymentRecord feePaymentRecord) {

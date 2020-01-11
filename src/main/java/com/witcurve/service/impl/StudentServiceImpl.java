@@ -68,7 +68,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
         log.debug("Request to create student : {}", studentDTO);
-        List<Student> students = studentRepository.getBySchoolInfoIdAndAdmissionId(studentDTO.getSchoolInfo().getId(), studentDTO.getAdmissionId());
+        List<Student> students = studentRepository.getByAdmissionIdAndSchoolInfoWithInstituteId(studentDTO.getSchoolInfo().getId(), studentDTO.getAdmissionId());
         if (students.size() > 0) {
             throw new WitcurveException("There is already a student exists in institute with given admission id");
         }
