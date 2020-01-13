@@ -37,7 +37,7 @@ public class AnalyticsResource {
     @GetMapping("/analytics/student/section")
     @Timed
     public ResponseEntity<List<SectionPerformanceDTO>> getSectionPerformance(@RequestParam Long examId) throws WitcurveException {
-        log.debug("Request to get Student Performance for and examId {}", examId);
+        log.debug("Request to get Section Performance for and examId {}", examId);
         List<SectionPerformanceDTO> sectionPerformanceDTOList = analyticsService.getSectionPerformance(examId);
         return new ResponseEntity<>(sectionPerformanceDTOList, HttpStatus.OK);
     }

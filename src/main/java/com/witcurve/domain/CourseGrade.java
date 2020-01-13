@@ -74,7 +74,7 @@ public class CourseGrade extends AbstractAuditingEntity implements Serializable 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StudentCourseGrade that = (StudentCourseGrade) o;
+        CourseGrade that = (CourseGrade) o;
         return Objects.equals(id, that.id);
     }
 

@@ -54,7 +54,7 @@ public interface StudentMarksRepository extends JpaRepository<StudentMarks, Long
         "and sm.student.id in (select student.id from StudentStandard where active is true and standard.id = ?2)")
     List<StudentMarks> getStudentMarksByCourseIdAndStandardId(Long courseId, Long standardId);
 
-    @Query("select sm from StudentMarks sm where sm.student.id=?1 and  (sm.course.id=?2 and sm.reportCardDesign.fieldType in ('MAIN', 'NON_SCHOLASTIC') and sm.reportCardDesign.exam.startDate between ?3 and ?4)")
+    @Query("select sm from StudentMarks sm where sm.student.id=?1 and  (sm.course.id=?2 and sm.reportCardDesign.fieldType = 'MAIN' and sm.reportCardDesign.exam.startDate between ?3 and ?4)")
     List<StudentMarks> getByCourseIdAndStudentId(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate);
 
     @Query("select sm from StudentMarks sm where sm.student.id=?1 and (sm.event.id in ?2)")

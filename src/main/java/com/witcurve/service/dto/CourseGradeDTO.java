@@ -18,7 +18,7 @@ public class CourseGradeDTO extends AbstractAuditingDTO implements Serializable 
     private Long studentId;
 
     @NotNull
-    @Pattern(regexp = "/(.*[a-z]){3}/i")
+    @Pattern(regexp = "^[a-zA-Z.]{1,3}$")
     private String courseGrade;
 
     private String studentName;
@@ -139,7 +139,7 @@ public class CourseGradeDTO extends AbstractAuditingDTO implements Serializable 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StudentCourseGradeDTO that = (StudentCourseGradeDTO) o;
+        CourseGradeDTO that = (CourseGradeDTO) o;
         return Objects.equals(id, that.id);
     }
 

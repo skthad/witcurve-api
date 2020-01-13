@@ -36,7 +36,7 @@ public class CourseGradeResource {
      */
     @PostMapping("/course-grade")
     @Timed
-    public ResponseEntity<List<CourseGradeDTO>> createStudentMarks(@RequestBody @Valid List<CourseGradeDTO> courseGradeDTOs,
+    public ResponseEntity<List<CourseGradeDTO>> createCourseGrade(@RequestBody @Valid List<CourseGradeDTO> courseGradeDTOs,
                                                                    @RequestParam Long rcdId,
                                                                    @RequestParam Long courseId) throws WitcurveException, URISyntaxException {
         log.debug("Request to create student course grade ");

@@ -3,10 +3,7 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
-import com.witcurve.service.CourseService;
-import com.witcurve.service.EventService;
-import com.witcurve.service.ReportCardService;
-import com.witcurve.service.StudentMarksService;
+import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.ReportCardMapper;
 import com.witcurve.service.util.*;
@@ -87,6 +84,8 @@ public class ReportCardServiceImpl implements ReportCardService {
     @Autowired
     AttributeValueRepository attributeValueRepository;
 
+    @Autowired
+    CourseGradeService courseGradeService;
 
 
     private final List<ReportFieldType> SCHOLASTIC_FIELD_TYPE_LISTS = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.MANUAL_ENTRY, ReportFieldType.PERIODIC_TEST, ReportFieldType.TOTAL);
@@ -107,10 +106,10 @@ public class ReportCardServiceImpl implements ReportCardService {
         String xml = htmlToPdfUtil.getReportHtmlXml(inputFile);
         try {
             String fileName;
-            if(nameOfFile == null) {
-                fileName  = "result-template.html";
+            if (nameOfFile == null) {
+                fileName = "result-template.html";
             } else {
-                fileName = nameOfFile+"_template.html";
+                fileName = nameOfFile + "_template.html";
             }
             File result = WitcurveUtil.createTempFile(fileName);
             FileWriter fw = new FileWriter(result);
@@ -169,11 +168,11 @@ public class ReportCardServiceImpl implements ReportCardService {
             throw new WitcurveException("No standard found with id : " + standardId);
         }
         Optional<ReportCard> reportCard = reportCardRepository.findById(reportCardId);
-        if(!reportCard.isPresent()) {
-            throw new WitcurveException("There is no report card setting available with id : "+reportCardId);
+        if (!reportCard.isPresent()) {
+            throw new WitcurveException("There is no report card setting available with id : " + reportCardId);
         }
-        if(!reportCard.get().getGrade().equals(standard.get().getGrade())) {
-            throw new WitcurveException("Given report card with id : "+reportCardId+" is not valid for grade to which standard belongs to");
+        if (!reportCard.get().getGrade().equals(standard.get().getGrade())) {
+            throw new WitcurveException("Given report card with id : " + reportCardId + " is not valid for grade to which standard belongs to");
         }
         Page<StudentStandard> studentStandards = studentStandardRepository.getByStandardId(standardId, pageable);
         List<StudentStandard> studentStandardList = studentStandards.getContent();
@@ -182,13 +181,13 @@ public class ReportCardServiceImpl implements ReportCardService {
         List<ConfigSettings> configSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.GRADING_SCALE});
         String subDomainName = standard.get().getSchoolInfo().getSchool().getInstitute().getSubDomainName();
         Long id = standard.get().getSchoolInfo().getSchool().getInstitute().getId();
-        String headerUrl = "https://"+subDomainName+".witcurve-app.com/assets/images/header-logo/"+id+"-header-logo.png";
-        List<ConfigSettings> schoolPrimaryColorSettings  = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.SCHOOL_PRIMARY_COLOR});
+        String headerUrl = "https://" + subDomainName + ".witcurve-app.com/assets/images/header-logo/" + id + "-header-logo.png";
+        List<ConfigSettings> schoolPrimaryColorSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(schoolId, new ConfigType[]{ConfigType.SCHOOL_PRIMARY_COLOR});
         String schoolPrimaryColor = "#00000";
-        if(!configSettings.isEmpty()) {
+        if (!configSettings.isEmpty()) {
             schoolPrimaryColor = schoolPrimaryColorSettings.get(0).getFieldValue();
         }
-        for(StudentStandard studentStandard : studentStandardList) {
+        for (StudentStandard studentStandard : studentStandardList) {
             ReportCardVM reportCardVM = new ReportCardVM();
             reportCardVM.setPageTop(WitcurveUtil.formatDouble(reportCard.get().getPageTop()));
             reportCardVM.setPageBottom(WitcurveUtil.formatDouble(reportCard.get().getPageBottom()));
@@ -202,10 +201,10 @@ public class ReportCardServiceImpl implements ReportCardService {
             reportCardVM.setTitle(reportCard.get().getTitle());
             reportCardVM.setSchoolPrimaryColor(schoolPrimaryColor);
 
-            if(reportCard.get().getStudentDetails() != null && reportCard.get().getStudentDetails().size() !=0) {
+            if (reportCard.get().getStudentDetails() != null && reportCard.get().getStudentDetails().size() != 0) {
                 Map<String, String> studentDetailsMap = new LinkedHashMap<>();
 
-                for(StudentDetails studentDetails : reportCard.get().getStudentDetails()) {
+                for (StudentDetails studentDetails : reportCard.get().getStudentDetails()) {
                     switch (studentDetails) {
                         case DATE:
                             studentDetailsMap.put(StudentDetails.DATE.getName(), LocalDate.now().toString());
@@ -217,20 +216,20 @@ public class ReportCardServiceImpl implements ReportCardService {
                             studentDetailsMap.put(StudentDetails.ROLL_NO.getName(), studentStandard.getRollNo());
                             break;
                         case STANDARD:
-                            studentDetailsMap.put(StudentDetails.STANDARD.getName(), standard.get().getGrade().toString()+"-"+standard.get().getSection());
+                            studentDetailsMap.put(StudentDetails.STANDARD.getName(), standard.get().getGrade().toString() + "-" + standard.get().getSection());
                             break;
                         case ATTENDANCE:
                             studentDetailsMap.put(StudentDetails.ATTENDANCE.getName(), getAttendance(reportCard.get(), studentStandard.getStudent()));
                             break;
                         case FATHER_NAME:
-                            if(studentStandard.getStudent().getFatherName() != null) {
+                            if (studentStandard.getStudent().getFatherName() != null) {
                                 studentDetailsMap.put(StudentDetails.FATHER_NAME.getName(), studentStandard.getStudent().getFatherName());
                             } else {
                                 studentDetailsMap.put(StudentDetails.FATHER_NAME.getName(), " ");
                             }
                             break;
                         case MOTHER_NAME:
-                            if(studentStandard.getStudent().getMotherName() != null) {
+                            if (studentStandard.getStudent().getMotherName() != null) {
                                 studentDetailsMap.put(StudentDetails.MOTHER_NAME.getName(), studentStandard.getStudent().getMotherName());
                             } else {
                                 studentDetailsMap.put(StudentDetails.MOTHER_NAME.getName(), " ");
@@ -240,10 +239,10 @@ public class ReportCardServiceImpl implements ReportCardService {
                             studentDetailsMap.put(StudentDetails.ADMISSION_ID.getName(), studentStandard.getStudent().getAdmissionId());
                             break;
                         case STUDENT_NAME:
-                            if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
-                                studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName());
+                            if (studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
+                                studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName() + " " + studentStandard.getStudent().getLastName());
                             } else {
-                                studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName());
+                                studentDetailsMap.put(StudentDetails.STUDENT_NAME.getName(), studentStandard.getStudent().getFirstName() + " " + studentStandard.getStudent().getMiddleName() + " " + studentStandard.getStudent().getLastName());
                             }
                             break;
                         case DATE_OF_BIRTH:
@@ -257,10 +256,10 @@ public class ReportCardServiceImpl implements ReportCardService {
             setScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
             setNonScholasticDetails(reportCard.get(), reportCardVM, studentStandard, configSettings);
             setAttributeDetails(reportCard.get(), reportCardVM, studentStandard);
-            if(reportCard.get().getShowRemarks()) {
+            if (reportCard.get().getShowRemarks()) {
                 StudentRemarks studentRemarks = studentRemarksRepository.
                     findByExamIdAndStudentId(reportCard.get().getExam().getId(), studentStandard.getStudent().getId());
-                if(studentRemarks != null) {
+                if (studentRemarks != null) {
                     reportCardVM.setRemarks(studentRemarks.getRemarks());
                 } else {
                     reportCardVM.setRemarks("");
@@ -268,14 +267,14 @@ public class ReportCardServiceImpl implements ReportCardService {
             }
             log.info("\n\n\n report card vn : {} \n\n\n", reportCardVM);
             String studentName = null;
-            if(studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
-                studentName = studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getLastName();
+            if (studentStandard.getStudent().getMiddleName() == null || studentStandard.getStudent().getMiddleName().isEmpty()) {
+                studentName = studentStandard.getStudent().getFirstName() + " " + studentStandard.getStudent().getLastName();
             } else {
-                studentName = studentStandard.getStudent().getFirstName()+" "+studentStandard.getStudent().getMiddleName()+" "+studentStandard.getStudent().getLastName();
+                studentName = studentStandard.getStudent().getFirstName() + " " + studentStandard.getStudent().getMiddleName() + " " + studentStandard.getStudent().getLastName();
             }
-            String fileName = studentName+"_"+studentStandard.getStudent().getAdmissionId();
+            String fileName = studentName + "_" + studentStandard.getStudent().getAdmissionId();
             String nameOfFile = showHeader ? fileName : fileName + "_without_header";
-            if(type.equalsIgnoreCase("pdf")) {
+            if (type.equalsIgnoreCase("pdf")) {
                 result.add(getReportCardTemplatePdf(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
             } else {
                 result.add(getReportCardTemplateHtml(reportCardVM, WitCurveConstants.EXAM_PERIODIC_REPPORT_CARD_TEMPLATE, nameOfFile));
@@ -285,29 +284,29 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     private String getAttendance(ReportCard reportCard, Student student) {
-            LocalDate startDate = reportCard.getExam().getStartDate();
-            AcademicSession nearestAcademicSession = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), startDate);
-            if(nearestAcademicSession == null) {
-                throw new WitcurveException("There is no current active academic session");
+        LocalDate startDate = reportCard.getExam().getStartDate();
+        AcademicSession nearestAcademicSession = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), startDate);
+        if (nearestAcademicSession == null) {
+            throw new WitcurveException("There is no current active academic session");
+        }
+        LocalDate sessionStartDate = nearestAcademicSession.getStartDate();
+        Integer count = eventRepository.findPresentCountForStudent(sessionStartDate, startDate, student.getId());
+        Long totalCalendarDays = DAYS.between(sessionStartDate, startDate) + 1;
+        List<EventDTO> allHolidays = eventService.findHolidaysInSchoolInfo(student.getSchoolInfo().getId(), sessionStartDate, startDate);
+        long noOfHolidays = allHolidays.size();
+        long noOfSundays = WeekdayUtil.getNoOfWeekDayBetweenDates
+            (sessionStartDate, startDate, DayOfWeek.SUNDAY);
+        for (EventDTO holiday : allHolidays) {
+            if (holiday.getDate().isAfter(startDate)) {
+                noOfHolidays--;
             }
-            LocalDate sessionStartDate = nearestAcademicSession.getStartDate();
-            Integer count = eventRepository.findPresentCountForStudent(sessionStartDate, startDate, student.getId());
-            Long totalCalendarDays = DAYS.between(sessionStartDate, startDate) + 1;
-            List<EventDTO> allHolidays = eventService.findHolidaysInSchoolInfo(student.getSchoolInfo().getId(), sessionStartDate, startDate);
-            long noOfHolidays = allHolidays.size();
-            long noOfSundays =  WeekdayUtil.getNoOfWeekDayBetweenDates
-                (sessionStartDate, startDate, DayOfWeek.SUNDAY);
-            for (EventDTO holiday : allHolidays) {
-                if (holiday.getDate().isAfter(startDate)) {
-                    noOfHolidays--;
-                }
-            }
-            Long totalWorkingDays = totalCalendarDays-noOfHolidays-noOfSundays;
-            return count.toString()+"/"+totalWorkingDays.toString();
+        }
+        Long totalWorkingDays = totalCalendarDays - noOfHolidays - noOfSundays;
+        return count.toString() + "/" + totalWorkingDays.toString();
     }
 
-    private void setScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard,  List<ConfigSettings> configSettings) {
-        if(reportCard.getScholasticCourses() != null && !reportCard.getScholasticCourses().isEmpty()
+    private void setScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard, List<ConfigSettings> configSettings) {
+        if (reportCard.getScholasticCourses() != null && !reportCard.getScholasticCourses().isEmpty()
             && reportCard.getScholasticDetails() != null && !reportCard.getScholasticDetails().isEmpty()) {
             List<ConfigSettings> gradeColorConfigSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(studentStandard.getStudent().getSchoolInfo().getSchool().getId(), new ConfigType[]{ConfigType.GRADING_SCALE_COLOR});
             reportCardVM.setDefiningGrade(getGradeDetailsWithConfigSettings(configSettings));
@@ -315,29 +314,29 @@ public class ReportCardServiceImpl implements ReportCardService {
             List<Course> courses = new ArrayList<>(reportCard.getScholasticCourses());
             Collections.sort(courses, new CourseComparator());
             List<String> subjectArray = new ArrayList<>();
-            ReportCardVM.ScholasticVM scholasticVM= new ReportCardVM.ScholasticVM();
+            ReportCardVM.ScholasticVM scholasticVM = new ReportCardVM.ScholasticVM();
             ReportCardVM.ScholasticVM.ScholasticDetailsVM scholasticDetailsVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM();
             ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM();
             ReportCardVM.ScholasticVM.ScholasticDetailsVM.OverallVM overallVM = null;
             Map<Integer, Map<CourseDTO, Double>> totalMarksMap = new LinkedHashMap<>();
             Map<Integer, Double> totalMap = new LinkedHashMap<>();
-            Integer titleChangeCounter =0;
+            Integer titleChangeCounter = 0;
             //set subjet list
-            for(Course course : courses) {
+            for (Course course : courses) {
                 //check if course belongs to this student
                 StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
-                if(studentCourse != null && studentCourse.getActive()) {
+                if (studentCourse != null && studentCourse.getActive()) {
                     subjectArray.add(course.getDisplayName());
                 }
             }
             //set exam details for each scholastic report details
-            for(ScholasticReportDetails scholasticReportDetails: reportCard.getScholasticDetails()) {
-                if(examDetailsVM.getExamName() == null) {
+            for (ScholasticReportDetails scholasticReportDetails : reportCard.getScholasticDetails()) {
+                if (examDetailsVM.getExamName() == null) {
                     //set title for first time
                     titleChangeCounter++;
                     examDetailsVM.setExamName(scholasticReportDetails.getHeader());
                 } else {
-                    if(!examDetailsVM.getExamName().equals(scholasticReportDetails.getHeader())) {
+                    if (!examDetailsVM.getExamName().equals(scholasticReportDetails.getHeader())) {
 
                         //create new when title changes and add the old one
                         titleChangeCounter++;
@@ -353,44 +352,44 @@ public class ReportCardServiceImpl implements ReportCardService {
 
                 List<StudentMarksDTO> studentMarksList = studentMarksService.getStudentMarksByRcdIdAndStudentId(scholasticReportDetails.getReportCardDesign(),
                     studentStandard.getStudent().getId());
-                Double multiplyingFactor = scholasticReportDetails.getMarksNormalisation()/scholasticReportDetails.getReportCardDesign().getMarks();
-                for(StudentMarksDTO studentMarks : studentMarksList) {
-                    Double finalMarks = Math.round(studentMarks.getMarks()*multiplyingFactor * 10)/10.0;
+                Double multiplyingFactor = scholasticReportDetails.getMarksNormalisation() / scholasticReportDetails.getReportCardDesign().getMarks();
+                for (StudentMarksDTO studentMarks : studentMarksList) {
+                    Double finalMarks = Math.round(studentMarks.getMarks() * multiplyingFactor * 10) / 10.0;
                     marksMap.put(studentMarks.getCourseDTO().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
-                    if(scholasticReportDetails.getShowGrades()) {
+                    if (scholasticReportDetails.getShowGrades()) {
                         gradeMap.put(studentMarks.getCourseDTO().getDisplayName(), getGrade(configSettings, finalMarks, scholasticReportDetails.getMarksNormalisation()));
                     }
-                    if(totalMarksMap.get(titleChangeCounter) == null) {
-                      totalMarksMap.put(titleChangeCounter, new LinkedHashMap<>());
+                    if (totalMarksMap.get(titleChangeCounter) == null) {
+                        totalMarksMap.put(titleChangeCounter, new LinkedHashMap<>());
                     }
                     Map<CourseDTO, Double> courseMap = totalMarksMap.get(titleChangeCounter);
                     Double previousMarks = courseMap.get(studentMarks.getCourseDTO());
-                    if( previousMarks == null) {
+                    if (previousMarks == null) {
                         courseMap.put(studentMarks.getCourseDTO(), finalMarks);
                     } else {
-                        if(scholasticReportDetails.getReportCardDesign().getFieldType().equals(ReportFieldType.TOTAL)) {
+                        if (scholasticReportDetails.getReportCardDesign().getFieldType().equals(ReportFieldType.TOTAL)) {
                             //as soon as total appear, we no longer add, we replace with total marks
                             courseMap.put(studentMarks.getCourseDTO(), finalMarks);
                         } else {
-                            courseMap.put(studentMarks.getCourseDTO(), finalMarks+previousMarks);
+                            courseMap.put(studentMarks.getCourseDTO(), finalMarks + previousMarks);
                         }
                     }
                     totalMarksMap.put(titleChangeCounter, courseMap);
                 }
                 Double previousTotalMarks = totalMap.get(titleChangeCounter);
-                if( previousTotalMarks == null) {
+                if (previousTotalMarks == null) {
                     totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation());
                 } else {
-                    if(scholasticReportDetails.getReportCardDesign().getFieldType().equals(ReportFieldType.TOTAL)) {
+                    if (scholasticReportDetails.getReportCardDesign().getFieldType().equals(ReportFieldType.TOTAL)) {
                         //as soon as total appear, we no longer add, we replace with total marks
                         totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation());
                     } else {
-                        totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation()+previousTotalMarks);
+                        totalMap.put(titleChangeCounter, scholasticReportDetails.getMarksNormalisation() + previousTotalMarks);
                     }
                 }
                 String formattedMarks = WitcurveUtil.formatDouble(scholasticReportDetails.getMarksNormalisation());
-                marksAndGradeDetailsVM.setName(scholasticReportDetails.getReportCardDesign().getName()+"("+formattedMarks+")");
-                marksAndGradeDetailsVM.setShortForm(scholasticReportDetails.getReportCardDesign().getShortForm()+"("+formattedMarks+")");
+                marksAndGradeDetailsVM.setName(scholasticReportDetails.getReportCardDesign().getName() + "(" + formattedMarks + ")");
+                marksAndGradeDetailsVM.setShortForm(scholasticReportDetails.getReportCardDesign().getShortForm() + "(" + formattedMarks + ")");
                 marksAndGradeDetailsVM.setShowMarks(scholasticReportDetails.getShowMarks());
                 marksAndGradeDetailsVM.setShowGrade(scholasticReportDetails.getShowGrades());
                 marksAndGradeDetailsVM.setMarks(marksMap);
@@ -399,23 +398,23 @@ public class ReportCardServiceImpl implements ReportCardService {
             }
             scholasticDetailsVM.addExamDetails(examDetailsVM);
             // overall details
-            if(reportCard.getShowOverallGrade() || reportCard.getShowOverallMarks()) {
+            if (reportCard.getShowOverallGrade() || reportCard.getShowOverallMarks()) {
                 overallVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM.OverallVM();
                 overallVM.setShowGrade(reportCard.getShowOverallGrade());
                 overallVM.setShowMarks(reportCard.getShowOverallMarks());
 
                 Double overallFullMarks = 0.00;
-                for(Map.Entry<Integer, Double> overallFullEntry : totalMap.entrySet()) {
+                for (Map.Entry<Integer, Double> overallFullEntry : totalMap.entrySet()) {
                     overallFullMarks += overallFullEntry.getValue();
                 }
                 Map<CourseDTO, Double> overAllCourseMap = new HashMap<>();
-                for(Map.Entry<Integer, Map<CourseDTO, Double>> titleMapEntry : totalMarksMap.entrySet()) {
-                    for(Map.Entry<CourseDTO, Double> courseMapEntry : titleMapEntry.getValue().entrySet()) {
+                for (Map.Entry<Integer, Map<CourseDTO, Double>> titleMapEntry : totalMarksMap.entrySet()) {
+                    for (Map.Entry<CourseDTO, Double> courseMapEntry : titleMapEntry.getValue().entrySet()) {
                         Double overallCourseMap = overAllCourseMap.get(courseMapEntry.getKey());
-                        if(overallCourseMap == null) {
+                        if (overallCourseMap == null) {
                             overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue());
                         } else {
-                            overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue()+overallCourseMap);
+                            overAllCourseMap.put(courseMapEntry.getKey(), courseMapEntry.getValue() + overallCourseMap);
                         }
                     }
                 }
@@ -423,19 +422,19 @@ public class ReportCardServiceImpl implements ReportCardService {
                 Map<String, String> overallGrade = new HashMap<>();
                 Double overallFinalMarks = 0.0;
                 Double overallTotalMarks = 0.0;
-                for(Map.Entry<CourseDTO, Double> courseEntry : overAllCourseMap.entrySet()) {
+                for (Map.Entry<CourseDTO, Double> courseEntry : overAllCourseMap.entrySet()) {
                     Double finalMarks = (double) Math.round(courseEntry.getValue());
                     overallFinalMarks += finalMarks;
                     overallTotalMarks += overallFullMarks;
                     overallMarks.put(courseEntry.getKey().getDisplayName(), WitcurveUtil.formatDouble(finalMarks));
-                    if(reportCard.getShowOverallGrade()) {
+                    if (reportCard.getShowOverallGrade()) {
                         overallGrade.put(courseEntry.getKey().getDisplayName(), getGrade(configSettings, finalMarks, overallFullMarks));
                     }
                 }
                 overallVM.setGrade(overallGrade);
                 overallVM.setMarks(overallMarks);
                 overallVM.setOverAllMarks(WitcurveUtil.formatDouble(overallFinalMarks));
-                if(reportCard.getShowOverallGrade()) {
+                if (reportCard.getShowOverallGrade()) {
                     overallVM.setOverAllGrade(getGrade(configSettings, overallFinalMarks, overallTotalMarks));
                 }
 
@@ -449,9 +448,9 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     private void setNonScholasticDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard, List<ConfigSettings> configSettings) {
-        if(reportCard.getNonScholasticCourses() != null && !reportCard.getNonScholasticCourses().isEmpty()
+        if (reportCard.getNonScholasticCourses() != null && !reportCard.getNonScholasticCourses().isEmpty()
             && reportCard.getNonScholasticReportDetails() != null && !reportCard.getNonScholasticReportDetails().isEmpty()) {
-            if(reportCardVM.getColorForGrades() == null || reportCardVM.getDefiningGrade() == null) {
+            if (reportCardVM.getColorForGrades() == null || reportCardVM.getDefiningGrade() == null) {
                 List<ConfigSettings> gradeColorConfigSettings = configSettingsRepository.getConfigSettingsBySchoolIdAndTypes(studentStandard.getStudent().getSchoolInfo().getSchool().getId(), new ConfigType[]{ConfigType.GRADING_SCALE_COLOR});
                 reportCardVM.setDefiningGrade(getGradeDetailsWithConfigSettings(configSettings));
                 reportCardVM.setColorForGrades(getGradeDetailsWithConfigSettings(gradeColorConfigSettings));
@@ -462,23 +461,28 @@ public class ReportCardServiceImpl implements ReportCardService {
             ReportCardVM.NonScholasticVM nonScholasticVM = new ReportCardVM.NonScholasticVM();
             nonScholasticVM.setTitleName("Subjects");
             //set subject list
-            for(Course course : courses) {
+            for (Course course : courses) {
                 //check if course belongs to this student
                 StudentCourse studentCourse = studentCourseRepository.getStudentCourseByStudentStandardIdAndCourseId(studentStandard.getId(), course.getId());
-                if(studentCourse != null && studentCourse.getActive()) {
+                if (studentCourse != null && studentCourse.getActive()) {
                     subjectArray.add(course.getDisplayName());
                 }
             }
             //set attribute details vm for each scholastic report details
-            for(NonScholasticReportDetails nonScholasticReportDetails: reportCard.getNonScholasticReportDetails()) {
+            for (NonScholasticReportDetails nonScholasticReportDetails : reportCard.getNonScholasticReportDetails()) {
                 ReportCardVM.AttributeDetailVM attributeDetailVM = new ReportCardVM.AttributeDetailVM();
                 attributeDetailVM.setColumnName(nonScholasticReportDetails.getHeader());
-                List<StudentMarksDTO> studentMarksDTOS = studentMarksService.
+              /*  List<StudentMarksDTO> studentMarksDTOS = studentMarksService.
                     getStudentMarksByRcdIdAndStudentId(nonScholasticReportDetails.getReportCardDesign(), studentStandard.getStudent().getId());
                 Map<String, String> gradeMap = new HashMap<>();
                 for(StudentMarksDTO studentMarksDTO : studentMarksDTOS) {
                     Double roundedMarks = (double)Math.round(studentMarksDTO.getMarks());
                     gradeMap.put(studentMarksDTO.getCourseDTO().getDisplayName(), getGrade(configSettings, roundedMarks, nonScholasticReportDetails.getReportCardDesign().getMarks()));
+                }*/
+                List<CourseGradeDTO> courseGradeDTOs = courseGradeService.getStudentMarksByRcdIdAndStudentId(nonScholasticReportDetails.getReportCardDesign(), studentStandard.getStudent().getId());
+                Map<String, String> gradeMap = new HashMap<>();
+                for (CourseGradeDTO courseGradeDTO : courseGradeDTOs) {
+                    gradeMap.put(courseGradeDTO.getCourseDTO().getDisplayName(), courseGradeDTO.getCourseGrade());
                 }
                 attributeDetailVM.setValues(gradeMap);
                 nonScholasticVM.addNonScholasticDetails(attributeDetailVM);
@@ -489,9 +493,9 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     private void setAttributeDetails(ReportCard reportCard, ReportCardVM reportCardVM, StudentStandard studentStandard) {
-        if(reportCard.getShowAttributes()) {
+        if (reportCard.getShowAttributes()) {
             List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByFieldTypeAndExamAndGrade(ReportFieldType.ATTRIBUTES, reportCard.getExam().getId(), reportCard.getGrade());
-            if(!reportCardDesigns.isEmpty() && reportCardDesigns.get(0).getSelected() ) {
+            if (!reportCardDesigns.isEmpty() && reportCardDesigns.get(0).getSelected()) {
                 ReportCardVM.AttributeVM attributeVM = null;
                 ReportCardVM.AttributeDetailVM attributeDetailVM = null;
                 int columnCount = 0;
@@ -503,11 +507,11 @@ public class ReportCardServiceImpl implements ReportCardService {
                 List<ReportCardVM.AttributeVM> attributeVMList = null;
                 String previousTitle = null, previousColumn = null, previousField = null;
                 Map<String, String> fieldValue = new HashMap<>();
-                for(Attribute attribute : attributes) {
-                    if(previousTitle == null || !previousTitle.equals(attribute.getTitle())) {
+                for (Attribute attribute : attributes) {
+                    if (previousTitle == null || !previousTitle.equals(attribute.getTitle())) {
                         freshTitle = true;
-                        previousColumn=null;
-                        if(attributeVM != null) {
+                        previousColumn = null;
+                        if (attributeVM != null) {
                             attributeVM.addAttributeDetails(attributeDetailVM);
                             reportCardVM.addAttributes(attributeVM);
                         }
@@ -516,13 +520,13 @@ public class ReportCardServiceImpl implements ReportCardService {
                         attributeVM.setTitleName(attribute.getTitle());
                         fieldList = new ArrayList<>();
                         boldFieldList = new ArrayList<>();
-                        columnCount =0;
+                        columnCount = 0;
                     } else {
                         freshTitle = false;
                     }
-                    if((previousColumn == null || !previousColumn.equals(attribute.getColumn()))) {
+                    if ((previousColumn == null || !previousColumn.equals(attribute.getColumn()))) {
                         ++columnCount;
-                        if(attributeDetailVM != null && !freshTitle) {
+                        if (attributeDetailVM != null && !freshTitle) {
                             attributeVM.addAttributeDetails(attributeDetailVM);
                         }
                         previousColumn = attribute.getColumn();
@@ -531,11 +535,11 @@ public class ReportCardServiceImpl implements ReportCardService {
                         attributeDetailVM.setColumnName(attribute.getColumn());
 
                     }
-                    if(previousField == null || !previousField.equals(attribute.getField())) {
-                        if(columnCount ==1) {
+                    if (previousField == null || !previousField.equals(attribute.getField())) {
+                        if (columnCount == 1) {
                             previousField = attribute.getField();
                             fieldList.add(attribute.getField());
-                            if(attribute.getHighlight()) {
+                            if (attribute.getHighlight()) {
                                 boldFieldList.add(attribute.getField());
                             }
                             attributeVM.setFieldArray(fieldList);
@@ -543,7 +547,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                         }
                     }
                     AttributeValue attributeValue = attributeValueRepository.findByStudentIdAndAttributeId(studentStandard.getStudent().getId(), attribute.getId());
-                    if(attributeValue != null) {
+                    if (attributeValue != null) {
                         fieldValue.put(attribute.getField(), attributeValue.getValue());
                     }
                     attributeDetailVM.setValues(fieldValue);
@@ -555,20 +559,20 @@ public class ReportCardServiceImpl implements ReportCardService {
     }
 
     private String getGrade(List<ConfigSettings> configSettingsList, Double marks, Double totalMarks) throws WitcurveException {
-        Double percent = (marks/totalMarks) * 100;
+        Double percent = (marks / totalMarks) * 100;
         String result = null;
-        for(ConfigSettings configSettings : configSettingsList) {
+        for (ConfigSettings configSettings : configSettingsList) {
             Double min = Double.parseDouble(configSettings.getFieldValue());
-            if(min == null) {
+            if (min == null) {
                 throw new WitcurveException("There is a problem with generating grade");
             } else {
-                if(percent >= min) {
+                if (percent >= min) {
                     result = configSettings.getDisplayFieldName();
                     break;
                 }
             }
         }
-        if(result != null) {
+        if (result != null) {
             return result;
         } else {
             throw new WitcurveException("There is a problem with generating grade");
@@ -592,8 +596,8 @@ public class ReportCardServiceImpl implements ReportCardService {
             } else {
                 Integer min = Integer.parseInt(configSettings.getFieldValue());
                 if (min != null) {
-                    if(min ==0) {
-                        result.put(configSettings.getDisplayFieldName(), max.toString()+" & Below");
+                    if (min == 0) {
+                        result.put(configSettings.getDisplayFieldName(), max.toString() + " & Below");
                     } else {
                         result.put(configSettings.getDisplayFieldName(), min.toString() + "-" + max.toString());
                     }
@@ -658,9 +662,9 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     private void isValid(ReportCardVM reportCardVM) {
 
-        if(reportCardVM.getScholastic() != null) {
+        if (reportCardVM.getScholastic() != null) {
             List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM> listOfExamDetailsVM = reportCardVM.getScholastic().getScholasticDetails().getExamDetails();
-            if( listOfExamDetailsVM!= null && !listOfExamDetailsVM.isEmpty()) {
+            if (listOfExamDetailsVM != null && !listOfExamDetailsVM.isEmpty()) {
                 for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM examDetailsVM : listOfExamDetailsVM) {
                     List<ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM> listOfMarksAndGradeDetail = examDetailsVM.getMarksAndGradesDetails();
                     for (ReportCardVM.ScholasticVM.ScholasticDetailsVM.ExamDetailsVM.MarksAndGradeDetailsVM marksAndGradeDetailsVM : listOfMarksAndGradeDetail) {
@@ -681,7 +685,7 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
             }
             ReportCardVM.ScholasticVM.ScholasticDetailsVM.OverallVM overallVM = reportCardVM.getScholastic().getScholasticDetails().getOverall();
-            if(overallVM != null) {
+            if (overallVM != null) {
                 if (overallVM.getShowGrade()) {
                     if (reportCardVM.getScholastic().getScholasticDetails().getOverall().getGrade() == null) {
                         throw new WitcurveException("Grades require to show grade");

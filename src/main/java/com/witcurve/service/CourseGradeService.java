@@ -1,6 +1,8 @@
 package com.witcurve.service;
 
+import com.witcurve.domain.ReportCardDesign;
 import com.witcurve.service.dto.CourseGradeDTO;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,5 +14,7 @@ public interface CourseGradeService {
 
     List<CourseGradeDTO> getAllGradesForAStudentInACourse(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate);
 
-    void deleteStudentGrades(List<Long> studentMarksIds);
+    List<CourseGradeDTO> getStudentMarksByRcdIdAndStudentId(ReportCardDesign reportCardDesign, Long studentId);
+
+    void deleteStudentGrades(List<Long> studentGradeIds);
 }
