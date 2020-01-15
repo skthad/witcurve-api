@@ -3,7 +3,6 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.Grade;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class CourseGradeDTO extends AbstractAuditingDTO implements Serializable 
     private Long studentId;
 
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z.]{1,3}$")
+    // @Pattern(regexp = "^[a-zA-Z.]{1,3}$")
     private String courseGrade;
 
     private String studentName;

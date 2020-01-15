@@ -2,6 +2,7 @@ package com.witcurve.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ public class CourseGrade extends AbstractAuditingEntity implements Serializable 
     private Student student;
 
     @NotNull
+    @Size(max = 5, message="The field must be less than {max} characters")
     @Column(name = "course_grade", nullable = false)
     private String courseGrade;
 

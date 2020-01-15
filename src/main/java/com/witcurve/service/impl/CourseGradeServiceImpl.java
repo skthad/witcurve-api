@@ -48,6 +48,9 @@ public class CourseGradeServiceImpl implements CourseGradeService {
     @Autowired
     SnsService snsService;
 
+    @Autowired
+    StudentCourseRepository studentCourseRepository;
+
     @Override
     public List<CourseGradeDTO> saveOrUpdateCourseGrade(List<CourseGradeDTO> courseGradeDTOs, Long rcdId, Long courseId) {
         log.debug("Request to save student grade");
@@ -67,6 +70,7 @@ public class CourseGradeServiceImpl implements CourseGradeService {
         if (!reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
             throw new WitcurveException("Report card design type should be non scholastic type");
         }
+        //TODO check course assign to student is required here?
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent() || !course.get().getActive() || !course.get().getCourseType().equals(CourseType.NON_SCHOLASTIC)) {
             throw new WitcurveException("This is not a valid course, only active non scholastic courses are allowed");
@@ -88,7 +92,12 @@ public class CourseGradeServiceImpl implements CourseGradeService {
             existingRecordMap.put(courseGrade.getStudent().getId(), courseGrade);
         }
         for (CourseGradeDTO courseGradeDTO : courseGradeDTOs) {
-            if (requestStudentIds.contains(courseGradeDTO.getId())) {
+
+           StudentCourse studentCourse =  studentCourseRepository.getByCourseIdAndStudentIdWithStudentStandard(courseId, courseGradeDTO.getStudentId());
+           if(studentCourse == null){
+               throw new WitcurveException("In One of the record given course does not belong to student");
+           }
+           if (requestStudentIds.contains(courseGradeDTO.getId())) {
                 throw new WitcurveException("There should be only one record for a student in the request");
             }
             CourseGrade existingStudentCourseGrade = existingRecordMap.get(courseGradeDTO.getStudentId());
