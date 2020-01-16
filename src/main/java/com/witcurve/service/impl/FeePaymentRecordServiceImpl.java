@@ -50,13 +50,13 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
     AttachmentService attachmentService;
 
     @Autowired
-    AttachmentRepository attachmentRepository;
-
-    @Autowired
     StudentStandardRepository studentStandardRepository;
 
     @Autowired
     InvoiceUtil invoiceUtil;
+
+    @Autowired
+    AttachmentRepository attachmentRepository;
 
     @Override
     public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO, ModeOfTransaction mode) {
@@ -194,16 +194,36 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         Map<String, Double> feeDescriptionMap = new HashMap<>();
 
         for (FeePaymentDetail feePaymentDetail : feePaymentRecord.get().getFeePaymentDetails()) {
-            String name = feePaymentDetail.getFeeDescription().getName();
-            if (feeDescriptionMap.containsKey(name)) {
-                Double amt = feeDescriptionMap.get(name) + feePaymentDetail.getAmount();
-                feeDescriptionMap.put(name, amt);
+            String feeName;
+            if (!feePaymentDetail.getPenalty()) {
+                feeName = feePaymentDetail.getFeeDescription().getName();
             } else {
-                feeDescriptionMap.put(name, feePaymentDetail.getAmount());
+                feeName = "Penalty";
+            }
+            if (feeDescriptionMap.containsKey(feeName)) {
+                Double amt = feeDescriptionMap.get(feeName) + feePaymentDetail.getAmount();
+                feeDescriptionMap.put(feeName, amt);
+            } else {
+                feeDescriptionMap.put(feeName, feePaymentDetail.getAmount());
             }
         }
         invoiceVM.setFeeDescriptions(feeDescriptionMap);
         File invoice = invoiceUtil.generateInvoice(invoiceVM);
+
+        Attachment attachmentAlreadyExists = attachmentRepository.findByOriginalFileName(invoice.getName());
+        if(attachmentAlreadyExists != null){
+            List<Attachment> attachments = feePaymentRecord.get().getTransactionRecord().getAttachments();
+            if(attachments != null){
+                if(attachments.contains(attachmentAlreadyExists)){
+                    attachments.remove(attachmentAlreadyExists);
+                }
+            }
+            attachmentRepository.delete(attachmentAlreadyExists);
+        }
+        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString()+File.separator+feePaymentRecord.get().getOrderId();
+        Attachment attachment = attachmentService.saveAttachmentWithFile(invoice, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
+        List<Attachment> attachments = feePaymentRecord.get().getTransactionRecord().getAttachments();
+        attachments.add(attachment);
         return invoice;
     }
 }
