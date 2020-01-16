@@ -188,9 +188,9 @@ public class InvoiceUtil {
 
             document.add(table);
         } catch (DocumentException e) {
-            throw new WitcurveException("Problem occured during adding table to document");
+            throw new WitcurveException("Problem occurred during adding table to document");
         } catch (IOException e) {
-            throw new WitcurveException("Problem occured during adding font");
+            throw new WitcurveException("Problem occurred during adding font");
 
         }
     }
@@ -203,7 +203,7 @@ public class InvoiceUtil {
         try {
             document.add(paragraph);
         } catch (DocumentException d) {
-            throw new WitcurveException("Some problem occured while adding paragraph to document");
+            throw new WitcurveException("Some problem occurred while adding paragraph to document");
         }
     }
 
@@ -265,16 +265,16 @@ public class InvoiceUtil {
             addEmptyLine(document, 1);
             addTotalTable(document, totalAmt);
         } catch (IOException e) {
-            throw new WitcurveException("Some problem occured while adding Font");
+            throw new WitcurveException("Some problem occurred while adding Font");
         } catch (DocumentException e) {
-            throw new WitcurveException("\"Some problem occured while adding table to document\"");
+            throw new WitcurveException("\"Some problem occurred while adding table to document\"");
         }
     }
 
     private String getImageUrl() {
         String subDomainName = student.getSchoolInfo().getSchool().getInstitute().getSubDomainName();
-        Long id = student.getSchoolInfo().getSchool().getInstitute().getId();
-        String headerUrl = "https://" + subDomainName + ".witcurve-app.com/assets/images/header-logo/" + 1000 + "-header-logo.png";
+        Long instituteId = student.getSchoolInfo().getSchool().getInstitute().getId();
+        String headerUrl = "https://" + subDomainName + ".witcurve-app.com/assets/images/header-logo/" + instituteId + "-header-logo.png";
         return headerUrl;
     }
 
@@ -309,9 +309,9 @@ public class InvoiceUtil {
 
             document.add(table);
         } catch (DocumentException e) {
-            throw new WitcurveException("Some problem occured while adding total table to document");
+            throw new WitcurveException("Some problem occurred while adding total table to document");
         } catch (IOException e) {
-            throw new WitcurveException("Some problem occured while adding Font");
+            throw new WitcurveException("Some problem occurred while adding Font");
         }
     }
 
@@ -408,7 +408,7 @@ public class InvoiceUtil {
               } catch (IOException e) {
                   throw new WitcurveException("Image not found", e);
               } catch (DocumentException e) {
-                  throw new WitcurveException("Error occured while adding font", e);
+                  throw new WitcurveException("Error occurred while adding font", e);
               }
           }
 

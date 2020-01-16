@@ -1,6 +1,5 @@
 package com.witcurve.web.rest.vm;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,7 +11,7 @@ public class PaytmVM implements Serializable {
     
     private List<FeeTypeDetail> feeTypeDetails;
 
-    private Double totalAmount;
+    private Double fullYearAmount;
 
     public Integer getErrorCode() {
         return errorCode;
@@ -38,9 +37,13 @@ public class PaytmVM implements Serializable {
         this.feeTypeDetails = feeTypeDetails;
     }
 
-    public Double getTotalAmount() { return totalAmount; }
+    public Double getFullYearAmount() {
+        return fullYearAmount;
+    }
 
-    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
+    public void setFullYearAmount(Double fullYearAmount) {
+        this.fullYearAmount = fullYearAmount;
+    }
 
     public static class StudentDetail implements Serializable {
         
@@ -184,7 +187,7 @@ public class PaytmVM implements Serializable {
             "errorCode=" + errorCode +
             ", studentDetails=" + studentDetails +
             ", feeTypeDetails=" + feeTypeDetails +
-            ", totalAmount=" + totalAmount +
+            ", fullYearAmount=" + fullYearAmount +
             '}';
     }
 }

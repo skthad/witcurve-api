@@ -25,6 +25,9 @@ public interface FeePaymentRecordRepository extends JpaRepository<FeePaymentReco
     @Query("select fpr from FeePaymentRecord fpr where fpr.transactionId = ?1 and fpr.feePaymentType = ?2")
     FeePaymentRecord getByOrderIdAndType(String orderId, FeePaymentType type);
 
+    @Query("select fpr from FeePaymentRecord fpr where fpr.studentFeeStructure.student.id = ?1 and fpr.feePaymentType = ?2")
+    List<FeePaymentRecord> getByStudentIdIdAndType(Long studentId, FeePaymentType type);
+
     @Query("select fpr from FeePaymentRecord fpr where fpr.studentFeeStructure.student.id = ?1 and  fpr.studentFeeStructure.session.id = ?2 and fpr.feePaymentType = ?3 order by fpr.createdDate")
     List<FeePaymentRecord> getByStudentAndSessionIdAndType(Long studentId, Long sessionId, FeePaymentType type);
 

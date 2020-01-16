@@ -12,9 +12,8 @@ public class WitcurveException extends RuntimeException{
     }
 
     public WitcurveException(String message, Exception e) {
-        log.error("Witcurve Exception message : {}",e.getMessage());
+        super(message);
         e.printStackTrace();
-        super.getMessage();
     }
 
 }
