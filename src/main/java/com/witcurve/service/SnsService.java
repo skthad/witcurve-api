@@ -606,10 +606,13 @@ public class SnsService {
     }
 
     @Async
-    public void sendPushNotificationWhenGradeSaved(List<CourseGradeDTO> courseGradeDTOs, ReportCardDesign reportCardDesign, Course course) {
+    public void sendPushNotificationWhenGradeSaved(List<CourseGradeDTO> courseGradeDTOs) {
         Map<String, String> varMap = new HashMap<>();
-        varMap.put("examName", reportCardDesign.getExam().getName());
-        varMap.put("subjectName", course.getDisplayName());
+
+        Optional<Course> course = courseRepository.findById(courseGradeDTOs.get(0).getCourseDTO().getId());
+        Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(courseGradeDTOs.get(0).getReportCardDesignDTO().getId());
+        varMap.put("examName", reportCardDesign.get().getExam().getName());
+        varMap.put("subjectName", course.get().getDisplayName());
         String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.EXAM_MARKS_SAVE);
 
         for (CourseGradeDTO courseGradeDTO : courseGradeDTOs) {

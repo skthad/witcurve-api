@@ -57,7 +57,7 @@ public class CourseGradeServiceImpl implements CourseGradeService {
         courseGradeDTOs = validateAndFormatStudentGrade(courseGradeDTOs, rcdId, courseId);
         List<CourseGrade> courseGrades = courseGradeMapper.toEntity(courseGradeDTOs);
         courseGrades = courseGradeRepository.saveAll(courseGrades);
-        snsService.sendPushNotificationWhenGradeSaved(courseGradeDTOs, courseGrades.get(0).getReportCardDesign(), courseGrades.get(0).getCourse());
+        snsService.sendPushNotificationWhenGradeSaved(courseGradeDTOs);
         return courseGradeMapper.toDto(courseGrades);
     }
 
@@ -93,11 +93,11 @@ public class CourseGradeServiceImpl implements CourseGradeService {
         }
         for (CourseGradeDTO courseGradeDTO : courseGradeDTOs) {
 
-           StudentCourse studentCourse =  studentCourseRepository.getByCourseIdAndStudentIdWithStudentStandard(courseId, courseGradeDTO.getStudentId());
-           if(studentCourse == null){
-               throw new WitcurveException("In One of the record given course does not belong to student");
-           }
-           if (requestStudentIds.contains(courseGradeDTO.getId())) {
+            StudentCourse studentCourse = studentCourseRepository.getByCourseIdAndStudentIdWithStudentStandard(courseId, courseGradeDTO.getStudentId());
+            if (studentCourse == null) {
+                throw new WitcurveException("In One of the record given course does not belong to student");
+            }
+            if (requestStudentIds.contains(courseGradeDTO.getId())) {
                 throw new WitcurveException("There should be only one record for a student in the request");
             }
             CourseGrade existingStudentCourseGrade = existingRecordMap.get(courseGradeDTO.getStudentId());
@@ -164,15 +164,6 @@ public class CourseGradeServiceImpl implements CourseGradeService {
             throw new WitcurveException("Course does not exist with id: " + courseId);
         }
         return courseGradeMapper.toDto(courseGradeRepository.getByCourseIdAndStudentId(studentId, courseId, startDate, endDate));
-    }
-
-    @Override
-    public List<CourseGradeDTO> getStudentMarksByRcdIdAndStudentId(ReportCardDesign reportCardDesign, Long studentId) {
-        List<CourseGrade> courseGrades = null;
-        if (reportCardDesign.getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
-            courseGrades = courseGradeRepository.getCourseGradeByRcdIdAndStudentId(reportCardDesign.getId(), studentId);
-        }
-        return courseGradeMapper.toDto(courseGrades);
     }
 
     @Override

@@ -3,7 +3,10 @@ package com.witcurve.service.impl;
 import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.*;
 import com.witcurve.repository.*;
-import com.witcurve.service.*;
+import com.witcurve.service.CourseService;
+import com.witcurve.service.EventService;
+import com.witcurve.service.ReportCardService;
+import com.witcurve.service.StudentMarksService;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.ReportCardMapper;
 import com.witcurve.service.util.*;
@@ -85,7 +88,7 @@ public class ReportCardServiceImpl implements ReportCardService {
     AttributeValueRepository attributeValueRepository;
 
     @Autowired
-    CourseGradeService courseGradeService;
+    CourseGradeRepository courseGradeRepository;
 
 
     private final List<ReportFieldType> SCHOLASTIC_FIELD_TYPE_LISTS = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.MANUAL_ENTRY, ReportFieldType.PERIODIC_TEST, ReportFieldType.TOTAL);
@@ -472,17 +475,10 @@ public class ReportCardServiceImpl implements ReportCardService {
             for (NonScholasticReportDetails nonScholasticReportDetails : reportCard.getNonScholasticReportDetails()) {
                 ReportCardVM.AttributeDetailVM attributeDetailVM = new ReportCardVM.AttributeDetailVM();
                 attributeDetailVM.setColumnName(nonScholasticReportDetails.getHeader());
-              /*  List<StudentMarksDTO> studentMarksDTOS = studentMarksService.
-                    getStudentMarksByRcdIdAndStudentId(nonScholasticReportDetails.getReportCardDesign(), studentStandard.getStudent().getId());
+                List<CourseGrade> courseGrades = courseGradeRepository.getCourseGradeByRcdIdAndStudentId(nonScholasticReportDetails.getReportCardDesign().getId(), studentStandard.getStudent().getId());
                 Map<String, String> gradeMap = new HashMap<>();
-                for(StudentMarksDTO studentMarksDTO : studentMarksDTOS) {
-                    Double roundedMarks = (double)Math.round(studentMarksDTO.getMarks());
-                    gradeMap.put(studentMarksDTO.getCourseDTO().getDisplayName(), getGrade(configSettings, roundedMarks, nonScholasticReportDetails.getReportCardDesign().getMarks()));
-                }*/
-                List<CourseGradeDTO> courseGradeDTOs = courseGradeService.getStudentMarksByRcdIdAndStudentId(nonScholasticReportDetails.getReportCardDesign(), studentStandard.getStudent().getId());
-                Map<String, String> gradeMap = new HashMap<>();
-                for (CourseGradeDTO courseGradeDTO : courseGradeDTOs) {
-                    gradeMap.put(courseGradeDTO.getCourseDTO().getDisplayName(), courseGradeDTO.getCourseGrade());
+                for (CourseGrade courseGrade : courseGrades) {
+                    gradeMap.put(courseGrade.getCourse().getDisplayName(), courseGrade.getCourseGrade());
                 }
                 attributeDetailVM.setValues(gradeMap);
                 nonScholasticVM.addNonScholasticDetails(attributeDetailVM);
