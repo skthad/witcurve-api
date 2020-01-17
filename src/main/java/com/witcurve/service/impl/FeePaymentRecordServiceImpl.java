@@ -17,11 +17,11 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -165,23 +165,28 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
             }
             totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
         }
-
-        TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
-        transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
-        transactionRecordDTO.setTransactionDate(LocalDate.now());
-        transactionRecordDTO.setType(RecordType.FEE);
-        transactionRecordDTO.setTransactionMode(mode);
-        transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
-        transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
-            + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
-        transactionRecordDTO.setTotalAmount(totalPaidAmount);
-        transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
-        feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
+        if (feePaymentRecordDTO.getId() != null) {
+            TransactionRecordDTO transactionRecordDTO = feePaymentRecordDTO.getTransactionRecordDTO();
+            transactionRecordDTO.setTotalAmount(totalPaidAmount);
+            transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+        } else {
+            TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
+            transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
+            transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+            // transactionRecordDTO.setAttachments(Arrays.asList(attachment));
+            transactionRecordDTO.setType(RecordType.FEE);
+            transactionRecordDTO.setTransactionMode(mode);
+            transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
+            transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
+                + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
+            transactionRecordDTO.setTotalAmount(totalPaidAmount);
+            transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
+            feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
+        }
     }
 
     @Override
     public File generateInvoice(Long feePaymentRecordId) {
-
         Optional<FeePaymentRecord> feePaymentRecord = feePaymentRecordRepository.findById(feePaymentRecordId);
         if (!feePaymentRecord.isPresent()) {
             throw new WitcurveException("No fee payment record is present with given id : {}" + feePaymentRecordId);
@@ -208,22 +213,20 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         }
         invoiceVM.setFeeDescriptions(feeDescriptionMap);
         File invoice = invoiceUtil.generateInvoice(invoiceVM);
-
-        Attachment attachmentAlreadyExists = attachmentRepository.findByOriginalFileName(invoice.getName());
-        if(attachmentAlreadyExists != null){
-            List<Attachment> attachments = feePaymentRecord.get().getTransactionRecord().getAttachments();
-            if(attachments != null){
-                if(attachments.contains(attachmentAlreadyExists)){
-                    attachments.remove(attachmentAlreadyExists);
-                }
-            }
-            attachmentRepository.delete(attachmentAlreadyExists);
-        }
-        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString()+File.separator+feePaymentRecord.get().getOrderId();
-        Attachment attachment = attachmentService.saveAttachmentWithFile(invoice, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
-        List<Attachment> attachments = feePaymentRecord.get().getTransactionRecord().getAttachments();
-        attachments.add(attachment);
+        updateRecord(feePaymentRecord.get(), invoice);
         return invoice;
+    }
+
+    @Async
+    protected void updateRecord(FeePaymentRecord feePaymentRecord, File invoice) {
+        List<Attachment> attachments = feePaymentRecord.getTransactionRecord().getAttachments();
+        if (attachments.size() != 0) {
+            attachmentService.delete(attachments.get(0).getId());
+            attachments.clear();
+        }
+        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecord.getOrderId();
+        Attachment attachment = attachmentService.saveAttachmentWithFile(invoice, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
+        attachments.add(attachment);
     }
 }
 
