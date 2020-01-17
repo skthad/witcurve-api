@@ -169,7 +169,6 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
         transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
         transactionRecordDTO.setTransactionDate(LocalDate.now());
-        // transactionRecordDTO.setAttachments(Arrays.asList(attachment));
         transactionRecordDTO.setType(RecordType.FEE);
         transactionRecordDTO.setTransactionMode(mode);
         transactionRecordDTO.setTransactionType(TransactionType.CREDIT);

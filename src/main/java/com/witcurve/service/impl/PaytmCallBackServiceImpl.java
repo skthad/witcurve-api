@@ -426,6 +426,8 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
 
                 }
                 alreadyExistRecords.add(feePaymentDetailMapper.toEntity(feePaymentDetailDTO));
+                TransactionRecord transactionRecord = feePaymentRecord.getTransactionRecord();
+                transactionRecord.setTotalAmount(transactionRecord.getTotalAmount() + feePaymentDetailDTO.getAmount());
                 feePaymentRecordDTO = feePaymentRecordMapper.toDto(feePaymentRecord);
             } else {
                 feePaymentRecordDTO.setTransactionId(orderId);
