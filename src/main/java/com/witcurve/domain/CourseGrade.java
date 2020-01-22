@@ -7,7 +7,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "course_grade")
+@Table(name = "course_grade", uniqueConstraints = {
+    @UniqueConstraint(name = "student_course_report_card_design_id_unique_UK",
+        columnNames = {"student_id", "course_id", "report_card_design_id"})
+})
 public class CourseGrade extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,7 +25,7 @@ public class CourseGrade extends AbstractAuditingEntity implements Serializable 
     private Student student;
 
     @NotNull
-    @Size(max = 5, message="The field must be less than {max} characters")
+    @Size(max = 5, message="The field grade must be less than {max} characters")
     @Column(name = "course_grade", nullable = false)
     private String courseGrade;
 

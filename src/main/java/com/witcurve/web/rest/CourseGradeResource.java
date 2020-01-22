@@ -7,6 +7,7 @@ import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,12 +38,23 @@ public class CourseGradeResource {
     @PostMapping("/course-grade")
     @Timed
     public ResponseEntity<List<CourseGradeDTO>> createCourseGrade(@RequestBody @Valid List<CourseGradeDTO> courseGradeDTOs,
-                                                                   @RequestParam Long rcdId,
-                                                                   @RequestParam Long courseId) throws WitcurveException, URISyntaxException {
+                                                                  @RequestParam Long rcdId,
+                                                                  @RequestParam Long courseId) throws WitcurveException, URISyntaxException {
         log.debug("Request to create student course grade ");
-        List<CourseGradeDTO> result = courseGradeService.saveOrUpdateCourseGrade(courseGradeDTOs, rcdId, courseId);
-        return ResponseEntity.ok()
-            .body(result);
+        try {
+            List<CourseGradeDTO> result = courseGradeService.saveOrUpdateCourseGrade(courseGradeDTOs, rcdId, courseId);
+            return ResponseEntity.ok()
+                .body(result);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("student_course_report_card_design_id_unique_UK")) {
+                log.error("Unique constraint (student_id, course_id, rcd_id) violated");
+                throw new WitcurveException("There is already a record exists with given student course and report card design combination");
+            } else if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**

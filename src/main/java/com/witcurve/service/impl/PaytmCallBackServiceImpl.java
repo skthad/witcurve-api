@@ -254,7 +254,8 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
         LocalDate transactionDate = null;
         if (paytmStatusCheckVM.getTransactionDate() != null) {
             try {
-                transactionDate = WitcurveUtil.getLocalDate(paytmStatusCheckVM.getTransactionDate(), WitCurveConstants.DEFAULT_DATE_FORMAT);
+
+               transactionDate = WitcurveUtil.getLocalDate(paytmStatusCheckVM.getTransactionDate(), WitCurveConstants.DEFAULT_DATE_FORMAT);
             } catch (DateTimeParseException e) {
                 transactionDate = null;
             }

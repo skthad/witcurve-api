@@ -42,4 +42,8 @@
                                  constraintName="FKmo298j24ixrt2aa2y6wa8fxl9" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1579680204025-5">
+        <addUniqueConstraint columnNames="student_id, course_id, report_card_design_id"
+                             constraintName="student_course_report_card_design_id_unique_UK" tableName="course_grade"/>
+    </changeSet>
 </databaseChangeLog>

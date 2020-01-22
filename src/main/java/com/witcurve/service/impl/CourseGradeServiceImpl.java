@@ -95,17 +95,13 @@ public class CourseGradeServiceImpl implements CourseGradeService {
 
             StudentCourse studentCourse = studentCourseRepository.getByCourseIdAndStudentIdWithStudentStandard(courseId, courseGradeDTO.getStudentId());
             if (studentCourse == null) {
-                throw new WitcurveException("In One of the record given course does not belong to student");
+                throw new WitcurveException("In one of the record given course does not belong to student");
             }
             if (requestStudentIds.contains(courseGradeDTO.getId())) {
                 throw new WitcurveException("There should be only one record for a student in the request");
             }
             CourseGrade existingStudentCourseGrade = existingRecordMap.get(courseGradeDTO.getStudentId());
-            if (courseGradeDTO.getId() == null) {
-                if (existingStudentCourseGrade != null) {
-                    throw new WitcurveException("There already exists a student course grade for this student with id " + courseGradeDTO.getStudentId() + ", so new record cannot be created");
-                }
-            } else {
+            if (courseGradeDTO.getId() != null) {
                 if (existingStudentCourseGrade == null) {
                     throw new WitcurveException("There is no existing student course grade record with this student id " + courseGradeDTO.getStudentId() + "to update");
                 } else {
