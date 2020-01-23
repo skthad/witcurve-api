@@ -17,11 +17,11 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,13 +50,13 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
     AttachmentService attachmentService;
 
     @Autowired
-    AttachmentRepository attachmentRepository;
-
-    @Autowired
     StudentStandardRepository studentStandardRepository;
 
     @Autowired
     InvoiceUtil invoiceUtil;
+
+    @Autowired
+    AttachmentRepository attachmentRepository;
 
     @Override
     public FeePaymentRecordDTO saveOrUpdate(FeePaymentRecordDTO feePaymentRecordDTO, ModeOfTransaction mode) {
@@ -165,24 +165,29 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
             }
             totalPaidAmount = totalPaidAmount + feePaymentDetail.getAmount();
         }
-
-        TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
-        transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
-        transactionRecordDTO.setTransactionDate(LocalDate.now());
-        // transactionRecordDTO.setAttachments(Arrays.asList(attachment));
-        transactionRecordDTO.setType(RecordType.FEE);
-        transactionRecordDTO.setTransactionMode(mode);
-        transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
-        transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
-            + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
-        transactionRecordDTO.setTotalAmount(totalPaidAmount);
-        transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
-        feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
+        if (feePaymentRecordDTO.getId() != null) {
+            TransactionRecordDTO transactionRecordDTO = feePaymentRecordDTO.getTransactionRecordDTO();
+            transactionRecordDTO.setTotalAmount(totalPaidAmount);
+            transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+            transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
+                + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
+        } else {
+            TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
+            transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
+            transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+            transactionRecordDTO.setType(RecordType.FEE);
+            transactionRecordDTO.setTransactionMode(mode);
+            transactionRecordDTO.setTransactionType(TransactionType.CREDIT);
+            transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
+                + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
+            transactionRecordDTO.setTotalAmount(totalPaidAmount);
+            transactionRecordDTO.setSchoolInfoId(studentFeeStructure.get().getStudent().getSchoolInfo().getId());
+            feePaymentRecordDTO.setTransactionRecordDTO(transactionRecordDTO);
+        }
     }
 
     @Override
     public File generateInvoice(Long feePaymentRecordId) {
-
         Optional<FeePaymentRecord> feePaymentRecord = feePaymentRecordRepository.findById(feePaymentRecordId);
         if (!feePaymentRecord.isPresent()) {
             throw new WitcurveException("No fee payment record is present with given id : {}" + feePaymentRecordId);
@@ -194,17 +199,35 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         Map<String, Double> feeDescriptionMap = new HashMap<>();
 
         for (FeePaymentDetail feePaymentDetail : feePaymentRecord.get().getFeePaymentDetails()) {
-            String name = feePaymentDetail.getFeeDescription().getName();
-            if (feeDescriptionMap.containsKey(name)) {
-                Double amt = feeDescriptionMap.get(name) + feePaymentDetail.getAmount();
-                feeDescriptionMap.put(name, amt);
+            String feeName;
+            if (!feePaymentDetail.getPenalty()) {
+                feeName = feePaymentDetail.getFeeDescription().getName();
             } else {
-                feeDescriptionMap.put(name, feePaymentDetail.getAmount());
+                feeName = "Penalty";
+            }
+            if (feeDescriptionMap.containsKey(feeName)) {
+                Double amt = feeDescriptionMap.get(feeName) + feePaymentDetail.getAmount();
+                feeDescriptionMap.put(feeName, amt);
+            } else {
+                feeDescriptionMap.put(feeName, feePaymentDetail.getAmount());
             }
         }
         invoiceVM.setFeeDescriptions(feeDescriptionMap);
         File invoice = invoiceUtil.generateInvoice(invoiceVM);
+        updateRecord(feePaymentRecord.get(), invoice);
         return invoice;
+    }
+
+    @Async
+    protected void updateRecord(FeePaymentRecord feePaymentRecord, File invoice) {
+        List<Attachment> attachments = feePaymentRecord.getTransactionRecord().getAttachments();
+        if (attachments.size() != 0) {
+            attachmentService.delete(attachments.get(0).getId());
+            attachments.clear();
+        }
+        String destinationDirectory = AttachmentType.FEE_PAYMENT_RECORD.toString() + File.separator + feePaymentRecord.getOrderId();
+        Attachment attachment = attachmentService.saveAttachmentWithFile(invoice, AttachmentType.FEE_PAYMENT_RECORD, destinationDirectory);
+        attachments.add(attachment);
     }
 }
 

@@ -299,7 +299,7 @@ public class SnsService {
                 case HOLIDAY:
                     variableMap = new HashMap<>();
                     variableMap.put("date", WitcurveUtil.format(eventDTO.getDate()));
-                    if(eventDTO.getEndDate() == null) {
+                    if (eventDTO.getEndDate() == null) {
                         message = WitcurveUtil.replacePlaceHolder(variableMap, WitCurveConstants.HOLIDAY_ON_SINGLE_DAY);
                         url = "?event=true&date=" + eventDTO.getDate();
                         publishBulkMessage(message, url, TopicType.SCHOOL_INFO, eventDTO.getSchoolInfoId(), null);
@@ -578,7 +578,7 @@ public class SnsService {
             varMap.put("examName", reportCardDesign.get().getExam().getName());
             varMap.put("subjectName", course.getDisplayName());
 
-            if (reportCardDesign.get().getFieldType().equals(ReportFieldType.MAIN) || reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
+            if (reportCardDesign.get().getFieldType().equals(ReportFieldType.MAIN)) {
                 message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.EXAM_MARKS_SAVE);
                 for (StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
                     if (studentMarksDTO.getId() == null) {
@@ -602,6 +602,27 @@ public class SnsService {
             String stringOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPointOfStudents);
             String url = "?userId=" + stringOfUserIds + "&gradeCard=true";
             publishBulkMessage(WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.REPORT_CARD), url, TopicType.STANDARD, null, standardReportDTO.getStandardId());
+        }
+    }
+
+    @Async
+    public void sendPushNotificationWhenGradeSaved(List<CourseGradeDTO> courseGradeDTOs) {
+        Map<String, String> varMap = new HashMap<>();
+
+        Optional<Course> course = courseRepository.findById(courseGradeDTOs.get(0).getCourseDTO().getId());
+        Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(courseGradeDTOs.get(0).getReportCardDesignDTO().getId());
+        varMap.put("examName", reportCardDesign.get().getExam().getName());
+        varMap.put("subjectName", course.get().getDisplayName());
+        String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.EXAM_MARKS_SAVE);
+
+        for (CourseGradeDTO courseGradeDTO : courseGradeDTOs) {
+            if (courseGradeDTO.getId() == null) {
+                List<UserMobileEndPoint> mobileEndPointsOfStudent = userMobileEndPointRepository.findStudentEndPointByStudentId(courseGradeDTO.getStudentId());
+                for (UserMobileEndPoint userMobileEndPoint : mobileEndPointsOfStudent) {
+                    String url = "?marks=true&courseId=" + courseGradeDTO.getCourseDTO().getId() + "&userId=" + userMobileEndPoint.getUser().getId();
+                    publishMessage(message, url, userMobileEndPoint.getEndPoint());
+                }
+            }
         }
     }
 

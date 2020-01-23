@@ -47,4 +47,6 @@ public interface StudentCourseRepository extends JpaRepository<StudentCourse, Lo
     @Query("Select sc.course.id from StudentCourse sc where sc.active=true and sc.studentStandard.student.id = ?1")
     List<Long> getCourseIdsByStudentId(Long studentId);
 
+    @Query("Select sc from StudentCourse sc where sc.studentStandard.student.id = ?2 and sc.course.id=?1 and sc.active=true")
+    StudentCourse getByCourseIdAndStudentIdWithStudentStandard(Long courseId, Long studentId);
 }

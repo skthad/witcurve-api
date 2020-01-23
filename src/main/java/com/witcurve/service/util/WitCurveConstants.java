@@ -71,7 +71,7 @@ public class WitCurveConstants {
 
     public static final String PERIODIC_TEST_MARKS_SAVE = " {{subjectName}} Marks for Periodic Test conducted on {{date}} has been posted ";
 
-    public static final String EXAM_MARKS_SAVE = " {{subjectName}} Marks for {{examName}} has been posted" ;
+    public static final String EXAM_MARKS_SAVE = " {{subjectName}} result for {{examName}} has been posted" ;
 
     public static final String REPORT_CARD = " {{examName}} ReportCard is available for download";
 

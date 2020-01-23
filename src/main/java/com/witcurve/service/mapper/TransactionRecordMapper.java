@@ -5,6 +5,8 @@ import com.witcurve.service.dto.TransactionRecordDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.time.LocalDate;
+
 @Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class})
 public interface TransactionRecordMapper extends EntityMapper<TransactionRecordDTO, TransactionRecord> {
 
@@ -22,5 +24,4 @@ public interface TransactionRecordMapper extends EntityMapper<TransactionRecordD
         transactionRecord.setId(id);
         return transactionRecord;
     }
-
 }

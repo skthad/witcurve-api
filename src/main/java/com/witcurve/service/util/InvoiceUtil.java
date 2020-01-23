@@ -86,7 +86,7 @@ public class InvoiceUtil {
             c1.setBorder(Rectangle.NO_BORDER);
             table.addCell(c1);
 
-            c1 = new PdfPCell(new Phrase("Invoice No : "+ invoiceNo, poppinsSmallBold));
+            c1 = new PdfPCell(new Phrase("Invoice No  : "+ invoiceNo, poppinsSmallBold));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
             c1.setPaddingRight(9f);
             c1.setPaddingLeft(8f);
@@ -102,7 +102,7 @@ public class InvoiceUtil {
             String date = WitcurveUtil.dateFormatter(LocalDate.now().toString(), WitCurveConstants.DEFAULT_DATE_FORMAT, WitCurveConstants.DEFAULT_IMPORT_DATE_FORMAT);
             c1 = new PdfPCell(new Phrase("Date Of Issue : " + date, poppinsVerySmallBold));
             c1.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            c1.setPaddingRight(5f);
+            c1.setPaddingRight(15f);
             c1.setPaddingLeft(12f);
             c1.setPaddingBottom(5f);
             c1.setBorder(Rectangle.NO_BORDER);

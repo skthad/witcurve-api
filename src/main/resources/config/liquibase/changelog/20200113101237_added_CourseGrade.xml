@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="Sai (generated)" id="1578910436353-1">
+        <createTable tableName="course_grade">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="course_gradePK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="datetime"/>
+            <column name="course_grade" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="BIGINT"/>
+            <column name="report_card_design_id" type="BIGINT"/>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578910436353-2">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_grade"
+                                 constraintName="FK33qmbpnunukw8uo8l9daynxj4" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578910436353-3">
+        <addForeignKeyConstraint baseColumnNames="report_card_design_id" baseTableName="course_grade"
+                                 constraintName="FKa2sthyy5p8k9ykjwuw6brl4bf" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card_design"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578910436353-4">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="course_grade"
+                                 constraintName="FKmo298j24ixrt2aa2y6wa8fxl9" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="student"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1579680204025-5">
+        <addUniqueConstraint columnNames="student_id, course_id, report_card_design_id"
+                             constraintName="student_course_report_card_design_id_unique_UK" tableName="course_grade"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1579680204025-6">
+        <addNotNullConstraint columnDataType="bigint" columnName="course_id" tableName="course_grade"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1579680204025-7">
+        <addNotNullConstraint columnDataType="bigint" columnName="report_card_design_id" tableName="course_grade"/>
+    </changeSet>
+</databaseChangeLog>

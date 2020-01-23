@@ -25,10 +25,10 @@ import java.util.*;
 @Transactional
 public class StudentMarksServiceImpl implements StudentMarksService {
 
-    private final Logger log  = LoggerFactory.getLogger(StandardServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(StandardServiceImpl.class);
 
     private final List<EventType> ALLOWED_EVENT_TYPES = Arrays.asList(EventType.TEST, EventType.ASSIGNMENT, EventType.PERIODIC_TEST);
-    private final List<ReportFieldType> ALLOWED_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.NON_SCHOLASTIC, ReportFieldType.MANUAL_ENTRY);
+    private final List<ReportFieldType> ALLOWED_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.MANUAL_ENTRY);
     private final List<ReportFieldType> SCHOLASTIC_CHILD_FIELD_TYPES = Arrays.asList(ReportFieldType.MAIN, ReportFieldType.PERIODIC_TEST, ReportFieldType.MANUAL_ENTRY);
 
     @Autowired
@@ -71,7 +71,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     @Override
     public List<StudentMarksDTO> saveOrUpdateStudentMarks(List<StudentMarksDTO> studentMarksDTOs, Long eventId, Long rcdId, Long courseId) throws WitcurveException {
         studentMarksDTOs = validateAndFormatStudentMarks(studentMarksDTOs, eventId, rcdId, courseId);
-        snsService.sendPushNotificationWhenMarksSaved(studentMarksDTOs,eventId,rcdId,courseId);
+        snsService.sendPushNotificationWhenMarksSaved(studentMarksDTOs, eventId, rcdId, courseId);
         List<StudentMarks> studentMarks = studentMarksMapper.toEntity(studentMarksDTOs);
         studentMarks = studentMarksRepository.saveAll(studentMarks);
         return studentMarksMapper.toDto(studentMarks);
@@ -85,13 +85,13 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!event.isPresent()) {
             throw new WitcurveException("Event does not exist with id: " + eventId);
         }
-        if(ALLOWED_EVENT_TYPES.contains(event.get().getType())){
-            if(rcdId == null) {
-                studentMarks=studentMarksRepository.getStudentMarksByEventId(eventId);
+        if (ALLOWED_EVENT_TYPES.contains(event.get().getType())) {
+            if (rcdId == null) {
+                studentMarks = studentMarksRepository.getStudentMarksByEventId(eventId);
             } else {
                 studentMarks = studentMarksRepository.getStudentMarksByEventIdAndRcdId(eventId, rcdId);
             }
-        } else  {
+        } else {
             throw new WitcurveException("The event must be test or assignment or periodic test");
         }
         return studentMarksMapper.toDto(studentMarks);
@@ -114,10 +114,10 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             if (standardId == null) {
                 return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseId(courseId));
             } else {
-                if(rcdId != null) {
+                if (rcdId != null) {
                     return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseIdAndRcdIdAndStandardId(courseId, rcdId, standardId));
                 } else {
-                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseIdAndExamIdAndStandardId(courseId,examId, standardId));
+                    return studentMarksMapper.toDto(studentMarksRepository.getStudentMarksByCourseIdAndExamIdAndStandardId(courseId, examId, standardId));
                 }
             }
         } else {
@@ -126,7 +126,7 @@ public class StudentMarksServiceImpl implements StudentMarksService {
     }
 
     @Override
-    public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate) throws WitcurveException{
+    public List<StudentMarksDTO> getAllMarksForAStudentInACourse(Long studentId, Long courseId, LocalDate startDate, LocalDate endDate) throws WitcurveException {
         log.debug("Request to get all marks for student {} in course {}", studentId, courseId);
         WitcurveUtil.correctDateFormat(startDate, endDate);
         List<StudentMarksDTO> result = new ArrayList<>();
@@ -141,8 +141,8 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         if (!course.isPresent()) {
             throw new WitcurveException("No course found with ID: " + courseId);
         }
-        result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId( studentId, courseId, startDate, endDate)));
-        if(!eventIds.isEmpty()) {
+        result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByCourseIdAndStudentId(studentId, courseId, startDate, endDate)));
+        if (!eventIds.isEmpty()) {
             result.addAll(studentMarksMapper.toDto(studentMarksRepository.getByStudentIdAndEventIds(studentId, eventIds)));
         }
         Collections.sort(result, new StudentMarksDTOAscComparator());
@@ -157,8 +157,8 @@ public class StudentMarksServiceImpl implements StudentMarksService {
 
     @Override
     public List<StudentMarksDTO> getStudentMarksByRcdIdAndStudentId(ReportCardDesign reportCardDesign, Long studentId) {
-        if(!reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
-            if(reportCardDesign.getFieldType().equals(ReportFieldType.PERIODIC_TEST)) {
+        if (!reportCardDesign.getFieldType().equals(ReportFieldType.TOTAL)) {
+            if (reportCardDesign.getFieldType().equals(ReportFieldType.PERIODIC_TEST)) {
                 //todo add periodic test logic again
                 return new ArrayList<>();
             } else {
@@ -166,41 +166,41 @@ public class StudentMarksServiceImpl implements StudentMarksService {
                 return studentMarksMapper.toDto(studentMarks);
             }
         } else {
-            Map<Long, Map<CourseDTO,Double>> rcdCourseMap= new HashMap<>();
+            Map<Long, Map<CourseDTO, Double>> rcdCourseMap = new HashMap<>();
             List<StudentMarksDTO> result = new ArrayList<>();
             List<ReportCardDesign> reportCardDesigns = reportCardDesignRepository.findByExamAndGrade(reportCardDesign.getExam().getId(), reportCardDesign.getGrade());
-            for(ReportCardDesign childReportCardDesign : reportCardDesigns) {
-                if(SCHOLASTIC_CHILD_FIELD_TYPES.contains(childReportCardDesign.getFieldType()) &&  childReportCardDesign.getSelected()) {
+            for (ReportCardDesign childReportCardDesign : reportCardDesigns) {
+                if (SCHOLASTIC_CHILD_FIELD_TYPES.contains(childReportCardDesign.getFieldType()) && childReportCardDesign.getSelected()) {
                     List<StudentMarksDTO> studentMarksDTOs = getStudentMarksByRcdIdAndStudentId(childReportCardDesign, studentId);
-                    for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
-                        if(rcdCourseMap.get(childReportCardDesign.getId()) == null) {
+                    for (StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+                        if (rcdCourseMap.get(childReportCardDesign.getId()) == null) {
                             rcdCourseMap.put(childReportCardDesign.getId(), new HashMap<>());
                         }
                         Map<CourseDTO, Double> courseMap = rcdCourseMap.get(childReportCardDesign.getId());
                         Double previousMarks = courseMap.get(studentMarksDTO.getCourseDTO());
-                        if( previousMarks == null) {
+                        if (previousMarks == null) {
                             courseMap.put(studentMarksDTO.getCourseDTO(), studentMarksDTO.getMarks());
                         } else {
-                            courseMap.put(studentMarksDTO.getCourseDTO(), previousMarks+studentMarksDTO.getMarks());
+                            courseMap.put(studentMarksDTO.getCourseDTO(), previousMarks + studentMarksDTO.getMarks());
                         }
                     }
                 }
             }
             Map<CourseDTO, Double> totalCourseMap = new HashMap<>();
-            for(Map.Entry<Long, Map<CourseDTO, Double>> rcdEntry : rcdCourseMap.entrySet()) {
-                for(Map.Entry<CourseDTO, Double> courseEntry : rcdEntry.getValue().entrySet()) {
-                    if(totalCourseMap.get(courseEntry.getKey()) ==  null) {
+            for (Map.Entry<Long, Map<CourseDTO, Double>> rcdEntry : rcdCourseMap.entrySet()) {
+                for (Map.Entry<CourseDTO, Double> courseEntry : rcdEntry.getValue().entrySet()) {
+                    if (totalCourseMap.get(courseEntry.getKey()) == null) {
                         totalCourseMap.put(courseEntry.getKey(), courseEntry.getValue());
                     } else {
-                        totalCourseMap.put(courseEntry.getKey(), totalCourseMap.get(courseEntry.getKey())+courseEntry.getValue());
+                        totalCourseMap.put(courseEntry.getKey(), totalCourseMap.get(courseEntry.getKey()) + courseEntry.getValue());
                     }
                 }
             }
-            for(Map.Entry<CourseDTO, Double> totalCourseEntry : totalCourseMap.entrySet()) {
+            for (Map.Entry<CourseDTO, Double> totalCourseEntry : totalCourseMap.entrySet()) {
                 StudentMarksDTO studentMarksDTO = new StudentMarksDTO();
                 studentMarksDTO.setReportCardDesignDTO(reportCardDesignMapper.toDto(reportCardDesign));
                 studentMarksDTO.setStudentId(studentId);
-                studentMarksDTO.setMarks((double)Math.round(totalCourseEntry.getValue()));
+                studentMarksDTO.setMarks((double) Math.round(totalCourseEntry.getValue()));
                 studentMarksDTO.setCourseDTO(totalCourseEntry.getKey());
                 result.add(studentMarksDTO);
             }
@@ -216,38 +216,37 @@ public class StudentMarksServiceImpl implements StudentMarksService {
         EventDTO eventDTO = null;
         CourseDTO courseDTO = null;
         ReportCardDesignDTO reportCardDesignDTO = null;
-        if(rcdId != null && eventId == null) {
+        if (rcdId != null && eventId == null) {
             log.debug("Request to save or update Student Marks: {} with rcd id : {} for course with id : {} ", studentMarksDTOs, rcdId, courseId);
             Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(rcdId);
-            if(!reportCardDesign.isPresent()) {
+            if (!reportCardDesign.isPresent()) {
                 throw new WitcurveException("There is no report card design with given id");
             }
-            if(!ALLOWED_FIELD_TYPES.contains(reportCardDesign.get().getFieldType()) ) {
-                throw new WitcurveException("Invalid report card design, make sure it is of manual entry or main or non_scholastic field");
+            if (!ALLOWED_FIELD_TYPES.contains(reportCardDesign.get().getFieldType())) {
+                throw new WitcurveException("Invalid report card design, make sure it is of manual entry or main field");
             }
             Optional<Course> course = courseRepository.findById(courseId);
-            if(!course.isPresent() || !course.get().getActive() ) {
-                throw new WitcurveException("This is not a valid course, only active non scholastic courses are allowed");
+            if (!course.isPresent() || !course.get().getActive()) {
+                throw new WitcurveException("This is not a valid course, only active scholastic courses are allowed");
             }
             existingStudentMarksList = studentMarksRepository.getStudentMarksByRcdIdAndCourseId(rcdId, courseId);
             courseDTO = new CourseDTO();
             courseDTO.setId(courseId);
             reportCardDesignDTO = new ReportCardDesignDTO();
             reportCardDesignDTO.setId(rcdId);
-            if(reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
+           /* if(reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
                 if(!course.get().getCourseType().equals(CourseType.NON_SCHOLASTIC)) {
                     throw new WitcurveException("Course should be a non scholastic type");
                 }
-            } else {
-                if(!course.get().getCourseType().equals(CourseType.SCHOLASTIC)) {
-                    throw new WitcurveException("Course should be a scholastic type");
-                }
+            } else {*/
+            if (!course.get().getCourseType().equals(CourseType.SCHOLASTIC)) {
+                throw new WitcurveException("Course should be a scholastic type");
             }
-        } else if(eventId != null && rcdId==null) {
+        } else if (eventId != null && rcdId == null) {
             log.debug("Request to save or update Student Marks: {} with event id : {} ", studentMarksDTOs, eventId);
             Optional<Event> event = eventRepository.findById(eventId);
-            if(!event.isPresent()) {
-                throw new WitcurveException("Event doesn't exist with id "+ eventId);
+            if (!event.isPresent()) {
+                throw new WitcurveException("Event doesn't exist with id " + eventId);
             }
             existingStudentMarksList = studentMarksRepository.getStudentMarksByEventId(eventId);
             eventDTO = new EventDTO();
@@ -256,24 +255,24 @@ public class StudentMarksServiceImpl implements StudentMarksService {
             throw new WitcurveException("You need to have only one of rcdId, eventId");
         }
         Map<Long, StudentMarks> existingRecordMap = new HashMap<>();
-        for(StudentMarks studentMarks : existingStudentMarksList) {
+        for (StudentMarks studentMarks : existingStudentMarksList) {
             existingRecordMap.put(studentMarks.getStudent().getId(), studentMarks);
         }
-        for(StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
-            if(requestStudentIds.contains(studentMarksDTO.getStudentId())) {
+        for (StudentMarksDTO studentMarksDTO : studentMarksDTOs) {
+            if (requestStudentIds.contains(studentMarksDTO.getStudentId())) {
                 throw new WitcurveException("There should be only one record for a student in the request");
             }
             StudentMarks existingStudentMarks = existingRecordMap.get(studentMarksDTO.getStudentId());
-            if(studentMarksDTO.getId() == null) {
-                if(existingStudentMarks != null) {
-                    throw new WitcurveException("There already exists a student marks for this student with id "+studentMarksDTO.getStudentId()+", so new record cannot be created");
+            if (studentMarksDTO.getId() == null) {
+                if (existingStudentMarks != null) {
+                    throw new WitcurveException("There already exists a student marks for this student with id " + studentMarksDTO.getStudentId() + ", so new record cannot be created");
                 }
             } else {
-                if(existingStudentMarks == null) {
-                    throw new WitcurveException("There is no existing student marks record with this student id "+studentMarksDTO.getStudentId()+"to update");
+                if (existingStudentMarks == null) {
+                    throw new WitcurveException("There is no existing student marks record with this student id " + studentMarksDTO.getStudentId() + "to update");
                 } else {
-                    if(!existingStudentMarks.getId().equals(studentMarksDTO.getId())) {
-                        throw new WitcurveException("Student marks id cannot be changed while updating for student id "+studentMarksDTO.getStudentId());
+                    if (!existingStudentMarks.getId().equals(studentMarksDTO.getId())) {
+                        throw new WitcurveException("Student marks id cannot be changed while updating for student id " + studentMarksDTO.getStudentId());
                     }
                 }
             }
