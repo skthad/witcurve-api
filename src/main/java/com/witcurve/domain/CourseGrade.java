@@ -29,10 +29,14 @@ public class CourseGrade extends AbstractAuditingEntity implements Serializable 
     @Column(name = "course_grade", nullable = false)
     private String courseGrade;
 
+    @NotNull
     @ManyToOne
+    @JoinColumn(nullable = false)
     private ReportCardDesign reportCardDesign;
 
+    @NotNull
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Course course;
 
     public Long getId() {

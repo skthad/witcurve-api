@@ -70,7 +70,7 @@ public class CourseGradeServiceImpl implements CourseGradeService {
         if (!reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
             throw new WitcurveException("Report card design type should be non scholastic type");
         }
-        //TODO check course assign to student is required here?
+
         Optional<Course> course = courseRepository.findById(courseId);
         if (!course.isPresent() || !course.get().getActive() || !course.get().getCourseType().equals(CourseType.NON_SCHOLASTIC)) {
             throw new WitcurveException("This is not a valid course, only active non scholastic courses are allowed");
@@ -97,18 +97,8 @@ public class CourseGradeServiceImpl implements CourseGradeService {
             if (studentCourse == null) {
                 throw new WitcurveException("In one of the record given course does not belong to student");
             }
-            if (requestStudentIds.contains(courseGradeDTO.getId())) {
+            if (requestStudentIds.contains(courseGradeDTO.getStudentId())) {
                 throw new WitcurveException("There should be only one record for a student in the request");
-            }
-            CourseGrade existingStudentCourseGrade = existingRecordMap.get(courseGradeDTO.getStudentId());
-            if (courseGradeDTO.getId() != null) {
-                if (existingStudentCourseGrade == null) {
-                    throw new WitcurveException("There is no existing student course grade record with this student id " + courseGradeDTO.getStudentId() + "to update");
-                } else {
-                    if (!existingStudentCourseGrade.getId().equals(courseGradeDTO.getId())) {
-                        throw new WitcurveException("Student course grade id cannot be changed while updating for student id " + courseGradeDTO.getStudentId());
-                    }
-                }
             }
             courseGradeDTO.setCourseDTO(courseDTO);
             courseGradeDTO.setReportCardDesignDTO(reportCardDesignDTO);

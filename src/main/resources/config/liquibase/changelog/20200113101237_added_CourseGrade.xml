@@ -46,4 +46,10 @@
         <addUniqueConstraint columnNames="student_id, course_id, report_card_design_id"
                              constraintName="student_course_report_card_design_id_unique_UK" tableName="course_grade"/>
     </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1579680204025-6">
+        <addNotNullConstraint columnDataType="bigint" columnName="course_id" tableName="course_grade"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1579680204025-7">
+        <addNotNullConstraint columnDataType="bigint" columnName="report_card_design_id" tableName="course_grade"/>
+    </changeSet>
 </databaseChangeLog>

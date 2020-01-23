@@ -132,7 +132,6 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
 
             switch (feePaymentType) {
                 case FULL_YEAR_PAYMENT:
-                    //change it to check if any on er cord exists
                     List<FeePaymentRecord> feePaymentRecords = feePaymentRecordRepository.getByStudentAndSessionId(student.getId(), session.getId());
 
                     if (feePaymentRecords.size() >= 1) {
