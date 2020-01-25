@@ -57,26 +57,17 @@
                                  referencedTableName="school_info"/>
     </changeSet>
     <changeSet author="Sai (generated)" id="1576159240304-5">
-        <addForeignKeyConstraint baseColumnNames="fee_payment_record_id" baseTableName="transaction_record"
-                                 constraintName="FK9aw62pgbj7xnaa9sepmjigx9u" deferrable="false"
-                                 initiallyDeferred="false" referencedColumnNames="id"
-                                 referencedTableName="fee_payment_record"/>
-    </changeSet>
-    <changeSet author="Sai (generated)" id="1576159240304-6">
         <addForeignKeyConstraint baseColumnNames="transaction_record_id" baseTableName="transaction_record_attachments"
                                  constraintName="FKb3ili3ek4kftsef814wwcoijc" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id"
                                  referencedTableName="transaction_record"/>
     </changeSet>
-    <changeSet author="Sai (generated)" id="1576159240304-7">
+    <changeSet author="Sai (generated)" id="1576159240304-6">
         <addForeignKeyConstraint baseColumnNames="attachment_id" baseTableName="transaction_record_attachments"
                                  constraintName="FKcpmweci4069th9eth6ojios8s" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attachment"/>
     </changeSet>
-    <changeSet author="Sai (generated)" id="1576237062316-8">
-        <dropForeignKeyConstraint baseTableName="transaction_record" constraintName="FK9aw62pgbj7xnaa9sepmjigx9u"/>
-    </changeSet>
-    <changeSet author="Sai (generated)" id="1576237062316-9">
+    <changeSet author="Sai (generated)" id="1576159240304-7">
         <dropColumn columnName="fee_payment_record_id" tableName="transaction_record"/>
     </changeSet>
 </databaseChangeLog>
