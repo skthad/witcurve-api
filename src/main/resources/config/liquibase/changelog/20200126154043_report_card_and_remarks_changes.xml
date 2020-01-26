@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="srujankuamar (generated)" id="1580053262295-1">
+        <dropForeignKeyConstraint baseTableName="report_card_scholastic_course" constraintName="FK262p4pkw30vxa1b6andtffs1s"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1580053262295-2">
+        <dropForeignKeyConstraint baseTableName="report_card_non_scholastic_course" constraintName="FKreu3l95ft7m07mqtrcy3cdiq9"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1580053262295-3">
+        <dropPrimaryKey constraintName="PRIMARY" tableName="report_card_non_scholastic_course"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1580053262295-4">
+        <dropPrimaryKey constraintName="PRIMARY" tableName="report_card_scholastic_course"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1580053262295-5">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="report_card_scholastic_course"
+                                 constraintName="FK262p4pkw30vxa1b6andtffs1s" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1580053262295-6">
+        <addForeignKeyConstraint baseColumnNames="report_card_id" baseTableName="report_card_non_scholastic_course"
+                                 constraintName="FKreu3l95ft7m07mqtrcy3cdiq9" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="report_card"/>
+    </changeSet>
+    <changeSet author="srujankuamar (generated)" id="1580053262295-7">
+        <addNotNullConstraint columnDataType="varchar(500)" columnName="remarks" tableName="student_remarks"/>
+    </changeSet>
+</databaseChangeLog>

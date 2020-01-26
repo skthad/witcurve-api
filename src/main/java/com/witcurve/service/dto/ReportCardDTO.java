@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
 
@@ -22,9 +21,9 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Long examId;
 
-    private Set<CourseDTO> scholasticCourses;
+    private List<CourseDTO> scholasticCourses;
 
-    private Set<CourseDTO> nonScholasticCourses;
+    private List<CourseDTO> nonScholasticCourses;
 
     private List<ScholasticReportDetailsDTO> scholasticDetails;
 
@@ -99,19 +98,19 @@ public class ReportCardDTO extends AbstractAuditingDTO implements Serializable {
         this.examId = examId;
     }
 
-    public Set<CourseDTO> getScholasticCourses() {
+    public List<CourseDTO> getScholasticCourses() {
         return scholasticCourses;
     }
 
-    public void setScholasticCourses(Set<CourseDTO> scholasticCourses) {
+    public void setScholasticCourses(List<CourseDTO> scholasticCourses) {
         this.scholasticCourses = scholasticCourses;
     }
 
-    public Set<CourseDTO> getNonScholasticCourses() {
+    public List<CourseDTO> getNonScholasticCourses() {
         return nonScholasticCourses;
     }
 
-    public void setNonScholasticCourses(Set<CourseDTO> nonScholasticCourses) {
+    public void setNonScholasticCourses(List<CourseDTO> nonScholasticCourses) {
         this.nonScholasticCourses = nonScholasticCourses;
     }
 

@@ -9,9 +9,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "report_card", uniqueConstraints = {
@@ -48,7 +47,7 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")})
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
-    private Set<Course> scholasticCourses = new HashSet<>();
+    private List<Course> scholasticCourses = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
@@ -58,7 +57,7 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         inverseJoinColumns = {@JoinColumn(name = "course_id", referencedColumnName = "id")})
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 20)
-    private Set<Course> nonScholasticCourses = new HashSet<>();
+    private List<Course> nonScholasticCourses = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="report_card_id")
@@ -156,19 +155,19 @@ public class ReportCard extends AbstractAuditingEntity implements Serializable {
         this.exam = exam;
     }
 
-    public Set<Course> getScholasticCourses() {
+    public List<Course> getScholasticCourses() {
         return scholasticCourses;
     }
 
-    public void setScholasticCourses(Set<Course> scholasticCourses) {
+    public void setScholasticCourses(List<Course> scholasticCourses) {
         this.scholasticCourses = scholasticCourses;
     }
 
-    public Set<Course> getNonScholasticCourses() {
+    public List<Course> getNonScholasticCourses() {
         return nonScholasticCourses;
     }
 
-    public void setNonScholasticCourses(Set<Course> nonScholasticCourses) {
+    public void setNonScholasticCourses(List<Course> nonScholasticCourses) {
         this.nonScholasticCourses = nonScholasticCourses;
     }
 
