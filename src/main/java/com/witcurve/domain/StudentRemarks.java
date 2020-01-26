@@ -24,7 +24,7 @@ public class StudentRemarks extends AbstractAuditingEntity implements Serializab
     private Student student;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String remarks;
 
     @ManyToOne
