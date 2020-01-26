@@ -62,4 +62,5 @@
     <include file="config/liquibase/changelog/20191212140006_TransactionRecord_added.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20191127104810_added_FeePaymentRecord_and_FeePaymentDetail.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200113101237_added_CourseGrade.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200126135607_increased_remarks_length_student_remarks.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
