@@ -315,7 +315,6 @@ public class ReportCardServiceImpl implements ReportCardService {
             reportCardVM.setDefiningGrade(getGradeDetailsWithConfigSettings(configSettings));
             reportCardVM.setColorForGrades(getGradeDetailsWithConfigSettings(gradeColorConfigSettings));
             List<Course> courses = new ArrayList<>(reportCard.getScholasticCourses());
-            Collections.sort(courses, new CourseComparator());
             List<String> subjectArray = new ArrayList<>();
             ReportCardVM.ScholasticVM scholasticVM = new ReportCardVM.ScholasticVM();
             ReportCardVM.ScholasticVM.ScholasticDetailsVM scholasticDetailsVM = new ReportCardVM.ScholasticVM.ScholasticDetailsVM();
@@ -459,7 +458,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                 reportCardVM.setColorForGrades(getGradeDetailsWithConfigSettings(gradeColorConfigSettings));
             }
             List<Course> courses = new ArrayList<>(reportCard.getNonScholasticCourses());
-            Collections.sort(courses, new CourseComparator());
             List<String> subjectArray = new ArrayList<>();
             ReportCardVM.NonScholasticVM nonScholasticVM = new ReportCardVM.NonScholasticVM();
             nonScholasticVM.setTitleName("Subjects");
