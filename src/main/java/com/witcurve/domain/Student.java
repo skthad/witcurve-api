@@ -200,6 +200,9 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     @Where(clause = "active=true")
     private Set<StudentStandard> studentStandards;
 
+    @OneToOne
+    private Attachment profilePhoto;
+
     public Long getId() {
         return id;
     }
@@ -567,6 +570,10 @@ public class Student extends AbstractAuditingEntity implements Serializable {
     public void setStudentStandards(Set<StudentStandard> studentStandards) {
         this.studentStandards = studentStandards;
     }
+
+    public Attachment getProfilePhoto() { return profilePhoto; }
+
+    public void setProfilePhoto(Attachment profilePhoto) { this.profilePhoto = profilePhoto; }
 
     @Override
     public boolean equals(Object o) {

@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.witcurve.domain.Attachment;
 import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Gender;
 import com.witcurve.domain.enumeration.StaffType;
@@ -118,6 +119,8 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     private String ifscCode;
 
     private Set<String> subjects;
+
+    private Attachment profilePhoto;
 
     public StaffDTO() {
     }
@@ -401,6 +404,10 @@ public class StaffDTO extends AbstractAuditingDTO implements Serializable {
     public void setSubjects(Set<String> subjects) {
         this.subjects = subjects;
     }
+
+    public Attachment getProfilePhoto() { return profilePhoto; }
+
+    public void setProfilePhoto(Attachment profilePhoto) { this.profilePhoto = profilePhoto; }
 
     @Override
     public boolean equals(Object o) {

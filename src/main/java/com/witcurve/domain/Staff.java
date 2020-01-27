@@ -149,6 +149,9 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     @Column
     private String ifscCode;
 
+    @OneToOne
+    private Attachment profilePhoto;
+
     public Long getId() {
         return id;
     }
@@ -396,6 +399,10 @@ public class Staff extends AbstractAuditingEntity implements Serializable {
     public void setIfscCode(String ifscCode) {
         this.ifscCode = ifscCode;
     }
+
+    public Attachment getProfilePhoto() { return profilePhoto; }
+
+    public void setProfilePhoto(Attachment profilePhoto) { this.profilePhoto = profilePhoto; }
 
     @Override
     public boolean equals(Object o) {

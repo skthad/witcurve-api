@@ -28,6 +28,4 @@ public interface AttachmentService {
     List<Attachment> findAll(AttachmentType type);
 
     void delete(Long id) throws WitcurveException;
-
-
 }

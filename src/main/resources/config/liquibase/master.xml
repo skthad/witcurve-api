@@ -64,4 +64,5 @@
     <include file="config/liquibase/changelog/20200113101237_added_CourseGrade.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200126135607_increased_remarks_length_student_remarks.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200126154043_report_card_and_remarks_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200127112239_added_profile_picture_field_for_student_staff.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

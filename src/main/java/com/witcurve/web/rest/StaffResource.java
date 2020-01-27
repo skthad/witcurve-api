@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.dto.StaffDTO;
+import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -182,5 +184,20 @@ public class StaffResource {
         log.debug("REST request to delete Staff: {}", staffId);
         staffService.activate(staffId);
         return ResponseEntity.ok(null);
+    }
+
+    /**
+     * add profile picture
+     * @param staffId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @PatchMapping("/staff/{staffId}")
+    @Timed
+    public ResponseEntity<StaffDTO> addProfilePhoto(@PathVariable Long staffId, @RequestParam MultipartFile file) throws WitcurveException{
+        log.debug("Request to add attachment to staff record with id   : {}  ", staffId);
+        StaffDTO result = staffService.addProfilePhoto(staffId, file);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
