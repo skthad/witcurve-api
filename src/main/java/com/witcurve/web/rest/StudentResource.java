@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -39,8 +41,8 @@ public class StudentResource {
                 .body(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("admission_school_info_id_UK") || e.getMessage().contains("UC_WC_USERLOGIN_COL")) {
-               log.error("Unique constraint (admission_id, school_info_id) violated");
-               throw new WitcurveException("There already a student with given admission id for this board");
+                log.error("Unique constraint (admission_id, school_info_id) violated");
+                throw new WitcurveException("There already a student with given admission id for this board");
             } else if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
             } else {
@@ -98,7 +100,7 @@ public class StudentResource {
     public ResponseEntity<List<StudentDTO>> getStudentsBySchoolInfoId(@PathVariable("schoolInfoId") Long schoolInfoId, @RequestParam(defaultValue = "true") Boolean activated) throws WitcurveException {
         log.debug("Request to get unallocated students in schoolInfo with id: {} of active status : {}", schoolInfoId, activated);
         List<StudentDTO> result;
-        if(activated) {
+        if (activated) {
             result = studentService.getUnAllocatedStudentsBySchoolInfoId(schoolInfoId);
         } else {
             result = studentService.getInActiveStudentsBySchoolInfoId(schoolInfoId);
@@ -127,7 +129,7 @@ public class StudentResource {
     public ResponseEntity<Void> mapUnmapStudentToCourse(@RequestParam Long studentStandardId,
                                                         @RequestParam Long courseId,
                                                         @RequestParam(required = false, defaultValue = "true") Boolean map) throws WitcurveException {
-        log.debug(String.format("Request to {} student to course"), (map ? "map": "unmap"));
+        log.debug(String.format("Request to {} student to course"), (map ? "map" : "unmap"));
 
         try {
             studentService.mapUnmapStudentAndCourse(studentStandardId, courseId, map);
@@ -153,6 +155,14 @@ public class StudentResource {
         studentService.mapOneTime(schoolInfoId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("One time mapping done ",
             null)).build();
+    }
+
+    @PatchMapping("/students/{studentId}")
+    @Timed
+    public ResponseEntity<StudentDTO> addProfilePhoto(@PathVariable Long studentId, @RequestParam MultipartFile file) throws WitcurveException {
+        log.debug("Request to add attachment to student record with id   : {}  ", studentId);
+        StudentDTO result = studentService.addProfilePhoto(studentId, file);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

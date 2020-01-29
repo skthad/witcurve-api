@@ -2,10 +2,12 @@ package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.AttachmentType;
 import com.witcurve.domain.enumeration.Grade;
 import com.witcurve.domain.enumeration.SubscriptionModel;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
+import com.witcurve.service.AttachmentService;
 import com.witcurve.service.StudentService;
 import com.witcurve.service.StudentStandardService;
 import com.witcurve.service.UserService;
@@ -20,7 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.*;
 
 @Service
@@ -64,6 +68,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     StudentStandardService studentStandardService;
+
+    @Autowired
+    AttachmentService attachmentService;
 
     @Override
     public StudentDTO create(StudentDTO studentDTO) {
@@ -300,5 +307,21 @@ public class StudentServiceImpl implements StudentService {
         if (studentCourses != null) {
             studentCourseRepository.saveAll(studentCourses);
         }
+    }
+
+    @Override
+    public StudentDTO addProfilePhoto(Long studentId, MultipartFile file) {
+        Optional<Student> student = studentRepository.findById(studentId);
+        if (!student.isPresent()) {
+            throw new WitcurveException("No student is present with given id : {} " + studentId);
+        }
+        if (student.get().getProfilePhoto() != null) {
+            attachmentService.delete(student.get().getProfilePhoto().getId());
+        }
+        AttachmentType type = AttachmentType.STUDENT_PROFILE_PHOTO;
+        String directoryName = type.toString() + File.separator + student.get().getAdmissionId();
+        Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, type, directoryName);
+        student.get().setProfilePhoto(attachment);
+        return studentMapper.toDto(student.get());
     }
 }

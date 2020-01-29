@@ -3,6 +3,7 @@ package com.witcurve.service;
 import com.witcurve.domain.StudentStandard;
 import com.witcurve.service.dto.StudentDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface StudentService {
     void mapUnmapStudentAndCourse(Long studentStandardId, Long courseId, Boolean map);
 
     void mapOneTime(Long schoolInfoId);
+
+    StudentDTO addProfilePhoto(Long studentId, MultipartFile file);
 }

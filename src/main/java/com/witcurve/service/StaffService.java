@@ -3,6 +3,7 @@ package com.witcurve.service;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.service.dto.StaffDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface StaffService {
     void deactivate(Long staffId) throws WitcurveException;
 
     void activate(Long staffId) throws WitcurveException;
+
+    StaffDTO addProfilePhoto(Long studentId, MultipartFile file);
 }

@@ -1,13 +1,12 @@
 package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
-import com.witcurve.domain.SchoolInfo;
-import com.witcurve.domain.Staff;
-import com.witcurve.domain.StaffEligibility;
-import com.witcurve.domain.User;
+import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.AttachmentType;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
+import com.witcurve.service.AttachmentService;
 import com.witcurve.service.StaffEligibilityService;
 import com.witcurve.service.StaffService;
 import com.witcurve.service.UserService;
@@ -21,7 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.*;
 
 @Service
@@ -57,6 +58,9 @@ public class StaffServiceImpl implements StaffService {
     @Autowired
     StaffEligibilityService staffEligibilityService;
 
+    @Autowired
+    AttachmentService attachmentService;
+
     @Override
     public StaffDTO create(StaffDTO staffDTO) {
         log.debug("Request to create staff : {}", staffDTO);
@@ -81,8 +85,8 @@ public class StaffServiceImpl implements StaffService {
     public StaffDTO update(StaffDTO staffDTO) throws WitcurveException {
         log.debug("Request to update staff : {}", staffDTO);
         Optional<User> user = userRepository.findById(staffDTO.getUserId());
-        if(!user.isPresent()) {
-            throw new WitcurveException("There is no user with given id : "+staffDTO.getUserId());
+        if (!user.isPresent()) {
+            throw new WitcurveException("There is no user with given id : " + staffDTO.getUserId());
         }
         UserDTO userDTO = userMapper.userToUserDTO(user.get());
         userDTO.setLogin(staffDTO.getSchoolInfo().getId() + "-" + staffDTO.getEmployeeId());
@@ -125,7 +129,7 @@ public class StaffServiceImpl implements StaffService {
     public StaffDTO getStaffByUsername(String username) throws WitcurveException {
         log.info("Request to get staff with username : {}", username);
         int index = username.indexOf("-");
-        if(index >  0 ) {
+        if (index > 0) {
             Long schoolInfoId;
             try {
                 schoolInfoId = Long.parseLong(username.substring(0, index));
@@ -135,9 +139,9 @@ public class StaffServiceImpl implements StaffService {
             }
             String staffId = username.substring(index + 1);
             Staff staff = staffRepository.findBySchoolInfoIdAndStaffId(schoolInfoId, staffId.toLowerCase());
-            if (staff == null){
+            if (staff == null) {
                 log.error("No staff with given staff id : {} in the give school info id : {}", staffId, schoolInfoId);
-                throw  new WitcurveException("No staff exists with given username");
+                throw new WitcurveException("No staff exists with given username");
             }
             StaffDTO result = staffMapper.toDto(staff);
             if (Strings.isNullOrEmpty(staff.getUser().getPassword())) {
@@ -169,11 +173,11 @@ public class StaffServiceImpl implements StaffService {
         if (!schoolInfo.isPresent()) {
             throw new WitcurveException("No SchoolInfo with given id " + schoolInfoId);
         }
-        if(areClassTeacher) {
+        if (areClassTeacher) {
             staffList = staffRepository.findClassTeachersBySchoolInfoId(schoolInfoId);
-        } else if(!activated) {
+        } else if (!activated) {
             staffList = staffRepository.findDeletedTeachersBySchoolInfoId(schoolInfoId);
-        } else if(type != null) {
+        } else if (type != null) {
             staffList = staffRepository.findBySchoolInfoIdAndType(schoolInfoId, type);
         } else {
             staffList = staffRepository.findBySchoolInfoId(schoolInfoId);
@@ -198,7 +202,7 @@ public class StaffServiceImpl implements StaffService {
     public void deactivate(Long staffId) throws WitcurveException {
         Optional<Staff> staff = staffRepository.findById(staffId);
         if (staff.isPresent()) {
-            if(StaffType.TEACHING.equals(staff.get().getType())) {
+            if (StaffType.TEACHING.equals(staff.get().getType())) {
                 int activeCourseTeacherCount = courseTeacherRepository.findByTeacherId(staffId).size();
                 if (activeCourseTeacherCount > 0) {
                     throw new WitcurveException("This staff is already linked to active courses. Please deactive before proceeding.");
@@ -221,5 +225,19 @@ public class StaffServiceImpl implements StaffService {
         }
     }
 
-
+    @Override
+    public StaffDTO addProfilePhoto(Long staffId, MultipartFile file) {
+        Optional<Staff> staff = staffRepository.findById(staffId);
+        if (!staff.isPresent()) {
+            throw new WitcurveException("No staff is present with given id : {} " + staffId);
+        }
+        if (staff.get().getProfilePhoto() != null) {
+            attachmentService.delete(staff.get().getProfilePhoto().getId());
+        }
+        AttachmentType type = AttachmentType.STAFF_PROFILE_PHOTO;
+        String directoryName = type.toString() + File.separator + staff.get().getEmployeeId();
+        Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, type, directoryName);
+        staff.get().setProfilePhoto(attachment);
+        return staffMapper.toDto(staff.get());
+    }
 }

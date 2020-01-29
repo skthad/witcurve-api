@@ -1,6 +1,7 @@
 package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.witcurve.domain.Attachment;
 import com.witcurve.domain.enumeration.BloodGroup;
 import com.witcurve.domain.enumeration.Category;
 import com.witcurve.domain.enumeration.Gender;
@@ -143,6 +144,8 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     private LocalDate subscriptionStartDate;
 
     private LocalDate subscriptionEndDate;
+
+    private Attachment profilePhoto;
 
     public Long getId() {
         return id;
@@ -543,6 +546,10 @@ public class StudentDTO extends AbstractAuditingDTO implements Serializable {
     public void setSubscriptionEndDate(LocalDate subscriptionEndDate) {
         this.subscriptionEndDate = subscriptionEndDate;
     }
+
+    public Attachment getProfilePhoto() { return profilePhoto; }
+
+    public void setProfilePhoto(Attachment profilePhoto) { this.profilePhoto = profilePhoto; }
 
     @Override
     public boolean equals(Object o) {
