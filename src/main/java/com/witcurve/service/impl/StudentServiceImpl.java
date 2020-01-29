@@ -319,7 +319,7 @@ public class StudentServiceImpl implements StudentService {
             attachmentService.delete(student.get().getProfilePhoto().getId());
         }
         AttachmentType type = AttachmentType.STUDENT_PROFILE_PHOTO;
-        String directoryName = type.toString() + File.separator + student.get().getId();
+        String directoryName = type.toString() + File.separator + student.get().getAdmissionId();
         Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, type, directoryName);
         student.get().setProfilePhoto(attachment);
         return studentMapper.toDto(student.get());

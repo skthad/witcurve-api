@@ -71,9 +71,7 @@ public class AlbumServiceImpl implements AlbumService {
             throw new WitcurveException("No album is present with given id {} " + albumId);
         }
         album.get().setName(name);
-        if (description != null) {
-            album.get().setDescription(description);
-        }
+        album.get().setDescription(description);
         return albumMapper.toDto(album.get());
     }
 

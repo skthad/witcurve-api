@@ -235,7 +235,7 @@ public class StaffServiceImpl implements StaffService {
             attachmentService.delete(staff.get().getProfilePhoto().getId());
         }
         AttachmentType type = AttachmentType.STAFF_PROFILE_PHOTO;
-        String directoryName = type.toString() + File.separator + staff.get().getId();
+        String directoryName = type.toString() + File.separator + staff.get().getEmployeeId();
         Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, type, directoryName);
         staff.get().setProfilePhoto(attachment);
         return staffMapper.toDto(staff.get());
