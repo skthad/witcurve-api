@@ -52,7 +52,7 @@ public class AlbumServiceImpl implements AlbumService {
         albumDTO.setDescription(description);
         albumDTO.setSchoolInfoId(schoolInfoId);
 
-        String directory = AttachmentType.ALBUM_PHOTO.toString() + File.separator + schoolInfoId + "_" + name;
+        String directory = AttachmentType.ALBUM_PHOTO.toString() + File.separator + schoolInfoId + File.separator + name;
         List<Attachment> attachments = new ArrayList<>();
         for (MultipartFile file : photos) {
             Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, AttachmentType.ALBUM_PHOTO, directory);
@@ -71,7 +71,9 @@ public class AlbumServiceImpl implements AlbumService {
             throw new WitcurveException("No album is present with given id {} " + albumId);
         }
         album.get().setName(name);
-        album.get().setDescription(description);
+        if (description != null) {
+            album.get().setDescription(description);
+        }
         return albumMapper.toDto(album.get());
     }
 
@@ -100,7 +102,7 @@ public class AlbumServiceImpl implements AlbumService {
             throw new WitcurveException("No album is present with given id {} " + albumId);
         }
         List<Attachment> attachments = new ArrayList<>();
-        String directory = AttachmentType.ALBUM_PHOTO.toString() + File.separator + album.get().getSchoolInfo().getId() + "_" + album.get().getName();
+        String directory = AttachmentType.ALBUM_PHOTO.toString() + File.separator + album.get().getSchoolInfo().getId() + File.separator + album.get().getName();
         for (MultipartFile file : photos) {
             Attachment attachment = attachmentService.saveAttachmentWithMultipart(file, AttachmentType.ALBUM_PHOTO, directory);
             attachments.add(attachment);

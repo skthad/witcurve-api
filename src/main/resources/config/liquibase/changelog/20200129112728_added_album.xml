@@ -59,4 +59,7 @@
                                  constraintName="FKpxjugt7yncsgm52uaa3o0ja3" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="attachment"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1580297349576-7">
+        <dropNotNullConstraint columnDataType="varchar(255)" columnName="description" tableName="album"/>
+    </changeSet>
 </databaseChangeLog>

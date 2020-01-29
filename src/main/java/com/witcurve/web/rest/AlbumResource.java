@@ -33,9 +33,9 @@ public class AlbumResource {
      * @param schoolInfoId
      * @return albumDTO
      */
-    @PostMapping("/album")
+    @PostMapping("/album/school-info/{schoolInfoId}")
     @Timed
-    public ResponseEntity<AlbumDTO> createAlbum(@RequestParam String name, @RequestParam String description, @RequestParam Long schoolInfoId, @RequestParam List<MultipartFile> file) throws WitcurveException {
+    public ResponseEntity<AlbumDTO> createAlbum(@RequestParam String name, @RequestParam(required = false) String description, @PathVariable Long schoolInfoId, @RequestParam List<MultipartFile> file) throws WitcurveException {
         log.debug("Request to create album");
         AlbumDTO result = albumService.createAlbum(name, description, schoolInfoId, file);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -50,7 +50,7 @@ public class AlbumResource {
      */
     @PutMapping("/album/{albumId}")
     @Timed
-    public ResponseEntity<AlbumDTO> updateAlbum(@PathVariable Long albumId, @RequestParam String name, @RequestParam String description) throws WitcurveException {
+    public ResponseEntity<AlbumDTO> updateAlbum(@PathVariable Long albumId, @RequestParam String name, @RequestParam(required = false) String description) throws WitcurveException {
         log.debug("Request to update album");
         AlbumDTO result = albumService.updateAlbum(albumId, name, description);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -63,7 +63,7 @@ public class AlbumResource {
      * @param file
      * @return albumDTO
      */
-    @PatchMapping("/album/{albumId}")
+    @PatchMapping("/album/add/add-photos/{albumId}")
     @Timed
     public ResponseEntity<AlbumDTO> addPhotosToAlbum(@PathVariable Long albumId, @RequestParam List<MultipartFile> file) {
         log.debug("Request to add photos to album");

@@ -26,9 +26,7 @@ public class Album extends AbstractAuditingEntity implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @NotNull
     @Size(max = 255, message="The field description must be less than {max} characters")
-    @Column(nullable = false)
     private String description;
 
     @NotNull
