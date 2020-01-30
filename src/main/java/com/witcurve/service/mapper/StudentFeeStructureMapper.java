@@ -15,14 +15,15 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
     @Mapping(source = "sessionId", target = "session.id")
     @Mapping(source = "studentId", target = "student.id")
     @Mapping(source = "selectedSessionId", target = "selectedSession")
+    @Mapping(ignore = true, target = "feePaymentRecords")
     StudentFeeStructure toEntity(StudentFeeStructureDTO studentFeeStructureDTO);
 
 
     @Mapping(target = "sessionId", source = "session.id")
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "selectedSessionId", source = "selectedSession.id")
-    @Mapping(target = "amount", expression = "java(getTotalFeeTypeAmount(studentFeeStructure.getStudentFeeTypes()))")
-    @Mapping(target = "totalOneTimeDiscount", expression = "java(getTotalOneTimeDiscount(studentFeeStructure.getStudentFeeTypes()))")
+ //   @Mapping(target = "amount", expression = "java(getTotalFeeTypeAmount(studentFeeStructure.getStudentFeeTypes()))")
+  //  @Mapping(target = "totalOneTimeDiscount", expression = "java(getTotalOneTimeDiscount(studentFeeStructure.getStudentFeeTypes()))")
     StudentFeeStructureDTO toDto(StudentFeeStructure studentFeeStructure);
 
     default StudentFeeStructure fromId(Long id) {
@@ -32,25 +33,6 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
         StudentFeeStructure studentFeeStructure = new StudentFeeStructure();
         studentFeeStructure.setId(id);
         return studentFeeStructure;
-    }
-
-    default Double getTotalFeeTypeAmount(List<StudentFeeType> feeTypes) {
-        if (feeTypes == null || feeTypes.size() == 0) {
-            return 0.0;
-        }
-        Double totalAmount = 0.0;
-        for (StudentFeeType feeType : feeTypes) {
-            Double totalFeeDescription = 0.0;
-            if (feeType.getStudentFeeDescriptions() != null || feeType.getStudentFeeDescriptions().size() > 0) {
-                for (StudentFeeDescription feeDescription : feeType.getStudentFeeDescriptions()) {
-                    Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment();
-                    totalFeeDescription = totalFeeDescription + feeDescriptionAmt;
-                }
-                totalAmount = totalAmount + totalFeeDescription;
-            }
-        }
-
-        return totalAmount;
     }
 
     default Double getTotalOneTimeDiscount(List<StudentFeeType> feeTypes){

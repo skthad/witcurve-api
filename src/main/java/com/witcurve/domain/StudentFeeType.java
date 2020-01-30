@@ -36,8 +36,9 @@ public class StudentFeeType extends AbstractAuditingEntity implements Serializab
     @Convert(converter = LocalDateConverter.class)
     private LocalDate dueDate;
 
+    @NotNull
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "student_fee_type_id")
+    @JoinColumn(name = "student_fee_type_id",nullable = false)
     private List<StudentFeeDescription> studentFeeDescriptions;
 
     public Long getId() {

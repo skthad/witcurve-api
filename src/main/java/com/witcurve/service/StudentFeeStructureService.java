@@ -11,4 +11,6 @@ public interface StudentFeeStructureService {
     StudentFeeStructureDTO getByStudentIdAndSessionId(Long studentId, Long sessionId);
 
     List<StudentFeeStructureDTO> getByStandardIdAndSessionId(Long standardId, Long sessionId);
+
+    StudentFeeStructureDTO getByStudentFeeStructureId(Long studentFeeStructureId);
 }

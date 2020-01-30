@@ -121,4 +121,20 @@ public class StudentFeeStructureResource {
         List<StudentFeeStructureDTO> result = studentFeeStructureService.getByStandardIdAndSessionId(standardId, sessionId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    /**
+     * get studentFeeStructure
+     *
+     * @param studentFeeStructureId
+     * @return
+     * @throws WitcurveException
+     */
+
+    @GetMapping("/student-fee-structure/{studentFeeStructureId}")
+    @Timed
+    public ResponseEntity<StudentFeeStructureDTO> getByFeeStructureId(@PathVariable Long studentFeeStructureId) throws WitcurveException {
+        log.debug("Request to get StudentFeeStructure by id : {}", studentFeeStructureId);
+        StudentFeeStructureDTO result = studentFeeStructureService.getByStudentFeeStructureId(studentFeeStructureId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

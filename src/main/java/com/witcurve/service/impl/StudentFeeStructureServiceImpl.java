@@ -1,9 +1,7 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.SessionFeeDescription;
-import com.witcurve.domain.SessionFeeStructure;
-import com.witcurve.domain.StudentFeeStructure;
-import com.witcurve.domain.StudentStandard;
+import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.FeePaymentType;
 import com.witcurve.repository.FeeDetailsRepository;
 import com.witcurve.repository.SessionFeeStructureRepository;
 import com.witcurve.repository.StudentFeeStructureRepository;
@@ -20,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,14 +54,25 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
     public StudentFeeStructureDTO getByStudentIdAndSessionId(Long studentId, Long sessionId) {
         log.debug("Request to get studentFeeStructure by studentId and sessionId");
         StudentFeeStructure studentFeeStructure = studentfeeStructureRepository.getByStudentIdAndSessionId(studentId, sessionId);
-        return studentFeeStructureMapper.toDto(studentFeeStructure);
+        List<StudentFeeStructureDTO> studentFeeStructureDTOS = formatStudentFeeStructureDTOs(Arrays.asList(studentFeeStructure));
+        return studentFeeStructureDTOS.get(0);
     }
 
     @Override
     public List<StudentFeeStructureDTO> getByStandardIdAndSessionId(Long standardId, Long sessionId) {
         log.debug("Request to get studentFeeStructure by standardId and sessionId");
         List<StudentFeeStructure> studentFeeStructures = studentfeeStructureRepository.getByStandardIdAndSessionId(standardId, sessionId);
-        return studentFeeStructureMapper.toDto(studentFeeStructures);
+        return formatStudentFeeStructureDTOs(studentFeeStructures);
+    }
+
+    @Override
+    public StudentFeeStructureDTO getByStudentFeeStructureId(Long studentFeeStructureId) {
+        log.debug("Request to get studentFeeStructure by id");
+        Optional<StudentFeeStructure> studentFeeStructure = studentfeeStructureRepository.findById(studentFeeStructureId);
+        if (!studentFeeStructure.isPresent()) {
+            throw new WitcurveException("No record is present with id " + studentFeeStructureId);
+        }
+        return studentFeeStructureMapper.toDto(studentFeeStructure.get());
     }
 
     private void isValid(StudentFeeStructureDTO studentFeeStructureDTO) {
@@ -74,9 +80,9 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         if (studentFeeStructureDTO.getStudentFeeTypes().size() == 0) {
             throw new WitcurveException("Minimum one record of student fee type is require to save ");
         }
-        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByStudentIdAndSessionId(studentFeeStructureDTO.getStudentId(),studentFeeStructureDTO.getSelectedSessionId());
+        List<SessionFeeStructure> sessionFeeStructures = sessionFeeStructureRepository.findByStudentIdAndSessionId(studentFeeStructureDTO.getStudentId(), studentFeeStructureDTO.getSelectedSessionId());
 
-        if(sessionFeeStructures.size() < 1){
+        if (sessionFeeStructures.size() < 1) {
             throw new WitcurveException("No session fee structure is found with respect to given session and student");
         }
 
@@ -127,6 +133,66 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
                 }
             }
         }
+    }
+
+    private List<StudentFeeStructureDTO> formatStudentFeeStructureDTOs(List<StudentFeeStructure> studentFeeStructures) {
+        List<StudentFeeStructureDTO> studentFeeStructureDTOs = new ArrayList<>();
+        for (StudentFeeStructure studentFeeStructure : studentFeeStructures) {
+            StudentFeeStructureDTO studentFeeStructureDTO = studentFeeStructureMapper.toDto(studentFeeStructure);
+
+            Double totalAmount = 0.0;
+            Double totalOneTimeDiscount = 0.0;
+            for (StudentFeeType feeType : studentFeeStructure.getStudentFeeTypes()) {
+                Double totalAmountInFeeType = 0.0;
+                Double totalOneTimeDiscountInFeeType = 0.0;
+                for (StudentFeeDescription feeDescription : feeType.getStudentFeeDescriptions()) {
+                    Double feeDescriptionAmt = feeDescription.getAmount() + feeDescription.getAdjustment();
+                    Double oneTimeDiscount = feeDescription.getOneTimeDiscount();
+                    totalAmountInFeeType = totalAmountInFeeType + feeDescriptionAmt;
+                    totalOneTimeDiscountInFeeType = totalOneTimeDiscountInFeeType + oneTimeDiscount;
+                }
+                totalAmount = totalAmount + totalAmountInFeeType;
+                totalOneTimeDiscount = totalOneTimeDiscount + totalOneTimeDiscountInFeeType;
+            }
+            studentFeeStructureDTO.setTotalAmount(totalAmount);
+            studentFeeStructureDTO.setTotalOneTimeDiscount(totalOneTimeDiscount);
+
+            Double totalPaidAmount = 0.0;
+            Double totalPaidPenalty = 0.0;
+            List<FeePaymentType> feePaymentTypes = new ArrayList<>();
+
+            for (FeePaymentRecord feePaymentRecord : studentFeeStructure.getFeePaymentRecords()) {
+                feePaymentTypes.add(feePaymentRecord.getFeePaymentType());
+
+                Double amountPaidInOneRecord = 0.0;
+                Double penaltyPaidInOneRecord = 0.0;
+                for (FeePaymentDetail feePaymentDetail : feePaymentRecord.getFeePaymentDetails()) {
+                    Double paidAmount = feePaymentDetail.getAmount();
+                    Double paidPenalty = 0.0;
+                    if (feePaymentDetail.getPenalty()) {
+                        paidPenalty = feePaymentDetail.getAmount();
+                    }
+                    amountPaidInOneRecord = amountPaidInOneRecord + paidAmount;
+                    penaltyPaidInOneRecord = penaltyPaidInOneRecord + paidPenalty;
+                }
+                totalPaidAmount = totalPaidAmount + amountPaidInOneRecord;
+                totalPaidPenalty = totalPaidPenalty + penaltyPaidInOneRecord;
+            }
+
+            studentFeeStructureDTO.setPaidAmount(totalPaidAmount);
+            studentFeeStructureDTO.setPaidPenalty(totalPaidPenalty);
+
+            Double dueAmount;
+            if (feePaymentTypes.contains(FeePaymentType.FULL_YEAR_PAYMENT)) {
+                dueAmount = studentFeeStructureDTO.getTotalAmount() - studentFeeStructureDTO.getTotalOneTimeDiscount()
+                    - studentFeeStructureDTO.getPaidAmount() - studentFeeStructureDTO.getPaidPenalty();
+            } else {
+                dueAmount = studentFeeStructureDTO.getTotalAmount() - studentFeeStructureDTO.getPaidAmount() - studentFeeStructureDTO.getPaidPenalty();
+            }
+            studentFeeStructureDTO.setDueAmount(dueAmount);
+            studentFeeStructureDTOs.add(studentFeeStructureDTO);
+        }
+        return studentFeeStructureDTOs;
     }
 }
 

@@ -23,9 +23,15 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
     @NotNull
     private List<StudentFeeTypeDTO> studentFeeTypes;
 
-    private Double amount;
+    private Double totalAmount;
 
     private Double totalOneTimeDiscount;
+
+    private Double paidAmount;
+
+    private Double paidPenalty;
+
+    private Double dueAmount;
 
     @NotNull
     private Boolean required = false;
@@ -66,9 +72,9 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
 
     public void setStudentFeeTypes(List<StudentFeeTypeDTO> studentFeeTypes) { this.studentFeeTypes = studentFeeTypes; }
 
-    public Double getAmount() { return amount; }
+    public Double getTotalAmount() { return totalAmount; }
 
-    public void setAmount(Double amount) { this.amount = amount; }
+    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 
     public Double getTotalOneTimeDiscount() { return totalOneTimeDiscount; }
 
@@ -77,6 +83,18 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
     public Boolean getRequired() { return required; }
 
     public void setRequired(Boolean required) { this.required = required; }
+
+    public Double getPaidAmount() { return paidAmount; }
+
+    public void setPaidAmount(Double paidAmount) { this.paidAmount = paidAmount; }
+
+    public Double getPaidPenalty() { return paidPenalty; }
+
+    public void setPaidPenalty(Double paidPenalty) { this.paidPenalty = paidPenalty; }
+
+    public Double getDueAmount() { return dueAmount; }
+
+    public void setDueAmount(Double dueAmount) { this.dueAmount = dueAmount; }
 
     @Override
     public boolean equals(Object o) {

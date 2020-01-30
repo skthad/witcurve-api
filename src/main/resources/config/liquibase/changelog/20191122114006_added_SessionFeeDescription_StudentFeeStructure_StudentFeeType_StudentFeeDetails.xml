@@ -208,4 +208,12 @@
                              constraintName="student_fee_type_id_fee_description_id_UK"
                              tableName="student_fee_description"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1578556234761-28">
+        <addNotNullConstraint columnDataType="bigint" columnName="student_fee_structure_id"
+                              tableName="student_fee_type"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1578556234761-29">
+        <addNotNullConstraint columnDataType="bigint" columnName="student_fee_type_id"
+                              tableName="student_fee_description"/>
+    </changeSet>
 </databaseChangeLog>

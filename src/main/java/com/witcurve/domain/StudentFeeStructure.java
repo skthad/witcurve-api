@@ -34,10 +34,15 @@ public class StudentFeeStructure extends AbstractAuditingEntity implements Seria
     @JoinColumn(nullable = false)
     private AcademicSession selectedSession;
 
+    @NotNull
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "student_fee_structure_id")
+    @JoinColumn(name = "student_fee_structure_id", nullable = false)
     @OrderBy("due_date asc")
     private List<StudentFeeType> studentFeeTypes;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="student_fee_structure_id", insertable = false, updatable = false)
+    private List<FeePaymentRecord> feePaymentRecords;
 
     public Long getId() {
         return id;
@@ -78,6 +83,10 @@ public class StudentFeeStructure extends AbstractAuditingEntity implements Seria
     public void setStudentFeeTypes(List<StudentFeeType> studentFeeTypes) {
         this.studentFeeTypes = studentFeeTypes;
     }
+
+    public List<FeePaymentRecord> getFeePaymentRecords() { return feePaymentRecords; }
+
+    public void setFeePaymentRecords(List<FeePaymentRecord> feePaymentRecords) { this.feePaymentRecords = feePaymentRecords; }
 
     @Override
     public boolean equals(Object o) {
