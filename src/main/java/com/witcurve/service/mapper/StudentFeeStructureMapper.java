@@ -32,22 +32,4 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
         studentFeeStructure.setId(id);
         return studentFeeStructure;
     }
-
-    default Double getTotalOneTimeDiscount(List<StudentFeeType> feeTypes){
-        if (feeTypes == null || feeTypes.size() == 0) {
-            return 0.0;
-        }
-        Double totalOneTimeDiscount = 0.0;
-        for (StudentFeeType feeType : feeTypes) {
-            Double totalFeeDescriptionDiscount = 0.0;
-            if (feeType.getStudentFeeDescriptions() != null || feeType.getStudentFeeDescriptions().size() > 0) {
-                for (StudentFeeDescription feeDescription : feeType.getStudentFeeDescriptions()) {
-                    totalFeeDescriptionDiscount = totalFeeDescriptionDiscount + feeDescription.getOneTimeDiscount();
-                }
-                totalOneTimeDiscount = totalOneTimeDiscount + totalFeeDescriptionDiscount;
-            }
-        }
-
-        return totalOneTimeDiscount;
-    }
 }
