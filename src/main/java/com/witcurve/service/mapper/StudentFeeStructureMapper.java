@@ -22,8 +22,6 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
     @Mapping(target = "sessionId", source = "session.id")
     @Mapping(target = "studentId", source = "student.id")
     @Mapping(target = "selectedSessionId", source = "selectedSession.id")
- //   @Mapping(target = "amount", expression = "java(getTotalFeeTypeAmount(studentFeeStructure.getStudentFeeTypes()))")
-  //  @Mapping(target = "totalOneTimeDiscount", expression = "java(getTotalOneTimeDiscount(studentFeeStructure.getStudentFeeTypes()))")
     StudentFeeStructureDTO toDto(StudentFeeStructure studentFeeStructure);
 
     default StudentFeeStructure fromId(Long id) {
