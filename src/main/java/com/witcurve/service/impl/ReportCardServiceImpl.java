@@ -128,7 +128,7 @@ public class ReportCardServiceImpl implements ReportCardService {
     @Override
     public ReportCardDTO saveOrUpdate(ReportCardDTO reportCardDTO) {
         log.debug("Request to save or update report card : {}", reportCardDTO);
-        isValidReportCard(reportCardDTO);
+        validAndFormatReportCardDTO(reportCardDTO);
         ReportCard reportCard = reportCardMapper.toEntity(reportCardDTO);
         reportCard = reportCardRepository.save(reportCard);
         return reportCardMapper.toDto(reportCard);
@@ -603,7 +603,37 @@ public class ReportCardServiceImpl implements ReportCardService {
         return result;
     }
 
-    private void isValidReportCard(ReportCardDTO reportCardDTO) {
+    private void validAndFormatReportCardDTO(ReportCardDTO reportCardDTO) {
+        if (reportCardDTO.getNonScholasticDetails() != null && !reportCardDTO.getNonScholasticDetails().isEmpty()) {
+            for (NonScholasticReportDetailsDTO nonScholasticReportDetailsDTO : reportCardDTO.getNonScholasticDetails()) {
+                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(nonScholasticReportDetailsDTO.getReportCardDesignId());
+                if (!reportCardDesign.isPresent()) {
+                    throw new WitcurveException("No report card design found with id : " + nonScholasticReportDetailsDTO.getReportCardDesignId());
+                }
+                if (!reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
+                    throw new WitcurveException("Only non scholastic report field type allowed in non scholastic rcsds");
+                }
+            }
+        } else {
+            reportCardDTO.setNonScholasticCourses(null);
+        }
+        if (reportCardDTO.getScholasticDetails() != null && reportCardDTO.getScholasticDetails().isEmpty()) {
+            for (ScholasticReportDetailsDTO scholasticReportDetailsDTO : reportCardDTO.getScholasticDetails()) {
+                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(scholasticReportDetailsDTO.getReportCardDesignId());
+                if (!reportCardDesign.isPresent()) {
+                    throw new WitcurveException("No report card design found with id : " + scholasticReportDetailsDTO.getReportCardDesignId());
+                }
+                if (!SCHOLASTIC_FIELD_TYPE_LISTS.contains(reportCardDesign.get().getFieldType())) {
+                    throw new WitcurveException("Only main, manual entry, peridoic test and total field types report card designs are allowed in scholastic details");
+                }
+                if (!scholasticReportDetailsDTO.getShowGrades() && !scholasticReportDetailsDTO.getShowMarks()) {
+                    throw new WitcurveException("Both grades and marks cannot be false, atleast one of them has to be true");
+                }
+            }
+        } else {
+            reportCardDTO.setScholasticCourses(null);
+        }
+
         if (reportCardDTO.getScholasticCourses() != null && !reportCardDTO.getScholasticCourses().isEmpty()) {
             for (CourseDTO courseDTO : reportCardDTO.getScholasticCourses()) {
                 Optional<Course> course = courseRepository.findById(courseDTO.getId());
@@ -623,31 +653,6 @@ public class ReportCardServiceImpl implements ReportCardService {
                 }
                 if (!course.get().getCourseType().equals(CourseType.NON_SCHOLASTIC)) {
                     throw new WitcurveException("There is a scholastic course in non scholastic course list");
-                }
-            }
-        }
-        if (reportCardDTO.getNonScholasticDetails() != null && !reportCardDTO.getNonScholasticDetails().isEmpty()) {
-            for (NonScholasticReportDetailsDTO nonScholasticReportDetailsDTO : reportCardDTO.getNonScholasticDetails()) {
-                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(nonScholasticReportDetailsDTO.getReportCardDesignId());
-                if (!reportCardDesign.isPresent()) {
-                    throw new WitcurveException("No report card design found with id : " + nonScholasticReportDetailsDTO.getReportCardDesignId());
-                }
-                if (!reportCardDesign.get().getFieldType().equals(ReportFieldType.NON_SCHOLASTIC)) {
-                    throw new WitcurveException("Only non scholastic report field type allowed in non scholastic rcsds");
-                }
-            }
-        }
-        if (reportCardDTO.getScholasticDetails() != null && reportCardDTO.getScholasticDetails().isEmpty()) {
-            for (ScholasticReportDetailsDTO scholasticReportDetailsDTO : reportCardDTO.getScholasticDetails()) {
-                Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(scholasticReportDetailsDTO.getReportCardDesignId());
-                if (!reportCardDesign.isPresent()) {
-                    throw new WitcurveException("No report card design found with id : " + scholasticReportDetailsDTO.getReportCardDesignId());
-                }
-                if (!SCHOLASTIC_FIELD_TYPE_LISTS.contains(reportCardDesign.get().getFieldType())) {
-                    throw new WitcurveException("Only main, manual entry, peridoic test and total field types report card designs are allowed in scholastic details");
-                }
-                if (!scholasticReportDetailsDTO.getShowGrades() && !scholasticReportDetailsDTO.getShowMarks()) {
-                    throw new WitcurveException("Both grades and marks cannot be false, atleast one of them has to be true");
                 }
             }
         }

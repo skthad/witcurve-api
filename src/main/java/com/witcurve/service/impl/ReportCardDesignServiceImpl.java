@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -43,13 +42,39 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
     @Autowired
     ExamRepository examRepository;
 
+    @Autowired
+    ScholasticReportDetailsRepository scholasticReportDetailsRepository;
+
+    @Autowired
+    NonScholasticReportDetailsRepository nonScholasticReportDetailsRepository;
+
+    @Autowired
+    ReportCardRepository reportCardRepository;
+
     @Override
     public List<ReportCardDesignDTO> saveOrUpdate(List<ReportCardDesignDTO> reportCardDesignDTOS, Long examId, Grade grade) {
         log.debug("Request to save ReportCardDesigns : {} for exam with id : {} for grade : {}", reportCardDesignDTOS, examId, grade);
-        validAndFormatReportCardDesigns(reportCardDesignDTOS, examId, grade);
+        Map<ReportFieldType, List<Long>> deactivateMap = validAndFormatReportCardDesigns(reportCardDesignDTOS, examId, grade);
         List<ReportCardDesign> reportCardDesigns = reportCardDesignMapper.toEntity(reportCardDesignDTOS);
         reportCardDesigns = reportCardDesignRepository.saveAll(reportCardDesigns);
         validTotalReportCardRecords(examId, grade);
+        for(ReportFieldType fieldType : deactivateMap.keySet()) {
+            switch (fieldType) {
+                case MAIN:
+                case TOTAL:
+                    scholasticReportDetailsRepository.deleteByRcdIds(deactivateMap.get(fieldType));
+                    break;
+                case NON_SCHOLASTIC:
+                    nonScholasticReportDetailsRepository.deleteByRcdIds(deactivateMap.get(fieldType));
+                    break;
+                case REMARKS:
+                    reportCardRepository.removeReportCardRemarksWithExamIdAndGrade(examId, grade);
+                    break;
+                case ATTRIBUTES:
+                    reportCardRepository.removeReportCardAttributesWithExamIdAndGrade(examId, grade);
+                    break;
+            }
+        }
         return reportCardDesignMapper.toDto(reportCardDesigns);
     }
 
@@ -85,11 +110,13 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                 throw new WitcurveException("You can only delete manual entry  or non scholastic report card designs");
             }
         }
+        nonScholasticReportDetailsRepository.deleteByRcdIds(ids);
+        scholasticReportDetailsRepository.deleteByRcdIds(ids);
         studentMarksRepository.deleteStudentMarksByRcdIds(ids);
         reportCardDesignRepository.deleteByIds(ids);
     }
 
-    private void validAndFormatReportCardDesigns(List<ReportCardDesignDTO> reportCardDesignDTOS, Long examId, Grade grade) {
+    private Map<ReportFieldType, List<Long>> validAndFormatReportCardDesigns(List<ReportCardDesignDTO> reportCardDesignDTOS, Long examId, Grade grade) {
         Boolean mainRecordExists = false, totalRecordExists = false,
             remarksRecordExists =false, periodicTestRecordExists=false,
             nonScholasticRecordExists=false, attributeRecordExists = false;
@@ -98,10 +125,24 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
         if(!exam.isPresent()) {
             throw new WitcurveException("No Exam with given Id " + examId);
         }
+        Map<ReportFieldType, List<Long>> result = new HashMap<>();
 
         for(ReportCardDesignDTO reportCardDesignDTO : reportCardDesignDTOS) {
             if(reportCardDesignDTO.getSelected() == null) {
                 reportCardDesignDTO.setSelected(true);
+            }
+            if(!reportCardDesignDTO.getSelected()) {
+                if(reportCardDesignDTO.getId() != null) {
+                    List<Long> deactivatedIds = new ArrayList<>();
+                    if(result.get(reportCardDesignDTO.getFieldType()) == null) {
+                        deactivatedIds = new ArrayList<>();
+                        deactivatedIds.add(reportCardDesignDTO.getId());
+                    } else {
+                        deactivatedIds = result.get(reportCardDesignDTO.getFieldType());
+                        deactivatedIds.add(reportCardDesignDTO.getId());
+                    }
+                    result.put(reportCardDesignDTO.getFieldType(), deactivatedIds);
+                }
             }
             reportCardDesignDTO.setGrade(grade);
             reportCardDesignDTO.setExamId(examId);
@@ -252,6 +293,7 @@ public class ReportCardDesignServiceImpl implements ReportCardDesignService {
                     break;
             }
         }
+        return result;
 
     }
 

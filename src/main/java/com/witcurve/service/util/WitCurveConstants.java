@@ -36,9 +36,9 @@ public class WitCurveConstants {
 
     public static final String ATTENDANCE = "Your attendance has been marked absent for {{date}} ";
 
-    public static final String EXAM_PUBLISHED = " {{examName}} has been created from {{fromDate}} to {{toDate}}";
+    public static final String EXAM_PUBLISHED = " {{examName}} exam has been created from {{fromDate}} to {{toDate}}";
 
-    public static final String EXAM_RESULT_DECLARED = " {{examName}} result has been published";
+    public static final String EXAM_RESULT_DECLARED = " {{examName}} exam result has been published";
 
     public static final String GROUP_MESSAGE = "You have received a new message in Group Messages";
 

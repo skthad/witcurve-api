@@ -125,164 +125,167 @@
             return a;
         }
 
-        var field = Object.keys(report.studentDetails);
-        for(var i=0; i<field.length; i++){
-            switch(field[i]){
-                case "studentName":
-                    if(report.studentDetails.studentName){
-                        if(count%2 === 0){
-                            creatingRow();
-                        }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Name:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.studentName.toUpperCase() ;
-                        count++;
+        if(report.studentDetails) {
+            var field = Object.keys(report.studentDetails);
+            for(var i=0; i<field.length; i++){
+                switch(field[i]){
+                    case "studentName":
+                        if(report.studentDetails.studentName){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Name:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.studentName.toUpperCase() ;
+                            count++;
 
-                    }
-                    break;
-                case "standard":
-                    if(report.studentDetails.standard){
-                        if(count%2 === 0){
-                            creatingRow();
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Class & Section:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.standard;
-                        count++;
-                    }
-                    break;
-                case "admissionId":
-                    if(report.studentDetails.admissionId){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "standard":
+                        if(report.studentDetails.standard){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Class & Section:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.standard;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Admission Id:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.admissionId;
-                        count++;
-                    }
-                    break;
-                case "attendance":
-                    if(report.studentDetails.attendance){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "admissionId":
+                        if(report.studentDetails.admissionId){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Admission Id:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.admissionId;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Attendance:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.attendance;
-                        count++;
-                    }
-                    break;
-                case "dateOfBirth":
-                    if(report.studentDetails.dateOfBirth){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "attendance":
+                        if(report.studentDetails.attendance){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Attendance:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.attendance;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Date of Birth:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.dateOfBirth;
-                        count++;
-                    }
-                    break;
-                case "rollNo":
-                    if(report.studentDetails.rollNo){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "dateOfBirth":
+                        if(report.studentDetails.dateOfBirth){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Date of Birth:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.dateOfBirth;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Roll No:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.rollNo;
-                        count++;
-                    }
-                    break;
-                case "motherName":
-                    if(report.studentDetails.motherName){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "rollNo":
+                        if(report.studentDetails.rollNo){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Roll No:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.rollNo;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Mother Name:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.motherName;
-                        count++;
-                    }
-                    break;
-                case "fatherName":
-                    if(report.studentDetails.fatherName){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "motherName":
+                        if(report.studentDetails.motherName){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Mother Name:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.motherName;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Father Name:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.fatherName;
-                        count++;
-                    }
-                    break;
-                case "place":
-                    if(report.studentDetails.place){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "fatherName":
+                        if(report.studentDetails.fatherName){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Father Name:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.fatherName;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Place:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.place;
-                        count++;
-                    }
-                    break;
-                case "date":
-                    if(report.studentDetails.date){
-                        if(count%2 === 0){
-                            creatingRow();
+                        break;
+                    case "place":
+                        if(report.studentDetails.place){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Place:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.place;
+                            count++;
                         }
-                        var newTh = document.createElement("th");
-                        a.appendChild(newTh);
-                        newTh.textContent = "Date:";
-                        newTh.style.cssFloat = "Left";
-                        var newTd = document.createElement("td");
-                        a.appendChild(newTd);
-                        newTd.textContent = report.studentDetails.date;
-                        count++;
-                    }
-                    break;
-                default:
-                    break;
+                        break;
+                    case "date":
+                        if(report.studentDetails.date){
+                            if(count%2 === 0){
+                                creatingRow();
+                            }
+                            var newTh = document.createElement("th");
+                            a.appendChild(newTh);
+                            newTh.textContent = "Date:";
+                            newTh.style.cssFloat = "Left";
+                            var newTd = document.createElement("td");
+                            a.appendChild(newTd);
+                            newTd.textContent = report.studentDetails.date;
+                            count++;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
+
     })();
 
     if(report.showHeader===true){

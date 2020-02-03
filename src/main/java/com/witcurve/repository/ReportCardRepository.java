@@ -3,6 +3,7 @@ package com.witcurve.repository;
 import com.witcurve.domain.ReportCard;
 import com.witcurve.domain.enumeration.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,12 @@ public interface ReportCardRepository extends JpaRepository<ReportCard, Long> {
 
     @Query("Select rc from ReportCard rc where rc.exam.id=?1 and rc.grade=?2")
     ReportCard findByExamIdAndGrade(Long examId, Grade grade);
+
+    @Modifying
+    @Query("update ReportCard rc set rc.showRemarks = false where rc.exam.id=?1  and rc.grade =?2")
+    ReportCard removeReportCardRemarksWithExamIdAndGrade(Long examId, Grade grade);
+
+    @Modifying
+    @Query("update ReportCard rc set rc.showAttributes = false where rc.exam.id=?1 and rc.grade =?2")
+    ReportCard removeReportCardAttributesWithExamIdAndGrade(Long examId, Grade grade);
 }
