@@ -153,9 +153,6 @@ public class StudentStandardServiceImpl implements StudentStandardService {
         if (!academicSession.isPresent()) {
             throw new WitcurveException("No Academic Session with given id");
         }
-       /* if (!academicSession.get().getActive()) {
-            throw new WitcurveException("Academic Session is not active");
-        }*/
         StudentStandard studentStandard = null;
         StudentStandard optionalStudentStandard;
         studentStandard = studentStandardRepository.getByStudentIdAndStandardIdAndSessionId(
