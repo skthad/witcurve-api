@@ -77,7 +77,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
             if (rollNos.contains(studentStandardDTO.getRollNo())) {
                 throw new WitcurveException("Roll no should be unique for every student");
             }
-            if(studentIds.contains(studentStandardDTO.getStudent().getId())){
+            if (studentIds.contains(studentStandardDTO.getStudent().getId())) {
                 throw new WitcurveException("Records contain two or more records of a student");
             }
             Optional<Student> student = studentRepository.findById(studentStandardDTO.getStudent().getId());
@@ -284,11 +284,4 @@ public class StudentStandardServiceImpl implements StudentStandardService {
             studentCourseService.saveOrUpdate(studentCourseDTOs);
         }
     }
-
-    private List<StudentStandardDTO> formatAndValidate(List<StudentStandardDTO> studentStandardDTOs, Long standardId) {
-
-        return studentStandardDTOs;
-
-    }
-
 }
