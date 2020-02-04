@@ -33,14 +33,14 @@ public class StudentStandardResource {
      * @throws WitcurveException
      */
 
-    @PostMapping("/student-standard/standards/{standardId}/multiple")
+    @PostMapping("/student-standard/standards/{standardId}/academic-session/{sessionId}/multiple")
     @Timed
     public ResponseEntity<List<StudentStandardDTO>> saveMultipleStudentStandards(@RequestBody List<StudentStandardDTO> studentStandardDTOs,
-                                                                                 @PathVariable Long standardId) throws WitcurveException {
+                                                                                 @PathVariable Long standardId, @PathVariable Long sessionId) throws WitcurveException {
         log.debug("Request to add student-standard");
 
         try {
-            List<StudentStandardDTO> result = studentStandardService.saveMultiple(studentStandardDTOs, standardId);
+            List<StudentStandardDTO> result = studentStandardService.saveMultiple(studentStandardDTOs, standardId, sessionId);
             return ResponseEntity.ok(result);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("student_standard_UK")) {

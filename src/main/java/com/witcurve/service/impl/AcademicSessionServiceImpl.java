@@ -65,9 +65,9 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
             }
         }
 
-        if (Boolean.TRUE.equals(academicSessionDTO.getActive())) {
+      /*  if (Boolean.TRUE.equals(academicSessionDTO.getActive())) {
             academicSessionRepository.deactivateExistingAcademicSessions(academicSessionDTO.getSchoolInfo().getId());
-        }
+        }*/
         AcademicSession academicSession = academicSessionMapper.toEntity(academicSessionDTO);
         academicSession = academicSessionRepository.save(academicSession);
 
