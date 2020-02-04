@@ -93,7 +93,7 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
         }
         if (student != null) {
             studentStandards = studentStandardRepository.getByStudentId(student.getId());
-            session = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), LocalDate.now());
+            session = academicSessionRepository.nearestSessionToDate(student.getSchoolInfo().getId(), LocalDate.now());
             studentFeeStructure = studentFeeStructureRepository.getByStudentIdAndSessionId(student.getId(), session.getId());
         }
 
@@ -238,7 +238,7 @@ public class PaytmCallBackServiceImpl implements PaytmCallBackService {
             }
         }
         if (student != null) {
-            session = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), LocalDate.now());
+            session = academicSessionRepository.nearestSessionToDate(student.getSchoolInfo().getId(), LocalDate.now());
         }
 
         Double amount = null;

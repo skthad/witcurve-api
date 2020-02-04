@@ -126,7 +126,7 @@ public class BulkImportServiceImpl implements BulkImportService {
     public ImportResponse bulkStudentImport(MultipartFile file, Long schoolInfoId) throws WitcurveException {
         List<StudentCsv> errorStudentCsvs = new ArrayList<>();
         Integer rowNo =2, createCount=0, errorCount=0;
-        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, LocalDate.now());
+        AcademicSession academicSession = academicSessionRepository.nearestSessionToDate(schoolInfoId, LocalDate.now());
         if(academicSession == null) {
             throw new WitcurveException("There is not active current session for this board");
         }
@@ -374,7 +374,7 @@ public class BulkImportServiceImpl implements BulkImportService {
         SchoolInfoDTO schoolInfo = new SchoolInfoDTO();
         schoolInfo.setId(schoolInfoId);
         studentDTO.setSchoolInfo(schoolInfo);
-        Long sessionId= academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, LocalDate.now()).getId();
+        Long sessionId= academicSessionRepository.nearestSessionToDate(schoolInfoId, LocalDate.now()).getId();
 
         Grade grade = null;
         Boolean doesGradeExist=false, doesSectionExist=false, doesRollNumberExist=false;

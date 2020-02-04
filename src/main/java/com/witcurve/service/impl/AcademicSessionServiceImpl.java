@@ -64,10 +64,6 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
                 }
             }
         }
-
-        if (Boolean.TRUE.equals(academicSessionDTO.getActive())) {
-            academicSessionRepository.deactivateExistingAcademicSessions(academicSessionDTO.getSchoolInfo().getId());
-        }
         AcademicSession academicSession = academicSessionMapper.toEntity(academicSessionDTO);
         academicSession = academicSessionRepository.save(academicSession);
 
@@ -107,9 +103,6 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
         if (!academicSession.isPresent()) {
             throw new WitcurveException("No Academic Session with given id");
         }
-        if (Boolean.TRUE.equals(academicSession.get().getActive())) {
-            throw new WitcurveException("Cannot delete an active session");
-        }
         academicSessionRepository.delete(academicSession.get());
     }
 
@@ -118,7 +111,7 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
         if (date == null) {
             date = LocalDate.now();
         }
-        AcademicSession currentSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, date);
+        AcademicSession currentSession = academicSessionRepository.nearestSessionToDate(schoolInfoId, date);
         return academicSessionMapper.toDto(currentSession);
     }
 

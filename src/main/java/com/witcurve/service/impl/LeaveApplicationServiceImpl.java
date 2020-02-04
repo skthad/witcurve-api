@@ -249,7 +249,7 @@ public class LeaveApplicationServiceImpl implements LeaveApplicationService {
 
     public Long workingDays(LocalDate fromDate, LocalDate toDate, Long schoolInfoId, Boolean isSaturdayWorking)
         throws WitcurveException {
-        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, fromDate);
+        AcademicSession academicSession = academicSessionRepository.nearestSessionToDate(schoolInfoId, fromDate);
         if (academicSession == null) {
             throw new WitcurveException("session id not present !");
         }
