@@ -168,7 +168,7 @@ public class CourseServiceImpl implements CourseService {
         if (!exam.isPresent()) {
             throw  new WitcurveException("No Exam with given Id " + examId);
         }
-        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(exam.get().getSchoolInfo().getId(), exam.get().getEndDate());
+        AcademicSession academicSession = academicSessionRepository.nearestSessionToDate(exam.get().getSchoolInfo().getId(), exam.get().getEndDate());
         if(academicSession == null) {
             throw new WitcurveException("No nearest active session found");
         }

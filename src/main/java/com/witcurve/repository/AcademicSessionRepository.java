@@ -24,10 +24,6 @@ public interface AcademicSessionRepository extends JpaRepository<AcademicSession
     AcademicSession nearestSessionToDate(Long schoolInfoId, LocalDate date);
 
     @Query("select a from AcademicSession a where a.schoolInfo.id = ?1 and a.startDate = ( " +
-        "select max(a.startDate) from AcademicSession a where  a.schoolInfo.id = ?1 and a.startDate <= ?2)")
-    AcademicSession nearestActiveSessionToDate(Long schoolInfoId, LocalDate date);
-
-    @Query("select a from AcademicSession a where a.schoolInfo.id = ?1 and a.startDate = ( " +
         "select min(a.startDate) from AcademicSession a where a.schoolInfo.id = ?1 and a.startDate > ?2)")
     AcademicSession nextSessionAfterDate(Long schoolInfoId, LocalDate date);
 

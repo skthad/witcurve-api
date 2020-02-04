@@ -111,7 +111,7 @@ public class AcademicSessionServiceImpl implements AcademicSessionService {
         if (date == null) {
             date = LocalDate.now();
         }
-        AcademicSession currentSession = academicSessionRepository.nearestActiveSessionToDate(schoolInfoId, date);
+        AcademicSession currentSession = academicSessionRepository.nearestSessionToDate(schoolInfoId, date);
         return academicSessionMapper.toDto(currentSession);
     }
 
