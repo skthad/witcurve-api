@@ -23,9 +23,6 @@ public class AcademicSessionDTO extends AbstractAuditingDTO implements Serializa
     @NotNull
     private SchoolInfoDTO schoolInfo;
 
-    @NotNull
-    private Boolean active = true;
-
     private List<TermDTO> termsInSession;
 
     public Long getId() {
@@ -50,14 +47,6 @@ public class AcademicSessionDTO extends AbstractAuditingDTO implements Serializa
 
     public void setSchoolInfo(SchoolInfoDTO schoolInfo) {
         this.schoolInfo = schoolInfo;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     public List<TermDTO> getTermsInSession() {

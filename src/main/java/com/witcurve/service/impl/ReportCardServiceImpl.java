@@ -288,7 +288,7 @@ public class ReportCardServiceImpl implements ReportCardService {
 
     private String getAttendance(ReportCard reportCard, Student student) {
         LocalDate startDate = reportCard.getExam().getStartDate();
-        AcademicSession nearestAcademicSession = academicSessionRepository.nearestActiveSessionToDate(student.getSchoolInfo().getId(), startDate);
+        AcademicSession nearestAcademicSession = academicSessionRepository.nearestSessionToDate(student.getSchoolInfo().getId(), startDate);
         if (nearestAcademicSession == null) {
             throw new WitcurveException("There is no current active academic session");
         }

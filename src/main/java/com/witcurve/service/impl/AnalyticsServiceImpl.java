@@ -136,7 +136,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         if (student == null) {
             throw new WitcurveException("No Student present with given studentId: " + studentId);
         }
-        AcademicSession academicSession = academicSessionRepository.nearestActiveSessionToDate(student.get().getSchoolInfo().getId(), LocalDate.now());
+        AcademicSession academicSession = academicSessionRepository.nearestSessionToDate(student.get().getSchoolInfo().getId(), LocalDate.now());
 
         List<StudentStandard> studentStandard = studentStandardRepository.getByStudentId(studentId);
         if (studentStandard.isEmpty()) {
