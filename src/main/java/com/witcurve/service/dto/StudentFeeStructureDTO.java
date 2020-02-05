@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +36,12 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
 
     @NotNull
     private Boolean required = false;
+
+    private String admissionId;
+
+    private String className;
+
+    private LocalDate dateOfJoining;
 
     public Long getId() {
         return id;
@@ -95,6 +102,18 @@ public class StudentFeeStructureDTO extends AbstractAuditingDTO implements Seria
     public Double getDueAmount() { return dueAmount; }
 
     public void setDueAmount(Double dueAmount) { this.dueAmount = dueAmount; }
+
+    public String getAdmissionId() { return admissionId; }
+
+    public void setAdmissionId(String admissionId) { this.admissionId = admissionId; }
+
+    public String getClassName() { return className; }
+
+    public void setClassName(String className) { this.className = className; }
+
+    public LocalDate getDateOfJoining() { return dateOfJoining; }
+
+    public void setDateOfJoining(LocalDate dateOfJoining) { this.dateOfJoining = dateOfJoining; }
 
     @Override
     public boolean equals(Object o) {

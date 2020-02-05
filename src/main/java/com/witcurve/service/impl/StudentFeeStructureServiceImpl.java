@@ -64,10 +64,7 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
     public List<StudentFeeStructureDTO> getByStandardIdAndSessionId(Long standardId, Long sessionId) {
         log.debug("Request to get studentFeeStructure by standardId and sessionId");
         List<StudentFeeStructure> studentFeeStructures = studentfeeStructureRepository.getByStandardIdAndSessionId(standardId, sessionId);
-        if (studentFeeStructures.size() > 0) {
-            return formatStudentFeeStructureDTOs(studentFeeStructures);
-        }
-        return null;
+        return formatStudentFeeStructureDTOs(studentFeeStructures);
     }
 
     @Override
