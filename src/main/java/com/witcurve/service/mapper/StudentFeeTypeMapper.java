@@ -17,6 +17,7 @@ public interface StudentFeeTypeMapper extends EntityMapper<StudentFeeTypeDTO, St
 
     @Mapping(target = "feeTypeId", source = "feeType.id")
     @Mapping(target = "amount", expression = "java(getTotalFeeDescriptionAmount(studentFeeType.getStudentFeeDescriptions()))")
+    @Mapping(target = "feeTypeName", source = "feeType.name")
     StudentFeeTypeDTO toDto(StudentFeeType studentFeeType);
 
     default StudentFeeType fromId(Long id) {

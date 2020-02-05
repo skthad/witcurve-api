@@ -13,6 +13,7 @@ public interface StudentFeeDescriptionMapper extends EntityMapper<StudentFeeDesc
 
 
     @Mapping(target = "feeDescriptionId", source = "feeDescription.id")
+    @Mapping(target = "feeDescriptionName", source = "feeDescription.name")
     StudentFeeDescriptionDTO toDto(StudentFeeDescription studentFeeDescription);
 
     default StudentFeeDescription fromId(Long id) {

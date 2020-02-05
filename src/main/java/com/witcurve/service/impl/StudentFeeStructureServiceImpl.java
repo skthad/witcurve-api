@@ -67,7 +67,7 @@ public class StudentFeeStructureServiceImpl implements StudentFeeStructureServic
         if (studentFeeStructures.size() > 0) {
             return formatStudentFeeStructureDTOs(studentFeeStructures);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
