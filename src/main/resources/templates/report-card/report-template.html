@@ -717,6 +717,9 @@
                         newTh.style.borderCollapse = "collapse";
                         newTh.style.border = "1px solid black";
                         newTh.style.textAlign = "left";
+                        if (report.attributes[i].fieldArray[j].trim().length === 0) {
+                            newTd.style.border = "none";
+                        }
                         for(var m=0; m<report.attributes[i].attributeDetails.length; m++){
                             var newTh = document.createElement("th");
                             newTr.appendChild(newTh);
@@ -724,23 +727,33 @@
                                 newTh.textContent = report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]];
                                 newTh.style.borderCollapse = "collapse";
                                 newTh.style.border = "1px solid black";
+                                if (report.attributes[i].fieldArray[j].trim().length === 0) {
+                                    newTd.style.border = "none";
+                                }
                             }
                             else{
                                 newTh.textContent = " ";
                                 newTh.style.borderCollapse = "collapse";
                                 newTh.style.border = "1px solid black";
                                 newTh.style.color = "red";
+                                if (report.attributes[i].fieldArray[j].trim().length === 0) {
+                                    newTd.style.border = "none";
+                                }
                             }
                         }
                     }
                     else{
                         var newTd = document.createElement("td");
                         newTr.appendChild(newTd);
+                        // newTr.style.border = "1px solid black";
                         newTd.textContent = report.attributes[i].fieldArray[j];
                         newTd.style.height = "18px";
                         newTd.style.borderCollapse = "collapse";
                         newTd.style.border = "1px solid black";
                         newTd.style.textAlign = "left";
+                        if (report.attributes[i].fieldArray[j].trim().length === 0) {
+                            newTd.style.border = "none";
+                        }
                         if(attributeDetailsNull === false){
                             for(var m=0; m<report.attributes[i].attributeDetails.length; m++){
                                 var newTd = document.createElement("td");
@@ -749,12 +762,18 @@
                                     newTd.textContent = report.attributes[i].attributeDetails[m].values[report.attributes[i].fieldArray[j]];
                                     newTd.style.borderCollapse = "collapse";
                                     newTd.style.border = "1px solid black";
+                                    if (report.attributes[i].fieldArray[j].trim().length === 0) {
+                                        newTd.style.border = "none";
+                                    }
                                 }
                                 else{
                                     newTd.textContent = " ";
                                     newTd.style.borderCollapse = "collapse";
                                     newTd.style.border = "1px solid black";
                                     newTd.style.color = "red";
+                                    if (report.attributes[i].fieldArray[j].trim().length === 0) {
+                                        newTd.style.border = "none";
+                                    }
                                 }
                             }
                         }
