@@ -2,6 +2,7 @@ package com.witcurve.service.impl;
 
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.Student;
+import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.SurveyForm;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -76,10 +78,10 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         log.debug("Request to get surveyForms for student with id : {}", studentId);
         Optional<Student> student = studentRepository.findById(studentId);
         if (!student.isPresent()) {
-            throw new WitcurveException("No student with given id");
+            throw new WitcurveException("No student present with given id");
         }
-        List<SurveyForm> surveyFormList = surveyFormRepository.findBySchoolInfoIdAndTypesAndStatusList(student.get().getSchoolInfo().getId(),
-            Arrays.asList(SurveyUserType.ALL, SurveyUserType.PARENT), Arrays.asList(SurveyFormStatus.PUBLISHED));
+        StudentStandard studentStandard = student.get().getStudentStandards().stream().collect(Collectors.toList()).get(0);
+        List<SurveyForm> surveyFormList = surveyFormRepository.findBySchoolInfoIdAndStatusAndStandardId(student.get().getSchoolInfo().getId(), Arrays.asList(SurveyFormStatus.PUBLISHED), studentStandard.getStandard().getId());
         List<SurveyFormDTO> result = surveyFormMapper.toDto(surveyFormList);
         updateSubmitStatus(result, student.get().getUser().getId());
         return result;
@@ -93,7 +95,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             throw new WitcurveException("No staff with given id");
         }
         List<SurveyForm> surveyFormList = surveyFormRepository.findBySchoolInfoIdAndTypesAndStatusList(staff.get().getSchoolInfo().getId(),
-            Arrays.asList(SurveyUserType.ALL, SurveyUserType.TEACHING_STAFF), Arrays.asList(SurveyFormStatus.PUBLISHED));
+            Arrays.asList(SurveyUserType.ALL, SurveyUserType.STAFF), Arrays.asList(SurveyFormStatus.PUBLISHED));
         List<SurveyFormDTO> result = surveyFormMapper.toDto(surveyFormList);
         updateSubmitStatus(result, staff.get().getUser().getId());
         return result;

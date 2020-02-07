@@ -51,6 +51,9 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name="form_id", insertable = false, updatable = false)
     private Set<SurveySection> sections;
 
+    @ManyToOne
+    private Standard standard;
+
     public Long getId() {
         return id;
     }
@@ -114,6 +117,10 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     public void setSections(Set<SurveySection> sections) {
         this.sections = sections;
     }
+
+    public Standard getStandard() { return standard; }
+
+    public void setStandard(Standard standard) { this.standard = standard; }
 
     @Override
     public boolean equals(Object o) {
