@@ -38,7 +38,7 @@ public interface StudentFeeStructureMapper extends EntityMapper<StudentFeeStruct
 
     default String getClassName(Student student) {
         Set<StudentStandard> studentStandards = student.getStudentStandards();
-        if (studentStandards.size() > 0) {
+        if (studentStandards != null && studentStandards.size() > 0) {
             StudentStandard studentStandard = studentStandards.stream().collect(Collectors.toList()).get(0);
             return studentStandard.getStandard().getGrade() + "-" + studentStandard.getStandard().getSection();
         }
