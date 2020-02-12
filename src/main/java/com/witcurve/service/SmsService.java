@@ -163,7 +163,7 @@ public class SmsService {
             }
             for(StudentStandard studentStandard : studentStandards) {
                 String body = "Hi Parent, \n" +
-                    "Your username is '"+studentStandard.getStudent().getAdmissionId()+"' for the '"+institute.getMobileAppName()+"' app available at  \n" +
+                    "Your username is '"+studentStandard.getStudent().getAdmissionId()+"' for the '"+institute.getMobileAppName()+"' app is available for FREE at  \n" +
                     "Android : "+institute.getAndroidUrl()+"\n" +
                     "Apple:  "+institute.getIosUrl()+"\n" +
                     "\n" +
