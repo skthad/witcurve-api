@@ -50,6 +50,7 @@ public class CacheConfiguration {
             cm.createCache(com.witcurve.domain.ReportCard.class.getName() + ".nonScholasticRcds", jcacheConfiguration);
             cm.createCache(com.witcurve.domain.TransactionRecord.class.getName() + ".attachments", jcacheConfiguration);
             cm.createCache(com.witcurve.domain.Album.class.getName() + ".photos", jcacheConfiguration);
+            cm.createCache(com.witcurve.domain.SurveyForm.class.getName() + ".standards", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

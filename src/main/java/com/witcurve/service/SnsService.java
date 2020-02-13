@@ -626,6 +626,31 @@ public class SnsService {
         }
     }
 
+    @Async
+    public void sendPushNotificationOnFormPublish(SurveyFormDTO surveyFormDTO) {
+        Map<String, String> varMap = new HashMap<>();
+        varMap.put("formName", surveyFormDTO.getName());
+        String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.SURVEY_FORM_PUBLISHED);
+        //TODO url change
+        String url = "";
+        if (surveyFormDTO.getStatus().equals(SurveyFormStatus.PUBLISHED)) {
+            if (surveyFormDTO.getType().equals(SurveyUserType.ALL)) {
+                publishBulkMessage(message, url, TopicType.SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
+
+            } else if (surveyFormDTO.getType().equals(SurveyUserType.PARENT)) {
+                if (surveyFormDTO.getStandards() != null && surveyFormDTO.getStandards().size() > 0) {
+                    for (StandardDTO standardDTO : surveyFormDTO.getStandards()) {
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, standardDTO.getId());
+                    }
+                } else {
+                    publishBulkMessage(message, url, TopicType.SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
+                }
+            } else if (surveyFormDTO.getType().equals(SurveyUserType.STAFF)) {
+                publishBulkMessage(message, url, TopicType.STAFF_SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
+            }
+        }
+    }
+
     private String convertToCommaSeparatedStringOfUserIds(List<UserMobileEndPoint> listOfUserMobileEndPoint) {
         List<String> listOfUserIds = new ArrayList<>();
         for (UserMobileEndPoint userMobileEndPoint : listOfUserMobileEndPoint) {

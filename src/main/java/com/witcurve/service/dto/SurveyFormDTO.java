@@ -6,6 +6,7 @@ import com.witcurve.domain.enumeration.SurveyUserType;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,6 +34,8 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
     private Boolean userSubmitted;
 
     private Set<SurveySectionDTO> sections;
+
+    private List<StandardDTO> standards;
 
     public Long getId() {
         return id;
@@ -104,6 +107,14 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSections(Set<SurveySectionDTO> sections) {
         this.sections = sections;
+    }
+
+    public List<StandardDTO> getStandards() {
+        return standards;
+    }
+
+    public void setStandards(List<StandardDTO> standards) {
+        this.standards = standards;
     }
 
     @Override

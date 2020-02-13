@@ -67,4 +67,5 @@
     <include file="config/liquibase/changelog/20200127112239_added_profile_picture_field_for_student_staff.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200129112728_added_album.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200204103935_removed_active_field_from academic_session.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200213084648_added_SurveyFormStandard.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

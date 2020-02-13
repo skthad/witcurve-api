@@ -1,12 +1,15 @@
 package com.witcurve.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -50,6 +53,14 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="form_id", insertable = false, updatable = false)
     private Set<SurveySection> sections;
+
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+        name = "survey_form_standards",
+        joinColumns = {@JoinColumn(name = "survey_form_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "standard_id", referencedColumnName = "id")})
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private List<Standard> standards;
 
     public Long getId() {
         return id;
@@ -114,6 +125,10 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     public void setSections(Set<SurveySection> sections) {
         this.sections = sections;
     }
+
+    public List<Standard> getStandards() { return standards; }
+
+    public void setStandards(List<Standard> standards) { this.standards = standards; }
 
     @Override
     public boolean equals(Object o) {
