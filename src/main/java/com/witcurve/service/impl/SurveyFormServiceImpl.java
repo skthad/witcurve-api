@@ -11,6 +11,7 @@ import com.witcurve.repository.StaffRepository;
 import com.witcurve.repository.StudentRepository;
 import com.witcurve.repository.SurveyFormRepository;
 import com.witcurve.repository.SurveySubmissionRepository;
+import com.witcurve.service.SnsService;
 import com.witcurve.service.SurveyFormService;
 import com.witcurve.service.dto.SurveyFormDTO;
 import com.witcurve.service.mapper.SurveyFormMapper;
@@ -45,9 +46,13 @@ public class SurveyFormServiceImpl implements SurveyFormService {
     @Autowired
     SurveySubmissionRepository surveySubmissionRepository;
 
+    @Autowired
+    SnsService snsService;
+
     @Override
     public SurveyFormDTO saveOrUpdate(SurveyFormDTO surveyFormDTO) throws WitcurveException {
         log.debug("Request to save or update surveyForm : {}", surveyFormDTO);
+        isValid(surveyFormDTO);
         SurveyForm surveyForm = surveyFormMapper.toEntity(surveyFormDTO);
         surveyForm = surveyFormRepository.save(surveyForm);
         return surveyFormMapper.toDto(surveyForm);
@@ -58,7 +63,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         log.debug("Request to get surveyForm with id : {}", surveyFormId);
         Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveyFormId);
         if (!surveyForm.isPresent()) {
-            throw new WitcurveException("No survey formFound with id : " + surveyFormId);
+            throw new WitcurveException("No survey form found with id : " + surveyFormId);
         }
         return surveyFormMapper.toDto(surveyForm.get());
     }
@@ -80,8 +85,14 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         if (!student.isPresent()) {
             throw new WitcurveException("No student present with given id");
         }
-        StudentStandard studentStandard = student.get().getStudentStandards().stream().collect(Collectors.toList()).get(0);
-        List<SurveyForm> surveyFormList = surveyFormRepository.findBySchoolInfoIdAndStatusAndStandardId(student.get().getSchoolInfo().getId(), Arrays.asList(SurveyFormStatus.PUBLISHED), studentStandard.getStandard().getId());
+        Set<StudentStandard> studentStandards = student.get().getStudentStandards();
+        List<SurveyForm> surveyFormList;
+        if (studentStandards != null && studentStandards.size() > 0) {
+            StudentStandard studentStandard = student.get().getStudentStandards().stream().collect(Collectors.toList()).get(0);
+            surveyFormList = surveyFormRepository.findBySchoolInfoIdAndStatusAndStandardId(student.get().getSchoolInfo().getId(), Arrays.asList(SurveyFormStatus.PUBLISHED), studentStandard.getStandard().getId());
+        } else {
+            throw new WitcurveException("Student does not belong to any standard");
+        }
         List<SurveyFormDTO> result = surveyFormMapper.toDto(surveyFormList);
         updateSubmitStatus(result, student.get().getUser().getId());
         return result;
@@ -119,7 +130,9 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             throw new WitcurveException("No surveyForm found with id : " + surveyFormId);
         }
         surveyForm.get().setStatus(status);
-        return surveyFormMapper.toDto(surveyForm.get());
+        SurveyFormDTO surveyFormDTO = surveyFormMapper.toDto(surveyForm.get());
+        snsService.sendPushNotificationOnFormPublish(surveyFormDTO);
+        return surveyFormDTO;
     }
 
     private void updateSubmitStatus(List<SurveyFormDTO> surveyForms, Long userId) {
@@ -129,6 +142,17 @@ public class SurveyFormServiceImpl implements SurveyFormService {
                 surveyForm.setUserSubmitted(false);
             } else {
                 surveyForm.setUserSubmitted(true);
+            }
+        }
+    }
+    private void isValid(SurveyFormDTO surveyFormDTO) {
+        if (surveyFormDTO.getId() != null) {
+            Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveyFormDTO.getId());
+            if (!surveyForm.isPresent()) {
+                throw new WitcurveException("No survey form is present with id : " + surveyFormDTO.getId());
+            }
+            if (!surveyForm.get().getType().equals(surveyFormDTO.getType())) {
+                throw new WitcurveException("Type of user can not be changed in update request");
             }
         }
     }

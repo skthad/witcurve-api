@@ -5,16 +5,14 @@ import com.witcurve.service.dto.SurveyFormDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class, SurveySectionMapper.class, StandardMapper.class})
+@Mapper(componentModel = "spring", uses = {SchoolInfoMapper.class, SurveySectionMapper.class})
 public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm> {
 
     @Mapping(source = "schoolInfo.id", target = "schoolInfoId")
     @Mapping(target = "userSubmitted", ignore = true)
-    @Mapping(source = "standard.id", target = "standardId")
     SurveyFormDTO toDto(SurveyForm surveyForm);
 
     @Mapping(source = "schoolInfoId", target = "schoolInfo")
-    @Mapping(source = "standardId", target = "standard")
     SurveyForm toEntity(SurveyFormDTO surveyFormDTO);
 
     default SurveyForm fromId(Long id) {

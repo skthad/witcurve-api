@@ -75,4 +75,6 @@ public class WitCurveConstants {
 
     public static final String REPORT_CARD = " {{examName}} ReportCard is available for download";
 
+    public static final String SURVEY_FORM_PUBLISHED = "Survey form {{formName}} has been created. Please fill it.";
+
 }

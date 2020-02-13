@@ -19,6 +19,6 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
     @Query("Select sf from SurveyForm  sf where sf.schoolInfo.id=?1 and sf.type in ?2 and sf.status in ?3")
     List<SurveyForm> findBySchoolInfoIdAndTypesAndStatusList(Long schoolInfoId, List<SurveyUserType> types, List<SurveyFormStatus> statuses);
 
-    @Query("Select sf from SurveyForm  sf where  (sf.type = 'ALL') or (sf.type = 'PARENT' and sf.standard.id = ?3) or (sf.type = 'PARENT' and sf.standard.id = null) and sf.status in ?2 and sf.schoolInfo.id = ?1")
+    @Query("Select sf from SurveyForm sf left join SurveyFormStandards sfs on sfs.surveyFormId = sf.id where  sf.status in ?2 and sf.schoolInfo.id = ?1 and ((sf.type = 'ALL') or (sf.type = 'PARENT' and (sfs.standardId = ?3 or sfs.standardId is null)))")
     List<SurveyForm> findBySchoolInfoIdAndStatusAndStandardId(Long schoolInfoId, List<SurveyFormStatus> statuses, Long standardId);
 }
