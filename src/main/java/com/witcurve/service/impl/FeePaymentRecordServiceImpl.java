@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,8 +140,17 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
 
         Double totalPaidAmount = 0.0;
 
+        LocalDate transactionDate = null;
+
         for (FeePaymentDetailDTO feePaymentDetail : feePaymentRecordDTO.getFeePaymentDetails()) {
 
+            if(transactionDate == null) {
+                transactionDate = feePaymentDetail.getTransactionDate();
+            } else {
+                if(transactionDate.isAfter(feePaymentDetail.getTransactionDate())) {
+                    transactionDate = feePaymentDetail.getTransactionDate();
+                }
+            }
             if (type.equals(PaymentRecordType.PAYTM)) {
                 if (feePaymentRecordDTO.getFeePaymentType().equals(FeePaymentType.OUTSTANDING_FEE) && feePaymentDetail.getItemId() == null) {
                     throw new WitcurveException("Item id is required for paytm transaction of Outstanding Fee");
@@ -168,13 +178,13 @@ public class FeePaymentRecordServiceImpl implements FeePaymentRecordService {
         if (feePaymentRecordDTO.getId() != null) {
             TransactionRecordDTO transactionRecordDTO = feePaymentRecordDTO.getTransactionRecordDTO();
             transactionRecordDTO.setTotalAmount(totalPaidAmount);
-            transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+            transactionRecordDTO.setTransactionDate(transactionDate);
             transactionRecordDTO.setDescription("admissionId=" + studentFeeStructure.get().getStudent().getAdmissionId()
                 + "/student=" + studentFeeStructure.get().getStudent().getFirstName() + "/totalPaidAmount=" + totalPaidAmount);
         } else {
             TransactionRecordDTO transactionRecordDTO = new TransactionRecordDTO();
             transactionRecordDTO.setTransactionId(feePaymentRecordDTO.getTransactionId());
-            transactionRecordDTO.setTransactionDate(feePaymentRecordDTO.getTransactionDate());
+            transactionRecordDTO.setTransactionDate(transactionDate);
             transactionRecordDTO.setType(RecordType.FEE);
             transactionRecordDTO.setTransactionMode(mode);
             transactionRecordDTO.setTransactionType(TransactionType.CREDIT);

@@ -34,6 +34,7 @@ public class PaytmCallBackResource {
         try {
             paytmVM = paytmCallBackService.getStudentFee(instituteName, admissionId, type, request);
         } catch (Exception e) {
+            e.printStackTrace();
             paytmVM = new PaytmVM();
             paytmVM.setErrorCode(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue());
         }
@@ -51,6 +52,7 @@ public class PaytmCallBackResource {
         try {
             responseMap = paytmCallBackService.save(paytmStatusCheckVM, orderId, admissionId, instituteName, request);
         } catch (Exception e) {
+            e.printStackTrace();
             responseMap.put("errorcode", String.valueOf(PaytmErrorCodes.INTERNAL_SERVER_ERROR.getValue()));
         }
         return ResponseEntity.ok(responseMap);
