@@ -119,6 +119,7 @@ public class FeePaymentRecordResource {
      */
     @GetMapping("/fee-payment-record/standards/{standardId}/academic-session/{sessionId}")
     @Timed
+    //TODO change req param from sessionId to start date and end date.
     public ResponseEntity<List<FeePaymentRecordDTO>> getByStandardAndSessionId(@PathVariable Long
                                                                                    standardId, @PathVariable Long sessionId) throws WitcurveException, URISyntaxException {
         log.debug("Request to get FeePaymentRecords by standardId and sessionId : {}", standardId, sessionId);

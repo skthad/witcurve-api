@@ -31,7 +31,6 @@ public class SurveyQuestionDTO extends AbstractAuditingDTO implements Serializab
 
     private Map<Integer, String> options;
 
-    @NotNull
     private Long sectionId;
 
     private Boolean otherField = false;

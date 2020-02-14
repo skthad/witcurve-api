@@ -32,4 +32,29 @@
                                  constraintName="FKpkqwjbiyg0p779rr8fam949hc" deferrable="false"
                                  initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
     </changeSet>
+    <changeSet author="Sai (generated)" id="1581583645715-6">
+        <dropUniqueConstraint constraintName="survey_form_standard_id_UK" tableName="survey_form_standards"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1581583645715-7">
+        <dropForeignKeyConstraint baseTableName="survey_form_standards" constraintName="FK6vqwd20kitmd65grutxbypypb"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1581583645715-8">
+        <dropForeignKeyConstraint baseTableName="survey_form_standards" constraintName="FKpkqwjbiyg0p779rr8fam949hc"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1581583645715-9">
+        <dropPrimaryKey tableName="survey_form_standards"/>
+        <addPrimaryKey columnNames="survey_form_id, standard_id" constraintName="survey_form_standardsPK"
+                       tableName="survey_form_standards"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1581583645715-10">
+        <addForeignKeyConstraint baseColumnNames="survey_form_id" baseTableName="survey_form_standards"
+                                 constraintName="FK6vqwd20kitmd65grutxbypypb" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="survey_form"/>
+    </changeSet>
+    <changeSet author="Sai (generated)" id="1581583645715-11">
+        <addForeignKeyConstraint baseColumnNames="standard_id" baseTableName="survey_form_standards"
+                                 constraintName="FKpkqwjbiyg0p779rr8fam949hc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="standard"/>
+    </changeSet>
 </databaseChangeLog>

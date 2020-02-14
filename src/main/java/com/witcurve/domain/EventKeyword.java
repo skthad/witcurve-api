@@ -21,6 +21,7 @@ public class EventKeyword implements Serializable{
     @Column(name="event_id",nullable = false)
     private Long eventId;
 
+    @Id
     @NotNull
     @Column(name="keyword_name",nullable = false)
     private String keywordName;

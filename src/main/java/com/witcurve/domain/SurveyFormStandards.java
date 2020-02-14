@@ -6,10 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "survey_form_standards", uniqueConstraints = {
-    @UniqueConstraint( name= "survey_form_standard_id_UK",
-        columnNames = {"survey_form_id", "standard_id"})
-})
+@Table(name = "survey_form_standards")
 public class SurveyFormStandards implements Serializable {
 
     @Id
@@ -17,6 +14,7 @@ public class SurveyFormStandards implements Serializable {
     @Column(name = "survey_form_id", nullable = false)
     private Long surveyFormId;
 
+    @Id
     @NotNull
     @Column(name = "standard_id", nullable = false)
     private Long standardId;

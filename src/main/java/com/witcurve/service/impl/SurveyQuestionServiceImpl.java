@@ -40,12 +40,12 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     SurveyQuestionMapper surveyQuestionMapper;
 
     @Override
-    public SurveyQuestionDTO saveOrUpdate(SurveyQuestionDTO surveyQuestionDTO) {
-        log.debug("Request to save or update surveyQuestion : {}", surveyQuestionDTO);
-        isValid(surveyQuestionDTO);
-        SurveyQuestion surveyQuestion = surveyQuestionMapper.toEntity(surveyQuestionDTO);
-        surveyQuestion = surveyQuestionRepository.save(surveyQuestion);
-        return surveyQuestionMapper.toDto(surveyQuestion);
+    public List<SurveyQuestionDTO> saveOrUpdate(List<SurveyQuestionDTO> surveyQuestionDTOs, Long sectionId) {
+        log.debug("Request to save or update surveyQuestion : {}", surveyQuestionDTOs);
+        isValid(surveyQuestionDTOs, sectionId);
+        List<SurveyQuestion> surveyQuestions = surveyQuestionMapper.toEntity(surveyQuestionDTOs);
+        surveyQuestions = surveyQuestionRepository.saveAll(surveyQuestions);
+        return surveyQuestionMapper.toDto(surveyQuestions);
     }
 
     @Override
@@ -76,48 +76,51 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         }
     }
 
-    private void isValid(SurveyQuestionDTO surveyQuestionDTO) {
-        Optional<SurveySection> surveySection = surveySectionRepository.findById(surveyQuestionDTO.getSectionId());
+    private void isValid(List<SurveyQuestionDTO> surveyQuestionDTOs, Long sectionId) {
+        Optional<SurveySection> surveySection = surveySectionRepository.findById(sectionId);
         if (!surveySection.isPresent()) {
             throw new WitcurveException("No SurveySection is present with given id");
         }
         if (!surveySection.get().getForm().getStatus().equals(SurveyFormStatus.DRAFT)) {
             throw new WitcurveException("Questions can not be saved when form is in Published or closed state");
         }
-        switch (surveyQuestionDTO.getType()) {
-            case RATING:
-                if (surveyQuestionDTO.getMaxRatingValue() == null || surveyQuestionDTO.getMinRatingValue() == null) {
-                    throw new WitcurveException("Require min and max rating value for Rating question type");
-                }
-                if (surveyQuestionDTO.getMinRatingValue() > surveyQuestionDTO.getMaxRatingValue()) {
-                    throw new WitcurveException("Min rating value can not be more than max rating value");
-                }
-                int interval = 1;
-                if (surveyQuestionDTO.getInterval() != null) {
-                    interval = surveyQuestionDTO.getInterval();
-                }
-                if (surveyQuestionDTO.getOptions() != null) {
-                    List<Integer> expectedKeys = new ArrayList<>();
-                    int value = surveyQuestionDTO.getMinRatingValue();
-                    expectedKeys.add(value);
-                    while (value + interval <= surveyQuestionDTO.getMaxRatingValue()) {
-                        value = value + interval;
-                        expectedKeys.add(value);
+        for (SurveyQuestionDTO surveyQuestionDTO : surveyQuestionDTOs) {
+            surveyQuestionDTO.setSectionId(sectionId);
+            switch (surveyQuestionDTO.getType()) {
+                case RATING:
+                    if (surveyQuestionDTO.getMaxRatingValue() == null || surveyQuestionDTO.getMinRatingValue() == null) {
+                        throw new WitcurveException("Require min and max rating value for Rating question type");
                     }
-                    List<Integer> keys = surveyQuestionDTO.getOptions().keySet().stream().collect(Collectors.toList());
-                    for (Integer key : keys) {
-                        if (!expectedKeys.contains(key)) {
-                            throw new WitcurveException("Given options are not according to interval");
+                    if (surveyQuestionDTO.getMinRatingValue() > surveyQuestionDTO.getMaxRatingValue()) {
+                        throw new WitcurveException("Min rating value can not be more than max rating value");
+                    }
+                    int interval = 1;
+                    if (surveyQuestionDTO.getInterval() != null) {
+                        interval = surveyQuestionDTO.getInterval();
+                    }
+                    if (surveyQuestionDTO.getOptions() != null) {
+                        List<Integer> expectedKeys = new ArrayList<>();
+                        int value = surveyQuestionDTO.getMinRatingValue();
+                        expectedKeys.add(value);
+                        while (value + interval <= surveyQuestionDTO.getMaxRatingValue()) {
+                            value = value + interval;
+                            expectedKeys.add(value);
+                        }
+                        List<Integer> keys = surveyQuestionDTO.getOptions().keySet().stream().collect(Collectors.toList());
+                        for (Integer key : keys) {
+                            if (!expectedKeys.contains(key)) {
+                                throw new WitcurveException("Given options are not according to interval");
+                            }
                         }
                     }
-                }
-                break;
-            case MULTIPLE_CHOICE:
-            case SINGLE_CHOICE:
-                if (surveyQuestionDTO.getOptions().isEmpty() || surveyQuestionDTO.getOptions() == null) {
-                    throw new WitcurveException("Options can not be null or empty");
-                }
-                break;
+                    break;
+                case MULTIPLE_CHOICE:
+                case SINGLE_CHOICE:
+                    if (surveyQuestionDTO.getOptions().isEmpty() || surveyQuestionDTO.getOptions() == null) {
+                        throw new WitcurveException("Options can not be null or empty");
+                    }
+                    break;
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
-
+//TODO change UQ to studentId and SessionId
 @Entity
 @Table(name="student_standard", uniqueConstraints = {
     @UniqueConstraint(name = "student_standard_session_UK",
