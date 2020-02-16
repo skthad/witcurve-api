@@ -15,7 +15,6 @@ public class SurveyAnswerDTO extends AbstractAuditingDTO implements Serializable
     @NotNull
     private Long questionId;
 
-    @NotNull
     private Long userId;
 
     public Long getId() {

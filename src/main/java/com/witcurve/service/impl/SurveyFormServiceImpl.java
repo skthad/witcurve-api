@@ -156,18 +156,23 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             if (surveyForm.get().getStandards().size() > 0) {
                 standardIdsInForm = surveyForm.get().getStandards().stream().map(Standard::getId).collect(Collectors.toList());
             }
+            List<Long> idsInDTO = null;
+            if (surveyFormDTO.getStandardIds() != null) {
+                if (surveyFormDTO.getStandardIds().size() > 0) {
+                    idsInDTO = surveyFormDTO.getStandardIds();
+                }
+            }
             if (standardIdsInForm == null) {
-                if (surveyFormDTO.getStandardIds() != null) {
+                if (idsInDTO != null) {
                     throw new WitcurveException("Standard can not be added or deleted in update request");
                 }
             } else {
-                if (surveyFormDTO.getStandardIds() == null) {
+                if (idsInDTO == null) {
                     throw new WitcurveException("Standard can not be added or deleted in update request");
                 }
-                if (!surveyFormDTO.getStandardIds().containsAll(standardIdsInForm)) {
+                if (!idsInDTO.containsAll(standardIdsInForm) || !standardIdsInForm.containsAll(idsInDTO)) {
                     throw new WitcurveException("Standard can not be added or deleted in update request");
                 }
-
             }
         }
     }
