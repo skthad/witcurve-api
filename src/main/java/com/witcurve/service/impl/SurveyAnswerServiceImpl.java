@@ -100,10 +100,10 @@ public class SurveyAnswerServiceImpl implements SurveyAnswerService {
                 throw new WitcurveException("Answers can be saved only when form is published");
             }
             if (surveyQuestion.get().getSection().getForm().getType().equals(SurveyUserType.PARENT) && !user.get().getType().equals(UserType.PARENT)) {
-                throw new WitcurveException("One of the question present in the form can be answered by parents only");
+                throw new WitcurveException("This question can not be answered by you");
             }
             if (surveyQuestion.get().getSection().getForm().getType().equals(SurveyUserType.STAFF) && !user.get().getType().equals(UserType.TEACHING_STAFF)) {
-                throw new WitcurveException("One of the question present in the form can be answered by parents only");
+                throw new WitcurveException("This question can not be answered by you");
             }
             surveyAnswerDTO.setUserId(userId);
             switch (surveyQuestion.get().getType()) {
