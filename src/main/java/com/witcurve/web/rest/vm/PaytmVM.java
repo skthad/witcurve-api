@@ -13,6 +13,8 @@ public class PaytmVM implements Serializable {
 
     private Double fullYearAmount;
 
+    private Boolean editable = false;
+
     public Integer getErrorCode() {
         return errorCode;
     }
@@ -43,6 +45,14 @@ public class PaytmVM implements Serializable {
 
     public void setFullYearAmount(Double fullYearAmount) {
         this.fullYearAmount = fullYearAmount;
+    }
+
+    public Boolean getEditable() {
+        return editable;
+    }
+
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
     }
 
     public static class StudentDetail implements Serializable {
@@ -188,6 +198,7 @@ public class PaytmVM implements Serializable {
             ", studentDetails=" + studentDetails +
             ", feeTypeDetails=" + feeTypeDetails +
             ", fullYearAmount=" + fullYearAmount +
+            ", editable=" + editable +
             '}';
     }
 }
