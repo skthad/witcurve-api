@@ -638,12 +638,15 @@ public class SnsService {
                 publishBulkMessage(message, url, TopicType.SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
 
             } else if (surveyFormDTO.getType().equals(SurveyUserType.PARENT)) {
-                if (surveyFormDTO.getStandards() != null && surveyFormDTO.getStandards().size() > 0) {
-                    for (StandardDTO standardDTO : surveyFormDTO.getStandards()) {
-                        publishBulkMessage(message, url, TopicType.STANDARD, null, standardDTO.getId());
+                if (surveyFormDTO.getStandardIds().size() > 0) {
+                    for (Long standardIds : surveyFormDTO.getStandardIds()) {
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, standardIds);
                     }
                 } else {
-                    publishBulkMessage(message, url, TopicType.SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
+                    List<Standard> standards = standardRepository.findBySchoolInfoId(surveyFormDTO.getSchoolInfoId());
+                    for (Standard standard : standards) {
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, standard.getId());
+                    }
                 }
             } else if (surveyFormDTO.getType().equals(SurveyUserType.STAFF)) {
                 publishBulkMessage(message, url, TopicType.STAFF_SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);

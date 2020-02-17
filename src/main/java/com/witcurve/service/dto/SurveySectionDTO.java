@@ -1,5 +1,7 @@
 package com.witcurve.service.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
@@ -9,8 +11,10 @@ public class SurveySectionDTO extends AbstractAuditingDTO implements Serializabl
     private Long id;
 
     @NotNull
+    @Length(max = 50, message = "The field name must be less than 50 characters")
     private String name;
 
+    @Length(max = 1000, message = "The field description must be less than 1000 characters")
     private String description;
 
     @NotNull

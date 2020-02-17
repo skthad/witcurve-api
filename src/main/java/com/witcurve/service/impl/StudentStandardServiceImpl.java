@@ -58,6 +58,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     @Override
     public List<StudentStandardDTO> saveMultiple(List<StudentStandardDTO> studentStandardDTOs, Long standardId, Long sessionId) throws WitcurveException {
+        //TODO soft delete all records for diff session
         List<String> rollNos = new ArrayList<>();
         List<Long> studentIds = new ArrayList<>();
         List<Long> studentIdsForMandatoryCourseCreate = new ArrayList<>();
@@ -138,6 +139,7 @@ public class StudentStandardServiceImpl implements StudentStandardService {
 
     @Override
     public StudentStandardDTO save(StudentStandardDTO studentStandardDTO) throws WitcurveException {
+        //TODO hard delete old records in same session
         Optional<Standard> standard = standardRepository.findById(studentStandardDTO.getStandard().getId());
         if (!standard.isPresent()) {
             throw new WitcurveException("No standard with given id");

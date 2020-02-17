@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SurveyQuestionService {
 
-    SurveyQuestionDTO saveOrUpdate(SurveyQuestionDTO surveyQuestionDTO);
+    List<SurveyQuestionDTO> saveOrUpdate(List<SurveyQuestionDTO> surveyQuestionDTO, Long sectionId);
 
     List<SurveyQuestionDTO> getByFormId(Long surveyFormId);
 

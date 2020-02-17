@@ -27,39 +27,33 @@ public class SurveyQuestionResource {
     /**
      * creates a surveyQuestion
      *
-     * @param surveyQuestionDTO
+     * @param surveyQuestionDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/survey-questions")
     @Timed
-    public ResponseEntity<SurveyQuestionDTO> saveSurveyQuestion(@RequestBody @Valid SurveyQuestionDTO surveyQuestionDTO) throws URISyntaxException {
-        log.debug("Request Save surveyQuestion : {} ", surveyQuestionDTO);
-        if (surveyQuestionDTO.getId() != null) {
-            throw new WitcurveException("New SurveyQuestion can't already have an id");
-        }
-        SurveyQuestionDTO result = surveyQuestionService.saveOrUpdate(surveyQuestionDTO);
+    public ResponseEntity<List<SurveyQuestionDTO>> saveSurveyQuestion(@RequestBody @Valid List<SurveyQuestionDTO> surveyQuestionDTOs, @RequestParam Long sectionId) throws URISyntaxException {
+        log.debug("Request Save surveyQuestion : {} ", surveyQuestionDTOs);
+        List<SurveyQuestionDTO> result = surveyQuestionService.saveOrUpdate(surveyQuestionDTOs, sectionId);
         return ResponseEntity.ok().body(result);
     }
 
     /**
      * updates the given surveyQuestion
      *
-     * @param surveyQuestionDTO
+     * @param surveyQuestionDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PutMapping("/survey-questions")
     @Timed
-    public ResponseEntity<SurveyQuestionDTO> updateSurveyQuestion(@RequestBody @Valid SurveyQuestionDTO
-                                                                      surveyQuestionDTO)  throws URISyntaxException {
-        log.debug("Request to update surveyQuestion : {} ", surveyQuestionDTO);
-        if (surveyQuestionDTO.getId() == null) {
-            throw new WitcurveException("Id is require to update SurveyQuestion");
-        }
-        SurveyQuestionDTO result = surveyQuestionService.saveOrUpdate(surveyQuestionDTO);
+    public ResponseEntity<List<SurveyQuestionDTO>> updateSurveyQuestion(@RequestBody @Valid List<SurveyQuestionDTO>
+                                                                            surveyQuestionDTOs, @RequestParam Long sectionId) throws URISyntaxException {
+        log.debug("Request to update surveyQuestion : {} ", surveyQuestionDTOs);
+        List<SurveyQuestionDTO> result = surveyQuestionService.saveOrUpdate(surveyQuestionDTOs, sectionId);
         return ResponseEntity.ok().body(result);
     }
 

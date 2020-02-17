@@ -3,6 +3,7 @@ package com.witcurve.service.dto;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -15,8 +16,10 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
     private Long id;
 
     @NotNull
+    @Length(max = 50, message = "The field name must be less than 50 characters")
     private String name;
 
+    @Length(max = 1000, message = "The field description must be less than 1000 characters")
     private String description;
 
     @NotNull
@@ -35,7 +38,7 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
     private Set<SurveySectionDTO> sections;
 
-    private List<StandardDTO> standards;
+    private List<Long> standardIds;
 
     public Long getId() {
         return id;
@@ -109,13 +112,9 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
         this.sections = sections;
     }
 
-    public List<StandardDTO> getStandards() {
-        return standards;
-    }
+    public List<Long> getStandardIds() { return standardIds; }
 
-    public void setStandards(List<StandardDTO> standards) {
-        this.standards = standards;
-    }
+    public void setStandardIds(List<Long> standardIds) { this.standardIds = standardIds; }
 
     @Override
     public boolean equals(Object o) {

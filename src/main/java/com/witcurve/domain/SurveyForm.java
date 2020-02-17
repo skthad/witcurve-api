@@ -24,7 +24,7 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
     @Column(length = 1000)
@@ -54,12 +54,13 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     @JoinColumn(name="form_id", insertable = false, updatable = false)
     private Set<SurveySection> sections;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
         name = "survey_form_standards",
         joinColumns = {@JoinColumn(name = "survey_form_id", referencedColumnName = "id")},
         inverseJoinColumns = {@JoinColumn(name = "standard_id", referencedColumnName = "id")})
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OrderBy("grade asc,section asc")
     private List<Standard> standards;
 
     public Long getId() {

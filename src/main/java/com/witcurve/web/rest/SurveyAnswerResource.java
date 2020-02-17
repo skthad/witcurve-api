@@ -8,12 +8,10 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -29,59 +27,34 @@ public class SurveyAnswerResource {
     /**
      * creates a surveyAnswer
      *
-     * @param surveyAnswerDTO
+     * @param surveyAnswerDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PostMapping("/survey-answers")
     @Timed
-    public ResponseEntity<SurveyAnswerDTO> saveSurveyAnswer(@RequestBody @Valid SurveyAnswerDTO surveyAnswerDTO) throws URISyntaxException {
-        log.debug("Request Save surveyAnswer : {} ", surveyAnswerDTO);
-        if (surveyAnswerDTO.getId() != null) {
-            throw new WitcurveException("New SurveyAnswer can't already have an id");
-        }
-        try {
-            SurveyAnswerDTO result = surveyAnswerService.saveOrUpdate(surveyAnswerDTO);
-            return ResponseEntity.created(new URI("/api/survey-answers/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("surveyAnswer", result.getId().toString()))
-                .body(result);
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key for some field might be invalid");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
+    public ResponseEntity<List<SurveyAnswerDTO>> saveSurveyAnswer(@RequestBody @Valid List<SurveyAnswerDTO> surveyAnswerDTOs, @RequestParam Long userId) throws URISyntaxException {
+        log.debug("Request Save surveyAnswer : {} ", surveyAnswerDTOs);
+        List<SurveyAnswerDTO> result = surveyAnswerService.saveOrUpdate(surveyAnswerDTOs, userId);
+        return ResponseEntity.ok().body(result);
     }
 
     /**
      * updates a surveyAnswer
      *
-     * @param surveyAnswerDTO
+     * @param surveyAnswerDTOs
      * @return
      * @throws WitcurveException
      * @throws URISyntaxException
      */
     @PutMapping("/survey-answers")
     @Timed
-    public ResponseEntity<SurveyAnswerDTO> updateSurveyAnswer(@RequestBody @Valid SurveyAnswerDTO surveyAnswerDTO) throws URISyntaxException {
-        log.debug("Request to update surveyAnswer : {} ", surveyAnswerDTO);
-        if (surveyAnswerDTO.getId() == null) {
-            throw new WitcurveException("Id is require to update SurveyQuestion");
-        }
-        try {
-            SurveyAnswerDTO result = surveyAnswerService.saveOrUpdate(surveyAnswerDTO);
-            return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityUpdateAlert("surveyAnswer", surveyAnswerDTO.getId().toString()))
-                .body(result);
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("constraint [FK")) {
-                throw new WitcurveException("Foreign key for some field might be invalid");
-            } else {
-                throw new WitcurveException("DataIntegrityViolationException occurred.");
-            }
-        }
+    public ResponseEntity<List<SurveyAnswerDTO>> updateSurveyAnswer(@RequestBody @Valid List<SurveyAnswerDTO> surveyAnswerDTOs, @RequestParam Long userId) throws URISyntaxException {
+        log.debug("Request to update surveyAnswer : {} ", surveyAnswerDTOs);
+        List<SurveyAnswerDTO> result = surveyAnswerService.saveOrUpdate(surveyAnswerDTOs, userId);
+        return ResponseEntity.ok().body(result);
+
     }
 
     /**

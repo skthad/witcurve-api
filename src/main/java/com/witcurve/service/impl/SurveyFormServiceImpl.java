@@ -1,9 +1,6 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.Staff;
-import com.witcurve.domain.Student;
-import com.witcurve.domain.StudentStandard;
-import com.witcurve.domain.SurveyForm;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
@@ -145,6 +142,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             }
         }
     }
+
     private void isValid(SurveyFormDTO surveyFormDTO) {
         if (surveyFormDTO.getId() != null) {
             Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveyFormDTO.getId());
@@ -154,9 +152,32 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             if (!surveyForm.get().getType().equals(surveyFormDTO.getType())) {
                 throw new WitcurveException("Type of user can not be changed in update request");
             }
+            List<Long> standardIdsInForm = null;
+            if (surveyForm.get().getStandards().size() > 0) {
+                standardIdsInForm = surveyForm.get().getStandards().stream().map(Standard::getId).collect(Collectors.toList());
+            }
+            List<Long> idsInDTO = null;
+            if (surveyFormDTO.getStandardIds() != null) {
+                if (surveyFormDTO.getStandardIds().size() > 0) {
+                    idsInDTO = surveyFormDTO.getStandardIds();
+                }
+            }
+            if (standardIdsInForm == null) {
+                if (idsInDTO != null) {
+                    throw new WitcurveException("Standard can not be added or deleted in update request");
+                }
+            } else {
+                if (idsInDTO == null) {
+                    throw new WitcurveException("Standard can not be added or deleted in update request");
+                }
+                if (!idsInDTO.containsAll(standardIdsInForm) || !standardIdsInForm.containsAll(idsInDTO)) {
+                    throw new WitcurveException("Standard can not be added or deleted in update request");
+                }
+            }
         }
     }
 }
+
 
 
 

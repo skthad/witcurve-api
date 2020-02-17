@@ -16,7 +16,7 @@ public class SurveySection extends AbstractAuditingEntity implements Serializabl
     private Long id;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
     @Column(length = 1000)
