@@ -1,9 +1,6 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.SurveyAnswer;
-import com.witcurve.domain.SurveyForm;
-import com.witcurve.domain.SurveySubmission;
-import com.witcurve.domain.User;
+import com.witcurve.domain.*;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.repository.*;
 import com.witcurve.service.SurveySubmissionService;
@@ -53,8 +50,8 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
         if (!surveyForm.get().getStatus().equals(SurveyFormStatus.PUBLISHED)) {
             throw new WitcurveException("Survey form can not be submitted when form is in draft or closed state");
         }
-        List<SurveyAnswer> surveyAnswers = surveyAnswerRepository.getMandatoryUnansweredRecordByUserIdAndFormId(surveySubmissionDTO.getUserId(), surveySubmissionDTO.getFormId());
-        if (surveyAnswers.size() > 0) {
+        List<SurveyQuestion> mandatoryUnansweredQuestions = surveyQuestionRepository.getMandatoryUnansweredRecordByUserIdAndFormId(surveySubmissionDTO.getUserId(), surveySubmissionDTO.getFormId());
+        if (mandatoryUnansweredQuestions.size() > 0) {
             throw new WitcurveException("All mandatory questions should be answered before submitting form");
         }
         SurveySubmission surveySubmission = surveySubmissionRepository.save(surveySubmissionMapper.toEntity(surveySubmissionDTO));

@@ -65,7 +65,7 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="form_id", insertable = false, updatable = false)
-    private List<SurveySubmission> surveySubmission;
+    private List<SurveySubmission> surveySubmissions;
 
     public Long getId() { return id; }
 
@@ -131,9 +131,9 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
 
     public void setStandards(List<Standard> standards) { this.standards = standards; }
 
-    public List<SurveySubmission> getSurveySubmission() { return surveySubmission; }
+    public List<SurveySubmission> getSurveySubmissions() { return surveySubmissions; }
 
-    public void setSurveySubmission(List<SurveySubmission> surveySubmission) { this.surveySubmission = surveySubmission; }
+    public void setSurveySubmissions(List<SurveySubmission> surveySubmissions) { this.surveySubmissions = surveySubmissions; }
 
     @Override
     public boolean equals(Object o) {

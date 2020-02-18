@@ -54,8 +54,8 @@ public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm
 
     default List<Long> getUserIds(SurveyForm surveyForm) {
         List<Long> userIds = new ArrayList<>();
-        if (surveyForm.getSurveySubmission() != null) {
-            for (SurveySubmission surveySubmission : surveyForm.getSurveySubmission()) {
+        if (surveyForm.getSurveySubmissions() != null) {
+            for (SurveySubmission surveySubmission : surveyForm.getSurveySubmissions()) {
                 userIds.add(surveySubmission.getUser().getId());
             }
         }

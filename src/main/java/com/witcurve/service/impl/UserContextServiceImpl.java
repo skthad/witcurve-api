@@ -324,12 +324,12 @@ public class UserContextServiceImpl implements UserContextService {
             standardStudentCounts.stream().collect(Collectors.toMap(StandardStudentCountVM::getStandardId,
                 StandardStudentCountVM::getCount, (v1, v2) -> v1, LinkedHashMap::new));
 
-        List<StaffVM> staffList = staffRepository.findStaffCount(schoolInfoId);
-        Map<StaffType, Long> staffCountMap = staffList.stream().collect(
-            Collectors.toMap(StaffVM::getType, StaffVM::getCount));
-
         contextDTO.setStandardStudentCountMap(standardStudentCountMap);
-        contextDTO.setStaffCountMap(staffCountMap);
 
+        if (!contextDTO.getCurrentUser().getType().equals(UserType.TEACHING_STAFF)) {
+            List<StaffVM> staffList = staffRepository.findStaffCount(schoolInfoId);
+            Map<StaffType, Long> staffCountMap = staffList.stream().collect(Collectors.toMap(StaffVM::getType, StaffVM::getCount));
+            contextDTO.setStaffCountMap(staffCountMap);
+        }
     }
 }
