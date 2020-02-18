@@ -86,9 +86,6 @@ public class UserContextServiceImpl implements UserContextService {
     StaffRepository staffRepository;
 
     @Autowired
-    StandardRepository standardRepository;
-
-    @Autowired
     StudentStandardRepository studentStandardRepository;
 
     @Override
@@ -103,7 +100,6 @@ public class UserContextServiceImpl implements UserContextService {
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
             List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
-            // List<StandardDTO> staffStandards = null;
             Map<Long, List<CourseDTO>> standardCourseMap = null;
             for (CourseTeacherDTO courseTeacherDTO : courseTeachers) {
                 if (standardCourseMap == null) {
