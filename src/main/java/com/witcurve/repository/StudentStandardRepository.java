@@ -2,6 +2,7 @@ package com.witcurve.repository;
 
 import com.witcurve.domain.StudentStandard;
 import com.witcurve.domain.enumeration.Grade;
+import com.witcurve.web.rest.vm.StandardStudentCountVM;
 import com.witcurve.web.rest.vm.StudentPerformanceDashboardVM;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Repository
@@ -88,5 +90,11 @@ public interface StudentStandardRepository extends JpaRepository<StudentStandard
 
     @Query("select new com.witcurve.web.rest.vm.StudentPerformanceDashboardVM(ss.standard.id, ss.student.gender, count(ss.id)) from StudentStandard ss where ss.active=true and ss.student.schoolInfo.id=?1 group by ss.standard.id, ss.student.gender order by ss.standard.grade asc, ss.standard.section asc")
     List<StudentPerformanceDashboardVM> findStudentDashBoardDetailsBySchoolInfoId(Long schoolInfoId);
+
+    @Query("select new com.witcurve.web.rest.vm.StandardStudentCountVM(ss.standard.id, count(ss.id))  from StudentStandard ss where ss.active=true and ss.student.schoolInfo.id=?1 group by ss.standard.id order by ss.standard.grade asc, ss.standard.section asc")
+    List<StandardStudentCountVM> findStandardStudentCount(Long schoolInfoId);
+
+    @Query("select new com.witcurve.web.rest.vm.StandardStudentCountVM(ss.standard.id, count(ss.id))  from StudentStandard ss where ss.active=true and ss.student.schoolInfo.id=?1 and ss.standard.id in ?2 group by ss.standard.id order by ss.standard.grade asc, ss.standard.section asc")
+    List<StandardStudentCountVM> findStandardStudentCountByStandardIds(Long schoolInfoId, List<Long> standardIds);
 
 }

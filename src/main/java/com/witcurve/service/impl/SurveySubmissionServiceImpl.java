@@ -4,6 +4,7 @@ import com.witcurve.domain.SurveyAnswer;
 import com.witcurve.domain.SurveyForm;
 import com.witcurve.domain.SurveySubmission;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.repository.*;
 import com.witcurve.service.SurveySubmissionService;
 import com.witcurve.service.dto.SurveySubmissionDTO;
@@ -45,8 +46,15 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
     @Override
     public SurveySubmissionDTO save(SurveySubmissionDTO surveySubmissionDTO) {
         log.debug("Request to save or update SurveySubmission {} :", surveySubmissionDTO);
-        List<SurveyAnswer> surveyAnswers = surveyAnswerRepository.getMandatoryUnansweredRecordByUserIdAndFormId(surveySubmissionDTO.getUserId(),surveySubmissionDTO.getFormId());
-        if (surveyAnswers.size()>0) {
+        Optional<SurveyForm> surveyForm = surveyFormRepository.findById(surveySubmissionDTO.getFormId());
+        if (!surveyForm.isPresent()) {
+            throw new WitcurveException("Survey form is not present with id :{} " + surveySubmissionDTO.getFormId());
+        }
+        if (!surveyForm.get().getStatus().equals(SurveyFormStatus.PUBLISHED)) {
+            throw new WitcurveException("Survey form can not be submitted when form is in draft or closed state");
+        }
+        List<SurveyAnswer> surveyAnswers = surveyAnswerRepository.getMandatoryUnansweredRecordByUserIdAndFormId(surveySubmissionDTO.getUserId(), surveySubmissionDTO.getFormId());
+        if (surveyAnswers.size() > 0) {
             throw new WitcurveException("All mandatory questions should be answered before submitting form");
         }
         SurveySubmission surveySubmission = surveySubmissionRepository.save(surveySubmissionMapper.toEntity(surveySubmissionDTO));

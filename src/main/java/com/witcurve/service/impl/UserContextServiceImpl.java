@@ -2,10 +2,11 @@ package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
 import com.witcurve.domain.SchoolInfo;
+import com.witcurve.domain.Standard;
 import com.witcurve.domain.User;
+import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.SchoolInfoRepository;
-import com.witcurve.repository.UserRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.InstituteMapper;
@@ -14,6 +15,8 @@ import com.witcurve.service.mapper.SchoolMapperLite;
 import com.witcurve.service.mapper.UserMapper;
 import com.witcurve.service.util.WeekdayUtil;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.vm.StaffVM;
+import com.witcurve.web.rest.vm.StandardStudentCountVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -31,7 +35,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @Transactional(readOnly = true)
 public class UserContextServiceImpl implements UserContextService {
 
-    private final Logger log  = LoggerFactory.getLogger(StaffServiceImpl.class);
+    private final Logger log = LoggerFactory.getLogger(StaffServiceImpl.class);
 
     @Autowired
     UserService userService;
@@ -78,6 +82,15 @@ public class UserContextServiceImpl implements UserContextService {
     @Autowired
     MessageThreadService messageThreadService;
 
+    @Autowired
+    StaffRepository staffRepository;
+
+    @Autowired
+    StandardRepository standardRepository;
+
+    @Autowired
+    StudentStandardRepository studentStandardRepository;
+
     @Override
     public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -86,11 +99,11 @@ public class UserContextServiceImpl implements UserContextService {
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
         contextDTO.setUnreadCount(messageThreadService.unReadCount(currentUser.getId()));
-
+        List<StandardDTO> staffStandards = null;
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
             List<CourseTeacherDTO> courseTeachers = courseTeacherService.getCourseTeachersByTeacherId(staffDTO.getId());
-            List<StandardDTO> staffStandards = null;
+            // List<StandardDTO> staffStandards = null;
             Map<Long, List<CourseDTO>> standardCourseMap = null;
             for (CourseTeacherDTO courseTeacherDTO : courseTeachers) {
                 if (standardCourseMap == null) {
@@ -178,7 +191,7 @@ public class UserContextServiceImpl implements UserContextService {
             //TODO: add other holidays missing in this logic
 
             long noOfHolidaysInSession = allHolidays.size();
-            long noOfSundaysInSession =  WeekdayUtil.getNoOfWeekDayBetweenDates
+            long noOfSundaysInSession = WeekdayUtil.getNoOfWeekDayBetweenDates
                 (sessionStartDate, currentDate, DayOfWeek.SUNDAY);
             for (EventDTO holiday : allHolidays) {
                 if (holiday.getDate().isAfter(currentDate)) {
@@ -265,15 +278,15 @@ public class UserContextServiceImpl implements UserContextService {
                         noOfHolidaysInMonth--;
                     }
                 }
-
                 contextDTO.setTotalCalendarDaysInMonth(DAYS.between(monthStartDate, monthEndDate) + 1);
                 contextDTO.setTotalWorkingDaysInMonth(contextDTO.getTotalCalendarDaysInMonth() - totalHolidaysInMonth - totalSundaysInMonth);
                 contextDTO.setNoOfCalendarDaysInMonth(currentDate.getDayOfMonth());
                 contextDTO.setNoOfWorkingDaysInMonth(contextDTO.getNoOfCalendarDaysInMonth() - noOfHolidaysInMonth - noOfSundaysInMonth);
+                if (!UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
+                    addStudentAndStaffCountMap(contextDTO, schoolInfoId, staffStandards);
+                }
             }
-
         }
-
         return contextDTO;
     }
 
@@ -296,10 +309,31 @@ public class UserContextServiceImpl implements UserContextService {
             }
             SchoolInfoDTO schoolInfoDTO = schoolInfoMapperLite.toDto(schoolInfo);
             List<User> users = userRepository.findSchoolManagerBySchoolInfoId(schoolInfo.getId());
-            if(users != null && users.size() != 0) {
+            if (users != null && users.size() != 0) {
                 schoolInfoDTO.setMainSchoolInfoUserId(users.get(0).getId());
             }
             contextDTO.getInstituteMap().get(instituteId).getSchoolMap().get(schoolId).addSchoolInfo(schoolInfoDTO);
         }
+    }
+
+    private void addStudentAndStaffCountMap(UserContextDTO contextDTO, Long schoolInfoId, List<StandardDTO> staffStandardDTOs) {
+        List<StandardStudentCountVM> standardStudentCounts = null;
+        if (staffStandardDTOs == null) {
+            standardStudentCounts = studentStandardRepository.findStandardStudentCount(schoolInfoId);
+        } else {
+            List<Long> standardIds = staffStandardDTOs.stream().map(StandardDTO::getId).collect(Collectors.toList());
+            standardStudentCounts = studentStandardRepository.findStandardStudentCountByStandardIds(schoolInfoId, standardIds);
+        }
+        LinkedHashMap<Long, Long> standardStudentCountMap =
+            standardStudentCounts.stream().collect(Collectors.toMap(StandardStudentCountVM::getStandardId,
+                StandardStudentCountVM::getCount, (v1, v2) -> v1, LinkedHashMap::new));
+
+        List<StaffVM> staffList = staffRepository.findStaffCount(schoolInfoId);
+        Map<StaffType, Long> staffCountMap = staffList.stream().collect(
+            Collectors.toMap(StaffVM::getType, StaffVM::getCount));
+
+        contextDTO.setStandardStudentCountMap(standardStudentCountMap);
+        contextDTO.setStaffCountMap(staffCountMap);
+
     }
 }

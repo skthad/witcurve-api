@@ -63,13 +63,13 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     @OrderBy("grade asc,section asc")
     private List<Standard> standards;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="form_id", insertable = false, updatable = false)
+    private List<SurveySubmission> surveySubmission;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public String getName() {
         return name;
@@ -130,6 +130,10 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     public List<Standard> getStandards() { return standards; }
 
     public void setStandards(List<Standard> standards) { this.standards = standards; }
+
+    public List<SurveySubmission> getSurveySubmission() { return surveySubmission; }
+
+    public void setSurveySubmission(List<SurveySubmission> surveySubmission) { this.surveySubmission = surveySubmission; }
 
     @Override
     public boolean equals(Object o) {

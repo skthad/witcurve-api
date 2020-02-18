@@ -40,6 +40,8 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
     private List<Long> standardIds;
 
+    private List<Long> userIds;
+
     public Long getId() {
         return id;
     }
@@ -115,6 +117,10 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
     public List<Long> getStandardIds() { return standardIds; }
 
     public void setStandardIds(List<Long> standardIds) { this.standardIds = standardIds; }
+
+    public List<Long> getUserIds() { return userIds; }
+
+    public void setUserIds(List<Long> userIds) { this.userIds = userIds; }
 
     @Override
     public boolean equals(Object o) {
