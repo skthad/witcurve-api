@@ -1,7 +1,5 @@
 package com.witcurve.domain;
 
-import com.witcurve.service.util.ListToStringConverter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,7 +20,7 @@ public class SurveyAnswer extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "answers", length = 500)
+    @Column(name = "answers", columnDefinition = "varchar(255)")
     @CollectionTable(name = "survey_answer_answers", joinColumns=@JoinColumn(name="survey_answer_id"))
     private List<String> answers;
 

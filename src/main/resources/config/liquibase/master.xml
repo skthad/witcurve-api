@@ -68,4 +68,5 @@
     <include file="config/liquibase/changelog/20200129112728_added_album.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200204103935_removed_active_field_from academic_session.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200213084648_added_SurveyFormStandard.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20200220124945_added_SurveyAnswerAnswers.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

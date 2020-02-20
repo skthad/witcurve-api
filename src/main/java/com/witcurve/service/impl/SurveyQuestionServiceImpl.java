@@ -67,7 +67,7 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         log.debug("Request to delete SurveyQuestion by id : {} " + questionId);
         Optional<SurveyQuestion> question = surveyQuestionRepository.findById(questionId);
         if (!question.isPresent()) {
-            throw new WitcurveException("No surveySection found with id : " + questionId);
+            throw new WitcurveException("No surveyQuestion found with id : " + questionId);
         }
         if (question.get().getSection().getForm().getStatus().equals(SurveyFormStatus.DRAFT)) {
             surveyQuestionRepository.delete(question.get());

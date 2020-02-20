@@ -2,6 +2,8 @@ package com.witcurve.domain;
 
 import com.witcurve.domain.enumeration.QuestionType;
 import com.witcurve.service.util.MapToStringConverter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -48,13 +50,13 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
     private Boolean otherField = false;
 
     @NotNull
-    @Column(nullable = false,name ="question_order")
+    @Column(nullable = false, name = "question_order")
     private Integer order;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "options")
     @MapKeyColumn(name = "option_key")
-    @CollectionTable(name = "survey_question_options", joinColumns=@JoinColumn(name="survey_question_id"))
+    @CollectionTable(name = "survey_question_options", joinColumns = @JoinColumn(name = "survey_question_id"))
     private Map<Integer, String> options;
 
     @NotNull
@@ -126,9 +128,13 @@ public class SurveyQuestion extends AbstractAuditingEntity implements Serializab
         this.order = order;
     }
 
-    public Map<Integer, String> getOptions() { return options; }
+    public Map<Integer, String> getOptions() {
+        return options;
+    }
 
-    public void setOptions(Map<Integer, String> options) { this.options = options; }
+    public void setOptions(Map<Integer, String> options) {
+        this.options = options;
+    }
 
     public SurveySection getSection() {
         return section;

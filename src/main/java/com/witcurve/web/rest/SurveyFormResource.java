@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -256,5 +257,19 @@ public class SurveyFormResource {
         surveySectionService.deleteOne(surveySectionId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("A survey section is deleted with identifier " + surveySectionId,
             surveySectionId.toString())).build();
+    }
+
+    /**
+     * get summary
+     *
+     * @param formId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/survey-forms/form-summary/{formId}")
+    public ResponseEntity<Map<Long, Map<String,Long>>> getSurveySummary(@PathVariable Long formId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to get summary of form with id : " + formId);
+        Map<Long,Map<String,Long>> result = surveyFormService.getSurveySummary(formId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

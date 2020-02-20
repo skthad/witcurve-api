@@ -6,6 +6,7 @@ import com.witcurve.service.dto.SurveyFormDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SurveyFormService {
 
@@ -22,4 +23,6 @@ public interface SurveyFormService {
     SurveyFormDTO updateSurveyFormStatus(Long surveyFormId, SurveyFormStatus status);
 
     void deleteOne(Long surveyFormId);
+
+    Map<Long, Map<String,Long>> getSurveySummary(Long formId);
 }

@@ -1,18 +1,18 @@
 package com.witcurve.service.impl;
 
 import com.witcurve.domain.*;
+import com.witcurve.domain.enumeration.QuestionType;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
-import com.witcurve.repository.StaffRepository;
-import com.witcurve.repository.StudentRepository;
-import com.witcurve.repository.SurveyFormRepository;
-import com.witcurve.repository.SurveySubmissionRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.SnsService;
 import com.witcurve.service.SurveyFormService;
+import com.witcurve.service.SurveySectionService;
 import com.witcurve.service.dto.SurveyFormDTO;
 import com.witcurve.service.mapper.SurveyFormMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.vm.SurveyQuestionAnswerCountVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +46,15 @@ public class SurveyFormServiceImpl implements SurveyFormService {
 
     @Autowired
     SnsService snsService;
+
+    @Autowired
+    SurveyQuestionRepository surveyQuestionRepository;
+
+    @Autowired
+    SurveySectionRepository surveySectionRepository;
+
+    @Autowired
+    SurveySectionService surveySectionService;
 
     @Override
     public SurveyFormDTO saveOrUpdate(SurveyFormDTO surveyFormDTO) throws WitcurveException {
@@ -116,6 +126,9 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         if (!surveyForm.isPresent()) {
             throw new WitcurveException("No surveyForm found with id : " + surveyFormId);
         }
+        for (SurveySection surveySection : surveyForm.get().getSections()) {
+            surveySectionService.deleteOne(surveySection.getId());
+        }
         surveyFormRepository.delete(surveyForm.get());
     }
 
@@ -130,6 +143,15 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         SurveyFormDTO surveyFormDTO = surveyFormMapper.toDto(surveyForm.get());
         snsService.sendPushNotificationOnFormPublish(surveyFormDTO);
         return surveyFormDTO;
+    }
+
+    @Override
+    public Map<Long, Map<String, Long>> getSurveySummary(Long formId) {
+        List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = surveyFormRepository.getQuestionAndAnswersCount(Arrays.asList(QuestionType.RATING, QuestionType.DICHOTOMOUS, QuestionType.SINGLE_CHOICE, QuestionType.MULTIPLE_CHOICE), formId);
+        Map<Long, Map<String, Long>> mapOfQuestionAnswersAndCount = surveyQuestionAnswerCounts.stream()
+            .collect(Collectors.groupingBy(SurveyQuestionAnswerCountVM::getQuestionId,
+                Collectors.toMap(SurveyQuestionAnswerCountVM::getAnswer, SurveyQuestionAnswerCountVM::getCount)));
+        return mapOfQuestionAnswersAndCount;
     }
 
     private void updateSubmitStatus(List<SurveyFormDTO> surveyForms, Long userId) {
