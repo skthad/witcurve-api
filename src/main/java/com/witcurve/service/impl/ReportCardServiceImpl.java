@@ -617,7 +617,7 @@ public class ReportCardServiceImpl implements ReportCardService {
         } else {
             reportCardDTO.setNonScholasticCourses(null);
         }
-        if (reportCardDTO.getScholasticDetails() != null && reportCardDTO.getScholasticDetails().isEmpty()) {
+        if (reportCardDTO.getScholasticDetails() != null && !reportCardDTO.getScholasticDetails().isEmpty()) {
             for (ScholasticReportDetailsDTO scholasticReportDetailsDTO : reportCardDTO.getScholasticDetails()) {
                 Optional<ReportCardDesign> reportCardDesign = reportCardDesignRepository.findById(scholasticReportDetailsDTO.getReportCardDesignId());
                 if (!reportCardDesign.isPresent()) {
