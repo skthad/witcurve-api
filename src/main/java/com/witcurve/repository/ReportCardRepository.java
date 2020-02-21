@@ -20,9 +20,9 @@ public interface ReportCardRepository extends JpaRepository<ReportCard, Long> {
 
     @Modifying
     @Query("update ReportCard rc set rc.showRemarks = false where rc.exam.id=?1  and rc.grade =?2")
-    ReportCard removeReportCardRemarksWithExamIdAndGrade(Long examId, Grade grade);
+    void removeReportCardRemarksWithExamIdAndGrade(Long examId, Grade grade);
 
     @Modifying
     @Query("update ReportCard rc set rc.showAttributes = false where rc.exam.id=?1 and rc.grade =?2")
-    ReportCard removeReportCardAttributesWithExamIdAndGrade(Long examId, Grade grade);
+    void removeReportCardAttributesWithExamIdAndGrade(Long examId, Grade grade);
 }
