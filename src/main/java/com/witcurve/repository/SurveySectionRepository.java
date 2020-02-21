@@ -9,9 +9,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SurveySectionRepository extends JpaRepository<SurveySection, Long> {
 
-    @Modifying
-    @Query("delete from SurveySection ss where ss.form.id = ?1")
-    void deleteSectionsByFormId(Long formId);
-
-
 }

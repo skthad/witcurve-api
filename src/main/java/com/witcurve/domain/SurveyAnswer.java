@@ -20,7 +20,7 @@ public class SurveyAnswer extends AbstractAuditingEntity implements Serializable
 
     @NotNull
     @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "answers", columnDefinition = "varchar(255)")
+    @Column(name = "answers", length = 500)
     @CollectionTable(name = "survey_answer_answers", joinColumns=@JoinColumn(name="survey_answer_id"))
     private List<String> answers;
 

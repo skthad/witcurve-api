@@ -2,7 +2,6 @@ package com.witcurve.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -18,7 +17,7 @@ public class SurveyAnswerAnswers implements Serializable {
 
     @Id
     @NotNull
-    @Column(name = "answers", length = 255)
+    @Column(name = "answers")
     private String answers;
 
     public SurveyAnswer getSurveyAnswer() { return surveyAnswer; }
