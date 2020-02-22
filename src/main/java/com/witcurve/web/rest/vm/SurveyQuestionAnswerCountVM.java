@@ -1,31 +1,31 @@
 package com.witcurve.web.rest.vm;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 public class SurveyQuestionAnswerCountVM {
 
-    private Long questionId;
+    private BigInteger questionId;
 
     private String answer;
 
-    private Long count;
+    private Integer count;
 
     public SurveyQuestionAnswerCountVM() {
 
     }
 
-    public SurveyQuestionAnswerCountVM(Long questionId, String answer, Long count) {
+    public SurveyQuestionAnswerCountVM(BigInteger questionId, String answer, Integer count) {
         this.questionId = questionId;
         this.answer = answer;
         this.count = count;
     }
 
-
-    public Long getQuestionId() {
+    public BigInteger getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Long questionId) {
+    public void setQuestionId(BigInteger questionId) {
         this.questionId = questionId;
     }
 
@@ -37,11 +37,11 @@ public class SurveyQuestionAnswerCountVM {
         this.answer = answer;
     }
 
-    public Long getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(Long count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 

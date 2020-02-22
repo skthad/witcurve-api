@@ -75,7 +75,11 @@ public class ReportCardResource {
             ReportCardDTO result = reportCardService.saveOrUpdate(reportCardDTO);
             return ResponseEntity.created(new URI("/api/report-card/")).body(result);
         } catch (DataIntegrityViolationException e) {
-            throw new WitcurveException("DataIntegrityViolationException occurred.");
+            if (e.getMessage().contains("grade_exam_UK")) {
+                throw new WitcurveException("There already exists a report card settings with given grade and exam");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
         }
     }
 

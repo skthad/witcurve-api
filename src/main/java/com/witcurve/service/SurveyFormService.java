@@ -5,6 +5,7 @@ import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.service.dto.SurveyFormDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -24,5 +25,5 @@ public interface SurveyFormService {
 
     void deleteOne(Long surveyFormId);
 
-    Map<Long, Map<String,Long>> getSurveySummary(Long formId);
+    Map<BigInteger, Map<String,Integer>> getSurveySummary(Long formId);
 }

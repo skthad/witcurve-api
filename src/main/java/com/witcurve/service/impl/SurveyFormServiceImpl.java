@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,6 +56,9 @@ public class SurveyFormServiceImpl implements SurveyFormService {
 
     @Autowired
     SurveySectionService surveySectionService;
+
+    @Autowired
+    SurveyAnswerRepository surveyAnswerRepository;
 
     @Override
     public SurveyFormDTO saveOrUpdate(SurveyFormDTO surveyFormDTO) throws WitcurveException {
@@ -146,9 +150,10 @@ public class SurveyFormServiceImpl implements SurveyFormService {
     }
 
     @Override
-    public Map<Long, Map<String, Long>> getSurveySummary(Long formId) {
-        List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = surveyFormRepository.getQuestionAndAnswersCount(Arrays.asList(QuestionType.RATING, QuestionType.DICHOTOMOUS, QuestionType.SINGLE_CHOICE, QuestionType.MULTIPLE_CHOICE), formId);
-        Map<Long, Map<String, Long>> mapOfQuestionAnswersAndCount = surveyQuestionAnswerCounts.stream()
+    public Map<BigInteger, Map<String, Integer>> getSurveySummary(Long formId) {
+        List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = new ArrayList<>();
+        surveyQuestionAnswerCounts = surveyAnswerRepository.countForForm(Arrays.asList(QuestionType.RATING, QuestionType.DICHOTOMOUS, QuestionType.SINGLE_CHOICE, QuestionType.MULTIPLE_CHOICE), formId);
+        Map<BigInteger, Map<String, Integer>> mapOfQuestionAnswersAndCount = surveyQuestionAnswerCounts.stream()
             .collect(Collectors.groupingBy(SurveyQuestionAnswerCountVM::getQuestionId,
                 Collectors.toMap(SurveyQuestionAnswerCountVM::getAnswer, SurveyQuestionAnswerCountVM::getCount)));
         return mapOfQuestionAnswersAndCount;

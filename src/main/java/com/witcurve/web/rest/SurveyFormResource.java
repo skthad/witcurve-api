@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -267,9 +268,9 @@ public class SurveyFormResource {
      * @throws WitcurveException
      */
     @GetMapping("/survey-forms/form-summary/{formId}")
-    public ResponseEntity<Map<Long, Map<String,Long>>> getSurveySummary(@PathVariable Long formId) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<Map<BigInteger, Map<String,Integer>>> getSurveySummary(@PathVariable Long formId) throws WitcurveException, URISyntaxException {
         log.debug("Request to get summary of form with id : " + formId);
-        Map<Long,Map<String,Long>> result = surveyFormService.getSurveySummary(formId);
+        Map<BigInteger,Map<String,Integer>> result = surveyFormService.getSurveySummary(formId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
