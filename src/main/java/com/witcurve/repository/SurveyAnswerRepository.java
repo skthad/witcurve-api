@@ -23,5 +23,5 @@ public interface SurveyAnswerRepository extends JpaRepository<SurveyAnswer, Long
 //    List<SurveyQuestionAnswerCountVM> getQuestionAndAnswersCount(List<QuestionType> types, Long formId);
 
     @Query(nativeQuery = true)
-    List<SurveyQuestionAnswerCountVM> countForForm(List<QuestionType> types, Long formId);
+    List<SurveyQuestionAnswerCountVM> countForForm(List<String> types, Long formId);
 }

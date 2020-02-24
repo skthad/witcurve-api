@@ -30,6 +30,8 @@ public class SurveyFormServiceImpl implements SurveyFormService {
 
     private final Logger log = LoggerFactory.getLogger(SurveyFormServiceImpl.class);
 
+    private final List<String> SUMMARY_LIST= Arrays.asList(QuestionType.RATING.toString(), QuestionType.DICHOTOMOUS.toString(), QuestionType.SINGLE_CHOICE.toString(), QuestionType.MULTIPLE_CHOICE.toString());
+
     @Autowired
     SurveyFormMapper surveyFormMapper;
 
@@ -151,8 +153,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
 
     @Override
     public Map<BigInteger, Map<String, Integer>> getSurveySummary(Long formId) {
-        List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = new ArrayList<>();
-        surveyQuestionAnswerCounts = surveyAnswerRepository.countForForm(Arrays.asList(QuestionType.RATING, QuestionType.DICHOTOMOUS, QuestionType.SINGLE_CHOICE, QuestionType.MULTIPLE_CHOICE), formId);
+        List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = surveyAnswerRepository.countForForm(SUMMARY_LIST, formId);
         Map<BigInteger, Map<String, Integer>> mapOfQuestionAnswersAndCount = surveyQuestionAnswerCounts.stream()
             .collect(Collectors.groupingBy(SurveyQuestionAnswerCountVM::getQuestionId,
                 Collectors.toMap(SurveyQuestionAnswerCountVM::getAnswer, SurveyQuestionAnswerCountVM::getCount)));
