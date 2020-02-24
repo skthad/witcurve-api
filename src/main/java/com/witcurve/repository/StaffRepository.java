@@ -2,11 +2,14 @@ package com.witcurve.repository;
 
 import com.witcurve.domain.Staff;
 import com.witcurve.domain.enumeration.StaffType;
+import com.witcurve.service.dto.UserContextDTO;
+import com.witcurve.web.rest.vm.StaffVM;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Repository
@@ -44,5 +47,8 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     @Query("select distinct staff.email from Staff staff where staff.schoolInfo.id = ?1 and staff.id in ?2")
     Set<String> getEmailsBySchoolInfoAndStaffIds(Long schoolInfoId, List<Long> staffIds);
+
+    @Query("select new com.witcurve.web.rest.vm.StaffVM(s.type, count(s.id))  from Staff s where s.user.activated = true and s.schoolInfo.id=?1 group by s.type")
+    List<StaffVM> findStaffCount(Long schoolInfoId);
 
 }

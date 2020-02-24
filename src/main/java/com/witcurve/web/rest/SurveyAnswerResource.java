@@ -8,6 +8,7 @@ import com.witcurve.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +37,19 @@ public class SurveyAnswerResource {
     @Timed
     public ResponseEntity<List<SurveyAnswerDTO>> saveSurveyAnswer(@RequestBody @Valid List<SurveyAnswerDTO> surveyAnswerDTOs, @RequestParam Long userId) throws URISyntaxException {
         log.debug("Request Save surveyAnswer : {} ", surveyAnswerDTOs);
-        List<SurveyAnswerDTO> result = surveyAnswerService.saveOrUpdate(surveyAnswerDTOs, userId);
-        return ResponseEntity.ok().body(result);
+        try {
+            List<SurveyAnswerDTO> result = surveyAnswerService.saveOrUpdate(surveyAnswerDTOs, userId);
+            return ResponseEntity.ok().body(result);
+        } catch (
+            DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else if (e.getMessage().contains("survey_question_user_id")) {
+                throw new WitcurveException("A question can be answered only once by user");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**
@@ -52,9 +64,19 @@ public class SurveyAnswerResource {
     @Timed
     public ResponseEntity<List<SurveyAnswerDTO>> updateSurveyAnswer(@RequestBody @Valid List<SurveyAnswerDTO> surveyAnswerDTOs, @RequestParam Long userId) throws URISyntaxException {
         log.debug("Request to update surveyAnswer : {} ", surveyAnswerDTOs);
-        List<SurveyAnswerDTO> result = surveyAnswerService.saveOrUpdate(surveyAnswerDTOs, userId);
-        return ResponseEntity.ok().body(result);
-
+        try {
+            List<SurveyAnswerDTO> result = surveyAnswerService.saveOrUpdate(surveyAnswerDTOs, userId);
+            return ResponseEntity.ok().body(result);
+        } catch (
+            DataIntegrityViolationException e) {
+            if (e.getMessage().contains("constraint [FK")) {
+                throw new WitcurveException("Foreign key for some field might be invalid");
+            } else if (e.getMessage().contains("survey_question_user_id")) {
+                throw new WitcurveException("A question can be answered only once by user");
+            } else {
+                throw new WitcurveException("DataIntegrityViolationException occurred.");
+            }
+        }
     }
 
     /**

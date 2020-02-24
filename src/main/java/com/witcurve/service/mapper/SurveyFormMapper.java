@@ -2,6 +2,7 @@ package com.witcurve.service.mapper;
 
 import com.witcurve.domain.Standard;
 import com.witcurve.domain.SurveyForm;
+import com.witcurve.domain.SurveySubmission;
 import com.witcurve.service.dto.SurveyFormDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,6 +16,7 @@ public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm
     @Mapping(source = "schoolInfo.id", target = "schoolInfoId")
     @Mapping(target = "userSubmitted", ignore = true)
     @Mapping(target = "standardIds", expression = "java(getStandardIds(surveyForm))")
+    @Mapping(target = "userIds", expression = "java(getUserIds(surveyForm))")
     SurveyFormDTO toDto(SurveyForm surveyForm);
 
     @Mapping(source = "schoolInfoId", target = "schoolInfo")
@@ -48,5 +50,15 @@ public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm
             standardIds.add(standard.getId());
         }
         return standardIds;
+    }
+
+    default List<Long> getUserIds(SurveyForm surveyForm) {
+        List<Long> userIds = new ArrayList<>();
+        if (surveyForm.getSurveySubmissions() != null) {
+            for (SurveySubmission surveySubmission : surveyForm.getSurveySubmissions()) {
+                userIds.add(surveySubmission.getUser().getId());
+            }
+        }
+        return userIds;
     }
 }

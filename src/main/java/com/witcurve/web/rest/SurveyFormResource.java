@@ -18,9 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -256,5 +258,19 @@ public class SurveyFormResource {
         surveySectionService.deleteOne(surveySectionId);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("A survey section is deleted with identifier " + surveySectionId,
             surveySectionId.toString())).build();
+    }
+
+    /**
+     * get summary
+     *
+     * @param formId
+     * @return
+     * @throws WitcurveException
+     */
+    @GetMapping("/survey-forms/form-summary/{formId}")
+    public ResponseEntity<Map<BigInteger, Map<String,Integer>>> getSurveySummary(@PathVariable Long formId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to get summary of form with id : " + formId);
+        Map<BigInteger,Map<String,Integer>> result = surveyFormService.getSurveySummary(formId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

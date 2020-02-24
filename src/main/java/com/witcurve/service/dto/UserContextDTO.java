@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.witcurve.domain.enumeration.StaffType;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -32,6 +33,10 @@ public class UserContextDTO implements Serializable {
     private Map<Long, List<CourseDTO>> standardCourseMap;
 
     private Map<String, Integer> unreadCount;
+
+    private Map<Long, Long> standardStudentCountMap;
+
+    private Map<StaffType, Long> staffCountMap;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DEFAULT_DATE_FORMAT)
     private LocalDate currentSessionStartDate;
@@ -277,4 +282,13 @@ public class UserContextDTO implements Serializable {
     public void setInstituteMap(Map<Long, InstituteDTO> instituteMap) {
         this.instituteMap = instituteMap;
     }
+
+    public Map<Long, Long> getStandardStudentCountMap() { return standardStudentCountMap; }
+
+    public void setStandardStudentCountMap(Map<Long, Long> standardStudentCountMap)
+    { this.standardStudentCountMap = standardStudentCountMap; }
+
+    public Map<StaffType, Long> getStaffCountMap() { return staffCountMap; }
+
+    public void setStaffCountMap(Map<StaffType, Long> staffCountMap) { this.staffCountMap = staffCountMap; }
 }

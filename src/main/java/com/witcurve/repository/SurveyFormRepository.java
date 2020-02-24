@@ -1,10 +1,13 @@
 package com.witcurve.repository;
 
 import com.witcurve.domain.SurveyForm;
+import com.witcurve.domain.enumeration.QuestionType;
 import com.witcurve.domain.enumeration.SurveyFormCreator;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.domain.enumeration.SurveyUserType;
+import com.witcurve.web.rest.vm.SurveyQuestionAnswerCountVM;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 

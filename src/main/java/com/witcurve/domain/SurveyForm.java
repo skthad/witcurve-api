@@ -52,7 +52,8 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
 
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name="form_id", insertable = false, updatable = false)
-    private Set<SurveySection> sections;
+    @OrderBy("section_order asc")
+    private List<SurveySection> sections;
 
     @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(
@@ -63,13 +64,13 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
     @OrderBy("grade asc,section asc")
     private List<Standard> standards;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="form_id", insertable = false, updatable = false)
+    private List<SurveySubmission> surveySubmissions;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public String getName() {
         return name;
@@ -119,17 +120,21 @@ public class SurveyForm extends AbstractAuditingEntity implements Serializable {
         this.schoolInfo = schoolInfo;
     }
 
-    public Set<SurveySection> getSections() {
+    public List<SurveySection> getSections() {
         return sections;
     }
 
-    public void setSections(Set<SurveySection> sections) {
+    public void setSections(List<SurveySection> sections) {
         this.sections = sections;
     }
 
     public List<Standard> getStandards() { return standards; }
 
     public void setStandards(List<Standard> standards) { this.standards = standards; }
+
+    public List<SurveySubmission> getSurveySubmissions() { return surveySubmissions; }
+
+    public void setSurveySubmissions(List<SurveySubmission> surveySubmissions) { this.surveySubmissions = surveySubmissions; }
 
     @Override
     public boolean equals(Object o) {

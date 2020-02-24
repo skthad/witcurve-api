@@ -50,6 +50,8 @@ public class SurveySubmissionResource {
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage().contains("constraint [FK")) {
                 throw new WitcurveException("Foreign key for some field might be invalid");
+            } else if (e.getMessage().contains("survey_form_user_id")) {
+                throw new WitcurveException("User can submit the form only once");
             } else {
                 throw new WitcurveException("DataIntegrityViolationException occurred.");
             }

@@ -36,9 +36,11 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
     private Boolean userSubmitted;
 
-    private Set<SurveySectionDTO> sections;
+    private List<SurveySectionDTO> sections;
 
     private List<Long> standardIds;
+
+    private List<Long> userIds;
 
     public Long getId() {
         return id;
@@ -104,17 +106,21 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
         this.userSubmitted = userSubmitted;
     }
 
-    public Set<SurveySectionDTO> getSections() {
+    public List<SurveySectionDTO> getSections() {
         return sections;
     }
 
-    public void setSections(Set<SurveySectionDTO> sections) {
+    public void setSections(List<SurveySectionDTO> sections) {
         this.sections = sections;
     }
 
     public List<Long> getStandardIds() { return standardIds; }
 
     public void setStandardIds(List<Long> standardIds) { this.standardIds = standardIds; }
+
+    public List<Long> getUserIds() { return userIds; }
+
+    public void setUserIds(List<Long> userIds) { this.userIds = userIds; }
 
     @Override
     public boolean equals(Object o) {
