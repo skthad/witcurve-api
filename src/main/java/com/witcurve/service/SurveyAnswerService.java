@@ -13,4 +13,6 @@ public interface SurveyAnswerService {
     List<SurveyAnswerDTO> getBySectionIdAndUserId(Long sectionId, Long userId);
 
     void deleteOne(Long surveyAnswerId);
+
+    List<String> getAllAnswersByQuestionId(Long questionId);
 }

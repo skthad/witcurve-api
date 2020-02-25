@@ -5,27 +5,32 @@ import java.util.Objects;
 
 public class SurveyQuestionAnswerCountVM {
 
-    private BigInteger questionId;
+    private Long questionId;
 
     private String answer;
 
-    private Integer count;
+    private Long count;
 
     public SurveyQuestionAnswerCountVM() {
 
     }
 
-    public SurveyQuestionAnswerCountVM(BigInteger questionId, String answer, Integer count) {
+    public SurveyQuestionAnswerCountVM(Long questionId, Long count) {
+        this.questionId = questionId;
+        this.count = count;
+    }
+
+    public SurveyQuestionAnswerCountVM(Long questionId, String answer, Long count) {
         this.questionId = questionId;
         this.answer = answer;
         this.count = count;
     }
 
-    public BigInteger getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(BigInteger questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 
@@ -37,11 +42,11 @@ public class SurveyQuestionAnswerCountVM {
         this.answer = answer;
     }
 
-    public Integer getCount() {
+    public Long getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(Long count) {
         this.count = count;
     }
 

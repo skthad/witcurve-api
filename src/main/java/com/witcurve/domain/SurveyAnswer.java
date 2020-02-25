@@ -19,9 +19,9 @@ import java.util.List;
         @ConstructorResult(
             targetClass= SurveyQuestionAnswerCountVM.class,
             columns={
-                @ColumnResult(name="qid", type = BigInteger.class),
+                @ColumnResult(name="qid", type = Long.class),
                 @ColumnResult(name="ans", type = String.class),
-                @ColumnResult(name = "ansc", type = Integer.class)
+                @ColumnResult(name = "ansc", type = Long.class)
             }
         )
     }
@@ -32,7 +32,7 @@ import java.util.List;
     "inner join survey_question as sq on sq.id=sa.question_id\n" +
     "inner join survey_section as sc on sc.id=sq.section_id\n" +
     "inner join survey_submission as ss on ss.user_id = sa.user_id\n"+
-    "where sq.type in ?1 and sc.form_id=?2\n" +
+    "where sq.type in ?1 and sc.form_id=?2 and ss.form_id = ?2\n" +
     "group by sq.id, saa.answers order by sc.section_order asc, sq.question_order asc;", resultSetMapping="getQuestionAndAnswersCount")
 public class SurveyAnswer extends AbstractAuditingEntity implements Serializable {
 

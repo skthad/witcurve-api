@@ -12,6 +12,7 @@ import com.witcurve.service.SurveySectionService;
 import com.witcurve.service.dto.SurveyFormDTO;
 import com.witcurve.service.mapper.SurveyFormMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
+import com.witcurve.web.rest.vm.SummaryVM;
 import com.witcurve.web.rest.vm.SurveyQuestionAnswerCountVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class SurveyFormServiceImpl implements SurveyFormService {
 
     private final Logger log = LoggerFactory.getLogger(SurveyFormServiceImpl.class);
 
-    private final List<String> SUMMARY_LIST= Arrays.asList(QuestionType.RATING.toString(), QuestionType.DICHOTOMOUS.toString(), QuestionType.SINGLE_CHOICE.toString(), QuestionType.MULTIPLE_CHOICE.toString());
+    private final List<String> SUMMARY_LIST = Arrays.asList(QuestionType.RATING.toString(), QuestionType.DICHOTOMOUS.toString(), QuestionType.SINGLE_CHOICE.toString(), QuestionType.MULTIPLE_CHOICE.toString());
 
     @Autowired
     SurveyFormMapper surveyFormMapper;
@@ -152,11 +153,22 @@ public class SurveyFormServiceImpl implements SurveyFormService {
     }
 
     @Override
-    public Map<BigInteger, Map<String, Integer>> getSurveySummary(Long formId) {
+    public Map<Long, SummaryVM> getSurveySummary(Long formId) {
+        Map<Long, SummaryVM> mapOfQuestionAnswersAndCount = new LinkedHashMap<>();
         List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = surveyAnswerRepository.countForForm(SUMMARY_LIST, formId);
-        Map<BigInteger, Map<String, Integer>> mapOfQuestionAnswersAndCount = surveyQuestionAnswerCounts.stream()
-            .collect(Collectors.groupingBy(SurveyQuestionAnswerCountVM::getQuestionId,
-                Collectors.toMap(SurveyQuestionAnswerCountVM::getAnswer, SurveyQuestionAnswerCountVM::getCount)));
+        for (SurveyQuestionAnswerCountVM surveyQuestionAnswerCount : surveyQuestionAnswerCounts) {
+            Map<String, Long> mapOfAnswerAndCount = new LinkedHashMap<>();
+            mapOfAnswerAndCount.put(surveyQuestionAnswerCount.getAnswer(), surveyQuestionAnswerCount.getCount());
+            SummaryVM summaryVM = new SummaryVM();
+            summaryVM.setMapOfAnswerAndCount(mapOfAnswerAndCount);
+            mapOfQuestionAnswersAndCount.put(surveyQuestionAnswerCount.getQuestionId(), summaryVM);
+        }
+        List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCountsForLongAndShortAnswer = surveyAnswerRepository.countForLongAndShortAnswerTypeQue(Arrays.asList(QuestionType.LONG_ANSWER, QuestionType.SHORT_ANSWER), formId);
+        for (SurveyQuestionAnswerCountVM surveyQuestionAnswerCount : surveyQuestionAnswerCountsForLongAndShortAnswer) {
+            SummaryVM summaryVM = new SummaryVM();
+            summaryVM.setCount(surveyQuestionAnswerCount.getCount());
+            mapOfQuestionAnswersAndCount.put(surveyQuestionAnswerCount.getQuestionId(), summaryVM);
+        }
         return mapOfQuestionAnswersAndCount;
     }
 

@@ -9,6 +9,7 @@ import com.witcurve.service.dto.SurveyFormDTO;
 import com.witcurve.service.dto.SurveySectionDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
+import com.witcurve.web.rest.vm.SummaryVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,9 +269,9 @@ public class SurveyFormResource {
      * @throws WitcurveException
      */
     @GetMapping("/survey-forms/form-summary/{formId}")
-    public ResponseEntity<Map<BigInteger, Map<String,Integer>>> getSurveySummary(@PathVariable Long formId) throws WitcurveException, URISyntaxException {
+    public ResponseEntity<Map<Long, SummaryVM>> getSurveySummary(@PathVariable Long formId) throws WitcurveException, URISyntaxException {
         log.debug("Request to get summary of form with id : " + formId);
-        Map<BigInteger,Map<String,Integer>> result = surveyFormService.getSurveySummary(formId);
+        Map<Long, SummaryVM> result = surveyFormService.getSurveySummary(formId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
