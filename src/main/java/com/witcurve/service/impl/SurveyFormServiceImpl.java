@@ -157,11 +157,16 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         Map<Long, SummaryVM> mapOfQuestionAnswersAndCount = new LinkedHashMap<>();
         List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCounts = surveyAnswerRepository.countForForm(SUMMARY_LIST, formId);
         for (SurveyQuestionAnswerCountVM surveyQuestionAnswerCount : surveyQuestionAnswerCounts) {
-            Map<String, Long> mapOfAnswerAndCount = new LinkedHashMap<>();
-            mapOfAnswerAndCount.put(surveyQuestionAnswerCount.getAnswer(), surveyQuestionAnswerCount.getCount());
-            SummaryVM summaryVM = new SummaryVM();
-            summaryVM.setMapOfAnswerAndCount(mapOfAnswerAndCount);
-            mapOfQuestionAnswersAndCount.put(surveyQuestionAnswerCount.getQuestionId(), summaryVM);
+            if (mapOfQuestionAnswersAndCount.containsKey(surveyQuestionAnswerCount.getQuestionId())) {
+                Map<String, Long> answerAndCount = mapOfQuestionAnswersAndCount.get(surveyQuestionAnswerCount.getQuestionId()).getMapOfAnswerAndCount();
+                answerAndCount.put(surveyQuestionAnswerCount.getAnswer(), surveyQuestionAnswerCount.getCount());
+            } else {
+                Map<String, Long> mapOfAnswerAndCount = new LinkedHashMap<>();
+                mapOfAnswerAndCount.put(surveyQuestionAnswerCount.getAnswer(), surveyQuestionAnswerCount.getCount());
+                SummaryVM summaryVM = new SummaryVM();
+                summaryVM.setMapOfAnswerAndCount(mapOfAnswerAndCount);
+                mapOfQuestionAnswersAndCount.put(surveyQuestionAnswerCount.getQuestionId(), summaryVM);
+            }
         }
         List<SurveyQuestionAnswerCountVM> surveyQuestionAnswerCountsForLongAndShortAnswer = surveyAnswerRepository.countForLongAndShortAnswerTypeQue(Arrays.asList(QuestionType.LONG_ANSWER, QuestionType.SHORT_ANSWER), formId);
         for (SurveyQuestionAnswerCountVM surveyQuestionAnswerCount : surveyQuestionAnswerCountsForLongAndShortAnswer) {

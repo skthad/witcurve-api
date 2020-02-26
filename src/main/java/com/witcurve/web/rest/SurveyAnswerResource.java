@@ -142,7 +142,7 @@ public class SurveyAnswerResource {
     @GetMapping("/survey-answers/survey-question/{questionId}")
     @Timed
     public ResponseEntity<List<String>> getAllAnswersByQuestionId(@PathVariable Long questionId) throws WitcurveException, URISyntaxException {
-        log.debug("Request to delete surveySection with id : ", questionId);
+        log.debug("Request to get surveyAnswer with questionId : ", questionId);
         List<String> result = surveyAnswerService.getAllAnswersByQuestionId(questionId);
         return ResponseEntity.ok(result);
     }

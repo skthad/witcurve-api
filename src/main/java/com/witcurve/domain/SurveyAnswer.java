@@ -31,8 +31,7 @@ import java.util.List;
     "inner join survey_answer_answers as saa on sa.id=saa.survey_answer_id\n" +
     "inner join survey_question as sq on sq.id=sa.question_id\n" +
     "inner join survey_section as sc on sc.id=sq.section_id\n" +
-    "inner join survey_submission as ss on ss.user_id = sa.user_id\n"+
-    "where sq.type in ?1 and sc.form_id=?2 and ss.form_id = ?2\n" +
+    "where sq.type in ?1 and sc.form_id=?2 and (SELECT 1 from survey_submission ss where ss.form_id = sc.form_id and ss.user_id = sa.user_id) \n" +
     "group by sq.id, saa.answers order by sc.section_order asc, sq.question_order asc;", resultSetMapping="getQuestionAndAnswersCount")
 public class SurveyAnswer extends AbstractAuditingEntity implements Serializable {
 
