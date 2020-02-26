@@ -5,13 +5,17 @@ import com.witcurve.service.SurveySubmissionService;
 import com.witcurve.service.dto.SurveySubmissionDTO;
 import com.witcurve.web.rest.errors.WitcurveException;
 import com.witcurve.web.rest.util.HeaderUtil;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -89,4 +93,21 @@ public class SurveySubmissionResource {
         List<SurveySubmissionDTO> result = surveySubmissionService.getByUserId(userId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    /**
+     * get surveySubmissions by formId
+     *
+     * @param formId
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @GetMapping("/survey-submissions/survey-summary/survey-form/{formId}")
+    @Timed
+    public ResponseEntity<Page<SurveySubmissionDTO>> getFormSummaryOfEachStudent(@ApiParam Pageable pageable, @PathVariable Long formId) {
+        log.debug("Request to get  surveySubmissions by userId : {} ", formId);
+        Page<SurveySubmissionDTO> result = surveySubmissionService.getFormSummaryOfEachStudent(formId, pageable);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

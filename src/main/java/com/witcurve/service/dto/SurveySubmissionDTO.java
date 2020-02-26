@@ -2,6 +2,7 @@ package com.witcurve.service.dto;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class SurveySubmissionDTO extends AbstractAuditingDTO implements Serializable {
@@ -13,6 +14,10 @@ public class SurveySubmissionDTO extends AbstractAuditingDTO implements Serializ
 
     @NotNull
     private Long formId;
+
+    private String userName;
+
+    private List<SurveyAnswerDTO> answers;
 
     public Long getId() {
         return id;
@@ -37,6 +42,14 @@ public class SurveySubmissionDTO extends AbstractAuditingDTO implements Serializ
     public void setFormId(Long formId) {
         this.formId = formId;
     }
+
+    public String getUserName() { return userName; }
+
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public List<SurveyAnswerDTO> getAnswers() { return answers; }
+
+    public void setAnswers(List<SurveyAnswerDTO> answers) { this.answers = answers; }
 
     @Override
     public boolean equals(Object o) {

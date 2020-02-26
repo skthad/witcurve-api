@@ -1,18 +1,27 @@
 package com.witcurve.service.impl;
 
-import com.witcurve.domain.*;
+import com.witcurve.domain.SurveyAnswer;
+import com.witcurve.domain.SurveyForm;
+import com.witcurve.domain.SurveyQuestion;
+import com.witcurve.domain.SurveySubmission;
 import com.witcurve.domain.enumeration.SurveyFormStatus;
 import com.witcurve.repository.*;
 import com.witcurve.service.SurveySubmissionService;
+import com.witcurve.service.dto.SurveyAnswerDTO;
 import com.witcurve.service.dto.SurveySubmissionDTO;
+import com.witcurve.service.mapper.SurveyAnswerMapper;
 import com.witcurve.service.mapper.SurveySubmissionMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +48,9 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 
     @Autowired
     SurveyAnswerRepository surveyAnswerRepository;
+
+    @Autowired
+    SurveyAnswerMapper surveyAnswerMapper;
 
     @Override
     public SurveySubmissionDTO save(SurveySubmissionDTO surveySubmissionDTO) {
@@ -70,5 +82,21 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
         log.debug("Request to get SurveySubmission by userId {} : ", userId);
         List<SurveySubmission> surveySubmissions = surveySubmissionRepository.getByUserId(userId);
         return surveySubmissionMapper.toDto(surveySubmissions);
+    }
+
+    @Override
+    public Page<SurveySubmissionDTO> getFormSummaryOfEachStudent(Long formId, Pageable pageable) {
+        log.debug("Request to get SurveySubmission by formId {} : ", formId);
+        List<SurveySubmissionDTO> surveySubmissionDTOS = new ArrayList<>();
+        Page<SurveySubmission> surveySubmissions = surveySubmissionRepository.findByFormIdUsingPageable(formId, pageable);
+
+        for (SurveySubmission surveySubmission : surveySubmissions) {
+            SurveySubmissionDTO surveySubmissionDTO = surveySubmissionMapper.toDto(surveySubmission);
+            List<SurveyAnswer> answersOfParticularUser = surveyAnswerRepository.getByFormIdAndUserId(formId, surveySubmission.getUser().getId());
+            surveySubmissionDTO.setUserName(surveySubmission.getUser().getFirstName() + " " + surveySubmission.getUser().getLastName());
+            surveySubmissionDTO.setAnswers(surveyAnswerMapper.toDto(answersOfParticularUser));
+            surveySubmissionDTOS.add(surveySubmissionDTO);
+        }
+        return new PageImpl<>(surveySubmissionDTOS, pageable, surveySubmissionDTOS.size());
     }
 }

@@ -130,4 +130,20 @@ public class SurveyAnswerResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("A survey answer is deleted with identifier " + surveyAnswerId,
             surveyAnswerId.toString())).build();
     }
+
+    /**
+     * get answers
+     *
+     * @param questionId
+     * @return
+     * @throws WitcurveException
+     * @throws URISyntaxException
+     */
+    @GetMapping("/survey-answers/survey-question/{questionId}")
+    @Timed
+    public ResponseEntity<List<String>> getAllAnswersByQuestionId(@PathVariable Long questionId) throws WitcurveException, URISyntaxException {
+        log.debug("Request to get surveyAnswer with questionId : ", questionId);
+        List<String> result = surveyAnswerService.getAllAnswersByQuestionId(questionId);
+        return ResponseEntity.ok(result);
+    }
 }

@@ -34,8 +34,6 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Long schoolInfoId;
 
-    private Boolean userSubmitted;
-
     private List<SurveySectionDTO> sections;
 
     private List<Long> standardIds;
@@ -96,14 +94,6 @@ public class SurveyFormDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setSchoolInfoId(Long schoolInfoId) {
         this.schoolInfoId = schoolInfoId;
-    }
-
-    public Boolean getUserSubmitted() {
-        return userSubmitted;
-    }
-
-    public void setUserSubmitted(Boolean userSubmitted) {
-        this.userSubmitted = userSubmitted;
     }
 
     public List<SurveySectionDTO> getSections() {

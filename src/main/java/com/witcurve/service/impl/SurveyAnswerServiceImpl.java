@@ -8,7 +8,6 @@ import com.witcurve.domain.enumeration.UserType;
 import com.witcurve.repository.*;
 import com.witcurve.service.SurveyAnswerService;
 import com.witcurve.service.dto.SurveyAnswerDTO;
-import com.witcurve.service.dto.SurveyQuestionDTO;
 import com.witcurve.service.mapper.SurveyAnswerMapper;
 import com.witcurve.web.rest.errors.WitcurveException;
 import org.slf4j.Logger;
@@ -81,6 +80,19 @@ public class SurveyAnswerServiceImpl implements SurveyAnswerService {
             }
             surveyAnswerRepository.delete(surveyAnswer.get());
         }
+    }
+
+    @Override
+    public List<String> getAllAnswersByQuestionId(Long questionId) {
+        log.debug("Request to get answers by questionId : {}", questionId);
+        Optional<SurveyQuestion> surveyQuestion = surveyQuestionRepository.findById(questionId);
+        if (!surveyQuestion.isPresent()) {
+            throw new WitcurveException("No question is present with given id : {}" + questionId);
+        }
+        if (!surveyQuestion.get().getType().equals(QuestionType.LONG_ANSWER) && !surveyQuestion.get().getType().equals(QuestionType.SHORT_ANSWER)) {
+            throw new WitcurveException("We can get all answers for long answer type and short answer type questions only");
+        }
+        return surveyAnswerRepository.getAllAnswersByQuestionId(questionId);
     }
 
     private void isValid(List<SurveyAnswerDTO> surveyAnswerDTOs, Long userId) {
