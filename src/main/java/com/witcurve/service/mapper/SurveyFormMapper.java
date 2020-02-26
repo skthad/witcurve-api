@@ -14,7 +14,6 @@ import java.util.List;
 public interface SurveyFormMapper extends EntityMapper<SurveyFormDTO, SurveyForm> {
 
     @Mapping(source = "schoolInfo.id", target = "schoolInfoId")
-    @Mapping(target = "userSubmitted", ignore = true)
     @Mapping(target = "standardIds", expression = "java(getStandardIds(surveyForm))")
     @Mapping(target = "userIds", expression = "java(getUserIds(surveyForm))")
     SurveyFormDTO toDto(SurveyForm surveyForm);

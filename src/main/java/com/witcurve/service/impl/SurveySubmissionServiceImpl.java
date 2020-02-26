@@ -92,11 +92,10 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
 
         for (SurveySubmission surveySubmission : surveySubmissions) {
             SurveySubmissionDTO surveySubmissionDTO = surveySubmissionMapper.toDto(surveySubmission);
-            List<SurveyAnswer> answersOfParticularUser = surveyAnswerRepository.getByFormIdAndUserId(formId, surveySubmission.getUser().getId());
             surveySubmissionDTO.setUserName(surveySubmission.getUser().getFirstName() + " " + surveySubmission.getUser().getLastName());
-            surveySubmissionDTO.setAnswers(surveyAnswerMapper.toDto(answersOfParticularUser));
+            surveySubmissionDTO.setAnswers(surveyAnswerMapper.toDto(surveyAnswerRepository.getByFormIdAndUserId(formId, surveySubmission.getUser().getId())));
             surveySubmissionDTOS.add(surveySubmissionDTO);
         }
-        return new PageImpl<>(surveySubmissionDTOS, pageable, surveySubmissionDTOS.size());
+        return new PageImpl<>(surveySubmissionDTOS, pageable, surveySubmissions.getTotalElements());
     }
 }
