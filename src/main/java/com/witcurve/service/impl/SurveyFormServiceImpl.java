@@ -20,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,7 +106,6 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             throw new WitcurveException("Student does not belong to any standard");
         }
         List<SurveyFormDTO> result = surveyFormMapper.toDto(surveyFormList);
-        updateSubmitStatus(result, student.get().getUser().getId());
         return result;
     }
 
@@ -122,7 +119,6 @@ public class SurveyFormServiceImpl implements SurveyFormService {
         List<SurveyForm> surveyFormList = surveyFormRepository.findBySchoolInfoIdAndTypesAndStatusList(staff.get().getSchoolInfo().getId(),
             Arrays.asList(SurveyUserType.ALL, SurveyUserType.STAFF), Arrays.asList(SurveyFormStatus.PUBLISHED));
         List<SurveyFormDTO> result = surveyFormMapper.toDto(surveyFormList);
-        updateSubmitStatus(result, staff.get().getUser().getId());
         return result;
     }
 
@@ -175,17 +171,6 @@ public class SurveyFormServiceImpl implements SurveyFormService {
             mapOfQuestionAnswersAndCount.put(surveyQuestionAnswerCount.getQuestionId(), summaryVM);
         }
         return mapOfQuestionAnswersAndCount;
-    }
-
-    private void updateSubmitStatus(List<SurveyFormDTO> surveyForms, Long userId) {
-        List<Long> formIds = surveySubmissionRepository.findByUserId(userId);
-        for (SurveyFormDTO surveyForm : surveyForms) {
-            if (!formIds.contains(surveyForm.getId())) {
-                surveyForm.setUserSubmitted(false);
-            } else {
-                surveyForm.setUserSubmitted(true);
-            }
-        }
     }
 
     private void isValid(SurveyFormDTO surveyFormDTO) {

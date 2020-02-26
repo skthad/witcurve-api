@@ -89,18 +89,14 @@ public class SurveySubmissionServiceImpl implements SurveySubmissionService {
         log.debug("Request to get SurveySubmission by formId {} : ", formId);
         List<SurveySubmissionDTO> surveySubmissionDTOS = new ArrayList<>();
         Page<SurveySubmission> surveySubmissions = surveySubmissionRepository.findByFormIdUsingPageable(formId, pageable);
+
         for (SurveySubmission surveySubmission : surveySubmissions) {
             SurveySubmissionDTO surveySubmissionDTO = surveySubmissionMapper.toDto(surveySubmission);
-
             List<SurveyAnswer> answersOfParticularUser = surveyAnswerRepository.getByFormIdAndUserId(formId, surveySubmission.getUser().getId());
-            List<SurveyAnswerDTO> surveyAnswerDTOS = surveyAnswerMapper.toDto(answersOfParticularUser);
-
             surveySubmissionDTO.setUserName(surveySubmission.getUser().getFirstName() + " " + surveySubmission.getUser().getLastName());
-            surveySubmissionDTO.setAnswers(surveyAnswerDTOS);
+            surveySubmissionDTO.setAnswers(surveyAnswerMapper.toDto(answersOfParticularUser));
             surveySubmissionDTOS.add(surveySubmissionDTO);
         }
-        int start = (int) pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > surveySubmissionDTOS.size() ? surveySubmissionDTOS.size() : (start + pageable.getPageSize());
-        return new PageImpl<SurveySubmissionDTO>(surveySubmissionDTOS.subList(start, end), pageable, surveySubmissionDTOS.size());
+        return new PageImpl<>(surveySubmissionDTOS, pageable, surveySubmissionDTOS.size());
     }
 }
