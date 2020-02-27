@@ -1,0 +1,16 @@
+{
+    "errorCode": 100,
+    "studentDetails": {
+        "studentName": "Bharat Raj India",
+        "rollNo": "112",
+        "fatherName": "Father All Mighty",
+        "motherName": "Mother India",
+        "dateOfBirth": "1995-07-05",
+        "admissionId": "1050",
+        "note": "",
+        "standard": "VIII A"
+    },
+    "feeTypeDetails": null,
+    "fullYearAmount": 66000.0,
+    "editable": true
+}

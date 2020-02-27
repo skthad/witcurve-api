@@ -1,6 +1,7 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.witcurve.domain.enumeration.PaytmErrorCodes;
 import com.witcurve.service.PaytmCallBackService;
 import com.witcurve.web.rest.vm.PaytmStatusCheckVM;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 @RestController
@@ -32,7 +37,25 @@ public class PaytmCallBackResource {
         log.debug("Request to get fee detail of given institute with admissionId and type : ", instituteName, admissionId, type);
         PaytmVM paytmVM;
         try {
-            paytmVM = paytmCallBackService.getStudentFee(instituteName, admissionId, type, request);
+            //TODO remove this, create to for a test case
+            if(admissionId.equals("1050")) {
+                String jsonResponse = null;
+                if(type.equals("Outstanding Fee")) {
+                    File file = new File(
+                        getClass().getClassLoader().getResource("outstanding_sample.json").getFile()
+                    );
+                    jsonResponse = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                } else {
+                    File file = new File(
+                        getClass().getClassLoader().getResource("full_year_sample.json").getFile()
+                    );
+                    jsonResponse = new String(Files.readAllBytes(Paths.get(file.getPath())));
+                }
+                ObjectMapper mapper = new ObjectMapper();
+                return ResponseEntity.ok(mapper.readValue(jsonResponse, PaytmVM.class));
+            } else {
+                paytmVM = paytmCallBackService.getStudentFee(instituteName, admissionId, type, request);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             paytmVM = new PaytmVM();

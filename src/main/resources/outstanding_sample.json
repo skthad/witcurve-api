@@ -1,0 +1,41 @@
+{
+    "errorCode": 100,
+    "studentDetails": {
+        "studentName": "Bharat Raj India",
+        "rollNo": "112",
+        "fatherName": "Father All Mighty",
+        "motherName": "Mother India",
+        "dateOfBirth": "1995-07-05",
+        "admissionId": "1050",
+        "note": "",
+        "standard": "VIII A"
+    },
+    "feeTypeDetails": [
+        {
+            "name": "Tution Fee(Installment 1)",
+            "amount": 10000.0,
+            "editable": false,
+            "required": false
+        },
+        {
+            "name": "Hostel Fee(Installment 1)",
+            "amount": 10000.0,
+            "editable": false,
+            "required": true
+        },
+        {
+            "name": "Book & Stationary Fee(Installment 1)",
+            "amount": 6000.0,
+            "editable": true,
+            "required": false
+        },
+        {
+            "name": "Transport Fee(Installment 1)",
+            "amount": 5000.0,
+            "editable": true,
+            "required": true
+        }
+    ],
+    "fullYearAmount": null,
+    "editable": false
+}
