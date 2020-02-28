@@ -12,25 +12,25 @@
     },
     "feeTypeDetails": [
         {
-            "name": "Tution Fee(Installment 1)",
+            "name": "Tution Fee(Installment-1)",
             "amount": 10000.0,
             "editable": false,
             "required": false
         },
         {
-            "name": "Hostel Fee(Installment 1)",
+            "name": "Hostel Fee(Installment-1)",
             "amount": 10000.0,
             "editable": false,
             "required": true
         },
         {
-            "name": "Book & Stationary Fee(Installment 1)",
+            "name": "Book & Stationary Fee(Installment-1)",
             "amount": 6000.0,
             "editable": true,
             "required": false
         },
         {
-            "name": "Transport Fee(Installment 1)",
+            "name": "Transport Fee(Installment-1)",
             "amount": 5000.0,
             "editable": true,
             "required": true
