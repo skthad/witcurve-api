@@ -2,11 +2,13 @@ package com.witcurve.service.impl;
 
 import com.google.common.base.Strings;
 import com.witcurve.domain.SchoolInfo;
-import com.witcurve.domain.Standard;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.*;
+import com.witcurve.repository.SchoolInfoRepository;
+import com.witcurve.repository.StaffRepository;
+import com.witcurve.repository.StudentStandardRepository;
+import com.witcurve.repository.UserRepository;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.InstituteMapper;
@@ -96,6 +98,10 @@ public class UserContextServiceImpl implements UserContextService {
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
         contextDTO.setUnreadCount(messageThreadService.unReadCount(currentUser.getId()));
+        //TODO get no.of published surveys count for which user has not submitted for.
+        // Calculate it for both staff and student, no need for admin.
+        // after getting count, add it to above unread count with key being "SURVEY".
+        // this will help show mobile show no.of Surveys user has not yet submitted.
         List<StandardDTO> staffStandards = null;
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
