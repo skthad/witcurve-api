@@ -593,6 +593,7 @@ public class SnsService {
         }
     }
 
+    @Async
     public void sendPushNotificationForReportCard(StandardReportDTO standardReportDTO) {
         if (standardReportDTO.getStatus().equals(ReportStatus.SUCCESS) && !standardReportDTO.getExists()) {
             log.info("\n about to send push notification for report card download \n");
@@ -631,24 +632,35 @@ public class SnsService {
         Map<String, String> varMap = new HashMap<>();
         varMap.put("formName", surveyFormDTO.getName());
         String message = WitcurveUtil.replacePlaceHolder(varMap, WitCurveConstants.SURVEY_FORM_PUBLISHED);
-        //TODO url change
         String url = "";
+        List<UserMobileEndPoint> userMobileEndPoints;
+        String listOfUserIds;
         if (surveyFormDTO.getStatus().equals(SurveyFormStatus.PUBLISHED)) {
             if (surveyFormDTO.getType().equals(SurveyUserType.ALL)) {
+                url = "?survey=true";
                 publishBulkMessage(message, url, TopicType.SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
 
             } else if (surveyFormDTO.getType().equals(SurveyUserType.PARENT)) {
                 if (surveyFormDTO.getStandardIds().size() > 0) {
-                    for (Long standardIds : surveyFormDTO.getStandardIds()) {
-                        publishBulkMessage(message, url, TopicType.STANDARD, null, standardIds);
+                    for (Long standardId : surveyFormDTO.getStandardIds()) {
+                        userMobileEndPoints = userMobileEndPointRepository.findByStandardId(standardId);
+                        listOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPoints);
+                        url = "?userId=" + listOfUserIds + "&survey=true";
+                        publishBulkMessage(message, url, TopicType.STANDARD, null, standardId);
                     }
                 } else {
                     List<Standard> standards = standardRepository.findBySchoolInfoId(surveyFormDTO.getSchoolInfoId());
                     for (Standard standard : standards) {
+                        userMobileEndPoints = userMobileEndPointRepository.findByStandardId(standard.getId());
+                        listOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPoints);
+                        url = "?userId=" + listOfUserIds + "&survey=true";
                         publishBulkMessage(message, url, TopicType.STANDARD, null, standard.getId());
                     }
                 }
             } else if (surveyFormDTO.getType().equals(SurveyUserType.STAFF)) {
+                userMobileEndPoints = userMobileEndPointRepository.findStaffBySchoolInfoId(surveyFormDTO.getSchoolInfoId());
+                listOfUserIds = convertToCommaSeparatedStringOfUserIds(userMobileEndPoints);
+                url = "?userId=" + listOfUserIds + "&survey=true";
                 publishBulkMessage(message, url, TopicType.STAFF_SCHOOL_INFO, surveyFormDTO.getSchoolInfoId(), null);
             }
         }

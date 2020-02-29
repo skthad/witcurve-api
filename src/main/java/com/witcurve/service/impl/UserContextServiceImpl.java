@@ -5,10 +5,7 @@ import com.witcurve.domain.SchoolInfo;
 import com.witcurve.domain.User;
 import com.witcurve.domain.enumeration.StaffType;
 import com.witcurve.domain.enumeration.UserType;
-import com.witcurve.repository.SchoolInfoRepository;
-import com.witcurve.repository.StaffRepository;
-import com.witcurve.repository.StudentStandardRepository;
-import com.witcurve.repository.UserRepository;
+import com.witcurve.repository.*;
 import com.witcurve.service.*;
 import com.witcurve.service.dto.*;
 import com.witcurve.service.mapper.InstituteMapper;
@@ -38,6 +35,8 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class UserContextServiceImpl implements UserContextService {
 
     private final Logger log = LoggerFactory.getLogger(StaffServiceImpl.class);
+
+    private static final String SURVEY = "SURVEY";
 
     @Autowired
     UserService userService;
@@ -90,6 +89,9 @@ public class UserContextServiceImpl implements UserContextService {
     @Autowired
     StudentStandardRepository studentStandardRepository;
 
+    @Autowired
+    SurveyFormRepository surveyFormRepository;
+
     @Override
     public UserContextDTO getCurrentUserContext(Long schoolInfoId) throws WitcurveException {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -98,10 +100,7 @@ public class UserContextServiceImpl implements UserContextService {
         UserContextDTO contextDTO = new UserContextDTO();
         contextDTO.setCurrentUser(userMapper.userToUserDTO(currentUser));
         contextDTO.setUnreadCount(messageThreadService.unReadCount(currentUser.getId()));
-        //TODO get no.of published surveys count for which user has not submitted for.
-        // Calculate it for both staff and student, no need for admin.
-        // after getting count, add it to above unread count with key being "SURVEY".
-        // this will help show mobile show no.of Surveys user has not yet submitted.
+
         List<StandardDTO> staffStandards = null;
         if (UserType.TEACHING_STAFF.equals(contextDTO.getCurrentUser().getType())) {
             StaffDTO staffDTO = staffService.getStaffByUserId(currentUser.getId());
@@ -125,6 +124,7 @@ public class UserContextServiceImpl implements UserContextService {
             } else {
                 staffDTO.setHasPassword(Boolean.TRUE);
             }
+            contextDTO.getUnreadCount().put(SURVEY, surveyFormRepository.findUnSubmittedFormCountForStaffByUserId(schoolInfoId, contextDTO.getCurrentUser().getId()));
             contextDTO.getCurrentUser().setStaffDTO(staffDTO);
             schoolInfoId = staffDTO.getSchoolInfo().getId();
         } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
@@ -140,7 +140,7 @@ public class UserContextServiceImpl implements UserContextService {
                     contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.TRUE);
                 }
             }
-
+            contextDTO.getUnreadCount().put(SURVEY, surveyFormRepository.findUnSubmittedFormCountByUserId(schoolInfoId, contextDTO.getCurrentUser().getId()));
             schoolInfoId = studentDTO.getSchoolInfo().getId();
 
         } else if (schoolInfoId == null) {

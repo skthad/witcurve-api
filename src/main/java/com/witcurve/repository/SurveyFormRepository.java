@@ -24,4 +24,11 @@ public interface SurveyFormRepository extends JpaRepository<SurveyForm, Long> {
 
     @Query("Select sf from SurveyForm sf left join SurveyFormStandards sfs on sfs.surveyFormId = sf.id where  sf.status in ?2 and sf.schoolInfo.id = ?1 and ((sf.type = 'ALL') or (sf.type = 'PARENT' and (sfs.standardId = ?3 or sfs.standardId is null)))")
     List<SurveyForm> findBySchoolInfoIdAndStatusAndStandardId(Long schoolInfoId, List<SurveyFormStatus> statuses, Long standardId);
+
+    @Query("Select count(sf) from SurveyForm sf left join SurveyFormStandards sfs on sfs.surveyFormId = sf.id where  sf.status ='PUBLISHED' and sf.schoolInfo.id = ?1 and ((sf.type = 'ALL') or (sf.type = 'PARENT' and (sfs.standardId in (Select ss.standard.id" +
+        " from StudentStandard ss where ss.student.user.id = ?2 ) or sfs.standardId is null))) and sf.id not in (Select sfsu.form.id from SurveySubmission sfsu where sfsu.user.id = ?2)")
+    Integer findUnSubmittedFormCountByUserId(Long schoolInfoId, Long userId);
+
+    @Query("select count(sf) from SurveyForm sf where sf.status = 'PUBLISHED' and sf.schoolInfo.id = ?1 and sf.type in ('ALL','STAFF') and sf.id not in (Select sfsu.form.id from SurveySubmission sfsu where sfsu.user.id = ?2)" )
+    Integer findUnSubmittedFormCountForStaffByUserId(Long schoolInfoId, Long userId);
 }
