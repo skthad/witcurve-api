@@ -627,7 +627,7 @@ public class SnsService {
         }
     }
 
-    @Async
+  //  @Async
     public void sendPushNotificationOnFormPublish(SurveyFormDTO surveyFormDTO) {
         Map<String, String> varMap = new HashMap<>();
         varMap.put("formName", surveyFormDTO.getName());

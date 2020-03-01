@@ -36,8 +36,6 @@ public class UserContextServiceImpl implements UserContextService {
 
     private final Logger log = LoggerFactory.getLogger(StaffServiceImpl.class);
 
-    private static final String SURVEY = "SURVEY";
-
     @Autowired
     UserService userService;
 
@@ -124,7 +122,6 @@ public class UserContextServiceImpl implements UserContextService {
             } else {
                 staffDTO.setHasPassword(Boolean.TRUE);
             }
-            contextDTO.getUnreadCount().put(SURVEY, surveyFormRepository.findUnSubmittedFormCountForStaffByUserId(schoolInfoId, contextDTO.getCurrentUser().getId()));
             contextDTO.getCurrentUser().setStaffDTO(staffDTO);
             schoolInfoId = staffDTO.getSchoolInfo().getId();
         } else if (UserType.PARENT.equals(contextDTO.getCurrentUser().getType())) {
@@ -140,7 +137,6 @@ public class UserContextServiceImpl implements UserContextService {
                     contextDTO.getStudentStandardDTO().getStudent().setHasPassword(Boolean.TRUE);
                 }
             }
-            contextDTO.getUnreadCount().put(SURVEY, surveyFormRepository.findUnSubmittedFormCountByUserId(schoolInfoId, contextDTO.getCurrentUser().getId()));
             schoolInfoId = studentDTO.getSchoolInfo().getId();
 
         } else if (schoolInfoId == null) {
