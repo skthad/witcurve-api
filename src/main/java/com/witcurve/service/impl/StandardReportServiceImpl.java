@@ -201,7 +201,11 @@ public class StandardReportServiceImpl implements StandardReportService {
                     if(disableStudentIds != null && !disableStudentIds.isEmpty()) {
                         if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
                             studentReportDTO.setViewable(false);
+                        } else {
+                            studentReportDTO.setViewable(true);
                         }
+                    } else {
+                        studentReportDTO.setViewable(true);
                     }
                     studentReportDTO.setAttachment(studentAttachment);
                     studentReportService.saveOrUpdateStudentReport(studentReportDTO);
