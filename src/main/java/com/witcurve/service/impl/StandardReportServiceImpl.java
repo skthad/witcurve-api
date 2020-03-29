@@ -168,7 +168,7 @@ public class StandardReportServiceImpl implements StandardReportService {
     }
 
     @Async
-    public void createReportCards(StandardReportDTO standardReportDTO) {
+    public void createReportCards(StandardReportDTO standardReportDTO, List<Long> disableStudentIds) {
         log.debug("Request to create report cards with for standard report : {}", standardReportDTO);
         try {
             Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
@@ -190,9 +190,15 @@ public class StandardReportServiceImpl implements StandardReportService {
                     studentReportDTO.setStudentId(studentStandards.get(count).getStudent().getId());
                     studentReportDTO.setReportCardId(standardReportDTO.getReportCardId());
                     studentReportDTO.setAttachment(studentAttachment);
+                    if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
+                        studentReportDTO.setViewable(false);
+                    }
                     studentReportService.saveOrUpdateStudentReport(studentReportDTO);
                 } else {
                     StudentReportDTO studentReportDTO = studentReports.get(0);
+                    if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
+                        studentReportDTO.setViewable(false);
+                    }
                     studentReportDTO.setAttachment(studentAttachment);
                     studentReportService.saveOrUpdateStudentReport(studentReportDTO);
                 }

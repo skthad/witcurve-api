@@ -33,6 +33,10 @@ public class StudentReport extends AbstractAuditingEntity implements Serializabl
     @JoinColumn(name = "attachment_id", nullable = false)
     private Attachment attachment;
 
+    @NotNull
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean viewable = true;
+
 
     public Long getId() {
         return id;
@@ -64,6 +68,14 @@ public class StudentReport extends AbstractAuditingEntity implements Serializabl
 
     public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
+    }
+
+    public Boolean getViewable() {
+        return viewable;
+    }
+
+    public void setViewable(Boolean viewable) {
+        this.viewable = viewable;
     }
 
     @Override

@@ -21,6 +21,8 @@ public class StudentReportDTO extends AbstractAuditingDTO implements Serializabl
     @NotNull
     private Attachment attachment;
 
+    @NotNull Boolean viewable = true;
+
     private String examName;
 
     public Long getId() {
@@ -53,6 +55,14 @@ public class StudentReportDTO extends AbstractAuditingDTO implements Serializabl
 
     public void setAttachment(Attachment attachment) {
         this.attachment = attachment;
+    }
+
+    public Boolean getViewable() {
+        return viewable;
+    }
+
+    public void setViewable(Boolean viewable) {
+        this.viewable = viewable;
     }
 
     public String getExamName() {

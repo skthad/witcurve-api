@@ -76,10 +76,10 @@ public class StandardReportResource {
 
     @PostMapping("/standard-report/generate")
     @Timed
-    public ResponseEntity<StandardReportDTO> generateStandardReport(@RequestParam Long standardId, @RequestParam Long reportCardId) {
+    public ResponseEntity<StandardReportDTO> generateStandardReport(@RequestParam Long standardId, @RequestParam Long reportCardId, @RequestParam(required = false) List<Long> disableStudentIds) {
         log.debug("Request to generate report card for standard with id {} with report card id : {}", standardId, reportCardId);
         StandardReportDTO result = standardReportService.generateStandardReport(standardId, reportCardId);
-        standardReportService.createReportCards(result);
+        standardReportService.createReportCards(result, disableStudentIds);
         return ResponseEntity.ok(result);
     }
 }
