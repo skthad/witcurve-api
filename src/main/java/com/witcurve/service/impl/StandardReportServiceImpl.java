@@ -190,14 +190,18 @@ public class StandardReportServiceImpl implements StandardReportService {
                     studentReportDTO.setStudentId(studentStandards.get(count).getStudent().getId());
                     studentReportDTO.setReportCardId(standardReportDTO.getReportCardId());
                     studentReportDTO.setAttachment(studentAttachment);
-                    if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
-                        studentReportDTO.setViewable(false);
+                    if(disableStudentIds != null && !disableStudentIds.isEmpty()) {
+                        if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
+                            studentReportDTO.setViewable(false);
+                        }
                     }
                     studentReportService.saveOrUpdateStudentReport(studentReportDTO);
                 } else {
                     StudentReportDTO studentReportDTO = studentReports.get(0);
-                    if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
-                        studentReportDTO.setViewable(false);
+                    if(disableStudentIds != null && !disableStudentIds.isEmpty()) {
+                        if(disableStudentIds.contains(studentStandards.get(count).getStudent().getId())) {
+                            studentReportDTO.setViewable(false);
+                        }
                     }
                     studentReportDTO.setAttachment(studentAttachment);
                     studentReportService.saveOrUpdateStudentReport(studentReportDTO);
