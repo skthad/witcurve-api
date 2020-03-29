@@ -34,7 +34,7 @@ public class StudentReport extends AbstractAuditingEntity implements Serializabl
     private Attachment attachment;
 
     @NotNull
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean viewable = true;
 
 
