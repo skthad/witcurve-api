@@ -1,6 +1,8 @@
 package com.witcurve.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paytm.pg.merchant.CheckSumServiceHelper;
 import com.witcurve.domain.enumeration.SubscriptionPackage;
 import com.witcurve.domain.enumeration.TransactionMode;
 import com.witcurve.service.PaymentService;
@@ -12,9 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/api")
@@ -43,6 +50,43 @@ public class PaymentResource {
                                                             @RequestParam SubscriptionPackage subscriptionPackage) throws WitcurveException {
         log.debug("Rest API for creating paytm order");
         return ResponseEntity.ok().body(paymentService.createPaytmOrder(studentId, mobileNumber, subscriptionPackage));
+    }
+
+    //TODO - temp service remove it or modify it after final changes
+    @PostMapping("/payment/paytm/test-order")
+    @Timed
+    public ResponseEntity<PaytmRequestDTO> createPaytmOrder() throws WitcurveException {
+        log.debug("Rest API for test paytm order");
+        PaytmRequestDTO paytmRequestDTO = new PaytmRequestDTO();
+        paytmRequestDTO.setMerchantMid("WITCUR13574383497047");
+        paytmRequestDTO.setOrderId(String.valueOf(System.currentTimeMillis()));
+        paytmRequestDTO.setChannelId("WEB");
+        paytmRequestDTO.setCustomerId("test");
+        paytmRequestDTO.setMobileNo("9502036596");
+        paytmRequestDTO.setTransactionAmount("1.0");
+        paytmRequestDTO.setWebsite("APPPROD");
+        paytmRequestDTO.setIndustryTypeId("PrivateEducation");
+        paytmRequestDTO.setCallbackUrl("https://www.witcurve.com/submission.html?orderId="+paytmRequestDTO.getOrderId());
+
+        Set<ConstraintViolation<PaytmRequestDTO>> violations = (Validation.buildDefaultValidatorFactory())
+            .getValidator().validate(paytmRequestDTO);
+        if (!CollectionUtils.isEmpty(violations)) {
+            violations.forEach(violation -> log.error(violation.getMessage()));
+            throw new WitcurveException("Validation for Paytm Request Order DTO Failed");
+        }
+
+        TreeMap paytmParams = (new ObjectMapper()).convertValue(paytmRequestDTO, TreeMap.class);
+        String checkSumHash = null;
+        try {
+            checkSumHash = CheckSumServiceHelper.getCheckSumServiceHelper()
+                .genrateCheckSum("3WuVx2gN2#0ixC#!", paytmParams);
+        } catch (Exception e) {
+            throw new WitcurveException("error", e);
+        }
+
+        paytmRequestDTO.setCheckSumHash(checkSumHash);
+
+        return ResponseEntity.ok().body(paytmRequestDTO);
     }
 
     @PostMapping("/payment/paytm/verify-order-status")

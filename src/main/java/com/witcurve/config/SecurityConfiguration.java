@@ -114,6 +114,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/reset-password").permitAll()
             .antMatchers("/api/user-mobile-end-points/user/**").permitAll()
             .antMatchers("/api/paytm-fee/**").permitAll()
+            //TODO - temp service remove it or modify it after final changes
+            .antMatchers("/api/payment/paytm/test-order").permitAll()
 
 
 
