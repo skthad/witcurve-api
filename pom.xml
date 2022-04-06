@@ -405,11 +405,11 @@
         </dependency>
 
         <!--https://mvnrepository.com/artifact/net.swisstech/bitly-api-client/0.8.0-->
-        <dependency>
-            <groupId>net.swisstech</groupId>
-            <artifactId>bitly-api-client</artifactId>
-            <version>0.8.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.swisstech</groupId>-->
+<!--            <artifactId>bitly-api-client</artifactId>-->
+<!--            <version>0.8.0</version>-->
+<!--        </dependency>-->
 
         <dependency>
         <groupId>net.sourceforge.htmlunit</groupId>
