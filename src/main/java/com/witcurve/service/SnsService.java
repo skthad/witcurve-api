@@ -171,6 +171,7 @@ public class SnsService {
                 publishRequest.setMessage(getPublishMessage(message, url));
                 publishRequest.setMessageStructure("json");
                 amazonSNS.publish(publishRequest);
+                log.info("Bulk request has been sent");
             } catch (SdkClientException e) {
                 log.info("AWS Exception : {}", e.getMessage());
                 log.info("There was a problem sending this message");
