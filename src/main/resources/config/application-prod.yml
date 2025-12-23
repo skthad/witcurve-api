@@ -29,8 +29,8 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://witcurve-prod.c5vr76lp2kaf.ap-south-1.rds.amazonaws.com:3306/witcurve?useUnicode=true&characterEncoding=utf8&useSSL=false
-        username: witcurve_admin
-        password: 1StrongPassword!
+        username: <>>
+        password: <>
     jpa:
         database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         database: MYSQL
@@ -46,8 +46,8 @@ spring:
     mail:
         host: email-smtp.us-east-1.amazonaws.com
         port: 465
-        username: AKIAVN6B32FD4UM6Y5ZH
-        password: BIFbduc/Ai2yXk4wxEHIsGt9saeEs4kb/a7RSr28WV/2
+        username: <>
+        password: <>
         protocol: smtp
         debug: true
         properties.mail.smtp:
@@ -141,23 +141,23 @@ jhipster:
 
 application:
     sms:
-        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        auth-key: <>
         sender-id: WCURVE
     paytm:
         merchantId: Witcur27804517818624
-        secretKey: WVhxMveXM@8DPg2@
+        secretKey: <>>
         website: APPPROD
         industryTypeId: PrivateEducation
         callbackUrl: https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw.paytm.in/order/status
         communicationIps: 125.19.44.66,203.122.38.200,220.226.177.198,220.226.177.196
     witcurve:
-        cryptoKey: 49742470EC1F73C42E31C02407AC0E69
+        cryptoKey: <>
         domainUrl: witcurve-app.com
     aws:
-        secretKey: ptibXhj1lLrlJxqMR0aPbXOeLv34+SYDXuK79Hlr
-        accessKey: AKIAVN6B32FDRU6LMQWG
+        secretKey: <>
+        accessKey: <>
         defaultRegion: ap-south-1
         snsRegion: ap-south-1
-        snsApplicationArn: arn:aws:sns:ap-south-1:373531857223:app/GCM/WitcurveProdApplication
+        snsApplicationArn: <>
         bucketName: prod.assets.witcurve-app.com

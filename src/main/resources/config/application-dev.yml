@@ -37,7 +37,7 @@ spring:
         type: com.zaxxer.hikari.HikariDataSource
         url: jdbc:mysql://localhost:3306/witcurve
         username: witcurve
-        password: WitcurveAdmin@123
+        password: <>
     jpa:
         database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         database: MYSQL
@@ -54,7 +54,7 @@ spring:
         host: email-smtp.us-east-1.amazonaws.com
         port: 465
         username: AKIAVN6B32FD4UM6Y5ZH
-        password: BIFbduc/Ai2yXk4wxEHIsGt9saeEs4kb/a7RSr28WV/2
+        password: <>
         protocol: smtp
         debug: true
         properties.mail.smtp:
@@ -146,25 +146,25 @@ jhipster:
 
 application:
     sms:
-        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        auth-key: <>
         sender-id: WCURVE
     paytm:
         merchantId: WITCUR13574383497047
-        secretKey : 3WuVx2gN2#0ixC#!
+        secretKey : <>
         website: WEBSTAGING
         industryTypeId : Retail
         callbackUrl : https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=
         transactionStatusApi: https://securegw-stage.paytm.in/order/status
         communicationIps:
     witcurve:
-        cryptoKey: 49742470EC1F73C42E31C02407AC0E69
+        cryptoKey: <>
         domainUrl: witcurve-app.com
     aws:
-        secretKey: NvJMZakpojcqncXp2dRJPeywFf+Gkw+mB86kcqYV
-        accessKey: AKIAVN6B32FDW2NSKV5F
+        secretKey: <>
+        accessKey: <>
         defaultRegion: us-east-2
         snsRegion: us-east-1
-        snsApplicationArn: arn:aws:sns:us-east-1:373531857223:app/GCM/WitcurveTestNotification
+        snsApplicationArn: <>
         bucketName: test.assets.witcurve-app.com
 
 

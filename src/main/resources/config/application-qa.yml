@@ -141,11 +141,11 @@ jhipster:
 
 application:
     sms:
-        auth-key: 228729Ax0VORwQvEQ25b9cfff6
+        auth-key: <>
         sender-id: WCURVE
     paytm:
-        merchantId: Witcur27804517818624
-        secretKey: WVhxMveXM@8DPg2@
+        merchantId: <>
+        secretKey: <>
         website: APPPROD
         industryTypeId: PrivateEducation
         callbackUrl: https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=
@@ -155,9 +155,9 @@ application:
         cryptoKey: 49742470EC1F73C42E31C02407AC0E69
         domainUrl: witcurve-app.com
     aws:
-        secretKey: NvJMZakpojcqncXp2dRJPeywFf+Gkw+mB86kcqYV
-        accessKey: AKIAVN6B32FDW2NSKV5F
+        secretKey: <>
+        accessKey: <>
         defaultRegion: us-east-2
         snsRegion: ap-south-1
-        snsApplicationArn: arn:aws:sns:us-east-1:373531857223:app/GCM/WitcurveTestNotification
+        snsApplicationArn: <>
         bucketName: test.assets.witcurve-app.com
